@@ -29,6 +29,11 @@ export const createPatientSchema = z.object({
 // Type inferred from the schema for use with React Hook Form
 export type CreatePatientInput = z.infer<typeof createPatientSchema>;
 
-// Potential schema for updating (might allow partial updates)
-// export const updatePatientSchema = createPatientSchema.partial();
-// export type UpdatePatientInput = z.infer<typeof updatePatientSchema>;
+/**
+ * Zod schema for validating data when updating a patient.
+ * Allows partial updates by making all fields optional.
+ */
+export const updatePatientSchema = createPatientSchema.partial();
+
+// Type inferred from the partial schema for update operations.
+export type UpdatePatientInput = z.infer<typeof updatePatientSchema>;
