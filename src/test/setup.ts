@@ -1,13 +1,7 @@
 // src/test/setup.ts - Test environment setup
-import '@testing-library/jest-dom';
 import 'whatwg-fetch'; // Polyfill for fetch in test environment
 import { server } from './mocks/server';
 import { vi, beforeAll, afterEach, afterAll } from 'vitest';
-
-// Setup global test functions using vi.stubGlobal
-// This is needed for jest-dom to work properly
-import { expect } from 'vitest';
-vi.stubGlobal('expect', expect);
 
 // Mock localStorage
 const localStorageMock = {

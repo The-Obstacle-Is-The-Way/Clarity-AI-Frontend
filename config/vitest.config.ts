@@ -98,8 +98,9 @@ export default defineConfig({
     testTimeout: 20000, // Increase default timeout per test
     hookTimeout: 20000, // Increase default timeout for hooks
     
-    // Single setup file that properly includes all needed functionality
+    // Setup files in correct order - jest-dom setup must come before our main setup
     setupFiles: [
+      './src/test/jest-dom-setup.ts', // Add jest-dom setup first
       './src/test/setup.ts', // Use the canonical setup file
     ],
     
