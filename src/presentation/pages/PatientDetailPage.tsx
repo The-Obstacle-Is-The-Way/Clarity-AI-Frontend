@@ -1,13 +1,15 @@
 // src/presentation/pages/PatientDetailPage.tsx
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { usePatientDetail } from '@application/hooks/usePatientDetail';
 import { useUpdatePatient } from '@application/hooks/useUpdatePatient';
+import { useDeletePatient } from '@application/hooks/useDeletePatient';
 import PatientDetailCard from '@presentation/organisms/PatientDetailCard';
 import PatientForm from '@presentation/organisms/PatientForm';
+import { ConfirmDialog } from '@presentation/molecules/ConfirmDialog';
 import { Alert, AlertDescription, AlertTitle } from "@presentation/atoms/alert";
 import { Skeleton } from "@presentation/atoms/skeleton";
-import { Terminal, ArrowLeft, Edit, X } from 'lucide-react';
+import { Terminal, ArrowLeft, Edit, X, Trash2 } from 'lucide-react';
 import { Button } from "@presentation/atoms/button";
 import type { UpdatePatientInput } from '@domain/patients/patientSchemas';
 
@@ -15,13 +17,17 @@ import type { UpdatePatientInput } from '@domain/patients/patientSchemas';
  * Renders the detail page for a single patient.
  * Fetches patient data based on the ID from the URL parameter.
  * Allows toggling between viewing and editing patient details.
+ * Allows deleting the patient after confirmation.
  */
 const PatientDetailPage: React.FC = () => {
   const { patientId } = useParams<{ patientId: string }>();
   const [isEditing, setIsEditing] = useState(false);
+  const [isConfirmDeleteDialogOpen, setIsConfirmDeleteDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   const { data: patient, error: fetchError, isLoading: isLoadingDetail, isError: isFetchError } = usePatientDetail(patientId);
   const { mutate: updatePatient, isLoading: isUpdating, error: updateError, isError: isUpdateError } = useUpdatePatient();
+  const { mutate: deletePatient, isLoading: isDeleting, error: deleteError, isError: isDeleteError } = useDeletePatient();
 
   const handleUpdateSubmit = (data: UpdatePatientInput) => {
     if (!patientId) return;
@@ -34,6 +40,20 @@ const PatientDetailPage: React.FC = () => {
         },
       }
     );
+  };
+
+  const handleDeleteClick = () => {
+    setIsConfirmDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!patientId) return;
+    deletePatient(patientId, {
+      onError: () => {
+        // Keep dialog open on error? Optional, depends on UX preference.
+        // setIsConfirmDeleteDialogOpen(false); // Could close here or let user retry/cancel
+      }
+    });
   };
 
   const renderContent = () => {
@@ -100,14 +120,34 @@ const PatientDetailPage: React.FC = () => {
       return (
         <>
           <PatientDetailCard patient={patient} />
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsEditing(true)}
-            className="mt-4"
-          >
-            <Edit className="mr-2 h-4 w-4" /> Edit Patient
-          </Button>
+          {isDeleteError && (
+             <Alert variant="destructive" className="mt-4 mb-4">
+                <Terminal className="h-4 w-4" />
+                <AlertTitle>Delete Failed</AlertTitle>
+                <AlertDescription>
+                  {deleteError instanceof Error ? deleteError.message : "An unexpected error occurred while deleting the patient."}
+                   Please try again later.
+                </AlertDescription>
+              </Alert>
+          )}
+          <div className="flex space-x-2 mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditing(true)}
+              disabled={isDeleting}
+            >
+              <Edit className="mr-2 h-4 w-4" /> Edit Patient
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleDeleteClick}
+              disabled={isDeleting || isEditing}
+            >
+              <Trash2 className="mr-2 h-4 w-4" /> Delete Patient
+            </Button>
+          </div>
         </>
       );
     }
@@ -128,6 +168,22 @@ const PatientDetailPage: React.FC = () => {
       </h1>
       {renderContent()}
       {/* Placeholder for other sections like Clinical Records, Analytics */}
+
+      <ConfirmDialog
+        open={isConfirmDeleteDialogOpen}
+        onOpenChange={setIsConfirmDeleteDialogOpen}
+        title="Confirm Patient Deletion"
+        description={
+          <>
+            Are you sure you want to permanently delete patient{' '}
+            <strong>{patient?.first_name} {patient?.last_name}</strong>?
+            This action cannot be undone.
+          </>
+        }
+        onConfirm={handleConfirmDelete}
+        confirmText="Delete"
+        isConfirming={isDeleting}
+      />
     </div>
   );
 };

@@ -76,5 +76,22 @@ export const getPatientById = async (patientId: string): Promise<Patient> => {
   }
 };
 
-// Add function for deletePatient later
-// export const deletePatient = async (patientId: string): Promise<void> => { ... };
+/**
+ * Deletes a patient by their ID.
+ *
+ * @param {string} patientId - The ID of the patient to delete.
+ * @returns {Promise<void>} A promise that resolves when the deletion is successful.
+ */
+export const deletePatient = async (patientId: string): Promise<void> => {
+  if (!patientId) {
+    throw new Error('Patient ID is required for deletion');
+  }
+  try {
+    // Adjust endpoint as needed
+    await apiClient.delete(`/patients/${patientId}`);
+    // DELETE requests often return 204 No Content, so no response body is expected.
+  } catch (error) {
+    console.error(`Failed to delete patient with ID ${patientId}:`, error);
+    throw error; // Re-throw to be caught by the mutation hook
+  }
+};
