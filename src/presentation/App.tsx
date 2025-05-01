@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Example router setup
 import Dashboard from '@pages/Dashboard';
 import BrainVisualizationPage from '@pages/BrainVisualizationPage'; // Import the visualization page
 import NotFound from '@pages/NotFound'; // Import the NotFound page
 import NeuralControlPanel from '@organisms/NeuralControlPanel'; // Import the component to test
-import ThemeProvider from '@application/contexts/ThemeProvider'; // Import ThemeProvider
+import { ThemeProvider } from '@application/providers/ThemeProvider'; // Import ThemeProvider from providers
 import '@styles/index.css'; // Correct alias
 
 // Create a client
@@ -18,6 +18,23 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+// Wrapper component to ensure consistent ThemeProvider usage
+interface ThemeWrapperProps {
+  children: ReactNode;
+  defaultTheme?: 'light' | 'dark' | 'system';
+}
+
+export const ThemeWrapper: React.FC<ThemeWrapperProps> = ({ 
+  children, 
+  defaultTheme = 'dark' 
+}) => {
+  return (
+    <ThemeProvider defaultTheme={defaultTheme}>
+      {children}
+    </ThemeProvider>
+  );
+};
 
 // Define the main App component
 const App: React.FC = () => {
@@ -35,7 +52,7 @@ const App: React.FC = () => {
           <Route
             path="/test/neural-control-panel"
             element={
-              <ThemeProvider defaultTheme="dark">
+              <ThemeWrapper>
                 <div className="p-4 bg-background text-foreground min-h-screen">
                   <h1 className="text-xl font-semibold mb-6">Neural Control Panel Test</h1>
                   <NeuralControlPanel
@@ -44,7 +61,7 @@ const App: React.FC = () => {
                     onSettingsChange={(settings) => console.log('Settings changed:', settings)}
                   />
                 </div>
-              </ThemeProvider>
+              </ThemeWrapper>
             }
           />
 
@@ -52,7 +69,7 @@ const App: React.FC = () => {
           <Route
             path="/brain-model-container/demo"
             element={
-              <ThemeProvider defaultTheme="dark">
+              <ThemeWrapper>
                 <div className="p-4 bg-background text-foreground min-h-screen">
                   <h1 className="text-xl font-semibold mb-6">Brain Model Container Test</h1>
                   <div className="h-[80vh] border border-gray-700 rounded-lg overflow-hidden">
@@ -64,7 +81,7 @@ const App: React.FC = () => {
                     />
                   </div>
                 </div>
-              </ThemeProvider>
+              </ThemeWrapper>
             }
           />
           {/* Catch-all route for 404 */}

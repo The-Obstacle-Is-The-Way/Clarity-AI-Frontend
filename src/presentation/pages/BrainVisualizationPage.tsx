@@ -6,7 +6,7 @@ import LoadingIndicator from '@atoms/LoadingIndicator';
 import BrainVisualizationContainer from '@organisms/BrainVisualizationContainer';
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient'; // Corrected import name
 import type { BrainRegion } from '@domain/types/brain/models'; // Import correct type
-import { ThemeProvider } from '@application/providers/ThemeProvider';
+import { ThemeWrapper } from '@presentation/App';
 
 /**
  * BrainVisualizationPage
@@ -228,14 +228,14 @@ const BrainVisualizationPage: React.FC = () => {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="h-96 overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800 md:col-span-2">
           {/* Wrap the BrainVisualizationContainer with ThemeProvider */}
-          <ThemeProvider defaultTheme="dark">
+          <ThemeWrapper>
             <BrainVisualizationContainer
               scanId={id || 'DEMO_SCAN_001'} // Provide scanId from param or default for demo
               patientId={id} // Pass patientId if available from route param
               onRegionSelect={handleRegionSelect}
               // Remove invalid props: brainData, activeRegions, viewMode
             />
-          </ThemeProvider>
+          </ThemeWrapper>
         </div>
 
         <div className="rounded-lg bg-white p-4 shadow-md dark:bg-gray-800">
