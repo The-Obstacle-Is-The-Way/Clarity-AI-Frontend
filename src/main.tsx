@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from '@presentation/templates/App';
-import './presentation/styles/index.css';
+import { ThemeProvider } from '@application/providers/ThemeProvider';
+import '@presentation/styles/index.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'nprogress/nprogress.css';
 
@@ -20,7 +21,9 @@ const rootElement = document.getElementById('root');
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
-      <App />
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
     </React.StrictMode>
   );
 } else {
