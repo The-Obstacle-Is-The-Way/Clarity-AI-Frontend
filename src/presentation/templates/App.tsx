@@ -11,6 +11,7 @@ import BrainVisualizationPage from '@presentation/pages/BrainVisualizationPage';
 import LoginPage from '@presentation/pages/LoginPage';
 import NotFound from '@presentation/pages/NotFound';
 import ProfilePage from '@presentation/pages/ProfilePage';
+import PatientListPage from '@presentation/pages/PatientListPage';
 
 // Components
 import NeuralControlPanel from '@presentation/organisms/NeuralControlPanel';
@@ -75,6 +76,9 @@ const App: React.FC = () => {
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/profile" element={<ProfilePage />} />
+
+                  {/* Patient Management Routes */}
+                  <Route path="/patients" element={<PatientListPage />} />
 
                   {/* Brain Visualization Routes */}
                   <Route path="/brain-visualization/demo" element={<BrainVisualizationPage />} />
