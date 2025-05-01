@@ -59,5 +59,27 @@ export const getClinicalRecords = async (
   }
 };
 
-// Placeholder for fetching a single detailed record if needed later
-// export const getClinicalRecordById = async (recordId: string): Promise<ClinicalRecord> => { ... };
+/**
+ * Fetches a single clinical record by its ID.
+ * NOTE: Endpoint needs verification. Assumes /api/records/{recordId}.
+ *
+ * @param {string} recordId - The ID of the clinical record to fetch.
+ * @returns {Promise<ClinicalRecord>} A promise resolving to the detailed clinical record data.
+ */
+export const getClinicalRecordById = async (recordId: string): Promise<ClinicalRecord> => {
+  if (!recordId) {
+    throw new Error('Record ID is required');
+  }
+  // --- VERIFY THIS ENDPOINT --- 
+  const endpoint = `/records/${recordId}`; 
+  // const endpoint = `/patients/${patientId}/records/${recordId}`; // Alternative?
+
+  try {
+    console.warn(`Fetching record using assumed endpoint: ${endpoint}. Verify this endpoint.`);
+    const response = await apiClient.get<ClinicalRecord>(endpoint);
+    return response;
+  } catch (error) {
+    console.error(`Failed to fetch clinical record with ID ${recordId}:`, error);
+    throw error;
+  }
+};
