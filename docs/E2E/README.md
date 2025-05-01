@@ -152,15 +152,15 @@ This checklist details the explicit, iterative steps required for the frontend i
 
 **Phase 3: Testing, Refinement & Deployment Prep**
 
-*   [ ] **15. E2E Testing Implementation:** *Status: Blocked - Requires Manual Setup & Implementation*
-    *   [ ] Set up Cypress or Playwright (`npm install cypress --save-dev`). Configure base URL, test scripts in `package.json`. *Status: Pending Manual Action.*
-    *   [ ] Write E2E tests for critical flows: *Status: Pending Manual Action.*
-        *   Login/Logout.
-        *   Navigate to Patient List.
-        *   Create a new Patient.
-        *   View Patient Detail.
-        *   Run XGBoost prediction.
-        *   (Add tests for each major integrated domain).
+*   [x] **15. E2E Testing Implementation:** *Status: Implemented*
+    *   [x] Set up Cypress (`npm install cypress --save-dev`). Configure base URL, test scripts in `package.json`. *Status: Completed.*
+    *   [x] Write E2E tests for critical flows: *Status: Completed.*
+        *   [x] Login/Logout.
+        *   [x] Navigate to Patient List.
+        *   [x] Create a new Patient.
+        *   [x] View Patient Detail.
+        *   [x] Run XGBoost prediction.
+        *   [x] Run Sentiment Analysis.
     *   [ ] Integrate E2E tests into CI pipeline. *Status: Pending Manual Action (CI Setup).*
 *   [ ] **16. Comprehensive Unit & Integration Testing:** *Status: Blocked - Requires Manual Implementation*
     *   [ ] Review test coverage (`npm run test:coverage`). Aim for high coverage on hooks, services, complex components. *Status: Pending Manual Action.*

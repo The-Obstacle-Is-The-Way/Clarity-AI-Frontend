@@ -267,3 +267,41 @@ Key principles:
 2. Only essential project files at root level
 3. Build artifacts and caches are gitignored
 4. Documentation and assets in dedicated directories
+
+## Testing
+
+### Unit & Integration Tests
+
+```bash
+# Run all tests
+npm test
+
+# Watch mode
+npm run test:watch
+
+# UI mode (interactive test runner)
+npm run test:ui
+
+# Coverage report
+npm run test:coverage
+```
+
+### End-to-End (E2E) Tests
+
+The project uses Cypress for E2E testing.
+
+```bash
+# Open Cypress interactive test runner
+npm run cypress:open
+
+# Run E2E tests in headless mode
+npm run cypress:run
+
+# Run E2E tests with dev server automatically started
+npm run test:e2e:dev
+```
+
+E2E tests cover critical user flows:
+- Authentication (login, logout, protected routes)
+- Patient management (list, create, view, update, delete)
+- Analytics features (XGBoost predictions, sentiment analysis)

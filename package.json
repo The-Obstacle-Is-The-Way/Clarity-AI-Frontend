@@ -136,7 +136,9 @@
     "vite": "^6.2.5",
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.1.1"
+    "vitest": "^3.1.1",
+    "cypress": "^13.6.4",
+    "start-server-and-test": "^2.0.3"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
