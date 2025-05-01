@@ -1,0 +1,69 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    /* Linting */
+    "types": ["node", "vite/client", "vitest/globals"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@domain/*": ["src/domain/*"],
+      "@application/*": ["src/application/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@presentation/*": ["src/presentation/*"],
+      "@shared/*": ["src/shared/*"],
+      "@atoms/*": ["src/presentation/atoms/*"],
+      "@molecules/*": ["src/presentation/molecules/*"],
+      "@organisms/*": ["src/presentation/organisms/*"],
+      "@templates/*": ["src/presentation/templates/*"],
+      "@pages/*": ["src/presentation/pages/*"],
+      "@hooks/*": ["src/application/hooks/*"],
+      "@contexts/*": ["src/application/contexts/*"],
+      "@providers/*": ["src/application/providers/*"],
+      "@stores/*": ["src/application/stores/*"],
+      "@services/*": ["src/application/services/*"],
+      "@clients/*": ["src/infrastructure/clients/*"],
+      "@api/*": ["src/infrastructure/api/*"],
+      "@utils/*": ["src/shared/utils/*"],
+      "@types/*": ["src/domain/types/*"],
+      "@models/*": ["src/domain/models/*"],
+      "@constants/*": ["src/domain/constants/*"],
+      "@validation/*": ["src/domain/validation/*"],
+      "@assets/*": ["src/presentation/assets/*"],
+      "@styles/*": ["src/presentation/styles/*"],
+      "@shaders/*": ["src/presentation/shaders/*"],
+      "@test/*": ["src/test/*"],
+      "@config/*": ["config/*"]
+    }
+  },
+  "include": [
+    "src",
+    "src/test", // Explicitly include test directory
+    "test-puppeteer", // Include Puppeteer tests
+    "config",
+    "*.ts",
+    "*.tsx",
+    "*.d.ts",
+    // Removed references to deleted root config files
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    ".vite"
+  ]
+} 

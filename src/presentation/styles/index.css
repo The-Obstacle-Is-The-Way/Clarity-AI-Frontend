@@ -1,0 +1,348 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary-50: oklch(0.97 0.025 250);
+  --color-primary-100: oklch(0.95 0.05 250);
+  --color-primary-200: oklch(0.9 0.075 250);
+  --color-primary-300: oklch(0.85 0.10 250);
+  --color-primary-400: oklch(0.75 0.125 250);
+  --color-primary-500: oklch(0.65 0.15 250);
+  --color-primary-600: oklch(0.6 0.175 250);
+  --color-primary-700: oklch(0.52 0.15 250);
+  --color-primary-800: oklch(0.45 0.125 250);
+  --color-primary-900: oklch(0.4 0.10 250);
+  --color-primary-950: oklch(0.35 0.075 250);
+  
+  --color-neural-50: oklch(0.97 0.025 290);
+  --color-neural-100: oklch(0.95 0.05 290);
+  --color-neural-200: oklch(0.9 0.075 290);
+  --color-neural-300: oklch(0.85 0.10 290);
+  --color-neural-400: oklch(0.75 0.125 290);
+  --color-neural-500: oklch(0.65 0.15 290);
+  --color-neural-600: oklch(0.6 0.175 290);
+  --color-neural-700: oklch(0.52 0.15 290);
+  --color-neural-800: oklch(0.45 0.125 290);
+  --color-neural-900: oklch(0.4 0.10 290);
+  --color-neural-950: oklch(0.35 0.075 290);
+  
+  --color-danger: oklch(0.65 0.18 25);
+  --color-warning: oklch(0.8 0.12 85);
+  --color-success: oklch(0.65 0.15 155);
+  --color-info: oklch(0.65 0.15 250);
+  
+  --color-luxury-gold: oklch(0.85 0.1 85);
+  --color-luxury-silver: oklch(0.85 0.03 250);
+  --color-luxury-platinum: oklch(0.9 0.02 250);
+  --color-luxury-obsidian: oklch(0.15 0.01 250);
+}
+
+/* Base Styles */
+@layer base {
+  html {
+    @apply antialiased font-sans scroll-smooth;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-200;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  
+  h1 {
+    @apply text-3xl lg:text-4xl;
+  }
+  
+  h2 {
+    @apply text-2xl lg:text-3xl;
+  }
+  
+  h3 {
+    @apply text-xl lg:text-2xl;
+  }
+  
+  a {
+    @apply text-primary-600 hover:text-primary-500 transition-colors duration-200;
+  }
+
+  /* Override default focus styles for better accessibility and aesthetic */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-900;
+  }
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+/* Component Classes */
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-500 text-white hover:bg-primary-600 shadow-md;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700;
+  }
+  
+  .btn-outline {
+    @apply border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800;
+  }
+  
+  .btn-danger {
+    @apply bg-danger text-white hover:bg-red-600;
+  }
+  
+  /* Cards */
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-card p-6 transition-all duration-300;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  .card-clinical {
+    @apply bg-white dark:bg-gray-800 rounded-clinical shadow-clinical border border-gray-100 dark:border-gray-700;
+  }
+  
+  /* Clinical UI Elements */
+  .clinical-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .clinical-section {
+    @apply py-8;
+  }
+  
+  /* Form Elements */
+  .form-input {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm;
+  }
+  
+  .form-select {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm;
+  }
+  
+  .form-checkbox {
+    @apply h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700;
+  }
+  
+  .form-radio {
+    @apply h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
+  }
+  
+  .form-error {
+    @apply mt-1 text-sm text-danger;
+  }
+  
+  .form-hint {
+    @apply mt-1 text-sm text-gray-500 dark:text-gray-400;
+  }
+  
+  /* Data Visualization */
+  .neural-node {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  .neural-connection {
+    @apply stroke-neural-400 dark:stroke-neural-600 transition-all duration-300 ease-in-out;
+  }
+  
+  .neural-active {
+    @apply animate-neural-pulse;
+  }
+  
+  /* Dashboard UI */
+  .dashboard-stat {
+    @apply flex flex-col p-6 rounded-xl bg-white dark:bg-gray-800 shadow-card;
+  }
+  
+  .dashboard-stat-title {
+    @apply text-sm font-medium text-gray-500 dark:text-gray-400;
+  }
+  
+  .dashboard-stat-value {
+    @apply mt-2 text-3xl font-semibold text-gray-900 dark:text-white;
+  }
+
+  .dashboard-nav-item {
+    @apply flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200;
+  }
+  
+  .dashboard-nav-item-active {
+    @apply bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300;
+  }
+  
+  .dashboard-nav-item-inactive {
+    @apply text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white;
+  }
+}
+
+/* Utility Classes */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .neural-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-neural-600;
+  }
+  
+  .luxury-gradient {
+    @apply bg-gradient-to-r from-luxury-gold via-luxury-platinum to-neural-500;
+  }
+  
+  .glass-effect {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-md backdrop-saturate-150;
+  }
+  
+  .truncate-2-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Special Elements */
+.brain-visualization-container {
+  @apply relative w-full h-80 sm:h-96 lg:h-[32rem] bg-gray-900 rounded-xl overflow-hidden;
+}
+
+.neural-activity-indicator {
+  @apply absolute inset-0 flex items-center justify-center;
+}
+
+/* Loading state animations */
+.loading-pulse {
+  @apply animate-pulse bg-gray-200 dark:bg-gray-700 rounded-md;
+}
+
+/* Sophisticated neural network animation effect */
+.neural-node-animation {
+  animation: neuralPulse 3s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+
+@keyframes neuralPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+/* Clinical patient chart elements */
+.clinical-chart-container {
+  @apply rounded-xl overflow-hidden shadow-card bg-white dark:bg-gray-800 p-4;
+}
+
+/* Custom scrollbars for the application */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-700 rounded-full hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors;
+}
+
+/* Ensure all modals have proper z-indexing */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+}
+
+.modal-content {
+  @apply relative bg-white dark:bg-gray-800 rounded-xl shadow-xl z-50 max-w-lg mx-auto overflow-hidden;
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
