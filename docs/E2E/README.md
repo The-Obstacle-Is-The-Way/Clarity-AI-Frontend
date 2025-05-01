@@ -117,15 +117,13 @@ This checklist details the explicit, iterative steps required for the frontend i
 
 **Domain: Clinical Records Management (Example)**
 
-*   [ ] **11. View Clinical Records for Patient:** *Status: In Progress*
-    *   [ ] **Verify API:** Confirm endpoint (e.g., `GET /api/patients/{patientId}/records`). Define `ClinicalRecord` type. Check filtering/sorting. *Status: Pending - Assuming `GET /api/patients/{patientId}/records`.*
-    *   [ ] **API Call:** Implement `getClinicalRecords` in `src/infrastructure/api/clinicalRecordService.ts`.
-    *   [ ] **State:** `useQuery` hook (`src/application/hooks/useClinicalRecords.ts`).
-    *   [ ] **UI:**
-        *   Component within `PatientDetailPage.tsx` (e.g., `src/presentation/organisms/ClinicalRecordList.tsx`).
-        *   Display record summaries.
-        *   **HIPAA:** Redact/mask sensitive record details as needed.
-    *   [ ] **Testing:** Unit/integration tests.
+*   [ ] **11. View Clinical Records for Patient:** *Status: Implemented (Pending Verification & Manual Fixes)*
+    *   [ ] **Verify API:** Confirm endpoint (e.g., `GET /api/patients/{patientId}/records`). Define `ClinicalRecord` type. Check filtering/sorting. *Status: Pending - Assumed `GET /api/patients/{patientId}/records`. Type defined.* **NEEDS VERIFICATION.**
+    *   [x] **API Call:** Implement `getClinicalRecords` in `src/infrastructure/api/clinicalRecordService.ts`. *Status: Implemented (Based on assumption).* 
+    *   [x] **State:** `useQuery` hook (`src/application/hooks/useClinicalRecords.ts`). *Status: Implemented.*
+    *   [x] **UI:** Component within `PatientDetailPage.tsx` (`ClinicalRecordList.tsx`). *Status: Implemented (Requires manual fixing of imports for Shadcn components).* 
+    *   [ ] **HIPAA:** Redact/mask sensitive record details as needed. *Status: Pending Review.*
+    *   [ ] **Testing:** Unit/integration tests. *Status: Pending.*
 *   [ ] **12. View Single Clinical Record Detail:** (If applicable)
     *   [ ] **Verify API:** Endpoint like `GET /api/records/{recordId}`.
     *   [ ] **API Call/State/UI:** Implement similar to Patient Detail.
