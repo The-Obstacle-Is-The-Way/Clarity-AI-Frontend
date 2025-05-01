@@ -124,8 +124,8 @@ This checklist details the explicit, iterative steps required for the frontend i
     *   [x] **UI:** Component within `PatientDetailPage.tsx` (`ClinicalRecordList.tsx`). *Status: Implemented (Requires manual fixing of imports for Shadcn components).* 
     *   [ ] **HIPAA:** Redact/mask sensitive record details as needed. *Status: Pending Review.*
     *   [ ] **Testing:** Unit/integration tests. *Status: Pending.*
-*   [ ] **12. View Single Clinical Record Detail:** (If applicable)
-    *   [ ] **Verify API:** Endpoint like `GET /api/records/{recordId}`.
+*   [ ] **12. View Single Clinical Record Detail:** (If applicable) *Status: In Progress*
+    *   [ ] **Verify API:** Endpoint like `GET /api/records/{recordId}` or `GET /api/patients/{patientId}/records/{recordId}`. **NEEDS VERIFICATION.**
     *   [ ] **API Call/State/UI:** Implement similar to Patient Detail.
     *   [ ] **HIPAA:** Critical focus on data display rules.
 
