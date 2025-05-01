@@ -7,7 +7,7 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 // Removed unused BrowserRouter, useNavigate imports
-import { useTheme } from 'next-themes';
+import { useTheme } from '@application/providers/ThemeProvider';
 // Removed unused useQuery import
 
 // Domain types
