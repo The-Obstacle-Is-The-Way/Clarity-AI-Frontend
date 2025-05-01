@@ -257,5 +257,8 @@ export class ApiClient {
 }
 
 // Create and export a singleton instance of ApiClient
+// Read base URL from environment variable, default to /api
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
+
 // This is what the tests and services expect to import
-export const apiClient = new ApiClient('/api');
+export const apiClient = new ApiClient(apiBaseUrl);

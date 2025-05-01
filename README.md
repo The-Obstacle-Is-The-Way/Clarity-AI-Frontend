@@ -166,6 +166,26 @@ npm run dev
 npm run build
 ```
 
+### Environment Variables
+
+This project requires certain environment variables to be set. Create a `.env` file in the project root (or `.env.development` for development-specific variables).
+
+**Required:**
+
+-   `VITE_API_BASE_URL`: The base URL for the Clarity AI Backend API.
+    -   For local development using the Vite proxy, set this to `/api`.
+    -   For connecting directly to a local backend instance, use its address (e.g., `http://localhost:8000/api`).
+    -   For production/staging, set this to the deployed backend API URL.
+
+Example `.env` file:
+
+```env
+# Local development with Vite proxy
+VITE_API_BASE_URL=/api
+```
+
+**Note:** Ensure your `.env` files are included in your `.gitignore` file.
+
 ### Technologies
 
 - React 18
