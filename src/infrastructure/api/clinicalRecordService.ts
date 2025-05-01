@@ -46,7 +46,7 @@ export const getClinicalRecords = async (
       `/patients/${patientId}/records`,
       {
         params: queryParams,
-      },
+      }
     );
     return response; // apiClient should ideally return the parsed data directly
   } catch (error) {
