@@ -2,7 +2,17 @@
 import '@testing-library/jest-dom';
 import 'whatwg-fetch'; // Polyfill for fetch in test environment
 import { server } from './mocks/server';
-import { vi } from 'vitest';
+import { vi, expect, describe, it, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
+
+// Make Vitest globals explicitly available
+globalThis.expect = expect;
+globalThis.describe = describe;
+globalThis.it = it;
+globalThis.beforeEach = beforeEach;
+globalThis.afterEach = afterEach;
+globalThis.beforeAll = beforeAll;
+globalThis.afterAll = afterAll;
+globalThis.vi = vi;
 
 // Mock IntersectionObserver
 class MockIntersectionObserver {
