@@ -5,16 +5,23 @@
  */
 
 import React, { type ReactElement, type ReactNode } from 'react';
-import { render, type RenderOptions, act } from '@testing-library/react'; // Import act
+import { render as testingLibraryRender, type RenderOptions, act } from '@testing-library/react'; // Import act and rename render
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 // Import the relevant contexts and types
 import DataContext from '@application/contexts/DataContext';
-// Removed incorrect ThemeContext imports
 import UserContext from '@application/contexts/UserContext';
 import VisualizationContext from '@application/contexts/VisualizationContext';
+
+// Import theme types and components
+import type { ThemeMode } from '@presentation/providers/ThemeProvider';
+import {
+  ThemeProvider,
+  useTheme,
+  type ThemeProviderState,
+} from '@presentation/providers/ThemeProvider';
 
 // Default mock data context for tests
 const mockDataContextValue = {
@@ -39,14 +46,6 @@ function createTestQueryClient() {
     },
   });
 }
-// MockThemeProvider removed - Use the actual ThemeProvider from the application
-import type { ThemeMode } from '@presentation/providers/ThemeProvider';
-import {
-  ThemeProvider,
-  useTheme,
-  ThemeProviderContext,
-  type ThemeProviderState,
-} from '@presentation/providers/ThemeProvider'; // Import necessary items from provider
 
 /**
  * Mock implementation of UserProvider for tests
@@ -135,7 +134,6 @@ interface AllTheProvidersProps {
   queryClient?: QueryClient;
   mockDataContext?: typeof mockDataContextValue;
   currentTheme?: ThemeMode; // Use the imported ThemeMode type
-  setCurrentTheme?: React.Dispatch<React.SetStateAction<'light' | 'dark' | 'system'>>;
 }
 
 const AllTheProviders = ({
@@ -144,12 +142,9 @@ const AllTheProviders = ({
   queryClient = createTestQueryClient(),
   mockDataContext = mockDataContextValue,
   currentTheme = 'light', // Default to light for consistency
-  // setCurrentTheme is removed as ThemeProvider manages its own state
 }: AllTheProvidersProps) => {
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Use the actual ThemeProvider, passing only necessary props */}
-      {/* Use the actual ThemeProvider */}
       <ThemeProvider defaultTheme={currentTheme}>
         <MockUserProvider>
           <MockVisualizationProvider>
@@ -164,24 +159,13 @@ const AllTheProviders = ({
 };
 
 /**
- * Custom render function that wraps the component under test with all necessary providers,
- * allowing custom configuration per test.
+ * Extended render options to include our custom provider options
  */
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   initialRoute?: string;
   queryClient?: QueryClient;
   mockDataContext?: typeof mockDataContextValue;
-}
-
-/**
- * Custom render function that wraps the component under test with all necessary providers,
- * allowing custom configuration per test.
- */
-interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {
-  initialRoute?: string;
-  queryClient?: QueryClient;
-  mockDataContext?: typeof mockDataContextValue;
-  defaultTheme?: ThemeMode; // Use ThemeMode type
+  defaultTheme?: ThemeMode;
 }
 
 /**
@@ -193,36 +177,33 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
     initialRoute = '/',
     queryClient = createTestQueryClient(),
     mockDataContext = mockDataContextValue,
-    defaultTheme = 'light', // Default to light if not provided
+    defaultTheme = 'light',
     ...renderOptions
   } = options;
 
-  // Define the wrapper directly using AllTheProviders, passing the defaultTheme
+  // Define the wrapper directly using AllTheProviders
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <AllTheProviders
       initialRoute={initialRoute}
       queryClient={queryClient}
       mockDataContext={mockDataContext}
-      currentTheme={defaultTheme} // Pass defaultTheme to AllTheProviders
+      currentTheme={defaultTheme}
     >
       {children}
     </AllTheProviders>
   );
 
-  // Render with the simplified wrapper
-  // Removed duplicate renderResult declaration
-
   // Store the theme context value to return it
-  let themeContextValue: ThemeProviderState | undefined; // Use type imported from provider
+  let themeContextValue: ThemeProviderState | undefined;
 
   // Create a consumer component to capture the context value
   const ContextConsumer = () => {
     themeContextValue = useTheme();
-    return null; // This component doesn't render anything itself
+    return null;
   };
 
   // Render with the wrapper and the consumer
-  const renderResult = render(
+  const renderResult = testingLibraryRender(
     <>
       {ui}
       <ContextConsumer />
@@ -236,19 +217,6 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
       'ThemeContext value was not captured. Ensure ThemeProvider is correctly set up.'
     );
   }
-
-  console.log('[DEBUG renderWithProviders] Returning helpers:', {
-    setTheme: !!themeContextValue.setTheme,
-    isDarkMode: typeof (() => themeContextValue?.theme === 'dark'),
-    getCurrentThemeMode: typeof (() => themeContextValue?.theme),
-    getCurrentAppliedTheme: typeof (() => themeContextValue?.theme),
-    enableDarkMode: typeof (() => {
-      /* ... */
-    }),
-    disableDarkMode: typeof (() => {
-      /* ... */
-    }),
-  });
 
   // Return the standard render result plus theme helper functions
   return {
@@ -278,8 +246,8 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
   };
 };
 
-// Simplified render that doesn't include theme helpers
-export function render(ui: ReactElement, options: ExtendedRenderOptions = {}): ReturnType<typeof render> {
+// Basic render function that doesn't include theme helpers
+export function render(ui: ReactElement, options: ExtendedRenderOptions = {}) {
   const {
     initialRoute = '/',
     queryClient = createTestQueryClient(),
@@ -300,7 +268,7 @@ export function render(ui: ReactElement, options: ExtendedRenderOptions = {}): R
     </AllTheProviders>
   );
 
-  return render(ui, { wrapper: Wrapper, ...renderOptions });
+  return testingLibraryRender(ui, { wrapper: Wrapper, ...renderOptions });
 }
 
 // Re-export testing-library utilities for convenience
