@@ -11,10 +11,10 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 // Import the relevant contexts and types
-import DataContext from '../application/contexts/DataContext';
+import DataContext from '@application/contexts/DataContext';
 // Removed incorrect ThemeContext imports
-import UserContext from '../application/contexts/UserContext';
-import VisualizationContext from '../application/contexts/VisualizationContext';
+import UserContext from '@application/contexts/UserContext';
+import VisualizationContext from '@application/contexts/VisualizationContext';
 
 // Default mock data context for tests
 const mockDataContextValue = {
@@ -40,13 +40,13 @@ function createTestQueryClient() {
   });
 }
 // MockThemeProvider removed - Use the actual ThemeProvider from the application
-import type { ThemeMode } from '../presentation/providers/ThemeProvider';
+import type { ThemeMode } from '@presentation/providers/ThemeProvider';
 import {
   ThemeProvider,
   useTheme,
   ThemeProviderContext,
   type ThemeProviderState,
-} from '../presentation/providers/ThemeProvider'; // Import necessary items from provider
+} from '@presentation/providers/ThemeProvider'; // Import necessary items from provider
 
 /**
  * Mock implementation of UserProvider for tests
@@ -250,31 +250,58 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
     }),
   });
 
-  // Return standard render result plus theme context helpers
+  // Return the standard render result plus theme helper functions
   return {
     ...renderResult,
-    setTheme: themeContextValue.setTheme,
-    isDarkMode: () => themeContextValue?.theme === 'dark', // Helper based on context
-    getCurrentThemeMode: () => themeContextValue?.theme, // Helper for selected mode (uses 'theme' property)
-    getCurrentAppliedTheme: () => themeContextValue?.theme, // Helper for applied theme
-    // Add helpers to directly manipulate theme for testing purposes
+    // Helper function to get current theme
+    getCurrentTheme: () => themeContextValue?.theme,
+    // Helper to directly set theme value
+    setTheme: (theme: ThemeMode) => {
+      act(() => {
+        themeContextValue?.setTheme(theme);
+      });
+    },
+    // Helper to enable dark mode
     enableDarkMode: () => {
-      console.log('[DEBUG enableDarkMode] Calling setTheme("dark")');
-      // Use act to wrap state update
       act(() => {
         themeContextValue?.setTheme('dark');
       });
-      // Note: DOM class update happens via ThemeProvider's useEffect
-      // these helpers primarily affect the DOM for class assertions.
     },
+    // Helper to disable dark mode (set to light)
     disableDarkMode: () => {
-      console.log('[DEBUG disableDarkMode] Calling setTheme("light")');
       act(() => {
         themeContextValue?.setTheme('light');
       });
     },
+    // Helper to check if dark mode is active
+    isDarkMode: () => themeContextValue?.theme === 'dark',
   };
 };
+
+// Simplified render that doesn't include theme helpers
+export function render(ui: ReactElement, options: ExtendedRenderOptions = {}): ReturnType<typeof render> {
+  const {
+    initialRoute = '/',
+    queryClient = createTestQueryClient(),
+    mockDataContext = mockDataContextValue,
+    defaultTheme = 'light',
+    ...renderOptions
+  } = options;
+
+  // Simplified wrapper with all providers but no theme consumer
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
+    <AllTheProviders
+      initialRoute={initialRoute}
+      queryClient={queryClient}
+      mockDataContext={mockDataContext}
+      currentTheme={defaultTheme}
+    >
+      {children}
+    </AllTheProviders>
+  );
+
+  return render(ui, { wrapper: Wrapper, ...renderOptions });
+}
 
 // Re-export testing-library utilities for convenience
 export * from '@testing-library/react';
