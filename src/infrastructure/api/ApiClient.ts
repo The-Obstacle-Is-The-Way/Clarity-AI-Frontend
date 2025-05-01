@@ -13,6 +13,8 @@
 
 import { ApiResponse } from './types';
 import { ApiProxyService } from './ApiProxyService';
+import { toast } from 'react-toastify'; // Import toast
+import NProgress from 'nprogress'; // Import NProgress
 
 // Request options type
 export interface RequestOptions extends RequestInit {
@@ -24,6 +26,21 @@ export type ResponseInterceptor = (
   response: Response,
   requestOptions: RequestOptions
 ) => Promise<any>;
+
+// Custom Error class for HTTP errors
+class HttpError extends Error {
+  status: number;
+  data: any;
+
+  constructor(message: string, status: number, data: any = null) {
+    super(message);
+    this.name = 'HttpError';
+    this.status = status;
+    this.data = data;
+    // Ensure the prototype chain is correct
+    Object.setPrototypeOf(this, HttpError.prototype);
+  }
+}
 
 /**
  * ApiClient class for making HTTP requests
@@ -146,6 +163,8 @@ export class ApiClient {
    * Make a fetch request with the configured baseUrl and headers
    */
   async fetch<T = any>(url: string, options: RequestOptions = {}): Promise<T> {
+    let response: Response | null = null;
+    NProgress.start(); // Start progress bar
     try {
       // Construct full URL
       const fullUrl = this.createUrl(url, options.params);
@@ -163,21 +182,35 @@ export class ApiClient {
         headers,
       };
 
-      // Always use the globally available fetch (provided by jsdom/node/undici)
-      // MSW will intercept this call in the test environment.
-      const response = await fetch(fullUrl, requestOptions);
+      response = await fetch(fullUrl, requestOptions);
 
-      // Process through interceptors
+      // Check for HTTP errors (status codes >= 400)
+      if (!response.ok) {
+        let errorData: any = null;
+        let errorMessage = `HTTP error! Status: ${response.status}`;
+        try {
+          // Try to parse response body for more specific error details
+          errorData = await response.json();
+          // Use backend error detail if available (common in FastAPI)
+          errorMessage = errorData?.detail || errorData?.message || errorMessage;
+        } catch (jsonError) {
+          // Response body wasn't valid JSON or empty
+          console.debug('Could not parse error response body as JSON', jsonError);
+        }
+        // Throw custom error
+        throw new HttpError(errorMessage, response.status, errorData);
+      }
+
+      // Process successful response through interceptors
       let processedResponse = response;
       for (const interceptor of this.responseInterceptors) {
         processedResponse = await interceptor(processedResponse, options);
+        // Note: Interceptors could potentially modify the response or throw errors
       }
 
-      // Handle JSON responses
+      // Handle JSON responses from successful requests
       if (processedResponse.headers.get('Content-Type')?.includes('application/json')) {
         const rawData = await processedResponse.json();
-
-        // Map and standardize response
         const mapped = ApiProxyService.mapResponseData(url, rawData);
         const standardized = ApiProxyService.standardizeResponse(mapped);
         return standardized.data as T;
@@ -186,22 +219,58 @@ export class ApiClient {
       // Handle text responses
       if (processedResponse.headers.get('Content-Type')?.includes('text/')) {
         const rawText = await processedResponse.text();
-
-        // Standardize text response
         const mappedText = ApiProxyService.mapResponseData(url, rawText);
         const standardizedText = ApiProxyService.standardizeResponse(mappedText);
         return standardizedText.data as unknown as T;
       }
 
-      // Return other response types as is
+      // Handle No Content (204) response
+      if (processedResponse.status === 204) {
+        return undefined as unknown as T; // Return undefined or null based on expected type
+      }
+
+      // Return other response types as is (may need refinement)
+      console.warn(`[ApiClient] Unhandled successful response type for ${url}`);
       const standardized = ApiProxyService.standardizeResponse(processedResponse as any);
       return standardized.data as unknown as T;
-    } catch (error: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */) {
-      // Add isAxiosError property for compatibility with axios error handling
-      if (error.response) {
-        error.isAxiosError = true;
+
+    } catch (error: any) {
+      console.error('[ApiClient] Fetch error:', error);
+
+      // Show user-friendly toast notification
+      if (error instanceof HttpError) {
+        // Handle specific HTTP errors
+        if (error.status === 401) {
+          // Special handling for unauthorized? AuthContext usually handles redirects.
+          toast.error(error.message || 'Authentication failed. Please log in again.');
+        } else if (error.status === 403) {
+          toast.error(error.message || 'Permission denied.');
+        } else if (error.status === 404) {
+          toast.error(error.message || 'Resource not found.');
+        } else if (error.status >= 500) {
+          toast.error(error.message || 'Server error. Please try again later.');
+        } else {
+          // General client-side error (4xx)
+          toast.warning(error.message || `Client error (${error.status}).`);
+        }
+      } else if (error instanceof TypeError) {
+        // Network error (fetch itself failed)
+        toast.error('Network error. Please check your connection and try again.');
+      } else {
+        // Other unexpected JavaScript errors during fetch/processing
+        toast.error('An unexpected error occurred. Please try again.');
       }
+
+      // Add compatibility property if desired by error handling logic elsewhere
+      if (response) {
+        error.response = response; // Attach response if available
+        error.isAxiosError = true; // Mimic axios property if needed
+      }
+
+      // Re-throw the error so calling code (e.g., React Query, AuthContext) can handle it
       throw error;
+    } finally {
+      NProgress.done(); // Ensure progress bar finishes regardless of success/error
     }
   }
 
