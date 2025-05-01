@@ -53,7 +53,7 @@ const PatientDetailPage: React.FC = () => {
         onSuccess: () => {
           setIsEditing(false);
         },
-      },
+      }
     );
   };
 
@@ -190,7 +190,7 @@ const PatientDetailPage: React.FC = () => {
       {renderContent()}
 
       {!isEditing && patientId && (
-         <ClinicalRecordList patientId={patientId} />
+        <ClinicalRecordList patientId={patientId} />
       )}
 
       <ConfirmDialog
