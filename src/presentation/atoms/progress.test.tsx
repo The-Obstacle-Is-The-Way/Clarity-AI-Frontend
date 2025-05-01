@@ -1,43 +1,11 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { renderWithProviders } from '../../test/test-utils.unified';
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified';
 import { Progress } from './progress';
-import { vi } from 'vitest';
 
-// Mock Radix UI Progress components
-vi.mock('@radix-ui/react-progress', () => {
-  type RootProps = {
-    children: React.ReactNode;
-    className?: string;
-    value?: number;
-    [key: string]: any;
-  };
-
-  type IndicatorProps = {
-    className?: string;
-    style?: React.CSSProperties;
-    [key: string]: any;
-  };
-
-  const Root = React.forwardRef<HTMLDivElement, RootProps>(
-    ({ children, className, ...props }, ref) => (
-      <div data-testid="progress-root" ref={ref} className={className} {...props}>
-        {children}
-      </div>
-    )
-  );
-  Root.displayName = 'ProgressRoot';
-
-  const Indicator = ({ className, style, ...props }: IndicatorProps) => (
-    <div data-testid="progress-indicator" className={className} style={style} {...props} />
-  );
-
-  return {
-    Root,
-    Indicator,
-  };
-});
+// We don't need to mock Radix UI components since our Progress component doesn't use them
+// The component uses a direct div implementation instead
 
 describe('Progress Component', () => {
   it('renders with default props', () => {
@@ -51,15 +19,12 @@ describe('Progress Component', () => {
     expect(progress).toHaveClass('h-2');
     expect(progress).toHaveClass('w-full');
     expect(progress).toHaveClass('rounded-full');
-    expect(progress).toHaveClass('bg-primary/20');
+    expect(progress).toHaveClass('bg-muted');
 
-    // Check that indicator is rendered
-    const indicator = screen.getByTestId('progress-indicator');
-    expect(indicator).toBeInTheDocument();
-    expect(indicator).toHaveClass('bg-primary');
-
-    // With no value specified, the indicator should default to 0
-    expect(indicator).toHaveStyle({ transform: 'translateX(-100%)' });
+    // No indicator should be present when no value is provided
+    // The component only renders the indicator when percentage is not null
+    const indicator = progress.querySelector('div');
+    expect(indicator).toBeNull();
   });
 
   it('applies custom className to progress bar', () => {
@@ -73,15 +38,20 @@ describe('Progress Component', () => {
   it('renders with 50% value correctly', () => {
     renderWithProviders(<Progress value={50} data-testid="progress" />);
 
-    const indicator = screen.getByTestId('progress-indicator');
-    expect(indicator).toHaveStyle({ transform: 'translateX(-50%)' });
+    const progress = screen.getByTestId('progress');
+    const indicator = progress.querySelector('div');
+    expect(indicator).toBeInTheDocument();
+    expect(indicator).toHaveClass('bg-primary');
+    expect(indicator).toHaveStyle({ width: '50%' });
   });
 
   it('renders with 100% value correctly', () => {
     renderWithProviders(<Progress value={100} data-testid="progress" />);
 
-    const indicator = screen.getByTestId('progress-indicator');
-    expect(indicator).toHaveStyle({ transform: 'translateX(-0%)' });
+    const progress = screen.getByTestId('progress');
+    const indicator = progress.querySelector('div');
+    expect(indicator).toBeInTheDocument();
+    expect(indicator).toHaveStyle({ width: '100%' });
   });
 
   it('forwards ref to the progress element', () => {
@@ -105,14 +75,18 @@ describe('Progress Component', () => {
   it('renders with negative values as 0%', () => {
     // Test negative values (should be treated as 0)
     renderWithProviders(<Progress value={-20} data-testid="progress-negative" />);
-    const indicatorNegative = screen.getByTestId('progress-indicator');
-    expect(indicatorNegative).toHaveStyle({ transform: 'translateX(-120%)' });
+    const progress = screen.getByTestId('progress-negative');
+    const indicator = progress.querySelector('div');
+    expect(indicator).toBeInTheDocument();
+    expect(indicator).toHaveStyle({ width: '0%' });
   });
 
   it('renders with values over 100% as 100%', () => {
     // Test values over 100
     renderWithProviders(<Progress value={120} data-testid="progress-over" />);
-    const indicatorOver = screen.getByTestId('progress-indicator');
-    expect(indicatorOver).toHaveStyle({ transform: 'translateX(--20%)' });
+    const progress = screen.getByTestId('progress-over');
+    const indicator = progress.querySelector('div');
+    expect(indicator).toBeInTheDocument();
+    expect(indicator).toHaveStyle({ width: '100%' });
   });
 });
