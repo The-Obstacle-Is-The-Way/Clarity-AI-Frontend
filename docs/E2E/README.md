@@ -126,13 +126,13 @@ This checklist details the explicit, iterative steps required for the frontend i
     *   [ ] **Testing:** Unit/integration tests. *Status: Pending.*
 *   [ ] **12. View Single Clinical Record Detail:** (If applicable) *Status: In Progress*
     *   [ ] **Verify API:** Endpoint like `GET /api/records/{recordId}` or `GET /api/patients/{patientId}/records/{recordId}`. **NEEDS VERIFICATION.**
-    *   [ ] **API Call/State/UI:** Implement similar to Patient Detail.
+    *   [ ] **API Call/State/UI:** Implement similar to Patient Detail. *Status: API Call placeholder added (`getClinicalRecordById`)*.
     *   [ ] **HIPAA:** Critical focus on data display rules.
 
 **Domain: Analytics - XGBoost Predictive Model**
 
-*   [ ] **13. Run XGBoost Prediction:**
-    *   [ ] **Verify API:** Confirm endpoint (e.g., `POST /api/analytics/xgboost/predict`), required input data schema, response schema.
+*   [ ] **13. Run XGBoost Prediction:** *Status: In Progress*
+    *   [ ] **Verify API:** Confirm endpoint (e.g., `POST /api/analytics/xgboost/predict`), required input data schema, response schema. **NEEDS VERIFICATION.**
     *   [ ] **API Call:** Implement `runXGBoostPrediction` in `src/infrastructure/api/analyticsService.ts`.
     *   [ ] **State:** `useMutation` hook (`src/application/hooks/useXGBoostPrediction.ts`). Handle potentially long-running requests (polling or WebSockets if backend supports).
     *   [ ] **UI:**
