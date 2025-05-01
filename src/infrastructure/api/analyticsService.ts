@@ -3,9 +3,11 @@ import { apiClient } from './apiClient';
 import type {
   XGBoostInput,
   XGBoostPrediction,
+} from '@domain/analytics/xgboostTypes';
+import type {
   SentimentInput,
   SentimentResult,
-} from '@domain/analytics/xgboostTypes';
+} from '@domain/analytics/sentimentTypes';
 
 /**
  * Runs an XGBoost prediction via the API.
