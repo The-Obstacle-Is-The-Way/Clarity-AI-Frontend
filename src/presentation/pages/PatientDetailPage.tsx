@@ -1,6 +1,6 @@
 // src/presentation/pages/PatientDetailPage.tsx
 import React, { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { usePatientDetail } from '@application/hooks/usePatientDetail';
 import { useUpdatePatient } from '@application/hooks/useUpdatePatient';
 import { useDeletePatient } from '@application/hooks/useDeletePatient';
@@ -23,7 +23,6 @@ const PatientDetailPage: React.FC = () => {
   const { patientId } = useParams<{ patientId: string }>();
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmDeleteDialogOpen, setIsConfirmDeleteDialogOpen] = useState(false);
-  const navigate = useNavigate();
 
   const { data: patient, error: fetchError, isLoading: isLoadingDetail, isError: isFetchError } = usePatientDetail(patientId);
   const { mutate: updatePatient, isLoading: isUpdating, error: updateError, isError: isUpdateError } = useUpdatePatient();
