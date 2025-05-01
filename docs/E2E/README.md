@@ -1,5 +1,7 @@
 # End-to-End (E2E) Integration: Frontend <> Backend
 
+**Workspace Note:** This frontend project (`Clarity-AI-Frontend`) resides alongside its corresponding backend (`Clarity-AI-Backend`) within the `/Users/ray/Desktop/CLARITY-DIGITAL-TWIN` workspace. The AI development agent possesses filesystem access to both directories, enabling cross-repository checks and operations when necessary.
+
 This document outlines the necessary steps to fully integrate the `Clarity-AI-Frontend` with the `Clarity-AI-Backend`, transforming the frontend into a comprehensive, premium wrapper for all backend functionalities.
 
 ## Current State Analysis
@@ -81,16 +83,16 @@ This checklist details the explicit, iterative steps required for the frontend i
         *   `src/presentation/molecules/PaginationControl.tsx`.
         *   `src/presentation/molecules/SearchBar.tsx`.
     *   [ ] **Testing:** Unit tests for components, integration test for API call/hook.
-*   [ ] **7. Patient Detail View:**
-    *   [ ] **Verify API:** Confirm endpoint for fetching a single patient (e.g., `GET /api/patients/{patientId}`).
-    *   [ ] **API Call:** Implement `getPatientById` in `patientService.ts`.
-    *   [ ] **State:** Use `useQuery` (`src/application/hooks/usePatientDetail.ts`).
+*   [ ] **7. Patient Detail View:** *Status: In Progress*
+    *   [x] **Verify API:** Confirm endpoint for fetching a single patient (e.g., `GET /api/patients/{patientId}`). *Status: Assumed `/patients/{patientId}`.*
+    *   [x] **API Call:** Implement `getPatientById` in `patientService.ts`. *Status: Verified.*
+    *   [x] **State:** Use `useQuery` (`src/application/hooks/usePatientDetail.ts`). *Status: Implemented.*
     *   [ ] **UI:**
-        *   `src/presentation/pages/PatientDetailPage.tsx`.
-        *   `src/presentation/organisms/PatientDetailCard.tsx`.
-        *   Handle loading and error states explicitly.
-        *   **HIPAA:** Ensure sensitive fields are masked/redacted appropriately (`src/presentation/atoms/MaskedField.tsx`).
-    *   [ ] **Routing:** Set up route `/patients/:patientId`.
+        *   [x] `src/presentation/pages/PatientDetailPage.tsx`. *Status: Implemented.*
+        *   [x] `src/presentation/organisms/PatientDetailCard.tsx`. *Status: Implemented.*
+        *   [x] Handle loading and error states explicitly. *Status: Implemented.*
+        *   [ ] **HIPAA:** Ensure sensitive fields are masked/redacted appropriately (`src/presentation/atoms/MaskedField.tsx`). *Status: Deferred.*
+    *   [x] **Routing:** Set up route `/patients/:patientId`. *Status: Implemented.*
     *   [ ] **Testing:** Unit/integration tests.
 *   [ ] **8. Patient Creation:**
     *   [ ] **Verify API:** Confirm endpoint for creating a patient (e.g., `POST /api/patients`, check request body schema).

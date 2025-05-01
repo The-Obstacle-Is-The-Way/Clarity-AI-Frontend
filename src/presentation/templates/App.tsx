@@ -12,6 +12,7 @@ import LoginPage from '@presentation/pages/LoginPage';
 import NotFound from '@presentation/pages/NotFound';
 import ProfilePage from '@presentation/pages/ProfilePage';
 import PatientListPage from '@presentation/pages/PatientListPage';
+import PatientDetailPage from '@presentation/pages/PatientDetailPage';
 
 // Components
 import NeuralControlPanel from '@presentation/organisms/NeuralControlPanel';
@@ -79,6 +80,7 @@ const App: React.FC = () => {
 
                   {/* Patient Management Routes */}
                   <Route path="/patients" element={<PatientListPage />} />
+                  <Route path="/patients/:patientId" element={<PatientDetailPage />} />
 
                   {/* Brain Visualization Routes */}
                   <Route path="/brain-visualization/demo" element={<BrainVisualizationPage />} />

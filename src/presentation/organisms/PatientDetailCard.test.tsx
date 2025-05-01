@@ -1,0 +1,74 @@
+// src/presentation/organisms/PatientDetailCard.test.tsx
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import PatientDetailCard from './PatientDetailCard';
+import type { Patient } from '@domain/patients/patientTypes';
+
+// Mock atoms if necessary (e.g., Badge)
+vi.mock('@presentation/atoms/badge', () => ({
+  Badge: ({ children, variant }: { children: React.ReactNode; variant?: string }) => (
+    <span data-testid="badge" data-variant={variant}>{children}</span>
+  ),
+}));
+
+describe('PatientDetailCard', () => {
+  const mockPatient: Patient = {
+    id: 'test-patient-001',
+    first_name: 'Alice',
+    last_name: 'Wonderland',
+    date_of_birth: '1988-04-01',
+    status: 'active',
+    created_at: '2023-03-15T09:30:00Z',
+    updated_at: '2023-10-20T14:00:00Z',
+  };
+
+  const mockPatientMinimal: Patient = {
+    id: 'test-patient-002',
+    first_name: 'Bob',
+    last_name: 'N/A', // Example minimal data
+    date_of_birth: '1975-12-25',
+    status: 'inactive',
+    created_at: '2022-11-01T08:00:00Z',
+    updated_at: '2022-11-01T08:00:00Z',
+  };
+
+  it('should render all provided patient details correctly', () => {
+    render(<PatientDetailCard patient={mockPatient} />);
+
+    // Check Title and Description
+    expect(screen.getByRole('heading', { name: /Alice Wonderland/i })).toBeInTheDocument();
+    expect(screen.getByText(`Patient ID: ${mockPatient.id}`)).toBeInTheDocument();
+
+    // Check individual detail items
+    expect(screen.getByText('First Name').nextSibling).toHaveTextContent('Alice');
+    expect(screen.getByText('Last Name').nextSibling).toHaveTextContent('Wonderland');
+    expect(screen.getByText('Date of Birth').nextSibling).toHaveTextContent('1988-04-01');
+    expect(screen.getByText('Registered On').nextSibling).toHaveTextContent(new Date(mockPatient.created_at).toLocaleDateString());
+    expect(screen.getByText('Last Updated').nextSibling).toHaveTextContent(new Date(mockPatient.updated_at).toLocaleString());
+
+    // Check status Badge
+    const statusElement = screen.getByText('Status').nextSibling?.firstChild;
+    expect(statusElement).toHaveTextContent('active');
+    expect(statusElement).toHaveAttribute('data-testid', 'badge');
+    expect(statusElement).toHaveAttribute('data-variant', 'default'); // Assuming active = default
+  });
+
+  it('should handle missing or N/A values gracefully', () => {
+    render(<PatientDetailCard patient={mockPatientMinimal} />);
+
+    expect(screen.getByRole('heading', { name: /Bob N\/A/i })).toBeInTheDocument();
+    expect(screen.getByText(`Patient ID: ${mockPatientMinimal.id}`)).toBeInTheDocument();
+
+    expect(screen.getByText('First Name').nextSibling).toHaveTextContent('Bob');
+    expect(screen.getByText('Last Name').nextSibling).toHaveTextContent('N/A'); // Check explicit N/A
+
+    // Check status Badge for inactive
+     const statusElement = screen.getByText('Status').nextSibling?.firstChild;
+    expect(statusElement).toHaveTextContent('inactive');
+    expect(statusElement).toHaveAttribute('data-variant', 'secondary'); // Assuming inactive = secondary
+
+  });
+
+  // Add more tests if complex logic or masking is added later
+});

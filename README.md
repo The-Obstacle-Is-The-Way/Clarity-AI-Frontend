@@ -148,6 +148,8 @@ Real-time visualization of biometric data:
 
 ## Development
 
+**Workspace Note:** This frontend project (`Clarity-AI-Frontend`) resides alongside its corresponding backend (`Clarity-AI-Backend`) within the `/Users/ray/Desktop/CLARITY-DIGITAL-TWIN` workspace. The AI development agent possesses filesystem access to both directories, enabling cross-repository checks and operations when necessary.
+
 ### Requirements
 
 - Node.js 16+
