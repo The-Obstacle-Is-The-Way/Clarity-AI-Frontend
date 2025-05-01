@@ -1,6 +1,6 @@
 # Configuration Directory
 
-This directory contains configuration files for various tools and environments used in the Novamind Frontend project.
+This directory contains configuration files for various tools and environments used in the Clarity-AI Psychiatry Digital Twin frontend project.
 
 ## Structure
 
