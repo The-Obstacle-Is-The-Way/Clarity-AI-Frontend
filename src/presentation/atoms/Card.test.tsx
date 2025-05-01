@@ -14,11 +14,11 @@ describe('Card Components', () => {
       expect(card).toHaveTextContent('Card Content');
 
       // Check default classes
-      expect(card).toHaveClass('rounded-xl');
+      expect(card).toHaveClass('rounded-lg');
       expect(card).toHaveClass('border');
       expect(card).toHaveClass('bg-card');
       expect(card).toHaveClass('text-card-foreground');
-      expect(card).toHaveClass('shadow');
+      expect(card).toHaveClass('shadow-sm');
     });
 
     it('accepts and applies custom className', () => {
@@ -30,7 +30,7 @@ describe('Card Components', () => {
 
       const card = screen.getByTestId('card');
       expect(card).toHaveClass('custom-class');
-      expect(card).toHaveClass('rounded-xl'); // Should still have default classes
+      expect(card).toHaveClass('rounded-lg'); // Should still have default classes
     });
 
     it('forwards additional props', () => {
