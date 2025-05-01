@@ -60,13 +60,13 @@ This checklist details the explicit, iterative steps required for the frontend i
 
 **Domain: User Management (Basic)**
 
-*   [ ] **5. User Profile:**
-    *   [ ] **Verify API:** Confirm endpoint for fetching current user details (e.g., `GET /api/users/me` or included in login response).
-    *   [ ] **API Call:** Implement `getUserProfile` in `src/infrastructure/api/userService.ts`.
-    *   [ ] **State:** Integrate profile data into `AuthContext` or a dedicated user context/store.
+*   [ ] **5. User Profile:** *Status: In Progress*
+    *   [x] **Verify API:** Confirm endpoint for fetching current user details (e.g., `GET /api/users/me` or included in login response). *Status: Confirmed `/api/v1/auth/me` used by `AuthContext`.*
+    *   [ ] **API Call:** Implement `getUserProfile` in `src/infrastructure/api/userService.ts`. *Status: Deferred, using `AuthContext` directly for now.*
+    *   [x] **State:** Integrate profile data into `AuthContext` or a dedicated user context/store. *Status: Handled by existing `AuthContext`.*
     *   [ ] **UI:**
-        *   `src/presentation/pages/ProfilePage.tsx` (Display user info).
-        *   Potentially `src/presentation/organisms/ProfileForm.tsx` (If profile updates are allowed, verify `PUT /api/users/me` endpoint).
+        *   [x] `src/presentation/pages/ProfilePage.tsx` (Display user info).
+        *   [ ] Potentially `src/presentation/organisms/ProfileForm.tsx` (If profile updates are allowed, verify `PUT /api/users/me` endpoint). *Status: Read-only page created.*
     *   [ ] **Testing:** Unit tests for components, integration test for API call.
 
 **Domain: Patient Data Management**

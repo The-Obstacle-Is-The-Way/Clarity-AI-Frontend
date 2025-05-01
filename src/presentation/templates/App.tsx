@@ -10,6 +10,7 @@ import Dashboard from '@presentation/pages/Dashboard';
 import BrainVisualizationPage from '@presentation/pages/BrainVisualizationPage';
 import LoginPage from '@presentation/pages/LoginPage';
 import NotFound from '@presentation/pages/NotFound';
+import ProfilePage from '@presentation/pages/ProfilePage';
 
 // Components
 import NeuralControlPanel from '@presentation/organisms/NeuralControlPanel';
@@ -73,6 +74,7 @@ const App: React.FC = () => {
                 <Route element={<ProtectedRoute />}>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/profile" element={<ProfilePage />} />
 
                   {/* Brain Visualization Routes */}
                   <Route path="/brain-visualization/demo" element={<BrainVisualizationPage />} />

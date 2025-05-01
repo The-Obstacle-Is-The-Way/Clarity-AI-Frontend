@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react';
 import { useAuth } from '@application/context/AuthContext';
 import { Button } from '@presentation/atoms/button'; // Assuming Button atom exists
 import { LogOut } from 'lucide-react'; // Using lucide icon
+import { Link } from 'react-router-dom';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -38,7 +39,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </a>
             {/* Placeholder for Nav */}
             <nav className="flex items-center gap-6 text-sm">
-              {/* Add NavLinks here later */}
+              <Link to="/dashboard" className="transition-colors hover:text-foreground/80 text-foreground/60">Dashboard</Link>
+              <Link to="/profile" className="transition-colors hover:text-foreground/80 text-foreground/60">Profile</Link>
+              {/* Add more NavLinks here later */}
             </nav>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-4">
