@@ -13,6 +13,7 @@ import NotFound from '@presentation/pages/NotFound';
 import ProfilePage from '@presentation/pages/ProfilePage';
 import PatientListPage from '@presentation/pages/PatientListPage';
 import PatientDetailPage from '@presentation/pages/PatientDetailPage';
+import CreatePatientPage from '@presentation/pages/CreatePatientPage';
 
 // Components
 import NeuralControlPanel from '@presentation/organisms/NeuralControlPanel';
@@ -80,6 +81,8 @@ const App: React.FC = () => {
 
                   {/* Patient Management Routes */}
                   <Route path="/patients" element={<PatientListPage />} />
+                  {/* IMPORTANT: Route for 'new' must come BEFORE the dynamic ':patientId' route */}
+                  <Route path="/patients/new" element={<CreatePatientPage />} />
                   <Route path="/patients/:patientId" element={<PatientDetailPage />} />
 
                   {/* Brain Visualization Routes */}

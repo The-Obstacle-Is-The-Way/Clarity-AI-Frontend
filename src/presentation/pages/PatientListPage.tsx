@@ -5,7 +5,8 @@ import PatientTable from '@presentation/organisms/PatientTable';
 import { Button } from '@presentation/atoms/button'; // Assuming Button atom
 import { Input } from '@presentation/atoms/input'; // Assuming Input atom
 import { Alert, AlertDescription, AlertTitle } from "@presentation/atoms/alert"
-import { Terminal } from 'lucide-react';
+import { Terminal, PlusCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 /**
  * Renders the page displaying a list of patients.
@@ -46,7 +47,15 @@ const PatientListPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-bold mb-6">Patients</h1>
+       <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold">Patients</h1>
+            <Button asChild>
+                <Link to="/patients/new">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Create Patient
+                </Link>
+            </Button>
+       </div>
 
       {/* Search Input */}
       <div className="mb-4 max-w-sm">

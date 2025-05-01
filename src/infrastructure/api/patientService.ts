@@ -41,6 +41,23 @@ export const getPatients = async (params: {
 };
 
 /**
+ * Creates a new patient via the API.
+ *
+ * @param {Omit<Patient, 'id' | 'created_at' | 'updated_at'>} patientData - The data for the new patient.
+ * @returns {Promise<Patient>} A promise resolving to the newly created patient data (including ID and timestamps).
+ */
+export const createPatient = async (patientData: Omit<Patient, 'id' | 'created_at' | 'updated_at'>): Promise<Patient> => {
+  try {
+    // Adjust endpoint as needed
+    const response = await apiClient.post<Patient>('/patients', patientData);
+    return response;
+  } catch (error) {
+    console.error('Failed to create patient:', error);
+    throw error;
+  }
+};
+
+/**
  * Fetches a single patient by their ID.
  *
  * @param {string} patientId - The ID of the patient to fetch.
@@ -60,7 +77,6 @@ export const getPatientById = async (patientId: string): Promise<Patient> => {
   }
 };
 
-// Add functions for createPatient, updatePatient, deletePatient later
-// export const createPatient = async (patientData: Omit<Patient, 'id' | 'created_at' | 'updated_at'>): Promise<Patient> => { ... };
+// Add functions for updatePatient, deletePatient later
 // export const updatePatient = async (patientId: string, patientData: Partial<Patient>): Promise<Patient> => { ... };
 // export const deletePatient = async (patientId: string): Promise<void> => { ... };
