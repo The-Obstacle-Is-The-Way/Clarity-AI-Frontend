@@ -150,19 +150,16 @@ export class ApiClient {
       // Construct full URL
       const fullUrl = this.createUrl(url, options.params);
 
-      // Add auth token if available
+      // Combine headers
       const headers: Record<string, string> = {
         ...this.headers,
         ...((options.headers as Record<string, string>) || {}),
       };
 
-      if (this.authToken) {
-        headers['Authorization'] = `Bearer ${this.authToken}`;
-      }
-
       // Create request options
       const requestOptions: RequestInit = {
         ...options,
+        credentials: 'include',
         headers,
       };
 

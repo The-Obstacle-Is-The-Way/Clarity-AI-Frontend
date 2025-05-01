@@ -1,124 +1,52 @@
-import { apiClient } from '@infrastructure/api/ApiGateway';
+import { apiClient } from './ApiGateway';
 import type { User } from '@application/context/AuthContext';
+
+// Define the expected structure for login credentials matching backend
+interface LoginCredentials {
+  username: string;
+  password: string;
+  remember_me?: boolean;
+}
 
 /**
  * Authentication Service
  *
- * Service for handling authentication-related API interactions.
- * Provides methods for login, logout, token refresh, and user operations
- * using the API Gateway.
+ * Provides methods for interacting with the backend authentication endpoints.
+ * Uses the central apiClient configured for HttpOnly cookie handling.
  */
-export class AuthService {
+export const authService = {
   /**
-   * Login with email and password
-   * @param email - User email
-   * @param password - User password
-   * @returns User data and token
+   * Attempts to log in the user.
+   * The backend handles setting HttpOnly cookies on success.
+   * @param credentials - The user's login credentials.
+   * @returns Promise<void> - Resolves on successful login (status 2xx), rejects otherwise.
    */
-  static async login(email: string, password: string): Promise<{ user: User; token: string }> {
-    try {
-      const response = await apiClient.login(email, password);
-      return response;
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    }
-  }
+  login: async (credentials: LoginCredentials): Promise<void> => {
+    // The actual token data is in the cookie, we just need the call to succeed.
+    // No need to return the body of the /login response.
+    await apiClient.post<void>('/api/v1/auth/login', credentials);
+  },
 
   /**
-   * Logout the current user
+   * Logs out the user.
+   * The backend handles clearing HttpOnly cookies.
+   * @returns Promise<void> - Resolves on successful logout (status 2xx), rejects otherwise.
    */
-  static async logout(): Promise<void> {
-    try {
-      // Clear auth token from the API client
-      apiClient.clearAuthToken();
-      
-      // Additional logout functionality can be added here
-      // such as invalidating the token on the server
-    } catch (error) {
-      console.error('Logout failed:', error);
-      throw error;
-    }
-  }
+  logout: async (): Promise<void> => {
+    await apiClient.post<void>('/api/v1/auth/logout');
+  },
 
   /**
-   * Refresh the authentication token
-   * @param refreshToken - Current refresh token
-   * @returns New access token and refresh token
+   * Fetches the profile of the currently authenticated user.
+   * Relies on the browser automatically sending the auth cookie.
+   * @returns Promise<User> - The user profile data.
    */
-  static async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
-    try {
-      const response = await apiClient.post<{ accessToken: string; refreshToken: string }>(
-        '/auth/refresh-token',
-        { refreshToken }
-      );
-      return response;
-    } catch (error) {
-      console.error('Token refresh failed:', error);
-      throw error;
-    }
-  }
+  getCurrentUser: async (): Promise<User> => {
+    return apiClient.get<User>('/api/v1/auth/me');
+  },
 
-  /**
-   * Get the current user's profile
-   * @returns User profile data
-   */
-  static async getCurrentUser(): Promise<User> {
-    try {
-      const response = await apiClient.get<User>('/auth/me');
-      return response;
-    } catch (error) {
-      console.error('Failed to fetch user profile:', error);
-      throw error;
-    }
-  }
+  // Note: Refresh token logic is handled via HttpOnly cookie by the browser/
+  // backend. No explicit frontend call needed in this service for basic flow.
+};
 
-  /**
-   * Update user password
-   * @param currentPassword - Current password
-   * @param newPassword - New password
-   */
-  static async changePassword(currentPassword: string, newPassword: string): Promise<void> {
-    try {
-      await apiClient.post('/auth/change-password', {
-        currentPassword,
-        newPassword,
-      });
-    } catch (error) {
-      console.error('Password change failed:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Request a password reset for a given email
-   * @param email - User email
-   */
-  static async requestPasswordReset(email: string): Promise<void> {
-    try {
-      await apiClient.post('/auth/request-password-reset', { email });
-    } catch (error) {
-      console.error('Password reset request failed:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Complete password reset with token
-   * @param token - Reset token
-   * @param newPassword - New password
-   */
-  static async resetPassword(token: string, newPassword: string): Promise<void> {
-    try {
-      await apiClient.post('/auth/reset-password', {
-        token,
-        newPassword,
-      });
-    } catch (error) {
-      console.error('Password reset failed:', error);
-      throw error;
-    }
-  }
-}
-
-export default AuthService; 
+export default authService; 

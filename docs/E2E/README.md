@@ -36,16 +36,16 @@ This checklist details the explicit, iterative steps required for the frontend i
     *   [ ] Define standard API response types/interfaces (`src/infrastructure/api/apiTypes.ts`).
 *   [ ] **2. Authentication Integration:**
     *   [ ] **Verify Backend Auth:** Confirm auth mechanism (JWT, OAuth2, etc.) and endpoints (`/auth/login`, `/auth/refresh`, `/auth/logout`, `/auth/me`).
-    *   [ ] **UI Components:**
+    *   [x] **UI Components:**
         *   `src/presentation/pages/LoginPage.tsx`
         *   `src/presentation/organisms/LoginForm.tsx` (using React Hook Form).
         *   Components for registration/password reset flows (if applicable).
-    *   [ ] **API Calls:** Implement functions in `src/infrastructure/api/authService.ts` for login, logout, refresh, get current user.
-    *   [ ] **State Management:**
+    *   [x] **API Calls:** Implement functions in `src/infrastructure/api/authService.ts` for login, logout, refresh, get current user.
+    *   [x] **State Management:**
         *   `src/application/context/AuthContext.tsx`: Store token, user info, loading state, isAuthenticated flag.
         *   Provide `login`, `logout` functions.
-    *   [ ] **Token Management:** Implement secure token storage (`localStorage` - consider security implications, or HttpOnly cookie if backend supports) and retrieval. Handle refresh token logic within `apiClient` or `AuthContext`.
-    *   [ ] **Routing:** Implement protected route mechanism (`src/presentation/routes/ProtectedRoute.tsx`) redirecting unauthenticated users to `/login`. Update main router (`App.tsx` or similar).
+    *   [x] **Token Management:** Implement secure token storage (`localStorage` - consider security implications, or HttpOnly cookie if backend supports) and retrieval. Handle refresh token logic within `apiClient` or `AuthContext`.
+    *   [x] **Routing:** Implement protected route mechanism (`src/presentation/routes/ProtectedRoute.tsx`) redirecting unauthenticated users to `/login`. Update main router (`App.tsx` or similar).
 *   [ ] **3. Global Error Handling & UX:**
     *   [ ] Implement `src/presentation/ErrorBoundary.tsx` and wrap main layout.
     *   [ ] Define user-facing error notification system (e.g., using `react-toastify`).
