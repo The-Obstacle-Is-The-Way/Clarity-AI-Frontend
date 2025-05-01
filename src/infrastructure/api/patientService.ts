@@ -36,7 +36,29 @@ export const getPatients = async (params: {
     console.error('Failed to fetch patients:', error);
     // Re-throw the error to be handled by React Query or calling component
     throw error;
-  }\n};\n\n/**\n * Updates an existing patient via the API.\n *\n * @param {string} patientId - The ID of the patient to update.\n * @param {Partial<Omit<Patient, \'id\' | \'created_at\' | \'updated_at\'>\>} patientData - The partial data to update.\n * @returns {Promise<Patient>} A promise resolving to the updated patient data.\n */\nexport const updatePatient = async (patientId: string, patientData: Partial<Omit<Patient, \'id\' | \'created_at\' | \'updated_at\'>>): Promise<Patient> => {\n   if (!patientId) {\n    throw new Error(\'Patient ID is required for update\');\n  }\n  try {\n    // Adjust endpoint and HTTP method (PUT or PATCH) as needed\n    const response = await apiClient.put<Patient>(`/patients/${patientId}`, patientData);\n    return response;\n  } catch (error) {\n    console.error(`Failed to update patient with ID ${patientId}:`, error);\n    throw error;\n  }\n};
+  }
+};
+
+/**
+ * Updates an existing patient via the API.
+ *
+ * @param {string} patientId - The ID of the patient to update.
+ * @param {Partial<Omit<Patient, 'id' | 'created_at' | 'updated_at'>>} patientData - The partial data to update.
+ * @returns {Promise<Patient>} A promise resolving to the updated patient data.
+ */
+export const updatePatient = async (patientId: string, patientData: Partial<Omit<Patient, 'id' | 'created_at' | 'updated_at'>>): Promise<Patient> => {
+  if (!patientId) {
+    throw new Error('Patient ID is required for update');
+  }
+  try {
+    // Adjust endpoint and HTTP method (PUT or PATCH) as needed
+    const response = await apiClient.put<Patient>(`/patients/${patientId}`, patientData);
+    return response;
+  } catch (error) {
+    console.error(`Failed to update patient with ID ${patientId}:`, error);
+    throw error;
+  }
+};
 
 /**
  * Creates a new patient via the API.
