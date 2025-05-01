@@ -5,35 +5,17 @@
  */
 
 import React, { type ReactElement, type ReactNode } from 'react';
-import { render as testingLibraryRender, type RenderOptions, act } from '@testing-library/react'; // Import act and rename render
+import { render as testingLibraryRender, type RenderOptions, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
-// Import the relevant contexts and types
-import DataContext from '@application/contexts/DataContext';
-import UserContext from '@application/contexts/UserContext';
-import VisualizationContext from '@application/contexts/VisualizationContext';
-
 // Import theme types and components
-import type { ThemeMode } from '@presentation/providers/ThemeProvider';
-import {
-  ThemeProvider,
-  useTheme,
-  type ThemeProviderState,
-} from '@presentation/providers/ThemeProvider';
+import type { ThemeMode } from '@application/providers/ThemeProvider';
+import { ThemeProvider, useTheme } from '@application/providers/ThemeProvider';
 
-// Default mock data context for tests
-const mockDataContextValue = {
-  patientData: null,
-  brainModels: [],
-  isLoadingPatient: false,
-  isLoadingModels: false,
-  patientError: null,
-  modelsError: null,
-  refreshPatientData: vi.fn(),
-  refreshBrainModels: vi.fn(),
-};
+// Context providers
+import { AuthProvider } from '@application/context/AuthContext';
 
 // Create a fresh QueryClient for each test
 function createTestQueryClient() {
@@ -48,111 +30,27 @@ function createTestQueryClient() {
 }
 
 /**
- * Mock implementation of UserProvider for tests
- */
-const MockUserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Create a basic mock user context with minimal values needed for tests
-  const userContextValue = {
-    user: {
-      id: 'test-user-id',
-      name: 'Test User',
-      email: 'test@example.com',
-      role: 'clinician', // This will be cast to UserRole
-      organization: 'Test Hospital',
-      preferences: {
-        theme: 'clinical',
-        visualizationDefaults: {
-          detailLevel: 'medium',
-          colorScheme: 'clinical',
-          annotationsVisible: true,
-          timeScale: 1.0,
-        },
-        dashboardLayout: 'detailed',
-      },
-      lastLogin: new Date().toISOString(),
-    },
-    isAuthenticated: true,
-    isLoading: false,
-    error: null,
-    login: vi.fn(),
-    logout: vi.fn(),
-    updateProfile: vi.fn(),
-    updatePreferences: vi.fn(),
-    resetPreferences: vi.fn(),
-  };
-
-  return (
-    <UserContext.Provider value={userContextValue as any}>
-      <div data-testid="mock-user-provider">{children}</div>
-    </UserContext.Provider>
-  );
-};
-
-/**
- * Mock implementation of VisualizationProvider for tests
- */
-const MockVisualizationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Minimal mock visualization context values needed for tests
-  const visualizationContextValue = {
-    settings: {
-      renderMode: 'standard', // This will be cast to RenderMode enum
-      detailLevel: 'medium', // This will be cast to DetailLevel enum
-      showConnections: true,
-      connectionThreshold: 0.3,
-      activationThreshold: 0.2,
-      sliceView: false,
-      highlightRegions: [],
-      timeScale: 1.0,
-      colorMapping: 'clinical', // This will be cast to ColorMapping enum
-      transparencyLevel: 0.1,
-      annotationsVisible: true,
-      showClinicalMarkers: true,
-    },
-    updateSettings: vi.fn(),
-    resetSettings: vi.fn(),
-    isLoading: false,
-    setIsLoading: vi.fn(),
-    activeRegions: new Map(),
-    setActiveRegion: vi.fn(),
-    clearActiveRegions: vi.fn(),
-    captureSnapshot: vi.fn().mockResolvedValue('data:image/png;base64,test'),
-  };
-
-  return (
-    <VisualizationContext.Provider value={visualizationContextValue as any}>
-      <div data-testid="mock-visualization-provider">{children}</div>
-    </VisualizationContext.Provider>
-  );
-};
-
-/**
  * AllTheProviders wraps the component under test with all necessary providers
  */
 interface AllTheProvidersProps {
   children: ReactNode;
   initialRoute?: string;
   queryClient?: QueryClient;
-  mockDataContext?: typeof mockDataContextValue;
-  currentTheme?: ThemeMode; // Use the imported ThemeMode type
+  currentTheme?: ThemeMode;
 }
 
 const AllTheProviders = ({
   children,
   initialRoute = '/',
   queryClient = createTestQueryClient(),
-  mockDataContext = mockDataContextValue,
   currentTheme = 'light', // Default to light for consistency
 }: AllTheProvidersProps) => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme={currentTheme}>
-        <MockUserProvider>
-          <MockVisualizationProvider>
-            <DataContext.Provider value={mockDataContext}>
-              <MemoryRouter initialEntries={[initialRoute]}>{children}</MemoryRouter>
-            </DataContext.Provider>
-          </MockVisualizationProvider>
-        </MockUserProvider>
+        <AuthProvider>
+          <MemoryRouter initialEntries={[initialRoute]}>{children}</MemoryRouter>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
@@ -164,8 +62,13 @@ const AllTheProviders = ({
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   initialRoute?: string;
   queryClient?: QueryClient;
-  mockDataContext?: typeof mockDataContextValue;
   defaultTheme?: ThemeMode;
+}
+
+// Type for theme context value that's captured during rendering
+interface ThemeContextValue {
+  theme: ThemeMode;
+  setTheme: (theme: ThemeMode) => void;
 }
 
 /**
@@ -176,7 +79,6 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
   const {
     initialRoute = '/',
     queryClient = createTestQueryClient(),
-    mockDataContext = mockDataContextValue,
     defaultTheme = 'light',
     ...renderOptions
   } = options;
@@ -186,7 +88,6 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
     <AllTheProviders
       initialRoute={initialRoute}
       queryClient={queryClient}
-      mockDataContext={mockDataContext}
       currentTheme={defaultTheme}
     >
       {children}
@@ -194,7 +95,7 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
   );
 
   // Store the theme context value to return it
-  let themeContextValue: ThemeProviderState | undefined;
+  let themeContextValue: ThemeContextValue | undefined;
 
   // Create a consumer component to capture the context value
   const ContextConsumer = () => {
@@ -248,31 +149,8 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
 
 // Basic render function that doesn't include theme helpers
 export function render(ui: ReactElement, options: ExtendedRenderOptions = {}) {
-  const {
-    initialRoute = '/',
-    queryClient = createTestQueryClient(),
-    mockDataContext = mockDataContextValue,
-    defaultTheme = 'light',
-    ...renderOptions
-  } = options;
-
-  // Simplified wrapper with all providers but no theme consumer
-  const Wrapper = ({ children }: { children: React.ReactNode }) => (
-    <AllTheProviders
-      initialRoute={initialRoute}
-      queryClient={queryClient}
-      mockDataContext={mockDataContext}
-      currentTheme={defaultTheme}
-    >
-      {children}
-    </AllTheProviders>
-  );
-
-  return testingLibraryRender(ui, { wrapper: Wrapper, ...renderOptions });
+  return renderWithProviders(ui, options);
 }
 
-// Re-export testing-library utilities for convenience
+// Re-export everything from testing-library
 export * from '@testing-library/react';
-
-// Export other test utilities
-export { createTestQueryClient, mockDataContextValue };
