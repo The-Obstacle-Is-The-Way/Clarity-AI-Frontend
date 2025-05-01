@@ -5,7 +5,7 @@
  */
 
 import React, { type ReactElement, type ReactNode } from 'react';
-import { render, type RenderOptions, act } from '@testing-library/react'; // Import act
+import { render as testingLibRender, type RenderOptions, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
@@ -18,7 +18,6 @@ import type { ThemeMode } from '../presentation/providers/ThemeProvider';
 import {
   ThemeProvider,
   useTheme,
-  ThemeProviderContext,
   type ThemeProviderState,
 } from '../presentation/providers/ThemeProvider';
 
@@ -81,7 +80,7 @@ const MockUserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={userContextValue as any}>
+    <UserContext.Provider value={userContextValue}>
       <div data-testid="mock-user-provider">{children}</div>
     </UserContext.Provider>
   );
@@ -118,7 +117,7 @@ const MockVisualizationProvider: React.FC<{ children: ReactNode }> = ({ children
   };
 
   return (
-    <VisualizationContext.Provider value={visualizationContextValue as any}>
+    <VisualizationContext.Provider value={visualizationContextValue}>
       <div data-testid="mock-visualization-provider">{children}</div>
     </VisualizationContext.Provider>
   );
@@ -203,12 +202,12 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
   };
 
   // Render with the wrapper and the consumer
-  const renderResult = render(
+  const renderResult = testingLibRender(
     <>
       {ui}
       <ContextConsumer />
     </>,
-    { wrapper: Wrapper, ...renderOptions }
+    { wrapper: Wrapper, ...renderOptions } as RenderOptions
   );
 
   // Ensure themeContextValue is defined before returning
@@ -247,7 +246,7 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
 };
 
 // Simplified render that doesn't include theme helpers
-export function render(ui: ReactElement, options: ExtendedRenderOptions = {}) {
+export function render(ui: ReactElement, options: ExtendedRenderOptions = {}): ReturnType<typeof testingLibRender> {
   const {
     initialRoute = '/',
     queryClient = createTestQueryClient(),
@@ -267,9 +266,7 @@ export function render(ui: ReactElement, options: ExtendedRenderOptions = {}) {
     </AllTheProviders>
   );
 
-  return {
-    ...render(ui, { wrapper: Wrapper, ...renderOptions }),
-  };
+  return testingLibRender(ui, { wrapper: Wrapper, ...renderOptions } as RenderOptions);
 }
 
 // Re-export testing-library utilities for convenience
