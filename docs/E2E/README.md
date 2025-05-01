@@ -46,15 +46,15 @@ This checklist details the explicit, iterative steps required for the frontend i
         *   Provide `login`, `logout` functions.
     *   [x] **Token Management:** Implement secure token storage (`localStorage` - consider security implications, or HttpOnly cookie if backend supports) and retrieval. Handle refresh token logic within `apiClient` or `AuthContext`.
     *   [x] **Routing:** Implement protected route mechanism (`src/presentation/routes/ProtectedRoute.tsx`) redirecting unauthenticated users to `/login`. Update main router (`App.tsx` or similar).
-*   [ ] **3. Global Error Handling & UX:**
-    *   [ ] Implement `src/presentation/ErrorBoundary.tsx` and wrap main layout.
+*   [x] **3. Global Error Handling & UX:**
+    *   [x] Implement `src/presentation/ErrorBoundary.tsx` and wrap main layout.
     *   [ ] Define user-facing error notification system (e.g., using `react-toastify`).
     *   [ ] Ensure API client errors (network, 4xx, 5xx) trigger user-friendly notifications via the interceptor.
     *   [ ] Implement global loading indicators (e.g., top progress bar) tied to API request states.
-*   [ ] **4. Basic Layout & Navigation:**
-    *   [ ] Implement main application layout (`src/presentation/templates/MainLayout.tsx`) including header, sidebar (if applicable), content area.
+*   [x] **4. Basic Layout & Navigation:**
+    *   [x] Implement main application layout (`src/presentation/templates/MainLayout.tsx`) including header, sidebar (if applicable), content area.
     *   [ ] Implement basic navigation structure reflecting planned feature areas.
-    *   [ ] Implement UI for displaying authenticated user info (e.g., in header).
+    *   [x] Implement UI for displaying authenticated user info (e.g., in header).
 
 **Phase 2: Feature Integration (Iterative per Backend Domain)**
 

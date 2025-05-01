@@ -1,12 +1,14 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@application/context/AuthContext';
+import { MainLayout } from '@presentation/templates/MainLayout';
 
 /**
  * Protected Route Component
  *
  * Ensures routes are only accessible to authenticated users.
  * Redirects unauthenticated users to the login page.
+ * Wraps authenticated routes with the MainLayout.
  */
 export const ProtectedRoute: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -29,8 +31,12 @@ export const ProtectedRoute: React.FC = () => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If authenticated, render the child routes
-  return <Outlet />;
+  // If authenticated, render the child routes within the MainLayout
+  return (
+    <MainLayout>
+      <Outlet />
+    </MainLayout>
+  );
 };
 
 export default ProtectedRoute;

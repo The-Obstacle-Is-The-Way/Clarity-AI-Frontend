@@ -7,6 +7,17 @@
 import axios from 'axios';
 import { IApiClient } from './IApiClient';
 import type { ApiPatient } from './ApiClient.runtime';
+import type { User } from '@application/context/AuthContext'; // Import User type
+
+// Define mock user data matching the User interface
+const mockUser: User = {
+  id: 'mock-user-123',
+  email: 'test@example.com',
+  first_name: 'Mock',
+  last_name: 'User',
+  roles: ['clinician'],
+  is_active: true,
+};
 
 /**
  * Enhanced mock client for development and testing with simulated latency
@@ -30,25 +41,20 @@ export class EnhancedMockApiClient implements IApiClient {
   /**
    * Log audit activity
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private logActivity(
     action: string,
-    details: any /* eslint-disable-line @typescript-eslint/no-explicit-any */
+    details: any
   ): void {
-    // Try to send to audit log endpoint, but expect it to fail gracefully
-    // This simulates the behavior we'd want in production
     if (typeof window !== 'undefined' && this.auditEnabled) {
-      // Safe access to potential window.axios
       try {
-        axios
-          .post('/api/audit-logs', {
+        // Use a relative path for the audit log endpoint if base URL is /api
+        axios.post('/api/audit-logs', {
             action,
             timestamp: new Date().toISOString(),
             details,
-            userId: 'mock-user-123',
+            userId: mockUser.id, // Use mock user ID
           })
           .catch(() => {
-            // Expected to fail in mock/dev, just log to console
             console.debug('[Mock Audit]', action, details);
           });
       } catch (e) {
@@ -61,152 +67,198 @@ export class EnhancedMockApiClient implements IApiClient {
 
   // API Implementation methods
 
-  // User/Authentication
-  // ===================================
+  // --- IApiClient methods ---
 
-  /**
-   * Login implementation
-   */
-  async login(
-    email: string,
-    password: string
-  ): Promise<{
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    token: string;
-    organization: string;
-  }> {
+  // Add a mock login method matching the interface signature if required,
+  // even if not directly used by the primary cookie flow's AuthContext.
+  // It might be used elsewhere or expected by tests.
+  async login(email: string, password: string): Promise<any> {
     await this.delay();
-    this.logActivity('login', { email });
-
-    // Return mock user data
-    return {
-      id: 'user-mock-123',
-      name: 'Dr. Neural Smith',
-      email: email,
-      role: 'clinician',
-      token: 'mock-jwt-token-xyz',
-      organization: 'Quantum Psychiatry Center',
-    };
+    console.log(`[MockClient] login called for ${email} (Simulating cookie setting)`);
+    this.logActivity('POST_Request', { endpoint: '/api/v1/auth/login', data: { email } });
+    // Return structure might need adjustment based on IApiClient definition
+    // For now, return mock user/token structure if needed for compatibility
+    return Promise.resolve({
+      access_token: 'mock-access-token-from-unused-login',
+      refresh_token: 'mock-refresh-token-from-unused-login',
+      token_type: 'bearer',
+      expires_in: 3600,
+      // Include mock user data if the interface expects it from login
+      user: {
+          id: mockUser.id,
+          email: mockUser.email,
+          roles: mockUser.roles
+      }
+    });
   }
-
-  /**
-   * Get user profile
-   */
-  async getUserProfile(userId: string): Promise<{
-    id: string;
-    name: string;
-    role: string;
-    preferences: Record<string, unknown>;
-  }> {
-    await this.delay();
-    this.logActivity('getUserProfile', { userId });
-
-    return {
-      id: userId,
-      name: 'Dr. Neural Smith',
-      role: 'clinician',
-      preferences: {
-        theme: 'clinical',
-        dashboardLayout: 'compact',
-        notifications: true,
-      },
-    };
-  }
-
-  // --- Missing IApiClient methods ---
 
   setAuthToken(token: string | null): void {
-    console.log(`[MockClient] setAuthToken called with token: ${token ? 'present' : 'null'}`);
-    // No-op for mock
+    console.log(`[MockClient] setAuthToken called: ${token ? 'present' : 'null'}`);
   }
 
   clearAuthToken(): void {
     console.log('[MockClient] clearAuthToken called');
-    // No-op for mock
   }
 
   isAuthenticated(): boolean {
     console.log('[MockClient] isAuthenticated called');
-    // Assume authenticated for mock purposes, adjust if needed for specific tests
+    // This method isn't used by the current AuthContext flow, but returning true
+    // makes sense for a generally authenticated mock state.
     return true;
   }
 
   async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
+    await this.delay();
     console.log(`[MockClient] GET called: ${endpoint}`, params);
     this.logActivity('GET_Request', { endpoint, params });
-    // Simulate a generic successful response for GET requests
-    // Tests needing specific GET responses should mock this method specifically
-    if (endpoint.includes('brain-models')) {
-      // Provide a minimal mock BrainModel structure if needed
-      return Promise.resolve({ id: 'mock-model', regions: [], connections: [] } as unknown as T);
+
+    if (endpoint === '/api/v1/auth/me') {
+      console.log('[MockClient] Returning mock user data for /api/v1/auth/me');
+      return Promise.resolve(mockUser as unknown as T);
     }
-    return Promise.resolve({ message: 'Mock GET success' } as unknown as T);
+    if (endpoint.startsWith('/api/patients/') && endpoint.length > '/api/patients/'.length) {
+      const patientId = endpoint.split('/').pop() || 'mock-patient-id';
+      console.log(`[MockClient] Returning mock patient data for ID: ${patientId}`);
+      const patient = await this.getPatientById(patientId);
+      return Promise.resolve(patient as unknown as T);
+    }
+    if (endpoint === '/api/patients') {
+      console.log('[MockClient] Returning mock patient list');
+      const patients = await this.getPatients();
+      return Promise.resolve(patients as unknown as T);
+    }
+
+    console.warn(`[MockClient] Unhandled GET request for: ${endpoint}`);
+    return Promise.resolve({ message: `Mock GET success for ${endpoint}` } as unknown as T);
   }
 
-  // Patient data operations
-  // ===================================
+  async post<T>(endpoint: string, data?: any, config?: any): Promise<T> {
+    await this.delay();
+    console.log(`[MockClient] POST called: ${endpoint}`, data, config);
+    this.logActivity('POST_Request', { endpoint, data });
+
+    if (endpoint === '/api/v1/auth/login') {
+      console.log('[MockClient] Simulating successful login cookie set for /api/v1/auth/login');
+      return Promise.resolve({} as unknown as T);
+    }
+    if (endpoint === '/api/v1/auth/logout') {
+      console.log('[MockClient] Simulating successful logout cookie clear for /api/v1/auth/logout');
+      return Promise.resolve({} as unknown as T);
+    }
+    // Add other specific POST endpoint mocks here
+    if (endpoint === '/api/analytics/xgboost/predict') {
+      console.log('[MockClient] Simulating predictTreatmentResponse');
+      const prediction = await this.predictTreatmentResponse('mock-patient', data);
+      return Promise.resolve(prediction as unknown as T);
+    }
+
+    console.warn(`[MockClient] Unhandled POST request for: ${endpoint}`);
+    return Promise.resolve({ message: `Mock POST success for ${endpoint}` } as unknown as T);
+  }
+
+  async put<T>(endpoint: string, data?: any, config?: any): Promise<T> {
+    await this.delay();
+    console.log(`[MockClient] PUT called: ${endpoint}`, data, config);
+    this.logActivity('PUT_Request', { endpoint, data });
+    console.warn(`[MockClient] Unhandled PUT request for: ${endpoint}`);
+    // Simulate generic success for PUT
+    return Promise.resolve({ message: `Mock PUT success for ${endpoint}` } as unknown as T);
+  }
+
+  async delete<T>(endpoint: string, config?: any): Promise<T> {
+    await this.delay();
+    console.log(`[MockClient] DELETE called: ${endpoint}`, config);
+    this.logActivity('DELETE_Request', { endpoint });
+    console.warn(`[MockClient] Unhandled DELETE request for: ${endpoint}`);
+    // Simulate generic success for DELETE
+    return Promise.resolve({ message: `Mock DELETE success for ${endpoint}` } as unknown as T);
+  }
+
+  // --- Remove outdated/incorrect methods ---
+  // The old `login` method is removed as it doesn't match the IApiClient or the cookie flow.
+  // Keep existing specific mock methods if they are still useful for testing other features.
+
+  // Example: Keep existing patient methods if needed for other tests
 
   /**
-   * Get patient by ID
+   * Get patient by ID (Existing mock method)
    */
   async getPatient(patientId: string): Promise<ApiPatient> {
     await this.delay();
     this.logActivity('getPatient', { patientId });
-
+    // Keep existing mock patient data
     return {
       id: patientId,
       firstName: 'John',
       lastName: 'Doe',
       dateOfBirth: '1980-01-01',
       gender: 'male',
-      demographicData: {
-        age: 43,
-        ethnicity: 'caucasian',
-        weight: '180lbs',
-        height: '5\'10"',
-      },
-      medicalHistory: {
-        conditions: ['depression', 'anxiety'],
-        medications: ['fluoxetine', 'alprazolam'],
-        allergies: [],
-      },
+      demographicData: { age: 43, ethnicity: 'caucasian', weight: '180lbs', height: '5\'10"' },
+      medicalHistory: { conditions: ['depression', 'anxiety'], medications: ['fluoxetine', 'alprazolam'], allergies: [] },
     };
   }
 
   /**
-   * Get all patients
+   * Get all patients (Existing mock method)
    */
   async getPatients(): Promise<ApiPatient[]> {
     await this.delay();
     this.logActivity('getPatients', {});
-
+    // Keep existing mock patients data
     return [
-      {
-        id: 'patient-1',
-        firstName: 'John',
-        lastName: 'Doe',
-        dateOfBirth: '1980-01-01',
-        gender: 'male',
-        demographicData: {
-          age: 43,
-          ethnicity: 'caucasian',
-        },
-      },
-      {
-        id: 'patient-2',
-        firstName: 'Jane',
-        lastName: 'Smith',
-        dateOfBirth: '1990-05-15',
-        gender: 'female',
-        demographicData: {
-          age: 33,
-          ethnicity: 'asian',
-        },
-      },
+      { id: 'patient-1', firstName: 'John', lastName: 'Doe', dateOfBirth: '1980-01-01', gender: 'male', demographicData: { age: 43, ethnicity: 'caucasian' } },
+      { id: 'patient-2', firstName: 'Jane', lastName: 'Smith', dateOfBirth: '1990-05-15', gender: 'female', demographicData: { age: 33, ethnicity: 'asian' } },
     ];
+  }
+
+  async getPatientById(patientId: string): Promise<ApiPatient> {
+    await this.delay();
+    this.logActivity('getPatientById', { patientId });
+    // Simple mock: return a generic patient or find from the list above
+    const patients = await this.getPatients();
+    const patient = patients.find(p => p.id === patientId);
+    if (patient) return patient;
+    // Return a default mock if ID not found
+    return {
+      id: patientId,
+      firstName: 'Mock',
+      lastName: 'Patient',
+      dateOfBirth: '1985-01-01',
+      gender: 'other',
+      demographicData: { age: 38, ethnicity: 'unknown' },
+      medicalHistory: { conditions: ['mock_condition'], medications: ['mock_med'], allergies: [] },
+    };
+  }
+
+  async predictTreatmentResponse(patientId: string, treatmentData: any): Promise<any> {
+    await this.delay();
+    this.logActivity('predictTreatmentResponse', { patientId, treatmentData });
+    console.log('[MockClient] Simulating predictTreatmentResponse');
+    // Return a mock prediction structure
+    return Promise.resolve({
+      patientId: patientId,
+      treatment: treatmentData?.treatmentName || 'mock_treatment',
+      predictedEfficacy: Math.random() * 0.6 + 0.2, // Random efficacy between 0.2 and 0.8
+      confidence: Math.random() * 0.5 + 0.5, // Random confidence between 0.5 and 1.0
+      details: 'Mock prediction based on simulated data.'
+    });
+  }
+
+  async getRiskAssessment(patientId: string): Promise<any> {
+    await this.delay();
+    this.logActivity('getRiskAssessment', { patientId });
+    console.log('[MockClient] Simulating getRiskAssessment');
+    // Return a mock risk assessment structure
+    return Promise.resolve({
+      patientId: patientId,
+      overallRisk: Math.random() > 0.5 ? 'High' : 'Moderate',
+      factors: [
+        { factor: 'Depression Severity', score: Math.random(), weight: 0.4 },
+        { factor: 'Previous Attempts', score: Math.random() > 0.8 ? 1 : 0, weight: 0.3 },
+        { factor: 'Social Support', score: 1 - Math.random(), weight: 0.3 },
+      ],
+      timestamp: new Date().toISOString(),
+    });
   }
 
   // Brain Model operations

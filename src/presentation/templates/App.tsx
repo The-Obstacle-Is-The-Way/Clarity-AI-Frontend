@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import ErrorBoundary from '@presentation/ErrorBoundary';
 
 // Pages
 import Dashboard from '@presentation/pages/Dashboard';
@@ -49,60 +50,62 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <ThemeWrapper>
         <AuthProvider>
-          <Router>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/login" element={<LoginPage />} />
+          <ErrorBoundary>
+            <Router>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/login" element={<LoginPage />} />
 
-              {/* Protected Routes */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                {/* Protected Routes */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
 
-                {/* Brain Visualization Routes */}
-                <Route path="/brain-visualization/demo" element={<BrainVisualizationPage />} />
-                <Route
-                  path="/brain-visualization/:patientId"
-                  element={<BrainVisualizationPage />}
-                />
+                  {/* Brain Visualization Routes */}
+                  <Route path="/brain-visualization/demo" element={<BrainVisualizationPage />} />
+                  <Route
+                    path="/brain-visualization/:patientId"
+                    element={<BrainVisualizationPage />}
+                  />
 
-                {/* Test Routes */}
-                <Route
-                  path="/test/neural-control-panel"
-                  element={
-                    <div className="p-4 bg-background text-foreground min-h-screen">
-                      <h1 className="text-xl font-semibold mb-6">Neural Control Panel Test</h1>
-                      <NeuralControlPanel
-                        patientId="DEMO_PATIENT_001"
-                        brainModelId="DEMO_SCAN_001"
-                        onSettingsChange={(settings) => console.log('Settings changed:', settings)}
-                      />
-                    </div>
-                  }
-                />
-                <Route
-                  path="/brain-model-container/demo"
-                  element={
-                    <div className="p-4 bg-background text-foreground min-h-screen">
-                      <h1 className="text-xl font-semibold mb-6">Brain Model Container Test</h1>
-                      <div className="h-[80vh] border border-gray-700 rounded-lg overflow-hidden">
+                  {/* Test Routes */}
+                  <Route
+                    path="/test/neural-control-panel"
+                    element={
+                      <div className="p-4 bg-background text-foreground min-h-screen">
+                        <h1 className="text-xl font-semibold mb-6">Neural Control Panel Test</h1>
                         <NeuralControlPanel
                           patientId="DEMO_PATIENT_001"
                           brainModelId="DEMO_SCAN_001"
-                          onSettingsChange={(settings) =>
-                            console.log('Settings changed:', settings)
-                          }
+                          onSettingsChange={(settings) => console.log('Settings changed:', settings)}
                         />
                       </div>
-                    </div>
-                  }
-                />
-              </Route>
+                    }
+                  />
+                  <Route
+                    path="/brain-model-container/demo"
+                    element={
+                      <div className="p-4 bg-background text-foreground min-h-screen">
+                        <h1 className="text-xl font-semibold mb-6">Brain Model Container Test</h1>
+                        <div className="h-[80vh] border border-gray-700 rounded-lg overflow-hidden">
+                          <NeuralControlPanel
+                            patientId="DEMO_PATIENT_001"
+                            brainModelId="DEMO_SCAN_001"
+                            onSettingsChange={(settings) =>
+                              console.log('Settings changed:', settings)
+                            }
+                          />
+                        </div>
+                      </div>
+                    }
+                  />
+                </Route>
 
-              {/* Catch-all route for 404 */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Router>
+                {/* Catch-all route for 404 */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Router>
+          </ErrorBoundary>
         </AuthProvider>
       </ThemeWrapper>
     </QueryClientProvider>
