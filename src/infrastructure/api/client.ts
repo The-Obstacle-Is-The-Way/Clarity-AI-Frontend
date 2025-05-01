@@ -70,17 +70,20 @@ export class ApiClient {
     return response.data;
   }
 
-  async post<T>(url: string, data?: any // eslint-disable-line @typescript-eslint/no-explicit-any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client?.post<ApiResponse<T>>(url, data, config);
     return response.data;
   }
 
-  async put<T>(url: string, data: any // eslint-disable-line @typescript-eslint/no-explicit-any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async put<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client?.put<ApiResponse<T>>(url, data, config);
     return response.data;
   }
 
-  async patch<T>(url: string, data: any // eslint-disable-line @typescript-eslint/no-explicit-any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async patch<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client?.patch<ApiResponse<T>>(url, data, config);
     return response.data;
   }

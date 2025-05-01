@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 
 import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
-import Button from '@presentation/atoms/Button';
+import { Button } from '@presentation/atoms/button';
 import ClinicalMetricsGroup from '@presentation/molecules/ClinicalMetricsCard';
 
 import BrainVisualization from '@presentation/organisms/BrainVisualization';
@@ -119,7 +119,7 @@ const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({
               <div className="overflow-hidden rounded-lg bg-background-card shadow-md dark:bg-background-elevated">
                 <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
                   <h3 className="font-medium">Brain Activity Model</h3>
-                  <Button size="xs" variant="ghost" onClick={() => setActiveTab('brain')}>
+                  <Button size="sm" variant="ghost" onClick={() => setActiveTab('brain')}>
                     Enlarge
                   </Button>
                 </div>
@@ -156,7 +156,7 @@ const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({
               <div className="overflow-hidden rounded-lg bg-background-card shadow-md dark:bg-background-elevated">
                 <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
                   <h3 className="font-medium">Clinical Metrics</h3>
-                  <Button size="xs" variant="ghost" onClick={() => setActiveTab('metrics')}>
+                  <Button size="sm" variant="ghost" onClick={() => setActiveTab('metrics')}>
                     View All
                   </Button>
                 </div>
@@ -181,7 +181,8 @@ const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({
                       <div className="space-y-2">
                         {profile.treatmentPlan.treatments.map(
                           (
-                            treatment: any // eslint-disable-line @typescript-eslint/no-explicit-any,
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            treatment: any,
                             index: number
                           ) => (
                             <div

@@ -104,7 +104,8 @@ export interface BrainViewState {
  * Neural processor for brain model data
  * Takes raw input and processes it into a standardized BrainModelData structure
  */
-export const BrainModel = (data: any // eslint-disable-line @typescript-eslint/no-explicit-any = {}): BrainModelData => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const BrainModel = (data: any = {}): BrainModelData => {
   // Generate a default processed model with clinical precision
   const defaultModel: BrainModelData = {
     id: data.id || `model-${Date.now()}`,

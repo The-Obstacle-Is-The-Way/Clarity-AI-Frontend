@@ -29,9 +29,12 @@ declare module '@react-three/drei' {
     panSpeed?: number;
     rotateSpeed?: number;
     dampingFactor?: number;
-    onChange?: (e?: any // eslint-disable-line @typescript-eslint/no-explicit-any) => void;
-    onStart?: (e?: any // eslint-disable-line @typescript-eslint/no-explicit-any) => void;
-    onEnd?: (e?: any // eslint-disable-line @typescript-eslint/no-explicit-any) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onChange?: (e?: any) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onStart?: (e?: any) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onEnd?: (e?: any) => void;
   }
 
   export const OrbitControls: FC<OrbitControlsProps>;
@@ -40,7 +43,8 @@ declare module '@react-three/drei' {
     nodes: Record<string, Mesh>;
     materials: Record<string, Material>;
     scene: Group;
-    animations: any // eslint-disable-line @typescript-eslint/no-explicit-any[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    animations: any[];
   }
 
   export function useGLTF<T extends string | string[]>(
@@ -55,7 +59,8 @@ declare module '@react-three/drei' {
     path?: string;
     scene?: Object3D;
     files?: string | string[];
-    extensions?: any // eslint-disable-line @typescript-eslint/no-explicit-any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    extensions?: any;
   }
 
   export const Environment: FC<EnvironmentProps>;
@@ -74,21 +79,28 @@ declare module '@react-three/drei' {
     position?: [number, number, number];
     rotation?: [number, number, number];
     scale?: number | [number, number, number];
-    onClick?: (e: any // eslint-disable-line @typescript-eslint/no-explicit-any) => void;
-    onPointerOver?: (e: any // eslint-disable-line @typescript-eslint/no-explicit-any) => void;
-    onPointerOut?: (e: any // eslint-disable-line @typescript-eslint/no-explicit-any) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onClick?: (e: any) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onPointerOver?: (e: any) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onPointerOut?: (e: any) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ref?: Ref<any>;
   }
 
   export const Instance: FC<InstanceProps>;
 
   export function useAnimations(
-    animations: any // eslint-disable-line @typescript-eslint/no-explicit-any[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    animations: any[],
     ref?: MutableRefObject<Object3D | undefined>
   ): {
     ref: MutableRefObject<Object3D | undefined>;
     names: string[];
-    clips: any // eslint-disable-line @typescript-eslint/no-explicit-any[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    clips: any[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     actions: Record<string, any>;
   };
 }
