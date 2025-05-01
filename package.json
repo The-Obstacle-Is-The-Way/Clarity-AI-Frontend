@@ -109,6 +109,7 @@
     "@vitest/ui": "^3.1.1",
     "autoprefixer": "^10.4.21",
     "cssnano": "^7.0.6",
+    "cypress": "^13.6.4",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-import": "^2.31.0",
@@ -130,6 +131,7 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "puppeteer": "^24.6.0",
     "react-refresh": "^0.17.0",
+    "start-server-and-test": "^2.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.29.0",
@@ -137,8 +139,7 @@
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.1.1",
-    "cypress": "^13.6.4",
-    "start-server-and-test": "^2.0.3"
+    "whatwg-fetch": "^3.6.20"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
