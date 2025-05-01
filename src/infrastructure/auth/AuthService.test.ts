@@ -4,13 +4,7 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { waitFor } from '@testing-library/react';
-// Set up jest-dom - import this after vitest imports
-import '@testing-library/jest-dom';
 import { AuthService, AuthTokens, AuthUser, AuthApiClient } from './index'; // Import AuthApiClient for mocking
-
-// Force vitest to reload expect with jest-dom matchers explicitly
-import * as matchers from '@testing-library/jest-dom/matchers';
-expect.extend(matchers);
 
 // Rely on the global mockLocalStorage defined in src/test/setup.ts
 // No need for local definition or Object.defineProperty here.
