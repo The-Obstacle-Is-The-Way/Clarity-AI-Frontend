@@ -4,7 +4,7 @@ import { useAuth } from '@application/context/AuthContext';
 
 /**
  * Protected Route Component
- * 
+ *
  * Ensures routes are only accessible to authenticated users.
  * Redirects unauthenticated users to the login page.
  */

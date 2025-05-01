@@ -12,9 +12,7 @@ const loginSchema = z.object({
     .string()
     .min(1, { message: 'Email is required' })
     .email({ message: 'Must be a valid email address' }),
-  password: z
-    .string()
-    .min(8, { message: 'Password must be at least 8 characters' }),
+  password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
   rememberMe: z.boolean().optional(),
 });
 
@@ -28,14 +26,11 @@ interface LoginFormProps {
 
 /**
  * Login Form Component
- * 
+ *
  * Provides a form for user authentication with email/password
  * Uses React Hook Form with Zod validation
  */
-export const LoginForm: React.FC<LoginFormProps> = ({
-  onSuccess,
-  className = '',
-}) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, className = '' }) => {
   const { login, isLoading, error } = useAuth();
 
   // Initialize form with React Hook Form and Zod validation
@@ -62,7 +57,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       if (onSuccess) {
         onSuccess();
       }
-    } catch (error) {
+    } catch (_error) {
       // This error handling is a fallback; the useAuth hook already handles most errors
       setError('root', {
         type: 'manual',
@@ -128,9 +123,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             {...register('password')}
           />
           {errors.password && (
-            <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-              {errors.password.message}
-            </p>
+            <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.password.message}</p>
           )}
         </div>
 
@@ -163,11 +156,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
         {/* Submit button */}
         <div>
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign in'}
           </Button>
         </div>

@@ -1,13 +1,26 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Example router setup
-import Dashboard from '@pages/Dashboard';
-import BrainVisualizationPage from '@pages/BrainVisualizationPage'; // Import the visualization page
-import NotFound from '@pages/NotFound'; // Import the NotFound page
-import NeuralControlPanel from '@organisms/NeuralControlPanel'; // Import the component to test
-import { ThemeProvider } from '@application/providers/ThemeProvider'; // Import ThemeProvider from providers
-import '@styles/index.css'; // Correct alias
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+// Pages
+import Dashboard from '@presentation/pages/Dashboard';
+import BrainVisualizationPage from '@presentation/pages/BrainVisualizationPage';
+import LoginPage from '@presentation/pages/LoginPage';
+import NotFound from '@presentation/pages/NotFound';
+
+// Components
+import NeuralControlPanel from '@presentation/organisms/NeuralControlPanel';
+
+// Providers
+import { ThemeProvider } from '@application/providers/ThemeProvider';
+import { AuthProvider } from '@application/context/AuthContext';
+
+// Routes
+import ProtectedRoute from '@presentation/routes/ProtectedRoute';
+
+// Styles
+import '@presentation/styles/index.css';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -34,56 +47,66 @@ export const ThemeWrapper: React.FC<ThemeWrapperProps> = ({ children, defaultThe
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        {/* Basic Router Setup - Adjust routes as needed */}
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          {/* Specific demo route */}
-          <Route path="/brain-visualization/demo" element={<BrainVisualizationPage />} />
-          {/* Parameterized route for specific patient IDs */}
-          <Route path="/brain-visualization/:patientId" element={<BrainVisualizationPage />} />
-          {/* Test route for NeuralControlPanel */}
-          <Route
-            path="/test/neural-control-panel"
-            element={
-              <ThemeWrapper>
-                <div className="p-4 bg-background text-foreground min-h-screen">
-                  <h1 className="text-xl font-semibold mb-6">Neural Control Panel Test</h1>
-                  <NeuralControlPanel
-                    patientId="DEMO_PATIENT_001"
-                    brainModelId="DEMO_SCAN_001"
-                    onSettingsChange={(settings) => console.log('Settings changed:', settings)}
-                  />
-                </div>
-              </ThemeWrapper>
-            }
-          />
+      <ThemeWrapper>
+        <AuthProvider>
+          <Router>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/login" element={<LoginPage />} />
 
-          {/* Test route for BrainModelContainer */}
-          <Route
-            path="/brain-model-container/demo"
-            element={
-              <ThemeWrapper>
-                <div className="p-4 bg-background text-foreground min-h-screen">
-                  <h1 className="text-xl font-semibold mb-6">Brain Model Container Test</h1>
-                  <div className="h-[80vh] border border-gray-700 rounded-lg overflow-hidden">
-                    {/* Note: Using NeuralControlPanel temporarily until BrainModelContainer is fully implemented */}
-                    <NeuralControlPanel
-                      patientId="DEMO_PATIENT_001"
-                      brainModelId="DEMO_SCAN_001"
-                      onSettingsChange={(settings) => console.log('Settings changed:', settings)}
-                    />
-                  </div>
-                </div>
-              </ThemeWrapper>
-            }
-          />
-          {/* Catch-all route for 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+
+                {/* Brain Visualization Routes */}
+                <Route path="/brain-visualization/demo" element={<BrainVisualizationPage />} />
+                <Route
+                  path="/brain-visualization/:patientId"
+                  element={<BrainVisualizationPage />}
+                />
+
+                {/* Test Routes */}
+                <Route
+                  path="/test/neural-control-panel"
+                  element={
+                    <div className="p-4 bg-background text-foreground min-h-screen">
+                      <h1 className="text-xl font-semibold mb-6">Neural Control Panel Test</h1>
+                      <NeuralControlPanel
+                        patientId="DEMO_PATIENT_001"
+                        brainModelId="DEMO_SCAN_001"
+                        onSettingsChange={(settings) => console.log('Settings changed:', settings)}
+                      />
+                    </div>
+                  }
+                />
+                <Route
+                  path="/brain-model-container/demo"
+                  element={
+                    <div className="p-4 bg-background text-foreground min-h-screen">
+                      <h1 className="text-xl font-semibold mb-6">Brain Model Container Test</h1>
+                      <div className="h-[80vh] border border-gray-700 rounded-lg overflow-hidden">
+                        <NeuralControlPanel
+                          patientId="DEMO_PATIENT_001"
+                          brainModelId="DEMO_SCAN_001"
+                          onSettingsChange={(settings) =>
+                            console.log('Settings changed:', settings)
+                          }
+                        />
+                      </div>
+                    </div>
+                  }
+                />
+              </Route>
+
+              {/* Catch-all route for 404 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Router>
+        </AuthProvider>
+      </ThemeWrapper>
     </QueryClientProvider>
   );
 };
 
-export default App; // Export App as default
+export default App;

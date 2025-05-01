@@ -181,7 +181,7 @@ const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({
                       <div className="space-y-2">
                         {profile.treatmentPlan.treatments.map(
                           (
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                             
                             treatment: any,
                             index: number
                           ) => (

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { apiClient } from '@infrastructure/api/ApiGateway';
 
 // Define authentication types
@@ -98,25 +99,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const loadAuthState = async () => {
       const token = localStorage.getItem('auth_token');
-      
+
       if (token) {
         try {
           apiClient.setAuthToken(token);
-          
+
           // Attempt to validate the token and get user info
           // This would be an API call to fetch the current user
           // For now, we'll simulate this with mock data
-          const userData = { 
+          const userData = {
             id: 'user123',
             email: 'user@example.com',
             name: 'Test User',
             role: 'clinician' as const,
-            permissions: ['read:patients', 'write:patients']
+            permissions: ['read:patients', 'write:patients'],
           };
-          
+
           dispatch({
             type: 'LOGIN_SUCCESS',
-            payload: { user: userData, token }
+            payload: { user: userData, token },
           });
         } catch (error) {
           // Token is invalid or expired
@@ -136,29 +137,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       // Authenticate with the API
       const response = await apiClient.login(email, password);
-      
+
       // Extract token and user data from response
       const { token, user } = response;
-      
+
       // Store token
       localStorage.setItem('auth_token', token);
-      
+
       // Set token in API client for future requests
       apiClient.setAuthToken(token);
-      
+
       // Update auth state
       dispatch({
         type: 'LOGIN_SUCCESS',
-        payload: { user, token }
+        payload: { user, token },
       });
     } catch (error) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'An unknown error occurred during login';
-      
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred during login';
+
       dispatch({
         type: 'LOGIN_FAILURE',
-        payload: errorMessage
+        payload: errorMessage,
       });
     }
   };
@@ -167,10 +167,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     // Clear token from storage
     localStorage.removeItem('auth_token');
-    
+
     // Clear token from API client
     apiClient.clearAuthToken();
-    
+
     // Update auth state
     dispatch({ type: 'LOGOUT' });
   };
@@ -188,20 +188,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     clearError,
   };
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
 // Custom hook for using auth context
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  
+
   return context;
 };
