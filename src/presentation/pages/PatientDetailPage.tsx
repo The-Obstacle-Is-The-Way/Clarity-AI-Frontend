@@ -7,6 +7,7 @@ import { useDeletePatient } from '@application/hooks/useDeletePatient';
 import PatientDetailCard from '@presentation/organisms/PatientDetailCard';
 import PatientForm from '@presentation/organisms/PatientForm';
 import { ConfirmDialog } from '@presentation/molecules/ConfirmDialog';
+import ClinicalRecordList from '@presentation/organisms/ClinicalRecordList';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Terminal, ArrowLeft, Edit, X, Trash2 } from 'lucide-react';
@@ -187,7 +188,10 @@ const PatientDetailPage: React.FC = () => {
         {isEditing && '(Editing)'}
       </h1>
       {renderContent()}
-      {/* Placeholder for other sections like Clinical Records, Analytics */}
+
+      {!isEditing && patientId && (
+         <ClinicalRecordList patientId={patientId} />
+      )}
 
       <ConfirmDialog
         open={isConfirmDeleteDialogOpen}
