@@ -102,11 +102,11 @@ This checklist details the explicit, iterative steps required for the frontend i
         *   `src/presentation/pages/CreatePatientPage.tsx` (or modal).
         *   `src/presentation/organisms/PatientForm.tsx` (using React Hook Form, ensure validation matches backend).
     *   [ ] **Testing:** Unit/integration tests.
-*   [ ] **9. Patient Update:**
-    *   [ ] **Verify API:** Confirm endpoint (e.g., `PUT /api/patients/{patientId}`).
-    *   [ ] **API Call:** Implement `updatePatient` in `patientService.ts`.
-    *   [ ] **State:** Use `useMutation`, invalidate list and detail queries on success.
-    *   [ ] **UI:** Reuse or adapt `PatientForm.tsx` on `PatientDetailPage.tsx`.
+*   [ ] **9. Patient Update:** *Status: In Progress*
+    *   [x] **Verify API:** Confirm endpoint (e.g., `PUT /api/patients/{patientId}`). *Status: Assumed PUT `/patients/{patientId}`.*
+    *   [x] **API Call:** Implement `updatePatient` in `patientService.ts`. *Status: Implemented.*
+    *   [x] **State:** Use `useMutation`, invalidate list and detail queries on success. *Status: Implemented `useUpdatePatient.ts`.*
+    *   [x] **UI:** Reuse or adapt `PatientForm.tsx` on `PatientDetailPage.tsx`. *Status: Integrated into `PatientDetailPage.tsx` with toggle.*
     *   [ ] **Testing:** Unit/integration tests.
 *   [ ] **10. Patient Deletion:**
     *   [ ] **Verify API:** Confirm endpoint (e.g., `DELETE /api/patients/{patientId}`).
