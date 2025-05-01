@@ -152,24 +152,24 @@ This checklist details the explicit, iterative steps required for the frontend i
 
 **Phase 3: Testing, Refinement & Deployment Prep**
 
-*   [ ] **15. E2E Testing Implementation:**
-    *   [ ] Set up Cypress or Playwright (`npm install cypress --save-dev`). Configure base URL, test scripts in `package.json`.
-    *   [ ] Write E2E tests for critical flows:
+*   [ ] **15. E2E Testing Implementation:** *Status: Blocked - Requires Manual Setup & Implementation*
+    *   [ ] Set up Cypress or Playwright (`npm install cypress --save-dev`). Configure base URL, test scripts in `package.json`. *Status: Pending Manual Action.*
+    *   [ ] Write E2E tests for critical flows: *Status: Pending Manual Action.*
         *   Login/Logout.
         *   Navigate to Patient List.
         *   Create a new Patient.
         *   View Patient Detail.
         *   Run XGBoost prediction.
         *   (Add tests for each major integrated domain).
-    *   [ ] Integrate E2E tests into CI pipeline.
-*   [ ] **16. Comprehensive Unit & Integration Testing:**
-    *   [ ] Review test coverage (`npm run test:coverage`). Aim for high coverage on hooks, services, complex components.
-    *   [ ] Add missing unit/integration tests identified during development.
-*   [ ] **17. Performance & Bundle Size Optimization:**
-    *   [ ] Analyze production build (`npm run build && npm run analyze`).
-    *   [ ] Implement `React.lazy` for page components and heavy optional components.
-    *   [ ] Review component memoization (`React.memo`, `useMemo`, `useCallback`).
-    *   [ ] Use browser dev tools (Profiler, Network tabs) to identify bottlenecks.
+    *   [ ] Integrate E2E tests into CI pipeline. *Status: Pending Manual Action (CI Setup).*
+*   [ ] **16. Comprehensive Unit & Integration Testing:** *Status: Blocked - Requires Manual Implementation*
+    *   [ ] Review test coverage (`npm run test:coverage`). Aim for high coverage on hooks, services, complex components. *Status: Pending Manual Action.*
+    *   [ ] Add missing unit/integration tests identified during development (for Items 6-11, 13, 14, etc.). *Status: Pending Manual Action.*
+*   [ ] **17. Performance & Bundle Size Optimization:** *Status: Partially Addressed*
+    *   [ ] Analyze production build (`npm run build && npm run analyze`). *Status: Pending Manual Action.*
+    *   [x] Implement `React.lazy` for page components and heavy optional components. *Status: Implemented for main pages in `AppRoutes.tsx`.*
+    *   [ ] Review component memoization (`React.memo`, `useMemo`, `useCallback`). *Status: Pending Manual Review.*
+    *   [ ] Use browser dev tools (Profiler, Network tabs) to identify bottlenecks. *Status: Pending Manual Action.*
 *   [ ] **18. Documentation Finalization:**
     *   [ ] Ensure all public components/hooks have TSDoc comments.
     *   [ ] Update project `README.md` with setup and run instructions.
