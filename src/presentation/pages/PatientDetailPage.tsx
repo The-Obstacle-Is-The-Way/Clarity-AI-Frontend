@@ -7,10 +7,10 @@ import { useDeletePatient } from '@application/hooks/useDeletePatient';
 import PatientDetailCard from '@presentation/organisms/PatientDetailCard';
 import PatientForm from '@presentation/organisms/PatientForm';
 import { ConfirmDialog } from '@presentation/molecules/ConfirmDialog';
-import { Alert, AlertDescription, AlertTitle } from "@presentation/atoms/alert";
-import { Skeleton } from "@presentation/atoms/skeleton";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Terminal, ArrowLeft, Edit, X, Trash2 } from 'lucide-react';
-import { Button } from "@presentation/atoms/button";
+import { Button } from '@/components/ui/button';
 import type { UpdatePatientInput } from '@domain/patients/patientSchemas';
 
 /**
@@ -24,9 +24,24 @@ const PatientDetailPage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirmDeleteDialogOpen, setIsConfirmDeleteDialogOpen] = useState(false);
 
-  const { data: patient, error: fetchError, isLoading: isLoadingDetail, isError: isFetchError } = usePatientDetail(patientId);
-  const { mutate: updatePatient, isLoading: isUpdating, error: updateError, isError: isUpdateError } = useUpdatePatient();
-  const { mutate: deletePatient, isLoading: isDeleting, error: deleteError, isError: isDeleteError } = useDeletePatient();
+  const {
+    data: patient,
+    error: fetchError,
+    isLoading: isLoadingDetail,
+    isError: isFetchError,
+  } = usePatientDetail(patientId);
+  const {
+    mutate: updatePatient,
+    isPending: isUpdating,
+    error: updateError,
+    isError: isUpdateError,
+  } = useUpdatePatient();
+  const {
+    mutate: deletePatient,
+    isPending: isDeleting,
+    error: deleteError,
+    isError: isDeleteError,
+  } = useDeletePatient();
 
   const handleUpdateSubmit = (data: UpdatePatientInput) => {
     if (!patientId) return;
@@ -37,7 +52,7 @@ const PatientDetailPage: React.FC = () => {
         onSuccess: () => {
           setIsEditing(false);
         },
-      }
+      },
     );
   };
 
@@ -51,7 +66,7 @@ const PatientDetailPage: React.FC = () => {
       onError: () => {
         // Keep dialog open on error? Optional, depends on UX preference.
         // setIsConfirmDeleteDialogOpen(false); // Could close here or let user retry/cancel
-      }
+      },
     });
   };
 
@@ -59,24 +74,25 @@ const PatientDetailPage: React.FC = () => {
     if (isLoadingDetail) {
       return (
         <div className="space-y-4">
-            <Skeleton className="h-8 w-3/4" />
-            <Skeleton className="h-4 w-1/2" />
-            <Skeleton className="h-4 w-5/6" />
-            <Skeleton className="h-4 w-4/6" />
+          <Skeleton className="h-8 w-3/4" />
+          <Skeleton className="h-4 w-1/2" />
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-4 w-4/6" />
         </div>
       );
     }
 
     if (isFetchError || !patient) {
-      const errorMessage = fetchError instanceof Error ? fetchError.message : 'An unknown error occurred fetching patient details.';
-       return (
-         <Alert variant="destructive" className="mb-4">
-            <Terminal className="h-4 w-4" />
-            <AlertTitle>Error Fetching Patient Details</AlertTitle>
-            <AlertDescription>
-              {errorMessage}
-            </AlertDescription>
-          </Alert>
+      const errorMessage =
+        fetchError instanceof Error
+          ? fetchError.message
+          : 'An unknown error occurred fetching patient details.';
+      return (
+        <Alert variant="destructive" className="mb-4">
+          <Terminal className="h-4 w-4" />
+          <AlertTitle>Error Fetching Patient Details</AlertTitle>
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
       );
     }
 
@@ -90,14 +106,16 @@ const PatientDetailPage: React.FC = () => {
       return (
         <div className="mt-6">
           {isUpdateError && (
-             <Alert variant="destructive" className="mb-4">
-                <Terminal className="h-4 w-4" />
-                <AlertTitle>Update Failed</AlertTitle>
-                <AlertDescription>
-                  {updateError instanceof Error ? updateError.message : "An unexpected error occurred."}
-                   Please check the form fields or try again later.
-                </AlertDescription>
-              </Alert>
+            <Alert variant="destructive" className="mb-4">
+              <Terminal className="h-4 w-4" />
+              <AlertTitle>Update Failed</AlertTitle>
+              <AlertDescription>
+                {updateError instanceof Error
+                  ? updateError.message
+                  : 'An unexpected error occurred.'}
+                Please check the form fields or try again later.
+              </AlertDescription>
+            </Alert>
           )}
           <PatientForm
             onSubmit={handleUpdateSubmit}
@@ -111,7 +129,7 @@ const PatientDetailPage: React.FC = () => {
             className="mt-4"
             disabled={isUpdating}
           >
-             <X className="mr-2 h-4 w-4" /> Cancel
+            <X className="mr-2 h-4 w-4" /> Cancel
           </Button>
         </div>
       );
@@ -120,14 +138,16 @@ const PatientDetailPage: React.FC = () => {
         <>
           <PatientDetailCard patient={patient} />
           {isDeleteError && (
-             <Alert variant="destructive" className="mt-4 mb-4">
-                <Terminal className="h-4 w-4" />
-                <AlertTitle>Delete Failed</AlertTitle>
-                <AlertDescription>
-                  {deleteError instanceof Error ? deleteError.message : 'An unexpected error occurred while deleting the patient.'}
-                   Please try again later.
-                </AlertDescription>
-              </Alert>
+            <Alert variant="destructive" className="mt-4 mb-4">
+              <Terminal className="h-4 w-4" />
+              <AlertTitle>Delete Failed</AlertTitle>
+              <AlertDescription>
+                {deleteError instanceof Error
+                  ? deleteError.message
+                  : 'An unexpected error occurred while deleting the patient.'}
+                Please try again later.
+              </AlertDescription>
+            </Alert>
           )}
           <div className="flex space-x-2 mt-4">
             <Button
@@ -154,15 +174,16 @@ const PatientDetailPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
-        <Button variant="outline" size="sm" asChild className="mb-4">
-             <Link to="/patients">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Patients
-            </Link>
-        </Button>
+      <Button variant="outline" size="sm" asChild className="mb-4">
+        <Link to="/patients">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Patients
+        </Link>
+      </Button>
 
       <h1 className="text-3xl font-bold mb-6">
-        Patient Details {patient && !isEditing ? `- ${patient.first_name} ${patient.last_name}` : ''}
+        Patient Details{' '}
+        {patient && !isEditing ? `- ${patient.first_name} ${patient.last_name}` : ''}
         {isEditing && '(Editing)'}
       </h1>
       {renderContent()}
@@ -175,8 +196,10 @@ const PatientDetailPage: React.FC = () => {
         description={
           <>
             Are you sure you want to permanently delete patient{' '}
-            <strong>{patient?.first_name} {patient?.last_name}</strong>?
-            This action cannot be undone.
+            <strong>
+              {patient?.first_name} {patient?.last_name}
+            </strong>
+            ? This action cannot be undone.
           </>
         }
         onConfirm={handleConfirmDelete}

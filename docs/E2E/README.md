@@ -112,13 +112,13 @@ This checklist details the explicit, iterative steps required for the frontend i
     *   [x] **Verify API:** Confirm endpoint (e.g., `DELETE /api/patients/{patientId}`). *Status: Assumed `DELETE /patients/{patientId}`.*
     *   [x] **API Call:** Implement `deletePatient` in `patientService.ts`. *Status: Implemented.*
     *   [x] **State:** Use `useMutation` (`useDeletePatient.ts`), invalidate list query on success. *Status: Implemented.*
-    *   [x] **UI:** Add delete button/confirmation dialog (`ConfirmDialog.tsx`) to detail view (`PatientDetailPage.tsx`). *Status: Implemented.*
+    *   [x] **UI:** Add delete button/confirmation dialog (`ConfirmDialog.tsx`) to detail view (`PatientDetailPage.tsx`). *Status: Implemented (Requires manual fixing of imports).*
     *   [ ] **Testing:** Unit/integration tests. *Status: Pending - requires tests for `ConfirmDialog`, `PatientDetailPage` updates, and potentially `useDeletePatient` mock.*
 
 **Domain: Clinical Records Management (Example)**
 
-*   [ ] **11. View Clinical Records for Patient:**
-    *   [ ] **Verify API:** Confirm endpoint (e.g., `GET /api/patients/{patientId}/records`). Define `ClinicalRecord` type. Check filtering/sorting.
+*   [ ] **11. View Clinical Records for Patient:** *Status: In Progress*
+    *   [ ] **Verify API:** Confirm endpoint (e.g., `GET /api/patients/{patientId}/records`). Define `ClinicalRecord` type. Check filtering/sorting. *Status: Pending - Assuming `GET /api/patients/{patientId}/records`.*
     *   [ ] **API Call:** Implement `getClinicalRecords` in `src/infrastructure/api/clinicalRecordService.ts`.
     *   [ ] **State:** `useQuery` hook (`src/application/hooks/useClinicalRecords.ts`).
     *   [ ] **UI:**
