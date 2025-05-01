@@ -1,9 +1,9 @@
 {
-  "name": "novamind-frontend",
+  "name": "clarity-ai-frontend",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Neural visualization platform for psychiatry and mental health",
+  "description": "Clarity-AI Psychiatry Digital Twin - Neural visualization platform for psychiatry and mental health",
   "scripts": {
     "dev": "vite --config config/vite.config.ts",
     "build": "tsc && vite build --config config/vite.config.ts",
