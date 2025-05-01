@@ -48,7 +48,7 @@ This checklist details the explicit, iterative steps required for the frontend i
     *   [x] **Routing:** Implement protected route mechanism (`src/presentation/routes/ProtectedRoute.tsx`) redirecting unauthenticated users to `/login`. Update main router (`App.tsx` or similar).
 *   [x] **3. Global Error Handling & UX:**
     *   [x] Implement `src/presentation/ErrorBoundary.tsx` and wrap main layout.
-    *   [ ] Define user-facing error notification system (e.g., using `react-toastify`).
+    *   [x] Define user-facing error notification system (e.g., using `react-toastify`).
     *   [ ] Ensure API client errors (network, 4xx, 5xx) trigger user-friendly notifications via the interceptor.
     *   [ ] Implement global loading indicators (e.g., top progress bar) tied to API request states.
 *   [x] **4. Basic Layout & Navigation:**

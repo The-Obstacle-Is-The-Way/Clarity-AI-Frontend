@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from '@presentation/templates/App';
 import './presentation/styles/index.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Add error handler for uncaught errors
 window.addEventListener('error', (event) => {

@@ -3,6 +3,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ErrorBoundary from '@presentation/ErrorBoundary';
+import { ToastContainer } from 'react-toastify';
 
 // Pages
 import Dashboard from '@presentation/pages/Dashboard';
@@ -50,6 +51,18 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <ThemeWrapper>
         <AuthProvider>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
           <ErrorBoundary>
             <Router>
               <Routes>

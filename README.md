@@ -194,6 +194,9 @@ VITE_API_BASE_URL=/api
 - Three.js for 3D visualization
 - React Query for data fetching
 - D3.js for data visualization
+- React Hook Form for forms
+- Zod for validation
+- React Toastify for notifications
 
 ## HIPAA Compliance
 

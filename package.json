@@ -70,6 +70,7 @@
     "postcss-nesting": "^13.0.1",
     "react-hook-form": "7.55.0",
     "react-router-dom": "^7.5.0",
+    "react-toastify": "^11.0.5",
     "recharts": "^2.15.2",
     "source-map-js": "1.2.1",
     "stats.js": "^0.17.0",
