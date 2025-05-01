@@ -170,14 +170,14 @@ This checklist details the explicit, iterative steps required for the frontend i
     *   [x] Implement `React.lazy` for page components and heavy optional components. *Status: Implemented for main pages in `AppRoutes.tsx`.*
     *   [ ] Review component memoization (`React.memo`, `useMemo`, `useCallback`). *Status: Pending Manual Review.*
     *   [ ] Use browser dev tools (Profiler, Network tabs) to identify bottlenecks. *Status: Pending Manual Action.*
-*   [ ] **18. Documentation Finalization:**
-    *   [ ] Ensure all public components/hooks have TSDoc comments.
-    *   [ ] Update project `README.md` with setup and run instructions.
-    *   [ ] Update this `docs/E2E/README.md` reflecting the final integrated state.
-*   [ ] **19. Final HIPAA Compliance Review:**
-    *   [ ] Review all UI components displaying sensitive data for correct masking/redaction.
-    *   [ ] Verify secure handling of tokens and API communication.
-    *   [ ] Confirm role-based access controls are respected in the UI (disabling buttons, hiding sections).
+*   [ ] **18. Documentation Finalization:** *Status: Partially Addressed*
+    *   [ ] Ensure all public components/hooks have TSDoc comments. *Status: Pending Manual Implementation (TSDoc edits failed).*
+    *   [ ] Update project `README.md` with setup and run instructions. *Status: Pending Manual Action.*
+    *   [x] Update this `docs/E2E/README.md` reflecting the final integrated state. *Status: Completed (Continuously updated).*
+*   [ ] **19. Final HIPAA Compliance Review:** *Status: Blocked - Requires Manual Review*
+    *   [ ] Review all UI components displaying sensitive data for correct masking/redaction. *Status: Pending Manual Review.*
+    *   [ ] Verify secure handling of tokens and API communication. *Status: Pending Manual Review.*
+    *   [ ] Confirm role-based access controls are respected in the UI (disabling buttons, hiding sections). *Status: Pending Manual Review.*
 
 ## Key Considerations (Reiteration)
 

@@ -7,12 +7,11 @@ import type {
 
 /**
  * Fetches a list of patients from the API, potentially with pagination.
- *
- * @param {object} params - Optional query parameters.
- * @param {number} [params.page=1] - The page number to fetch.
- * @param {number} [params.limit=20] - The number of items per page.
- * @param {string} [params.search] - Optional search term.
- * @returns {Promise<PaginatedPatientsResponse>} A promise resolving to the paginated patient data.
+ * @param params - Optional query parameters.
+ * @param params.page - The page number to fetch.
+ * @param params.limit - The number of items per page.
+ * @param params.search - Optional search term.
+ * @returns A promise resolving to the paginated patient data.
  */
 export const getPatients = async (params: {
   page?: number;
@@ -41,9 +40,8 @@ export const getPatients = async (params: {
 
 /**
  * Creates a new patient via the API.
- *
- * @param {Omit<Patient, 'id' | 'created_at' | 'updated_at'>} patientData - The data for the new patient.
- * @returns {Promise<Patient>} A promise resolving to the newly created patient data (including ID and timestamps).
+ * @param patientData - The data for the new patient.
+ * @returns A promise resolving to the newly created patient data.
  */
 export const createPatient = async (patientData: Omit<Patient, 'id' | 'created_at' | 'updated_at'>): Promise<Patient> => {
   try {
@@ -58,9 +56,8 @@ export const createPatient = async (patientData: Omit<Patient, 'id' | 'created_a
 
 /**
  * Fetches a single patient by their ID.
- *
- * @param {string} patientId - The ID of the patient to fetch.
- * @returns {Promise<Patient>} A promise resolving to the patient data.
+ * @param patientId - The ID of the patient to fetch.
+ * @returns A promise resolving to the patient data.
  */
 export const getPatientById = async (patientId: string): Promise<Patient> => {
   if (!patientId) {
@@ -78,9 +75,9 @@ export const getPatientById = async (patientId: string): Promise<Patient> => {
 
 /**
  * Deletes a patient by their ID.
- *
- * @param {string} patientId - The ID of the patient to delete.
- * @returns {Promise<void>} A promise that resolves when the deletion is successful.
+ * @param patientId - The ID of the patient to delete.
+ * @returns A promise that resolves when the deletion is successful.
+ * @throws {Error} If patientId is not provided or if the API call fails.
  */
 export const deletePatient = async (patientId: string): Promise<void> => {
   if (!patientId) {
