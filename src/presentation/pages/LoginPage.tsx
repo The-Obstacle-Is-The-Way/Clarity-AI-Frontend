@@ -16,12 +16,12 @@ export const LoginPage: React.FC = () => {
   // Redirect to dashboard if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate('/');
     }
   }, [isAuthenticated, navigate]);
 
   const handleLoginSuccess = () => {
-    navigate('/dashboard');
+    navigate('/');
   };
 
   return (
