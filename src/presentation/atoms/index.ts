@@ -6,10 +6,21 @@
  * and following clean architecture principles for organization.
  */
 
-// UI Building Blocks
-export { default as Button } from './Button';
-export { default as Card } from './Card';
-export { DocumentTitle } from './DocumentTitle';
-export { default as Avatar } from './Avatar'; // Export the new Avatar component
+// Export all UI components
+export * from './Button';
+export * from './Card';
+export * from './Badge';
+export * from './Tooltip';
+export * from './tabs';
+export * from './select';
+export * from './switch';
+export * from './scroll-area';
+export * from './progress';
+export * from './separator';
+export * from './slider';
+export * from './popover';
+export * from './ActivityIndicator';
+export * from './LoadingIndicator';
+export * from './DocumentTitle';
 
 // Add additional atom exports here as the application grows

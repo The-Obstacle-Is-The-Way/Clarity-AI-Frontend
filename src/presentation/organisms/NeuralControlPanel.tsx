@@ -11,35 +11,33 @@ import { motion } from 'framer-motion'; // Removed unused AnimatePresence
 // Neural visualization coordinator
 // import { useVisualizationCoordinator } from "@application/coordinators/NeuralVisualizationCoordinator"; // Module missing
 
-// UI components
-// Correct import paths for Shadcn components
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button'; // Correct path and named import
-import {
+// UI components from atoms index
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger,
+  Button,
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select'; // Correct path
-import { Switch } from '@/components/ui/switch'; // Correct path
-import {
+  Switch,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@presentation/atoms/Tooltip'; // Assuming this path is correct
-import { Badge } from '@presentation/atoms/Badge'; // Assuming this path is correct
-import {
+  Badge,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'; // Correct path
-import { ScrollArea } from '@/components/ui/scroll-area'; // Correct path
-import { Progress } from '@/components/ui/progress'; // Add missing Progress import
+  ScrollArea,
+  Progress
+} from '@presentation/atoms';
 
 // Icons
 import {
@@ -67,7 +65,7 @@ import {
 type PlaceholderTimeScale = 'momentary' | 'hourly' | 'daily' | 'weekly' | 'monthly';
 // import { NeuralTransform } from "@domain/types/neural/transforms"; // Assuming this might be missing too, comment out for now
 // Import types needed for placeholder state
-import type { BrainModel, BrainRegion, NeuralConnection } from '@domain/types/brain/models';
+import type { BrainModel, BrainRegion, NeuralConnection, BrainScan } from '@domain/types/brain/models';
 import type { ActivationLevel } from '@domain/types/brain/activity';
 import { RenderMode } from '@domain/types/brain/visualization'; // Import RenderMode
 
@@ -133,7 +131,9 @@ export const NeuralControlPanel: React.FC<NeuralControlPanelProps> = ({
         scanDate: '',
         scanType: 'MRI',
         dataQualityScore: 0,
-      } as BrainModel['scan'], // Properly typed scan object
+        resolution: { x: 0, y: 0, z: 0 },
+        metadata: {}
+      } as BrainScan,
       timestamp: '',
       version: '',
       metadata: {},

@@ -20,7 +20,7 @@ import { AuthProvider } from '@application/context/AuthContext';
 import ProtectedRoute from '@presentation/routes/ProtectedRoute';
 
 // Styles
-import '@presentation/styles/index.css';
+import '../../presentation/styles/index.css';
 
 // Create a client
 const queryClient = new QueryClient({

@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 
 import LoadingIndicator from '@atoms/LoadingIndicator';
 import BrainVisualizationContainer from '@organisms/BrainVisualizationContainer';
-import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient'; // Corrected import name
+import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient';
 import type { BrainRegion } from '@domain/types/brain/models'; // Import correct type
-import { ThemeWrapper } from '@presentation/App';
+import { ThemeWrapper } from '@presentation/templates/App';
 
 /**
  * BrainVisualizationPage
