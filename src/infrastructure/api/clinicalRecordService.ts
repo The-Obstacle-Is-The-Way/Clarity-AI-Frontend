@@ -1,5 +1,5 @@
 // src/infrastructure/api/clinicalRecordService.ts
-import apiClient from './apiClient';
+import { apiClient } from './apiClient';
 import type {
   ClinicalRecord,
   PaginatedClinicalRecordsResponse,
@@ -50,11 +50,7 @@ export const getClinicalRecords = async (
     );
     return response; // apiClient should ideally return the parsed data directly
   } catch (error) {
-    console.error(
-      `Failed to fetch clinical records for patient ID ${patientId}:`,
-      error,
-    );
-    // Re-throw the error to be handled by React Query or calling component
+    console.error(`Failed to fetch clinical records for patient ID ${patientId}:`, error);
     throw error;
   }
 };
