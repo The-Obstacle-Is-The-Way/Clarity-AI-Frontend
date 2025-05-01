@@ -108,12 +108,12 @@ This checklist details the explicit, iterative steps required for the frontend i
     *   [x] **State:** Use `useMutation`, invalidate list and detail queries on success. *Status: Implemented `useUpdatePatient.ts`.*
     *   [x] **UI:** Reuse or adapt `PatientForm.tsx` on `PatientDetailPage.tsx`. *Status: Integrated into `PatientDetailPage.tsx` with toggle.*
     *   [ ] **Testing:** Unit/integration tests.
-*   [ ] **10. Patient Deletion:**
-    *   [ ] **Verify API:** Confirm endpoint (e.g., `DELETE /api/patients/{patientId}`).
-    *   [ ] **API Call:** Implement `deletePatient` in `patientService.ts`.
-    *   [ ] **State:** Use `useMutation`, invalidate list query on success.
-    *   [ ] **UI:** Add delete button/confirmation dialog (`src/presentation/molecules/ConfirmDialog.tsx`) to list or detail view.
-    *   [ ] **Testing:** Unit/integration tests.
+*   [ ] **10. Patient Deletion:** *Status: Completed (Testing Pending)*
+    *   [x] **Verify API:** Confirm endpoint (e.g., `DELETE /api/patients/{patientId}`). *Status: Assumed `DELETE /patients/{patientId}`.*
+    *   [x] **API Call:** Implement `deletePatient` in `patientService.ts`. *Status: Implemented.*
+    *   [x] **State:** Use `useMutation` (`useDeletePatient.ts`), invalidate list query on success. *Status: Implemented.*
+    *   [x] **UI:** Add delete button/confirmation dialog (`ConfirmDialog.tsx`) to detail view (`PatientDetailPage.tsx`). *Status: Implemented.*
+    *   [ ] **Testing:** Unit/integration tests. *Status: Pending - requires tests for `ConfirmDialog`, `PatientDetailPage` updates, and potentially `useDeletePatient` mock.*
 
 **Domain: Clinical Records Management (Example)**
 

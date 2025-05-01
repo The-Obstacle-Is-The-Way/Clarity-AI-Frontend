@@ -30,7 +30,7 @@ const PatientDetailPage: React.FC = () => {
 
   const handleUpdateSubmit = (data: UpdatePatientInput) => {
     if (!patientId) return;
-    console.log("Submitting update:", data);
+    console.log('Submitting update:', data);
     updatePatient(
       { patientId, patientData: data },
       {
@@ -124,7 +124,7 @@ const PatientDetailPage: React.FC = () => {
                 <Terminal className="h-4 w-4" />
                 <AlertTitle>Delete Failed</AlertTitle>
                 <AlertDescription>
-                  {deleteError instanceof Error ? deleteError.message : "An unexpected error occurred while deleting the patient."}
+                  {deleteError instanceof Error ? deleteError.message : 'An unexpected error occurred while deleting the patient.'}
                    Please try again later.
                 </AlertDescription>
               </Alert>
