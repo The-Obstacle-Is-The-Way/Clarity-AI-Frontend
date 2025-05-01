@@ -1,3 +1,33 @@
+# Novamind Frontend Agentic Development Guide (.cursorrules)
+
+## MISSION: Implement E2E Integration (docs/E2E/README.md)
+
+Your primary directive is to implement the frontend features required to fully integrate with the Clarity-AI-Backend, following the phases and tasks outlined in `docs/E2E/README.md`. Prioritize Phase 1 (Foundation & Core Services) before moving to Phase 2 (Feature Integration per Domain).
+
+**CRITICAL:** Before implementing any feature, **VERIFY** the exact backend API endpoint, request/response schema, and operational status. The E2E checklist is a guide; adapt to the verified backend reality.
+
+## CORE DEVELOPMENT RULES (Concise)
+
+1.  **ARCHITECTURE:** Strict `src/{domain|application|infrastructure|presentation}`. Atomic Design in `presentation/`. Path aliases (`@/*`). PURE TYPESCRIPT (.ts/.tsx). ESM only.
+2.  **TYPE SAFETY:** `strict: true`. No `any`. Use `unknown`, `zod`, custom `Error` subtypes.
+3.  **STACK:** React (`/facebook/react`), Vite (`/vitejs/vite`), TypeScript (`/microsoft/typescript`), Tailwind (`/tailwindlabs/tailwindcss`), R3F (`/pmndrs/react-three-fiber`).
+4.  **STATE:** UI (`useState`/`useReducer`), Global (Context: `AuthContext`), Server (**TanStack Query `/tanstack/query` MANDATORY**), Forms (**React Hook Form `/react-hook-form/react-hook-form` + Zod MANDATORY**).
+5.  **COMPONENTS:** Functional only. Explicit Props+TSDoc. Explicit return type. `React.memo`/`useCallback`/`useMemo` for performance. Error Boundaries.
+6.  **STYLING:** Tailwind CSS (`/tailwindlabs/tailwindcss`). Logical class grouping (`clsx`/`tailwind-merge`). Minimal custom classes/theme.
+7.  **API CLIENT:** Centralized `src/infrastructure/api/apiClient.ts` (use axios/fetch). Implement request/response interceptors (auth, logging, error handling). Create specific service wrappers (`PatientService`, `AuthService`).
+8.  **TESTING:** Vitest (`/vitest-dev/vitest`) + RTL (`/testing-library/react-testing-library`) for unit/integration/component tests. Aim for high coverage. E2E (Cypress/Playwright) setup is needed for Phase 3.
+9.  **HIPAA:** Use masking components. Secure token handling. UI respects roles. Trigger backend audits.
+10. **DOCUMENTATION:** TSDoc for exports. Update `docs/E2E/README.md` checklist. ADRs for major decisions.
+11. **GIT:** Conventional Commits (`type(scope): desc`). Feature branches (`feature/...`).
+12. **QUALITY:** Pre-commit hooks (lint, format, types). Clean code. Address linter/type errors promptly.
+
+## CURRENT FOCUS (Example - Adjust based on progress)
+
+- **Verify & Implement:** Phase 1, Item 2: Authentication Integration (Confirm backend endpoints, implement `LoginPage`, `LoginForm`, `AuthContext`, `authService.ts`, protected routes).
+- **Refactor:** Consolidate any components/pages found outside the standard `src/{layer}` structure.
+
+**AGENT BEHAVIOR:** Work iteratively. Implement feature -> Write tests -> Refactor -> Commit. Communicate progress against the E2E checklist. Ask for clarification if backend API details are missing or ambiguous.
+
 # Novamind Digital Twin: Development Rules
 - PURE TYPESCRIPT TS NO JS 
 
