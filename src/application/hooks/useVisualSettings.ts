@@ -7,8 +7,8 @@
 
 import { useState, useCallback, useEffect, useMemo } from 'react'; // Add useMemo
 import { useQueryClient } from '@tanstack/react-query';
-// Import local useTheme hook derived from ThemeContext
-import { useTheme } from '@application/hooks/useTheme';
+// Import useTheme from the providers
+import { useTheme } from '@application/providers/ThemeProvider';
 
 // Domain types
 import type {
