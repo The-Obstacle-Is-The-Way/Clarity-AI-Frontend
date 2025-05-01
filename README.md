@@ -1,6 +1,6 @@
-# Novamind Digital Twin Frontend
+# Clarity-AI Psychiatry Digital Twin
 
-A premium frontend implementation for the Novamind Digital Twin project, providing a comprehensive visualization of patient mental health profiles for clinicians in a HIPAA-compliant environment.
+A premium frontend implementation for the Clarity-AI Psychiatry Digital Twin project, providing a comprehensive visualization of patient mental health profiles for clinicians in a HIPAA-compliant environment.
 
 ## Architecture
 
@@ -186,7 +186,7 @@ All visualizations follow HIPAA guidelines:
 
 ## Project Status
 
-This frontend implementation is ready to connect with the Novamind Digital Twin backend services for a comprehensive psychiatric digital twin platform.
+This frontend implementation is ready to connect with the Clarity-AI Psychiatry Digital Twin backend services for a comprehensive psychiatric digital twin platform.
 
 ## Configuration Management
 
