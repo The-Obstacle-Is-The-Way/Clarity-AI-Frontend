@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural Visualization
  * RegionSelectionPanel Molecular Component - interface for neural region selection

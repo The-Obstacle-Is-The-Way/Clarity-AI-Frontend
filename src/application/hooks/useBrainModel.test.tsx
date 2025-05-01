@@ -1,4 +1,3 @@
-/* eslint-disable */
 // NOVAMIND Neural Test Suite
 // useBrainModel testing with quantum precision
 

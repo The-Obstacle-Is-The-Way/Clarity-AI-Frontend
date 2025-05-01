@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React from 'react';
 
 import type { AssessmentScore } from '@domain/models/clinical/digital-twin-profile';

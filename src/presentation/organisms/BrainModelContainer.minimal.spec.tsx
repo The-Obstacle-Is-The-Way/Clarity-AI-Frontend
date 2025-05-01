@@ -18,7 +18,7 @@ import React from 'react';
 
 vi.mock('@presentation/templates/BrainModelContainer', () => ({
   default: function MockBrainModelContainer(props: any) {
-    // eslint-disable-line @typescript-eslint/no-explicit-any
+     
     return React.createElement(
       'div',
       {

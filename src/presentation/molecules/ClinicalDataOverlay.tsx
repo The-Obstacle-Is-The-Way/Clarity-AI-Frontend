@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural Visualization
  * ClinicalDataOverlay Molecular Component - neuropsychiatric clinical metrics

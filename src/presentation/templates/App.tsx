@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Example router setup
 import Dashboard from '@pages/Dashboard';
@@ -25,15 +26,8 @@ interface ThemeWrapperProps {
   defaultTheme?: 'light' | 'dark' | 'system';
 }
 
-export const ThemeWrapper: React.FC<ThemeWrapperProps> = ({ 
-  children, 
-  defaultTheme = 'dark' 
-}) => {
-  return (
-    <ThemeProvider defaultTheme={defaultTheme}>
-      {children}
-    </ThemeProvider>
-  );
+export const ThemeWrapper: React.FC<ThemeWrapperProps> = ({ children, defaultTheme = 'dark' }) => {
+  return <ThemeProvider defaultTheme={defaultTheme}>{children}</ThemeProvider>;
 };
 
 // Define the main App component

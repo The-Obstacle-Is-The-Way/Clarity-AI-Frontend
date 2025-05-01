@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * ActivityIndicator - Test
  * Properly implemented with React.createElement instead of JSX in mocks

@@ -47,7 +47,7 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
     const warningThreshold = warningThresholdInMinutes * 60 * 1000;
 
     setTimeRemaining(remaining);
-    
+
     // Calculate progress percentage
     const totalDuration = timeoutInMinutes * 60 * 1000;
     const newProgress = Math.max(0, Math.min(100, (remaining / totalDuration) * 100));
@@ -68,12 +68,12 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
   const handleExtendSession = useCallback(() => {
     renewSession();
     setVisible(false);
-    
+
     // Log session extension for audit purposes
     auditLogService.logAction({
       action: 'SESSION_EXTENDED',
       details: 'User extended their session',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }, [renewSession]);
 
@@ -83,9 +83,9 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
     auditLogService.logAction({
       action: 'SESSION_TIMEOUT_LOGOUT',
       details: 'User logged out due to session timeout',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-    
+
     logout();
   }, [logout]);
 
@@ -104,7 +104,8 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
         <CardContent className="pt-6">
           <h3 className="text-lg font-semibold mb-2">Session Timeout Warning</h3>
           <p className="text-sm text-gray-500 mb-4">
-            Your session will expire in {formatTimeRemaining(timeRemaining)}. Would you like to continue?
+            Your session will expire in {formatTimeRemaining(timeRemaining)}. Would you like to
+            continue?
           </p>
           <Progress value={progress} className="h-2" />
         </CardContent>
@@ -112,9 +113,7 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
           <Button variant="outline" onClick={handleLogout}>
             Logout
           </Button>
-          <Button onClick={handleExtendSession}>
-            Stay Logged In
-          </Button>
+          <Button onClick={handleExtendSession}>Stay Logged In</Button>
         </CardFooter>
       </Card>
     </div>

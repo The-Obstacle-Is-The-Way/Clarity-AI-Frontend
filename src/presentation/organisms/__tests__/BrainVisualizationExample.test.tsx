@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Example test file demonstrating WebGL mocking system
  *

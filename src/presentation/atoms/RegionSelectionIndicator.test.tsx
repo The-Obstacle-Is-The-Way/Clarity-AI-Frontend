@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * RegionSelectionIndicator - Test
  * Properly implemented test with React.createElement instead of JSX in mocks

@@ -182,7 +182,7 @@ const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({
                         {profile.treatmentPlan.treatments.map(
                           (
                             treatment: any // eslint-disable-line @typescript-eslint/no-explicit-any,
-                            index: number // Added types
+                            index: number
                           ) => (
                             <div
                               key={index}

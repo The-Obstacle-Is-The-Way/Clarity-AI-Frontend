@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 

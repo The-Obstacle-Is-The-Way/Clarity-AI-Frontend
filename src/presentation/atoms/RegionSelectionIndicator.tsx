@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Atomic Component
  * RegionSelectionIndicator - Quantum-level selection indicator
