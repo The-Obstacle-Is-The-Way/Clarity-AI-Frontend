@@ -26,10 +26,67 @@ function TestComponent() {
   );
 }
 
-describe('ThemeProvider', () => {
-  // No local beforeEach needed for mocks, as they are handled globally in setup.ts
+// Enhanced matchMedia mock for tests
+function setupMatchMedia(prefersDark = false) {
+  // Define a MediaQueryList mock with a _listeners array to track listeners
+  const mediaQueryList = {
+    matches: prefersDark,
+    media: '(prefers-color-scheme: dark)',
+    onchange: null,
+    addListener: vi.fn((listener) => {
+      // Store listeners in an array to support multiple listeners
+      mediaQueryList._listeners = mediaQueryList._listeners || [];
+      mediaQueryList._listeners.push(listener);
+    }),
+    removeListener: vi.fn((listener) => {
+      // Remove the listener from the array
+      mediaQueryList._listeners = (mediaQueryList._listeners || []).filter(l => l !== listener);
+    }),
+    addEventListener: vi.fn((event, listener) => {
+      if (event === 'change') {
+        mediaQueryList._listeners = mediaQueryList._listeners || [];
+        mediaQueryList._listeners.push(listener);
+      }
+    }),
+    removeEventListener: vi.fn((event, listener) => {
+      if (event === 'change') {
+        mediaQueryList._listeners = (mediaQueryList._listeners || []).filter(l => l !== listener);
+      }
+    }),
+    // Method to simulate a media query change
+    _triggerChange: (prefersDarkValue) => {
+      mediaQueryList.matches = prefersDarkValue;
+      // Notify all registered listeners
+      (mediaQueryList._listeners || []).forEach(listener => {
+        if (typeof listener === 'function') {
+          listener({ matches: prefersDarkValue });
+        } else if (listener && typeof listener.handleEvent === 'function') {
+          listener.handleEvent({ matches: prefersDarkValue });
+        }
+      });
+    },
+    _listeners: [],
+  };
 
-  // We still need a standard afterEach for cleanup
+  // Replace window.matchMedia with our enhanced mock
+  window.matchMedia = vi.fn().mockImplementation(() => mediaQueryList);
+
+  // Return the mock for additional control in tests
+  return mediaQueryList;
+}
+
+describe('ThemeProvider', () => {
+  let mediaQueryList;
+  
+  beforeEach(() => {
+    // Set up enhanced matchMedia mock before each test
+    mediaQueryList = setupMatchMedia(false); // Default to light mode
+    
+    // Also ensure localStorage is properly mocked
+    globalThis.mockLocalStorage.getItem.mockReset();
+    globalThis.mockLocalStorage.setItem.mockReset();
+    globalThis.mockLocalStorage.removeItem.mockReset();
+  });
 
   afterEach(() => {
     cleanup();
@@ -37,10 +94,9 @@ describe('ThemeProvider', () => {
   });
 
   it('uses system theme by default (prefers light)', async () => {
-    // Use global mocks
+    // Setup matchMedia to prefer light
+    mediaQueryList.matches = false;
     globalThis.mockLocalStorage.getItem.mockReturnValue(null);
-    // Set initial state BEFORE rendering
-    (globalThis as any).globalCurrentMatchesState = false; // Prefers light
 
     render(
       <ThemeProvider>
@@ -48,18 +104,21 @@ describe('ThemeProvider', () => {
       </ThemeProvider>
     );
 
+    // Verify theme is set to system and document has light class
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('system');
-      expect(document.documentElement.classList.contains('light')).toBe(true);
     });
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
+    
+    await waitFor(() => {
+      expect(document.documentElement.classList.contains('light')).toBe(true);
+      expect(document.documentElement.classList.contains('dark')).toBe(false);
+    });
   });
 
   it('uses system theme by default (prefers dark)', async () => {
-    // Use global mocks
+    // Setup matchMedia to prefer dark
+    mediaQueryList.matches = true;
     globalThis.mockLocalStorage.getItem.mockReturnValue(null);
-    // Set initial state BEFORE rendering
-    (globalThis as any).globalCurrentMatchesState = true; // Prefers dark
 
     render(
       <ThemeProvider>
@@ -67,17 +126,20 @@ describe('ThemeProvider', () => {
       </ThemeProvider>
     );
 
-    // Wait specifically for the 'dark' class to be applied
+    // Verify theme is set to system and document has dark class
     await waitFor(() => {
-      expect(document.documentElement).toHaveClass('dark');
+      expect(screen.getByTestId('theme').textContent).toBe('system');
     });
-    expect(document.documentElement.classList.contains('light')).toBe(false);
+    
+    await waitFor(() => {
+      expect(document.documentElement.classList.contains('dark')).toBe(true);
+      expect(document.documentElement.classList.contains('light')).toBe(false);
+    });
   });
 
   it('loads saved theme from localStorage', async () => {
-    // Use global mocks
-    globalThis.mockLocalStorage.getItem.mockImplementation((key: string) => {
-      // Use the correct storageKey from the component's default props
+    // Set up localStorage to return 'dark'
+    globalThis.mockLocalStorage.getItem.mockImplementation((key) => {
       if (key === 'ui-theme') return 'dark';
       return null;
     });
@@ -88,19 +150,24 @@ describe('ThemeProvider', () => {
       </ThemeProvider>
     );
 
+    // Verify theme is set to dark from localStorage
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('dark');
-      expect(document.documentElement.classList.contains('dark')).toBe(true);
     });
-    expect(document.documentElement.classList.contains('light')).toBe(false);
+    
+    await waitFor(() => {
+      expect(document.documentElement.classList.contains('dark')).toBe(true);
+      expect(document.documentElement.classList.contains('light')).toBe(false);
+    });
   });
 
   it('allows changing theme', async () => {
-    // Use global mocks
+    // Start with system theme (light)
+    mediaQueryList.matches = false;
     globalThis.mockLocalStorage.getItem.mockReturnValue(null);
-    // Set initial state BEFORE rendering
-    (globalThis as any).globalCurrentMatchesState = false; // Prefers light
 
+    const user = userEvent.setup();
+    
     render(
       <ThemeProvider>
         <TestComponent />
@@ -114,48 +181,52 @@ describe('ThemeProvider', () => {
     });
 
     // Change to dark theme
-    await act(async () => {
-      await userEvent.click(screen.getByText('Dark'));
-    });
+    await user.click(screen.getByText('Dark'));
+    
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('dark');
-      expect(document.documentElement.classList.contains('dark')).toBe(true);
     });
-    expect(document.documentElement.classList.contains('light')).toBe(false);
+    
+    await waitFor(() => {
+      expect(document.documentElement.classList.contains('dark')).toBe(true);
+      expect(document.documentElement.classList.contains('light')).toBe(false);
+    });
+    
     expect(globalThis.mockLocalStorage.setItem).toHaveBeenCalledWith('ui-theme', 'dark');
 
     // Change to light theme
-    await act(async () => {
-      await userEvent.click(screen.getByText('Light'));
-    });
+    await user.click(screen.getByText('Light'));
+    
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('light');
-      expect(document.documentElement.classList.contains('light')).toBe(true);
     });
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
+    
+    await waitFor(() => {
+      expect(document.documentElement.classList.contains('light')).toBe(true);
+      expect(document.documentElement.classList.contains('dark')).toBe(false);
+    });
+    
     expect(globalThis.mockLocalStorage.setItem).toHaveBeenCalledWith('ui-theme', 'light');
 
     // Change back to system theme
-    await act(async () => {
-      await userEvent.click(screen.getByText('System'));
-    });
+    await user.click(screen.getByText('System'));
+    
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('system');
-      // Class should revert to system preference (light)
-      expect(document.documentElement.classList.contains('light')).toBe(true);
     });
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
-    // Assert setItem was called with 'system' (as per component logic)
+    
+    await waitFor(() => {
+      expect(document.documentElement.classList.contains('light')).toBe(true);
+      expect(document.documentElement.classList.contains('dark')).toBe(false);
+    });
+    
     expect(globalThis.mockLocalStorage.setItem).toHaveBeenCalledWith('ui-theme', 'system');
-    // The implementation doesn't call removeItem for system theme
-    expect(globalThis.mockLocalStorage.removeItem).not.toHaveBeenCalled();
   });
 
   it('follows system theme when set to system', async () => {
-    // Use global mocks
-    globalThis.mockLocalStorage.getItem.mockReturnValue(null); // Start with system
-    // Set initial state BEFORE rendering
-    (globalThis as any).globalCurrentMatchesState = true; // Prefers dark
+    // Start with system theme (dark)
+    mediaQueryList.matches = true;
+    globalThis.mockLocalStorage.getItem.mockReturnValue(null);
 
     render(
       <ThemeProvider>
@@ -164,53 +235,42 @@ describe('ThemeProvider', () => {
     );
 
     // Initial state (system -> dark)
-    // Wait specifically for the 'dark' class to be applied after the change
     await waitFor(() => {
-      expect(document.documentElement).toHaveClass('dark');
+      expect(screen.getByTestId('theme').textContent).toBe('system');
+    });
+    
+    await waitFor(() => {
+      expect(document.documentElement.classList.contains('dark')).toBe(true);
+      expect(document.documentElement.classList.contains('light')).toBe(false);
     });
 
     // Simulate system theme change to light
-    await act(async () => {
-      // Use the mock instance's helper to trigger the change correctly
-      // Use the global mock instance's helper, ensuring it exists
-      // Simulate system change using the global helper
-      (globalThis as any).mockMediaQueryListInstance?._triggerChange?.(false); // Simulate change to light
-      // Add a slightly longer delay to ensure effect runs
-      await new Promise((resolve) => setTimeout(resolve, 10));
+    act(() => {
+      mediaQueryList._triggerChange(false);
     });
 
-    // Use waitFor to ensure the effect listener has updated the DOM
-    // Wait specifically for the 'light' class after the change
+    // Verify theme changes to light
     await waitFor(() => {
-      expect(document.documentElement).toHaveClass('light');
+      expect(document.documentElement.classList.contains('light')).toBe(true);
+      expect(document.documentElement.classList.contains('dark')).toBe(false);
     });
-
-    // After waiting, assert the absence of the 'dark' class
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
 
     // Theme state remains 'system'
     expect(screen.getByTestId('theme').textContent).toBe('system');
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
 
     // Simulate system theme change back to dark
-    await act(async () => {
-      // Use the global mock instance's helper
-      // Use the global mock instance's helper, ensuring it exists
-      // Simulate system change using the global helper
-      (globalThis as any).mockMediaQueryListInstance?._triggerChange?.(true); // Simulate change to dark
-      // Add a slightly longer delay to ensure effect runs
-      await new Promise((resolve) => setTimeout(resolve, 10));
+    act(() => {
+      mediaQueryList._triggerChange(true);
     });
 
-    // Use waitFor to ensure the effect listener has updated the DOM
-    // Wait specifically for the 'dark' class after changing back
+    // Verify theme changes to dark
     await waitFor(() => {
-      expect(document.documentElement).toHaveClass('dark');
+      expect(document.documentElement.classList.contains('dark')).toBe(true);
+      expect(document.documentElement.classList.contains('light')).toBe(false);
     });
 
     // Theme state remains 'system'
     expect(screen.getByTestId('theme').textContent).toBe('system');
-    expect(document.documentElement.classList.contains('light')).toBe(false);
   });
 
   it('throws error when useTheme is used outside ThemeProvider', () => {

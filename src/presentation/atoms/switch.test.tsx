@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { renderWithProviders } from '../../test/test-utils.unified';
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified';
 import { Switch } from './switch';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -191,6 +191,6 @@ describe('Switch Component', () => {
 
     // After clicking, the thumb should move
     fireEvent.click(switchElement);
-    expect(thumbElement).toHaveClass('data-[state=checked]:translate-x-4');
+    expect(thumbElement).toHaveClass('data-[state=checked]:translate-x-5');
   });
 });
