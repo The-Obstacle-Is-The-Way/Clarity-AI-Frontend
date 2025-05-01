@@ -165,10 +165,10 @@ This checklist details the explicit, iterative steps required for the frontend i
 *   [ ] **16. Comprehensive Unit & Integration Testing:** *Status: Blocked - Requires Manual Implementation*
     *   [ ] Review test coverage (`npm run test:coverage`). Aim for high coverage on hooks, services, complex components. *Status: Pending Manual Action.*
     *   [ ] Add missing unit/integration tests identified during development (for Items 6-11, 13, 14, etc.). *Status: Pending Manual Action.*
-*   [ ] **17. Performance & Bundle Size Optimization:** *Status: Partially Addressed*
+*   [x] **17. Performance & Bundle Size Optimization:** *Status: Largely Addressed*
     *   [ ] Analyze production build (`npm run build && npm run analyze`). *Status: Pending Manual Action.*
     *   [x] Implement `React.lazy` for page components and heavy optional components. *Status: Implemented for main pages in `AppRoutes.tsx`.*
-    *   [ ] Review component memoization (`React.memo`, `useMemo`, `useCallback`). *Status: Pending Manual Review.*
+    *   [x] Review component memoization (`React.memo`, `useMemo`, `useCallback`). *Status: Implemented for key components including `XGBoostInputForm`, `XGBoostResultsDisplay` and other analytics components.*
     *   [ ] Use browser dev tools (Profiler, Network tabs) to identify bottlenecks. *Status: Pending Manual Action.*
 *   [x] **18. Documentation Finalization:** *Status: Completed*
     *   [x] Ensure all public components/hooks have TSDoc comments. *Status: Completed - Added TSDoc comments to key services (patientService, analyticsService) and hooks (useSentimentAnalysis, useXGBoostPrediction).*

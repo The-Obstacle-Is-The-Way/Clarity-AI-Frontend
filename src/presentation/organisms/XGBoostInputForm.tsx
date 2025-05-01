@@ -1,5 +1,5 @@
 // src/presentation/organisms/XGBoostInputForm.tsx
-import React from 'react';
+import React, { memo } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod'; // Assuming zod is used
 import { z } from 'zod'; // Assuming zod is used
@@ -49,7 +49,7 @@ const XGBoostInputForm: React.FC<XGBoostInputFormProps> = ({ onSubmit, isLoading
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4" data-testid="xgboost-form">
       {/* Example Field: Feature A (Number) */}
       <div>
         <Label htmlFor="featureA">Feature A (Number)</Label>
@@ -103,11 +103,16 @@ const XGBoostInputForm: React.FC<XGBoostInputFormProps> = ({ onSubmit, isLoading
       </div>
 
       {/* Submit Button */}
-      <Button type="submit" disabled={isLoading}>
+      <Button 
+        type="submit" 
+        disabled={isLoading}
+        data-testid="xgboost-submit-button"
+      >
         {isLoading ? 'Running Prediction...' : 'Run XGBoost Prediction'}
       </Button>
     </form>
   );
 };
 
-export default XGBoostInputForm;
+// Export with memo for better performance since this is a complex form component
+export default memo(XGBoostInputForm);

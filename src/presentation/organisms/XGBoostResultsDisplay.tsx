@@ -1,71 +1,92 @@
 // src/presentation/organisms/XGBoostResultsDisplay.tsx
-import React from 'react';
+import React, { memo } from 'react';
 import type { XGBoostPrediction } from '@domain/analytics/xgboostTypes';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Assuming Shadcn path
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  Cell
+} from 'recharts';
 
 interface XGBoostResultsDisplayProps {
   result: XGBoostPrediction;
 }
 
 /**
- * Displays the results of an XGBoost prediction.
- * NOTE: The displayed fields are placeholders and MUST be updated based on the verified API response.
+ * Displays XGBoost prediction results in a visually informative way.
+ * Shows the prediction value, confidence, and feature importance.
  */
 const XGBoostResultsDisplay: React.FC<XGBoostResultsDisplayProps> = ({ result }) => {
+  if (!result) return null;
+
+  // Format feature importance data for chart
+  const featureImportanceData = Object.entries(result.featureImportance || {}).map(([name, value]) => ({
+    name,
+    value: typeof value === 'number' ? value : 0,
+  })).sort((a, b) => b.value - a.value);
+
+  // Calculate prediction percentage for display (0-100%)
+  const predictionPercentage = (result.prediction * 100).toFixed(1);
+  const confidencePercentage = (result.confidence * 100).toFixed(1);
+
   return (
-    <Card className="mt-4">
-      <CardHeader>
-        <CardTitle>Prediction Outcome</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        {/* Example Result Field: Prediction Score */}
-        <div>
-          <span className="font-semibold">Prediction Score:</span>
-          <span className="ml-2 font-mono text-lg text-blue-700">{result.prediction_score.toFixed(4)}</span>
-        </div>
-
-        {/* Example Result Field: Predicted Class (Optional) */}
-        {result.predicted_class !== undefined && (
-          <div>
-            <span className="font-semibold">Predicted Class:</span>
-            <span className="ml-2 font-bold">{result.predicted_class}</span>
+    <div className="space-y-6" data-testid="prediction-result">
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>XGBoost Prediction Results</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="border rounded-lg p-4 text-center">
+              <div className="text-lg font-semibold">Prediction</div>
+              <div className="text-3xl font-bold text-primary" data-testid="prediction-value">
+                {predictionPercentage}%
+              </div>
+            </div>
+            <div className="border rounded-lg p-4 text-center">
+              <div className="text-lg font-semibold">Confidence</div>
+              <div className="text-3xl font-bold text-primary" data-testid="confidence-value">
+                {confidencePercentage}%
+              </div>
+            </div>
           </div>
-        )}
-        
-        {/* Example Result Field: Confidence Interval (Optional) */}
-        {result.confidence_interval && (
-            <div>
-                <span className="font-semibold">Confidence Interval:</span>
-                <span className="ml-2">[{result.confidence_interval[0].toFixed(3)}, {result.confidence_interval[1].toFixed(3)}]</span>
-            </div>
-        )}
-        
-        {/* Example Result Field: Timestamp */}
-        <div>
-          <span className="font-semibold">Prediction Timestamp:</span>
-          <span className="ml-2 text-sm text-gray-600">{new Date(result.timestamp).toLocaleString()}</span>
-        </div>
-        
-        {/* Example Result Field: Feature Importance (Optional) */}
-        {result.feature_importance && (
-            <div className="mt-4 pt-4 border-t">
-                <h4 className="font-semibold mb-2">Feature Importance:</h4>
-                <ul className="list-disc pl-5 space-y-1 text-sm">
-                    {Object.entries(result.feature_importance)
-                        .sort(([, a], [, b]) => b - a) // Sort by importance desc
-                        .map(([feature, importance]) => (
-                            <li key={feature}> 
-                                {feature}: {importance.toFixed(3)}
-                            </li>
-                    ))}
-                </ul>
-            </div>
-        )}
 
-        {/* Add display logic for other fields in XGBoostPrediction */}
-      </CardContent>
-    </Card>
+          {/* Feature Importance Chart */}
+          <div className="mt-8" data-testid="feature-importance-chart">
+            <h3 className="text-lg font-semibold mb-4">Feature Importance</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={featureImportanceData}
+                layout="vertical"
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" domain={[0, 'dataMax']} />
+                <YAxis type="category" dataKey="name" width={100} />
+                <Tooltip />
+                <Bar dataKey="value" fill="#8884d8">
+                  {featureImportanceData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={`#${Math.floor(index * 30 + 100).toString(16)}84d8`} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
-export default XGBoostResultsDisplay;
+// Export with memo for better performance with complex visualization
+export default memo(XGBoostResultsDisplay);
