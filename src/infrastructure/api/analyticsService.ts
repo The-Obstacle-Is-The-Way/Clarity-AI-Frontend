@@ -3,6 +3,8 @@ import { apiClient } from './apiClient';
 import type {
   XGBoostInput,
   XGBoostPrediction,
+  SentimentInput,
+  SentimentResult,
 } from '@domain/analytics/xgboostTypes';
 
 /**
@@ -26,6 +28,29 @@ export const runXGBoostPrediction = async (
   } catch (error) {
     console.error('XGBoost prediction failed:', error);
     // Consider more specific error handling based on API responses
+    throw error;
+  }
+};
+
+/**
+ * Runs Sentiment Analysis via the API.
+ * NOTE: Endpoint and request/response structure need verification.
+ *
+ * @param {SentimentInput} inputData - The input data (e.g., text) for analysis.
+ * @returns {Promise<SentimentResult>} A promise resolving to the sentiment analysis result.
+ */
+export const runSentimentAnalysis = async (
+  inputData: SentimentInput,
+): Promise<SentimentResult> => {
+  // --- VERIFY THIS ENDPOINT --- 
+  const endpoint = '/analytics/sentiment';
+  console.warn(`Running Sentiment Analysis using assumed endpoint: ${endpoint}. Verify endpoint and schemas.`);
+
+  try {
+    const response = await apiClient.post<SentimentResult>(endpoint, inputData);
+    return response;
+  } catch (error) {
+    console.error('Sentiment Analysis failed:', error);
     throw error;
   }
 };

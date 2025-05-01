@@ -143,8 +143,8 @@ This checklist details the explicit, iterative steps required for the frontend i
 
 **Domain: Analytics - [Other Model, e.g., Sentiment Analysis]**
 
-*   [ ] **14. Run [Other] Analysis:**
-    *   [ ] **Verify API:** Confirm endpoint, inputs, outputs.
+*   [ ] **14. Run [Other] Analysis:** *Status: In Progress (Using Sentiment Analysis as Placeholder)*
+    *   [ ] **Verify API:** Confirm endpoint (e.g., `POST /api/analytics/sentiment`), inputs (e.g., text field), outputs (e.g., score, label). **NEEDS VERIFICATION.**
     *   [ ] **API Call/State/UI:** Implement following the pattern from XGBoost. Adapt UI for specific inputs/results.
     *   [ ] **Testing:** Unit/integration tests.
 
