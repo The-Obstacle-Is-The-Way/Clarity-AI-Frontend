@@ -20,7 +20,7 @@ import { KernelSize } from 'postprocessing'; // Restored import
 // import { ThemeContext } from '../../application/contexts/ThemeProvider';
 
 // Import AdaptiveLOD and related types/hooks
-import type { DetailLevelString } from '@presentation/common/AdaptiveLOD';
+import type { DetailLevel } from '@presentation/common/AdaptiveLOD';
 import AdaptiveLOD, { useDetailConfig } from '@presentation/common/AdaptiveLOD'; // Added imports
 
 // Import molecular components
@@ -195,19 +195,26 @@ const Brain3DScene: React.FC<{
       else groups.other.push(region);
     });
     return Object.entries(groups)
-      .filter(([_, regions]) => regions.length > 0)
       .map(([name, regions]) => ({
         groupId: `group-${name}`,
         groupName: name.charAt(0).toUpperCase() + name.slice(1),
         regions,
-      }));
-  }, [brainModel.regions]);
+      }))
+      // Filter out empty groups
+      .filter(group => group.regions.length > 0);
+  }, [safeRegions]);
+
+  const filteredConnections = useMemo(() => {
+    // Apply filtering based on detailConfig or other settings if needed
+    // Example: Filter by connection strength if available
+    return safeConnections; // Keep all connections for now
+  }, [safeConnections /*, detailConfig */]); // Removed detailConfig dependency
 
   return (
     <group>
       {/* Render neural connections */}
       <NeuralConnections
-        connections={safeConnections}
+        connections={filteredConnections}
         regions={safeRegions}
         renderMode={renderMode}
         visualizationSettings={visualizationSettings} // Pass settings down
@@ -229,23 +236,20 @@ const Brain3DScene: React.FC<{
       {regionGroups.map((group) => (
         <BrainRegionGroup
           key={group.groupId}
-          regions={group.regions}
           groupId={group.groupId}
           groupName={group.groupName}
+          regions={group.regions}
           renderMode={renderMode}
-          visualizationSettings={visualizationSettings} // Pass settings down
-          // themeSettings={themeSettings} // Removed
-          // visualizationSettings prop removed
-          instancedRendering={!highPerformanceMode && group.regions.length > 20}
-          highPerformanceMode={highPerformanceMode}
+          visualizationSettings={visualizationSettings}
           selectedRegionIds={selectedRegionIds}
           highlightedRegionIds={highlightedRegionIds}
+          highPerformanceMode={highPerformanceMode}
           activityThreshold={activityThreshold}
           showInactiveRegions={showInactiveRegions}
-          showLabels={detailConfig.showLabels ?? true} // Uncommented: Use context value
-          // Pass callbacks conditionally
-          {...(onRegionClick && { onRegionClick })}
-          {...(onRegionHover && { onRegionHover })}
+          onRegionClick={onRegionClick}
+          onRegionHover={onRegionHover}
+          // Pass showLabels based on a different setting or prop if needed, not from detailConfig
+          // showLabels={detailConfig.showLabels}
         />
       ))}
 
@@ -395,7 +399,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
   const renderVisualization = (model: BrainModel) => {
     // Determine the detail level to pass to AdaptiveLOD
     // This could be based on props or internal logic
-    const currentDetailLevel: DetailLevelString = highPerformanceMode ? 'low' : 'high'; // Example logic
+    const currentDetailLevel: DetailLevel = highPerformanceMode ? 'low' : 'high'; // Use correct type
 
     return (
       <Canvas
@@ -423,7 +427,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
         />
         {/* Wrap scene content in AdaptiveLOD */}
         <AdaptiveLOD
-          forceDetailLevel={currentDetailLevel} // Pass the determined detail level
+          // forceDetailLevel={currentDetailLevel} // Removed invalid prop
           // Pass other AdaptiveLOD props if needed
         >
           {/* Brain model visualization - Now inside AdaptiveLOD */}

@@ -25,12 +25,18 @@ export class ApiGateway implements IApiClient {
       // For production, we'll check env vars to determine mode
       const useMockApi =
         process.env.NODE_ENV === 'development' ||
+        // Simplify for development: Always use mock if NODE_ENV is development
+        // unless explicitly disabled via localStorage override maybe?
+        // For now, prioritizing development use case where backend might be down.
+        false; // Remove other conditions for simplicity during debugging
+        /*
         this.mockMode ||
         // Detect if we're in a GitHub Codespace and allow override
         (window.location.hostname.includes('githubpreview.dev') &&
           !localStorage.getItem('use_real_api'));
+        */
 
-      console.info(`🧠 Novamind API Gateway: Using ${useMockApi ? 'MOCK' : 'REAL'} API client`);
+      console.info(`🧠 Novamind API Gateway: Using ${useMockApi ? 'MOCK' : 'REAL'} API client (NODE_ENV: ${process.env.NODE_ENV})`);
 
       // If we detect API connection errors, we can auto-fallback to mock mode
       this.instance = useMockApi ? new EnhancedMockApiClient() : new ApiClient();
