@@ -7,7 +7,7 @@ import { Input } from '@presentation/atoms/input';
 import { Alert, AlertDescription, AlertTitle } from '@presentation/atoms/alert';
 import { Terminal, PlusCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { PaginatedPatientsResponse, PatientSummary } from '@domain/patients/patientTypes';
+import type { PaginatedPatientsResponse } from '@domain/patients/patientTypes';
 
 /**
  * Renders the page displaying a list of patients.
@@ -50,7 +50,7 @@ const PatientListPage: React.FC = () => {
   // Cast data to expected type to resolve type errors
   const typedData = data as PaginatedPatientsResponse | undefined;
   const totalPages = typedData?.pages ?? 0;
-  const patientItems = (typedData?.items as PatientSummary[]) ?? [];
+  const patientItems = typedData?.items ?? [];
 
   return (
     <div className="container mx-auto p-4 md:p-8">
