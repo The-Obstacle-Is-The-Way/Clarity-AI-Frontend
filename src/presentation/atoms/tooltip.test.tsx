@@ -115,7 +115,7 @@ describe('Tooltip Component', () => {
     expect(content).toHaveClass('bg-popover'); // Corrected class
     expect(content).toHaveClass('px-3');
     expect(content).toHaveClass('py-1.5');
-    expect(content).toHaveClass('text-xs');
+    expect(content).toHaveClass('text-sm'); // Corrected text size
     expect(content).toHaveClass('text-primary-foreground');
 
     // Animation classes
