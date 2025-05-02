@@ -100,12 +100,10 @@ describe('PatientForm', () => {
     await user.type(lastNameInput, 'Patient');
     await user.type(dobInput, '2000-01-01');
 
-    // Select a status (Inactive) - Try using fireEvent
-    // await user.click(statusSelectTrigger); // Open dropdown
-    fireEvent.mouseDown(statusSelectTrigger); // Radix might respond better to mouseDown for trigger
-    const inactiveOption = await screen.findByRole('option', { name: 'Inactive' }, { timeout: 3000 });
-    // await user.click(inactiveOption); // Select option
-    fireEvent.click(inactiveOption);
+    // Select a status (Inactive) using userEvent
+    await user.click(statusSelectTrigger); // Open dropdown
+    const inactiveOption = await screen.findByRole('option', { name: 'Inactive' }, { timeout: 3000 }); // Increased timeout
+    await user.click(inactiveOption); // Select option
 
     // Ensure state updates propagate before submitting (Keep this act wrapper for now)
     await act(async () => {
