@@ -131,6 +131,24 @@ export const handlers = [
     });
   }),
 
+  // Add handler for user profile endpoint
+  http.get('/api/v1/auth/me', () => {
+    // Return a mock user structure
+    return HttpResponse.json({
+      id: 'mock-user-123',
+      email: 'mock.user@example.com',
+      first_name: 'Mock',
+      last_name: 'User',
+      roles: ['DOCTOR'],
+      // Add other fields expected by AuthContext/useAuth if necessary
+    });
+  }),
+
+  // Add handler for audit log endpoint (just return success)
+  http.post('/api/audit-logs', () => {
+    return new HttpResponse(null, { status: 200 });
+  }),
+
   // Patient endpoints
   http.get('/api/patients', () => {
     return HttpResponse.json([
