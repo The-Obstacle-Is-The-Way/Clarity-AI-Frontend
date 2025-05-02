@@ -87,8 +87,8 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit, isLoading = false, 
                 <FormItem>
                   <FormLabel>Date of Birth</FormLabel>
                   <FormControl>
-                    {/* Consider using a dedicated Date Picker component later */}
-                    <Input type="date" placeholder="YYYY-MM-DD" {...field} />
+                    {/* Use type="text" to avoid potential JSDOM/browser date input conflicts */}
+                    <Input type="text" placeholder="YYYY-MM-DD" {...field} />
                   </FormControl>
                   <FormDescription>
                     Please use YYYY-MM-DD format.
