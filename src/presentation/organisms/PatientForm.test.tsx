@@ -3,7 +3,6 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import PatientForm from './PatientForm';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'; // Needed indirectly? Maybe not
 import { BrowserRouter } from 'react-router-dom'; // If any internal links are used
 
 // Mock child atoms if they cause issues or have complex internal state
@@ -52,11 +51,12 @@ describe('PatientForm', () => {
     const dobInput = screen.getByLabelText(/Date of Birth/i);
     const submitButton = screen.getByRole('button', { name: /Create Patient/i });
 
-    fireEvent.change(dobInput, { target: { value: 'invalid-date' } });
+    // Provide input that satisfies min length but fails regex format
+    fireEvent.change(dobInput, { target: { value: '01-01-2000' } });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-        expect(screen.getByText('Date of Birth must be in YYYY-MM-DD format')).toBeInTheDocument();
+      expect(screen.getByText('Date of Birth must be in YYYY-MM-DD format')).toBeInTheDocument();
     });
     expect(mockOnSubmit).not.toHaveBeenCalled();
   });
@@ -75,10 +75,14 @@ describe('PatientForm', () => {
     fireEvent.change(lastNameInput, { target: { value: 'Patient' } });
     fireEvent.change(dobInput, { target: { value: '2000-01-01' } });
 
-    // Select a status (assuming 'Inactive')
-    fireEvent.mouseDown(statusSelectTrigger);
-    const inactiveOption = await screen.findByRole('option', { name: /Inactive/i });
-    fireEvent.click(inactiveOption);
+    // Select a status (Inactive)
+    fireEvent.mouseDown(statusSelectTrigger); // Open the dropdown
+
+    // Find the option within the document body (portal support)
+    // The text should match the capitalized/formatted value: "Inactive"
+    const inactiveOption = await waitFor(() => screen.getByRole('option', { name: 'Inactive' }));
+
+    fireEvent.click(inactiveOption); // Click the found option
 
     // Submit
     fireEvent.click(submitButton);
@@ -101,12 +105,12 @@ describe('PatientForm', () => {
   });
 
   it('should populate default values if provided (for edit mode)', () => {
-     const defaultData = {
-        first_name: 'Existing',
-        last_name: 'User',
-        date_of_birth: '1995-05-05',
-        status: 'discharged' as const,
-     };
+    const defaultData = {
+      first_name: 'Existing',
+      last_name: 'User',
+      date_of_birth: '1995-05-05',
+      status: 'discharged' as const,
+    };
     renderWithProviders(<PatientForm onSubmit={mockOnSubmit} defaultValues={defaultData} />);
 
     expect(screen.getByLabelText(/First Name/i)).toHaveValue(defaultData.first_name);
