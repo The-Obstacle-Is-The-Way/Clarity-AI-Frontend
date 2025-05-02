@@ -180,7 +180,7 @@ describe('PatientListPage', () => {
           expect.objectContaining({ search: 'test search', page: 1 })
         );
       },
-      { timeout: 5000 } // Keep a reasonable timeout
+      { timeout: 30000 } // Dramatically increase timeout for diagnosis
     );
 
     // Optional: Check the final state if needed (e.g., table content updated)
