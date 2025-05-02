@@ -7,6 +7,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion'; // Removed unused AnimatePresence
+import { cn } from '@application/utils/cn';
 
 // Neural visualization coordinator
 // import { useVisualizationCoordinator } from "@application/coordinators/NeuralVisualizationCoordinator"; // Module missing
@@ -46,6 +47,11 @@ import {
   HeartPulse, // Use HeartPulse as an alternative
   Brain,
   Eye,
+  Braces,
+  Dna,
+  Microscope,
+  PulseIcon,
+  Clock
 } from 'lucide-react';
 
 // Domain types
@@ -70,6 +76,7 @@ interface BiometricMonitorPanelProps {
   className?: string;
   compact?: boolean;
   maxAlerts?: number;
+  patientId: string;
 }
 
 /**
@@ -123,6 +130,7 @@ export const BiometricMonitorPanel: React.FC<BiometricMonitorPanelProps> = ({
   className = '',
   compact = false,
   maxAlerts = 5,
+  patientId,
 }) => {
   // Access visualization coordinator
   // const { state, acknowledgeAlert } = useVisualizationCoordinator(); // Commented out usage
@@ -250,6 +258,18 @@ export const BiometricMonitorPanel: React.FC<BiometricMonitorPanelProps> = ({
       typeof alert.triggeringValue === 'number' ? alert.triggeringValue.toFixed(1) : 'N/A';
     return `${valueString}${unit}`;
   }, []);
+
+  // We'll define some dummy data for the biometrics
+  const biometricData = [
+    { id: 1, name: 'Heart Rate', value: 78, unit: 'bpm', icon: <Heart className="h-4 w-4" />, color: 'text-red-500', change: '+2%', normal: '60-100' },
+    { id: 2, name: 'Respiratory Rate', value: 16, unit: 'bpm', icon: <PulseIcon className="h-4 w-4" />, color: 'text-blue-500', change: '-1%', normal: '12-20' },
+    { id: 3, name: 'Blood Oxygenation', value: 98, unit: '%', icon: <Activity className="h-4 w-4" />, color: 'text-green-500', change: '0%', normal: '95-100' },
+    { id: 4, name: 'Glucose Level', value: 105, unit: 'mg/dL', icon: <Braces className="h-4 w-4" />, color: 'text-yellow-500', change: '+5%', normal: '80-130' },
+    { id: 5, name: 'Cortisol Level', value: 12, unit: 'μg/dL', icon: <Brain className="h-4 w-4" />, color: 'text-purple-500', change: '-3%', normal: '5-23' },
+    { id: 6, name: 'Endorphin Level', value: 65, unit: 'pg/mL', icon: <Dna className="h-4 w-4" />, color: 'text-indigo-500', change: '+7%', normal: '40-80' },
+    { id: 7, name: 'Immune Response', value: 89, unit: '%', icon: <Microscope className="h-4 w-4" />, color: 'text-teal-500', change: '+1%', normal: '75-95' },
+    { id: 8, name: 'Circadian Phase', value: 3.5, unit: 'hrs', icon: <Clock className="h-4 w-4" />, color: 'text-amber-500', change: '-0.5', normal: '0-6' }
+  ];
 
   // Main panel UI
   if (!expanded) {
@@ -491,29 +511,49 @@ export const BiometricMonitorPanel: React.FC<BiometricMonitorPanelProps> = ({
                     Real-time Biometrics (Placeholder)
                   </h3>
                   <div className="bg-slate-700/50 rounded-md p-3 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="flex items-center">
-                        <Heart className="h-4 w-4 mr-1 text-red-400" /> Heart Rate
-                      </span>
-                      <span className="text-white">72 bpm</span>
-                    </div>
-                    <Progress value={60} className="h-1 bg-slate-700" />
-
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="flex items-center">
-                        <HeartPulse className="h-4 w-4 mr-1 text-blue-400" /> SpO2
-                      </span>
-                      <span className="text-white">98%</span>
-                    </div>
-                    <Progress value={98} className="h-1 bg-slate-700" />
-
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="flex items-center">
-                        <Thermometer className="h-4 w-4 mr-1 text-green-400" /> Temp
-                      </span>
-                      <span className="text-white">36.8°C</span>
-                    </div>
-                    <Progress value={80} className="h-1 bg-slate-700" />
+                    {biometricData.map((metric) => (
+                      <div key={metric.id} className="flex flex-col space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <div className={cn('rounded-full p-1', metric.color.replace('text', 'bg').replace('-500', '-100'))}>
+                              <div className={metric.color}>{metric.icon}</div>
+                            </div>
+                            <span className="font-medium">{metric.name}</span>
+                          </div>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center space-x-1">
+                                  <span className="text-sm font-bold">{metric.value}</span>
+                                  <span className="text-xs text-muted-foreground">{metric.unit}</span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent side="right">
+                                <div className="text-xs">
+                                  <p>Normal range: {metric.name} ({metric.normal} {metric.unit})</p>
+                                  <p>Change: {metric.change} in the last hour</p>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        
+                        <Progress 
+                          value={
+                            // Scale to percentage based on typical ranges
+                            // This is a simplified approach
+                            metric.name === 'Heart Rate' ? (metric.value / 200) * 100 :
+                            metric.name === 'Blood Oxygenation' ? metric.value :
+                            metric.name === 'Glucose Level' ? (metric.value / 200) * 100 :
+                            metric.name === 'Cortisol Level' ? (metric.value / 25) * 100 :
+                            metric.name === 'Endorphin Level' ? (metric.value / 100) * 100 :
+                            metric.name === 'Immune Response' ? metric.value :
+                            metric.name === 'Circadian Phase' ? (metric.value / 6) * 100 :
+                            (metric.value / 20) * 100 // Respiratory Rate
+                          }
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

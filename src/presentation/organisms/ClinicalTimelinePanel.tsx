@@ -6,22 +6,23 @@
  */
 
 import React, { useState, useCallback, useMemo } from 'react'; // Removed unused useEffect
+import { cn } from '@application/utils/cn';
 
 // UI components
 // Correct import paths for Shadcn components
 // Import named export from correct Shadcn path
 import { Button } from '@/components/ui/button';
-import { Badge } from '@presentation/atoms/Badge';
+import { Badge } from '@presentation/atoms/badge';
 import Card from '@presentation/atoms/Card'; // Use default import
 // Correct import path for Shadcn component
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@presentation/atoms/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'; // Correct import path
+} from '@presentation/atoms/select'; // Correct import path
 
 // Icons
 import {
