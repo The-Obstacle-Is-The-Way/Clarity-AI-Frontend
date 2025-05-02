@@ -2,8 +2,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { getPatients } from '@infrastructure/api/patientService';
 import type { PaginatedPatientsResponse } from '@domain/patients/patientTypes';
+import { PATIENTS_QUERY_KEY } from '@application/constants/queryKeys';
 
-export const PATIENTS_QUERY_KEY = 'patients';
+// export const PATIENTS_QUERY_KEY = 'patients'; // Remove local definition
 
 interface UsePatientsOptions {
   page?: number;
@@ -29,7 +30,7 @@ export const usePatients = (options: UsePatientsOptions = {}) => {
     queryKey: queryKey,
     queryFn: () => getPatients({ page, limit, search }),
     // Keep previous data while fetching new data for smoother pagination
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
     // Cache time (e.g., 5 minutes)
     staleTime: 5 * 60 * 1000,
     enabled: enabled, // Control whether the query runs automatically
