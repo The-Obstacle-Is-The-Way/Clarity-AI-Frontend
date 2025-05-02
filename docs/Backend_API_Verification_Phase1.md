@@ -3,7 +3,11 @@
 This document summarizes the verified backend API endpoints and schemas identified in the `Clarity-AI-Backend` codebase (`/Users/ray/Desktop/CLARITY-DIGITAL-TWIN/Clarity-AI-Backend`) relevant to Phase 1 frontend integration.
 
 **Base Path:** `/api/v1/`
-
+**DIRECTORIES**: 
+        "/Users/ray/Desktop/CLARITY-DIGITAL-TWIN/Clarity-AI-Backend",
+        "/Users/ray/Desktop/CLARITY-DIGITAL-TWIN/Clarity-AI-Frontend"
+            - Both are available via MCP Tool
+            
 ---
 
 ## 1. Authentication
