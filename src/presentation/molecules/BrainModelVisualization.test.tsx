@@ -7,7 +7,7 @@ import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/re
 import '@testing-library/jest-dom'; // Add cleanup
 import userEvent from '@testing-library/user-event';
 import { BrainModelVisualization } from './BrainModelVisualization'; // Corrected: Use named import and correct path
-import { BrainModelProvider } from '@application/providers/BrainModelProvider'; // Use alias
+import { BrainModelProvider } from '@application/context/BrainModelProvider'; // Correct alias path
 import { ThemeProvider } from '@application/providers/ThemeProvider'; // Use alias
 import { mockBrainRegionData } from '@test/mocks/mockBrainData'; // Use alias
 
