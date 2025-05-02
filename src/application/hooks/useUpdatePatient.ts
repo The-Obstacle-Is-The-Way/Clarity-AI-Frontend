@@ -3,8 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updatePatient } from '@infrastructure/api/patientService';
 import type { Patient } from '@domain/patients/patientTypes';
 import type { UpdatePatientInput } from '@domain/patients/patientSchemas';
-import { PATIENTS_QUERY_KEY } from './usePatients';
-import { PATIENT_DETAIL_QUERY_KEY_PREFIX } from './usePatientDetail';
+import { PATIENTS_QUERY_KEY, PATIENT_DETAIL_QUERY_KEY_PREFIX } from '@application/constants/queryKeys';
 import { toast } from 'react-toastify';
 
 interface UpdatePatientVariables {

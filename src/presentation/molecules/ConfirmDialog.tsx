@@ -9,7 +9,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@presentation/atoms/alert'; // Corrected import path
+} from '@/components/ui/alert-dialog'; // Updated import path
 import { Button } from '@presentation/atoms/button'; // Adjust path if needed
 
 interface ConfirmDialogProps {
