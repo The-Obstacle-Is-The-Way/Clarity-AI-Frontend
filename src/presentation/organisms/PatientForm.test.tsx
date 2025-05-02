@@ -6,6 +6,15 @@ import userEvent from '@testing-library/user-event'; // Import userEvent
 import PatientForm from './PatientForm';
 import { BrowserRouter } from 'react-router-dom'; // If any internal links are used
 
+// Mock ResizeObserver specifically for this test file
+// This might be necessary if the global setup isn't sufficient for Radix Select
+const mockResizeObserver = vi.fn(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+vi.stubGlobal('ResizeObserver', mockResizeObserver);
+
 // Mock child atoms if they cause issues or have complex internal state
 // Usually not needed for basic form tests unless they prevent interaction
 

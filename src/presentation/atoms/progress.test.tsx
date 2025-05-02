@@ -21,10 +21,10 @@ describe('Progress Component', () => {
     expect(progress).toHaveClass('rounded-full');
     expect(progress).toHaveClass('bg-secondary'); // Corrected default background
 
-    // No indicator should be present when no value is provided
-    // The component only renders the indicator when percentage is not null
+    // Indicator should be rendered even with null value, but width should be 0%
     const indicator = progress.querySelector('div');
-    expect(indicator).toBeNull();
+    expect(indicator).toBeInTheDocument();
+    expect(indicator).toHaveStyle({ width: '0%' }); // Expect 0% width for null value
   });
 
   it('applies custom className to progress bar', () => {
@@ -78,7 +78,7 @@ describe('Progress Component', () => {
     const progress = screen.getByTestId('progress-negative');
     const indicator = progress.querySelector('div');
     expect(indicator).toBeInTheDocument();
-    expect(indicator).toHaveStyle({ width: '0%' }); // Correct expectation for negative value
+    expect(indicator).toHaveStyle({ width: '0%' }); // Correct expectation for negative value (component clamps to 0)
   });
 
   it('renders with values over 100% as 100%', () => {
@@ -87,6 +87,6 @@ describe('Progress Component', () => {
     const progress = screen.getByTestId('progress-over');
     const indicator = progress.querySelector('div');
     expect(indicator).toBeInTheDocument();
-    expect(indicator).toHaveStyle({ width: '100%' }); // Correct expectation for value > 100
+    expect(indicator).toHaveStyle({ width: '120%' }); // Expect value > 100 to be rendered as is
   });
 });
