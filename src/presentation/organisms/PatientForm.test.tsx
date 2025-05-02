@@ -107,8 +107,8 @@ describe('PatientForm', () => {
 
   // Ensure state updates propagate before submitting
   await act(async () => {
-      // Small delay might help in some cases, though usually not needed with userEvent
-      await new Promise(r => setTimeout(r, 50));
+    // Small delay might help in some cases, though usually not needed with userEvent
+    await new Promise((r) => setTimeout(r, 50));
   });
 
   // Submit using userEvent
