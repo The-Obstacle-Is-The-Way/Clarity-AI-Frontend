@@ -56,10 +56,14 @@ describe('PatientForm', () => {
     expect(mockOnSubmit).not.toHaveBeenCalled();
   });
 
-  // Skip this test for now due to issues with form validation in the test environment
-  it.skip('should display validation error for invalid date format', async () => {
-    // Setup userEvent
-    const user = userEvent.setup();
+  // Update the skipped test to use fake timers
+  it('should display validation error for invalid date format', async () => {
+    // Setup fake timers for predictable behavior
+    vi.useFakeTimers();
+    
+    // Setup userEvent with advanceTimers option
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    
     renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
     const firstNameInput = screen.getByLabelText(/First Name/i);
     const lastNameInput = screen.getByLabelText(/Last Name/i);
@@ -70,18 +74,26 @@ describe('PatientForm', () => {
     await user.type(firstNameInput, 'Test');
     await user.type(lastNameInput, 'Patient');
 
-    // Provide invalid date format using userEvent
-    await user.clear(dobInput); // Clear first in case of default/previous value
+    // Provide invalid date format
+    await user.clear(dobInput);
     await user.type(dobInput, '01-01-2000');
 
-    // Submit
+    // Submit form
     await user.click(submitButton);
+    
+    // Run timers
+    await vi.runAllTimersAsync();
 
-    // Check for the format error message - using a more flexible approach
+    // Check for date format error message
     await waitFor(() => {
-      expect(screen.getByText(/Date of Birth must be in YYYY-MM-DD format/i)).toBeInTheDocument();
+      const errorElement = screen.queryByText(/Date of Birth must be in YYYY-MM-DD format/i);
+      expect(errorElement).toBeInTheDocument();
     });
+    
     expect(mockOnSubmit).not.toHaveBeenCalled();
+    
+    // Restore real timers after the test
+    vi.useRealTimers();
   });
 
   it('should update select visually and not show errors on valid submission attempt', async () => {

@@ -57,13 +57,13 @@ describe('ThemeProvider (Enhanced Tests)', () => {
     expect(document.documentElement.classList.contains('light')).toBe(false);
   });
 
-  // Skip this test due to issues with mocking applyTheme properly in the test environment
-  it.skip('respects localStorage preference on initial render', async () => {
-    // Mock matchMedia to ensure consistent behavior
+  // Fix the skipped test by using a simpler approach
+  it('respects localStorage preference on initial render', async () => {
+    // Set mock for matchMedia to ensure light mode by default (system preference)
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: vi.fn().mockImplementation((query) => ({
-        matches: false, // Default to light mode to ensure dark comes from localStorage
+        matches: false, // Default to light preference for system
         media: query,
         onchange: null,
         addListener: vi.fn(),
@@ -77,38 +77,15 @@ describe('ThemeProvider (Enhanced Tests)', () => {
     // Set localStorage before rendering
     localStorage.setItem('ui-theme', 'dark');
     
-    // Create a mock for applyTheme
-    const applyThemeSpy = vi.fn();
-    
-    // Override the applyTheme function to track calls
-    vi.mock('@application/utils/theme', async () => {
-      const actual = await vi.importActual('@application/utils/theme');
-      return {
-        ...actual,
-        applyTheme: (theme: string) => {
-          applyThemeSpy(theme);
-          // Manually apply the theme class for testing
-          if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-            document.documentElement.classList.remove('light');
-          } else {
-            document.documentElement.classList.add('light');
-            document.documentElement.classList.remove('dark');
-          }
-        },
-      };
-    });
-    
-    // Render the component
+    // Render the component - should respect dark mode from localStorage
     render(
-      <ThemeProvider>
+      <ThemeProvider defaultTheme="light">
         <div>Test content</div>
       </ThemeProvider>
     );
     
-    // Wait for effects to complete
+    // Check if dark mode is applied
     await waitFor(() => {
-      expect(applyThemeSpy).toHaveBeenCalledWith('dark');
       expect(document.documentElement.classList.contains('dark')).toBe(true);
       expect(document.documentElement.classList.contains('light')).toBe(false);
     });
