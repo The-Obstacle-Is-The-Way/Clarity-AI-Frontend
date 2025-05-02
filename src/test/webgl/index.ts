@@ -149,6 +149,66 @@ beforeAll(() => {
   }
 });
 
+/**
+ * Setup WebGL Mocks with memory tracking capabilities
+ * 
+ * @param options Configuration options for WebGL mocks
+ * @returns The mock WebGL context
+ */
+export function setupWebGLMocks(options = { monitorMemory: false, debugMode: false }) {
+  // Initialize memory tracking if enabled
+  if (options.monitorMemory) {
+    // Define the structure for memory tracking on globalThis
+    (globalThis as any).__WEBGL_MEMORY_TRACKING__ = {
+      allocatedObjects: new Set<any>(),
+      disposedObjects: new Set<any>(),
+      trackObject: (obj: any) => {
+        (globalThis as any).__WEBGL_MEMORY_TRACKING__?.allocatedObjects.add(obj);
+      },
+      untrackObject: (obj: any) => {
+        if ((globalThis as any).__WEBGL_MEMORY_TRACKING__) {
+          (globalThis as any).__WEBGL_MEMORY_TRACKING__.allocatedObjects.delete(obj);
+          (globalThis as any).__WEBGL_MEMORY_TRACKING__.disposedObjects.add(obj);
+        }
+      },
+      objectTypes: {},
+    };
+  }
+
+  // Clear any existing mocks
+  vi.clearAllMocks();
+
+  return new MockWebGLRenderingContext(document.createElement('canvas'));
+}
+
+/**
+ * Cleanup WebGL mocks and return memory tracking report
+ * 
+ * @returns Memory tracking report if monitoring was enabled
+ */
+export function cleanupWebGLMocks() {
+  // Reset all mocks
+  vi.clearAllMocks();
+
+  // Return memory tracking report if enabled
+  const trackingData = (globalThis as any).__WEBGL_MEMORY_TRACKING__;
+  if (trackingData) {
+    const report = {
+      leakedObjectCount: trackingData.allocatedObjects.size,
+      disposedObjectCount: trackingData.disposedObjects.size,
+      leakedObjects: Array.from(trackingData.allocatedObjects),
+      leakedObjectTypes: trackingData.objectTypes,
+    };
+
+    // Clean up tracking
+    delete (globalThis as any).__WEBGL_MEMORY_TRACKING__;
+
+    return report;
+  }
+
+  return null;
+}
+
 // Export WebGL test helpers
 export const createMockCanvas = () => {
   const canvas = document.createElement('canvas');
