@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { useTreatmentPrediction } from '@hooks/useTreatmentPrediction';
 import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
-import Button from '@presentation/atoms/Button';
+import { Button } from '@presentation/atoms/Button';
 
 interface TreatmentResponsePredictorProps {
   patientId: string;
@@ -228,13 +228,7 @@ const TreatmentResponsePredictor: React.FC<TreatmentResponsePredictorProps> = ({
 
           {/* Action Buttons */}
           <div className="mt-6 flex gap-3">
-            <Button
-              variant="primary"
-              onClick={handlePredict}
-              isLoading={isPredicting}
-              disabled={isPredicting}
-              fullWidth
-            >
+            <Button variant="default" onClick={handlePredict} disabled={isPredicting}>
               Predict Response
             </Button>
 
@@ -250,153 +244,87 @@ const TreatmentResponsePredictor: React.FC<TreatmentResponsePredictorProps> = ({
 
         {/* Prediction Results Panel */}
         <div className="rounded-lg bg-background p-4 dark:bg-background-elevated">
-          {predictionResult ? (
-            <div>
-              <h3 className="mb-4 text-lg font-medium">Prediction Results</h3>
+          <h3 className="mb-4 text-lg font-medium">Prediction Results</h3>
 
-              {/* Response Probability */}
-              <div className="mb-6">
-                <div className="mb-1 flex items-center justify-between">
-                  <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                    Response Probability
-                  </span>
-                  <span className="text-sm font-bold text-primary-600 dark:text-primary-400">
-                    {Math.round(predictionResult.response_probability * 100)}%
-                  </span>
-                </div>
-                <div className="h-3 w-full rounded-full bg-neutral-200 dark:bg-neutral-700">
-                  <div
-                    className={`h-3 rounded-full ${getResponseLevelColor(predictionResult.response_level)}`}
-                    style={{
-                      width: `${predictionResult.response_probability * 100}%`,
-                    }}
-                  ></div>
-                </div>
-                <div className="mt-1 flex justify-between text-xs text-neutral-500">
-                  <span>Poor</span>
-                  <span>Response Level: {predictionResult.response_level}</span>
-                  <span>Excellent</span>
-                </div>
-              </div>
-
-              {/* Time to Response */}
-              <div className="mb-6">
-                <h4 className="mb-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                  Estimated Time to Response
-                </h4>
-                <div className="flex items-end">
-                  <span className="text-3xl font-bold text-primary-600 dark:text-primary-400">
-                    {predictionResult.time_to_response.weeks}
-                  </span>
-                  <span className="ml-1 text-neutral-500 dark:text-neutral-400">weeks</span>
-                  <span className="ml-3 text-xs text-neutral-500">
-                    (Confidence: {Math.round(predictionResult.time_to_response.confidence * 100)}
-                    %)
-                  </span>
-                </div>
-              </div>
-
-              {/* Influential Factors */}
-              <div className="mb-6">
-                <h4 className="mb-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                  Key Influential Factors
-                </h4>
-                <div className="space-y-2">
-                  {predictionResult.factors.slice(0, 4).map((factor, idx) => (
-                    <div key={idx} className="flex items-center justify-between">
-                      <span className="text-sm text-neutral-700 dark:text-neutral-300">
-                        {factor.name}
-                      </span>
-                      <div className="h-2 w-1/2 rounded-full bg-neutral-200 dark:bg-neutral-700">
-                        <div
-                          className="h-2 rounded-full bg-blue-500"
-                          style={{
-                            width: `${Math.abs(factor.contribution) * 100}%`,
-                          }}
-                        ></div>
-                      </div>
-                      <span className="w-12 text-right text-xs text-neutral-500">
-                        {(factor.contribution * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Alternative Treatments */}
-              {predictionResult.alternative_treatments &&
-                predictionResult.alternative_treatments.length > 0 && (
-                  <div>
-                    <h4 className="mb-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                      Alternative Treatment Options
-                    </h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {predictionResult.alternative_treatments.map((alt, idx) => (
-                        <button
-                          key={idx}
-                          className="rounded-md border border-neutral-200 bg-white px-3 py-2 text-left transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:bg-background-card dark:hover:bg-neutral-800"
-                          onClick={() => updateTreatmentConfig({ treatmentType: alt.type })}
-                        >
-                          <div className="text-sm font-medium">
-                            {treatmentOptions.find((opt) => opt.value === alt.type)?.label ||
-                              alt.type}
-                          </div>
-                          <div className="mt-1 text-xs text-neutral-500">
-                            Est. Response: {Math.round(alt.estimated_response * 100)}%
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+          {isPredicting && (
+            <div className="flex items-center justify-center p-6">
+              {/* Replace with LoadingIndicator if available and preferred */}
+              <p className="animate-pulse text-primary-500">Calculating response...</p>
             </div>
-          ) : predictionError ? (
-            <div className="flex h-full flex-col items-center justify-center p-6 text-center">
-              <div className="mb-4 h-16 w-16 text-red-500">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-lg font-medium text-neutral-900 dark:text-white">
-                Prediction Error
-              </h3>
-              <p className="mb-4 text-neutral-600 dark:text-neutral-400">
+          )}
+
+          {predictionError && (
+            <div className="rounded-md bg-red-50 p-4 text-red-700 dark:bg-red-900/20 dark:text-red-300">
+              <p className="font-medium">Prediction Error:</p>
+              <p className="text-sm">
                 {predictionError.message ||
                   'An error occurred while predicting treatment response.'}
               </p>
-              <Button variant="primary" onClick={handlePredict} size="sm">
+              <Button variant="default" onClick={handlePredict} size="sm">
                 Try Again
               </Button>
             </div>
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center p-6 text-center">
-              <div className="mb-4 h-16 w-16 text-neutral-400 dark:text-neutral-600">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                  />
-                </svg>
+          )}
+
+          {predictionResult && !isPredicting && (
+            <div className="space-y-4">
+              {/* Predicted Response Level */}
+              <div>
+                <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  Predicted Response
+                </span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`inline-block h-3 w-3 rounded-full ${getResponseLevelColor(predictionResult.response_level)}`}
+                  ></span>
+                  <span className="font-semibold capitalize">
+                    {predictionResult.response_level}
+                  </span>
+                </div>
               </div>
-              <h3 className="mb-2 text-lg font-medium text-neutral-900 dark:text-white">
-                Treatment Response Predictor
-              </h3>
-              <p className="mb-4 text-neutral-600 dark:text-neutral-400">
-                Configure treatment options and click "Predict Response" to generate a personalized
-                treatment response prediction based on the patient's data.
-              </p>
-              <p className="mb-6 text-xs text-neutral-500">
-                Predictions are based on ML models trained on clinical data and consider
+
+              {/* Response Probability */}
+              <div>
+                <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  Confidence
+                </span>
+                <span className="block font-semibold">
+                  {(predictionResult.response_probability * 100).toFixed(1)}%
+                </span>
+              </div>
+
+              {/* Feature Importance (if available and successful) */}
+              {featureImportance &&
+                featureImportance.ok &&
+                featureImportance.val.features &&
+                featureImportance.val.features.length > 0 && (
+                  <div>
+                    <h4 className="mb-2 text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                      Key Factors Influencing Prediction
+                    </h4>
+                    <ul className="list-disc space-y-1 pl-5 text-sm">
+                      {featureImportance.val.features
+                        .slice(0, 5)
+                        .map((feature: { name: string; importance: number }, idx: number) => (
+                          <li key={idx}>
+                            {feature.name}: {feature.importance.toFixed(3)}
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
+            </div>
+          )}
+
+          {/* Placeholder when no prediction */}
+          {!predictionResult && !isPredicting && !predictionError && (
+            <div className="text-center text-neutral-500 dark:text-neutral-400">
+              <p className="mb-2">
+                Select treatment type and provide clinical data to predict patient response. 
+                The model leverages clinical history, assessments, and potentially biomarker data for
                 patient-specific factors.
               </p>
-              <Button variant="primary" onClick={handlePredict} size="md">
+              <Button variant="default" onClick={handlePredict}>
                 Generate Prediction
               </Button>
             </div>

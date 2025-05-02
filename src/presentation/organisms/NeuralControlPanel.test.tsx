@@ -134,6 +134,32 @@ vi.mock('framer-motion', () => ({
   ),
   useReducedMotion: () => false,
 }));
+
+// Mock the missing coordinator module
+vi.mock('@application/coordinators/NeuralVisualizationCoordinator', () => ({
+  useVisualizationCoordinator: vi.fn(() => ({
+    state: { /* provide minimal placeholder state matching component expectations */
+      renderMode: 'anatomical',
+      detailLevel: 'medium',
+      currentTimeScale: 'daily',
+      isLoading: false,
+      error: null,
+      brainModel: null, // Or minimal mock BrainModel
+      activeRegions: [],
+      selectedRegions: [],
+      treatmentPredictions: [],
+      selectedTreatmentId: null,
+      performanceMetrics: { frameRate: 0, memoryUsage: 0, dataPointsProcessed: 0 },
+      neuralActivation: new Map(),
+      temporalPatterns: [],
+    },
+    setRenderMode: vi.fn(),
+    setDetailLevel: vi.fn(),
+    setTimeScale: vi.fn(),
+    resetVisualization: vi.fn(),
+    exportVisualizationData: vi.fn(() => ({})),
+  })),
+}));
 // --- End Added Mocks ---
 
 // Mock data with clinical precision

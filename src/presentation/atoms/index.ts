@@ -8,9 +8,9 @@
 
 // Export UI components from atoms directory
 export * from './alert';
-export * from './badge';
+export * from './Badge';
 export * from './Button';
-export * from './card';
+export * from './Card';
 export * from './form';
 export * from './input';
 export * from './label';
@@ -18,7 +18,9 @@ export * from './progress';
 export * from './scroll-area';
 export * from './select';
 export * from './skeleton';
+export * from './Switch';
 export * from './table';
+export * from './Tabs';
 export * from './Tooltip';
 
 // Export domain-specific components
