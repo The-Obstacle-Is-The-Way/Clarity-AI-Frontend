@@ -14,7 +14,7 @@ import type { BrainModel } from '@domain/types/brain/models';
 import { useBrainVisualization } from './useBrainVisualization';
 
 // Mock the apiClient singleton
-vi.mock('../../infrastructure/api/apiClient', () => { // Use the correct relative path
+vi.mock('@infrastructure/api/apiClient', () => { // Use correct alias
   const mockBrainModel: BrainModel = {
     id: 'test-brain-model',
     patientId: 'test-patient',
@@ -100,18 +100,14 @@ describe('useBrainVisualization Hook', () => {
           refetchOnReconnect: false,
         },
       },
-      logger: {
-        log: () => {},
-        warn: () => {},
-        error: () => {},
-      },
     });
     
     return ({ children }: { children: React.ReactNode }) => {
-      return (
-        <QueryClientProvider client={testQueryClient}>
-          {children}
-        </QueryClientProvider>
+      // Use React.createElement to avoid JSX transform issues in .ts file
+      return React.createElement(
+        QueryClientProvider,
+        { client: testQueryClient },
+        children
       );
     };
   };

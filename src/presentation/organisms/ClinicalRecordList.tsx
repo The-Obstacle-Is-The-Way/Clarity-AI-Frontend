@@ -1,12 +1,14 @@
 // src/presentation/organisms/ClinicalRecordList.tsx
 import React, { useState } from 'react';
 import { useClinicalRecords } from '@application/hooks/useClinicalRecords';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'; // Assuming Shadcn path
-import { Skeleton } from '@/components/ui/skeleton'; // Assuming Shadcn path
-import { Button } from '@/components/ui/button'; // Assuming Shadcn path
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"; // Assuming Shadcn path
+import { Alert, AlertDescription, AlertTitle } from '@presentation/atoms/alert';
+import { Skeleton } from '@presentation/atoms/skeleton';
+import { Button } from '@presentation/atoms/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@presentation/atoms/table";
 import { Terminal, FileText } from 'lucide-react';
 import type { ClinicalRecord } from '@domain/clinical-records/clinicalRecordTypes';
+import { Badge } from "@presentation/atoms/Badge";
+import { format } from 'date-fns';
 
 interface ClinicalRecordListProps {
   /** The ID of the patient whose records are being displayed */

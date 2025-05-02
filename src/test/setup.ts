@@ -30,19 +30,26 @@ window.ResizeObserver = vi.fn().mockImplementation(() => ({
   disconnect: vi.fn(),
 }));
 
-// Mock window.matchMedia
+// Enhance window.matchMedia mock for framer-motion
+// Based on https://github.com/framer/motion/blob/main/packages/framer-motion/src/utils/test-utils.ts
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation((query: string) => ({
-    matches: false, // Default behavior: assume no media query matches
-    media: query,
-    onchange: null,
-    addListener: vi.fn(), // Deprecated but may be used by some libraries
-    removeListener: vi.fn(), // Deprecated but may be used by some libraries
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
+  value: vi.fn().mockImplementation((query) => {
+    const instance = {
+      matches: query === '(prefers-reduced-motion: reduce)',
+      media: query,
+      onchange: null,
+      addListener: vi.fn(), // deprecated
+      removeListener: vi.fn(), // deprecated
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    };
+    // Store instances to potentially trigger listeners later if needed
+    // window.matchMediaInstances = window.matchMediaInstances || [];
+    // window.matchMediaInstances.push(instance);
+    return instance;
+  }),
 });
 
 // Helper to toggle matchMedia for tests (exposed via vi.stubGlobal rather than globalThis)
