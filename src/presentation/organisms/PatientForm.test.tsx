@@ -115,21 +115,13 @@ describe('PatientForm', () => {
     // This is a workaround for RHF state update issues with Select in JSDOM
     // It doesn't guarantee onSubmit was called, but implies validation passed visually.
     await waitFor(() => {
-      expect(
-        screen.queryByText('First name is required')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByText('Last name is required')
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByText('Date of Birth is required')
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText('First name is required')).not.toBeInTheDocument();
+      expect(screen.queryByText('Last name is required')).not.toBeInTheDocument();
+      expect(screen.queryByText('Date of Birth is required')).not.toBeInTheDocument();
       expect(
         screen.queryByText('Date of Birth must be in YYYY-MM-DD format')
       ).not.toBeInTheDocument();
-      expect(
-        screen.queryByText('Invalid patient status')
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText('Invalid patient status')).not.toBeInTheDocument();
     });
 
     // We cannot reliably assert onSubmit call due to test environment limitations
