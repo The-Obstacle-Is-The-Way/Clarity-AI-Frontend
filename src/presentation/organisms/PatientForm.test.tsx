@@ -86,33 +86,34 @@ describe('PatientForm', () => {
 
   it('should call onSubmit with correct data when form is valid', async () => {
     // Setup userEvent
-  const user = userEvent.setup();
-  renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
+    const user = userEvent.setup();
+    renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
 
-  const firstNameInput = screen.getByLabelText(/First Name/i);
-  const lastNameInput = screen.getByLabelText(/Last Name/i);
-  const dobInput = screen.getByLabelText(/Date of Birth/i);
+    const firstNameInput = screen.getByLabelText(/First Name/i);
+    const lastNameInput = screen.getByLabelText(/Last Name/i);
+    const dobInput = screen.getByLabelText(/Date of Birth/i);
     const statusSelectTrigger = screen.getByRole('combobox'); // Shadcn select trigger
-  const submitButton = screen.getByRole('button', { name: /Create Patient/i });
+    const submitButton = screen.getByRole('button', { name: /Create Patient/i });
 
-  // Fill in valid data using userEvent
-  await user.type(firstNameInput, 'Test');
+    // Fill in valid data using userEvent
+    await user.type(firstNameInput, 'Test');
     await user.type(lastNameInput, 'Patient');
-  await user.type(dobInput, '2000-01-01');
+    await user.type(dobInput, '2000-01-01');
 
-  // Select a status (Inactive) using userEvent
-  await user.click(statusSelectTrigger); // Open dropdown
-  const inactiveOption = await screen.findByRole('option', { name: 'Inactive' }, { timeout: 3000 }); // Increased timeout
-  await user.click(inactiveOption); // Select option
+    // Select a status (Inactive) - Try using fireEvent
+    // await user.click(statusSelectTrigger); // Open dropdown
+    fireEvent.mouseDown(statusSelectTrigger); // Radix might respond better to mouseDown for trigger
+    const inactiveOption = await screen.findByRole('option', { name: 'Inactive' }, { timeout: 3000 });
+    // await user.click(inactiveOption); // Select option
+    fireEvent.click(inactiveOption);
 
-  // Ensure state updates propagate before submitting
-  await act(async () => {
-    // Small delay might help in some cases, though usually not needed with userEvent
-    await new Promise((r) => setTimeout(r, 50));
-  });
+    // Ensure state updates propagate before submitting (Keep this act wrapper for now)
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
 
-  // Submit using userEvent
-  await user.click(submitButton);
+    // Submit using userEvent (keep this)
+    await user.click(submitButton);
 
     // Assertions (remain the same, wrapped in waitFor for onSubmit mock)
     await waitFor(() => {
