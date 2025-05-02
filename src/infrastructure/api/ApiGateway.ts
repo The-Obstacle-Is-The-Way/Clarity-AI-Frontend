@@ -24,7 +24,8 @@ export class ApiGateway implements IApiClient {
     if (!this.instance) {
       // For production, we'll check env vars to determine mode
       const useMockApi =
-        process.env.NODE_ENV === 'development' ||
+        // Remove the automatic development check to default to the REAL API
+        // process.env.NODE_ENV === 'development' || 
         // Simplify for development: Always use mock if NODE_ENV is development
         // unless explicitly disabled via localStorage override maybe?
         // For now, prioritizing development use case where backend might be down.

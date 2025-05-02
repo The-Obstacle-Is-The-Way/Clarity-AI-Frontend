@@ -620,7 +620,7 @@ export class BrainTypeVerifier {
 
     const lastUpdatedResult = typeVerifier.verifyString(
       object.lastUpdated,
-      field ? `${field}.lastUpdated`
+      field ? `${field}.lastUpdated` : 'lastUpdated'
     );
     if (!lastUpdatedResult.success)
       return lastUpdatedResult as Result<BrainModel, TypeVerificationError>;

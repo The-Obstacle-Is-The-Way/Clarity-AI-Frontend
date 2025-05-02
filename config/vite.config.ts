@@ -60,7 +60,7 @@ export default defineConfig(({ command, mode }) => {
       // Add proxy configuration
       proxy: {
         '/api': {
-          target: 'http://localhost:3000', // Corrected: Target backend server (running on the same port as frontend dev server)
+          target: 'http://localhost:8000', // Corrected: Target backend server (assuming default port 8000)
           changeOrigin: true,
           // secure: false, // Uncomment if backend uses self-signed cert
           // rewrite: (path) => path.replace(/^\/api/, ''), // Uncomment if backend doesn't expect /api prefix
