@@ -318,11 +318,10 @@ export class EnhancedMockApiClient implements IApiClient {
       activity: 0.85,
       connections: ['region-mock-2'],
       color: '#FF0000',
-      activityLevel: 'high',
-      hemisphere: 'left',
+      activityLevel: 0.8,
+      hemisphereLocation: 'left',
       dataConfidence: 0.95,
       isActive: true,
-      metrics: { density: 0.9, thickness: 2.8, surfaceArea: 130 },
     };
 
     const mockRegion2: BrainRegion = {
@@ -333,11 +332,10 @@ export class EnhancedMockApiClient implements IApiClient {
       activity: 0.55,
       connections: ['region-mock-1'],
       color: '#0000FF',
-      activityLevel: 'low',
-      hemisphere: 'right',
+      activityLevel: 0.3,
+      hemisphereLocation: 'right',
       dataConfidence: 0.88,
       isActive: true,
-      metrics: { density: 0.7, thickness: 1.5, surfaceArea: 40 },
     };
 
     const mockConnection1: NeuralConnection = {

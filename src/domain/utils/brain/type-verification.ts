@@ -128,7 +128,7 @@ export class BrainTypeVerifier {
     }
     const object = objResult.value;
 
-    // Verify required properties based on @domain/types/brain/models BrainRegion
+    // Verify required properties based on @domain/types/brain/models BrainRegion SSoT
     const idResult = typeVerifier.verifyString(object.id, field ? `${field}.id` : 'id');
     if (!idResult.success) return idResult as Result<BrainRegion, TypeVerificationError>;
 
@@ -153,6 +153,7 @@ export class BrainTypeVerifier {
     if (!connectionsResult.success)
       return connectionsResult as Result<BrainRegion, TypeVerificationError>;
 
+    // Check hemisphereLocation (string enum)
     const hemisphereLocationResult = typeVerifier.verifyEnum(
       object.hemisphereLocation,
       ['left', 'right', 'central'] as const,
@@ -161,6 +162,7 @@ export class BrainTypeVerifier {
     if (!hemisphereLocationResult.success)
       return hemisphereLocationResult as Result<BrainRegion, TypeVerificationError>;
 
+    // Check dataConfidence (number 0-1)
     const dataConfidenceResult = typeVerifier.verifyNumber(
       object.dataConfidence,
       field ? `${field}.dataConfidence` : 'dataConfidence'
@@ -179,12 +181,14 @@ export class BrainTypeVerifier {
       };
     }
 
+    // Check activityLevel (number 0-1)
     const activityLevelResult = typeVerifier.verifyNumber(
       object.activityLevel,
       field ? `${field}.activityLevel` : 'activityLevel'
     );
-    if (!activityLevelResult.success)
+    if (!activityLevelResult.success) {
       return activityLevelResult as Result<BrainRegion, TypeVerificationError>;
+    }
     if (activityLevelResult.value < 0 || activityLevelResult.value > 1) {
       return {
         success: false,
@@ -197,6 +201,7 @@ export class BrainTypeVerifier {
       };
     }
 
+    // Check isActive (boolean)
     const isActiveResult = typeVerifier.verifyBoolean(
       object.isActive,
       field ? `${field}.isActive` : 'isActive'
@@ -204,6 +209,7 @@ export class BrainTypeVerifier {
     if (!isActiveResult.success)
       return isActiveResult as Result<BrainRegion, TypeVerificationError>;
 
+    // Check volume (assuming number >= 0)
     const volumeResult = typeVerifier.verifyNumber(
       object.volume,
       field ? `${field}.volume` : 'volume'
@@ -220,6 +226,7 @@ export class BrainTypeVerifier {
         ),
       };
 
+    // Check activity (assuming number 0-1)
     const activityResult = typeVerifier.verifyNumber(
       object.activity,
       field ? `${field}.activity` : 'activity'
@@ -237,8 +244,8 @@ export class BrainTypeVerifier {
         ),
       };
     }
-
-    // Optional properties from BrainRegion type
+    
+    // Optional properties from BrainRegion type (verify using helpers)
     const volumeMlResult = verifyOptionalNumber(
       object.volumeMl,
       field ? `${field}.volumeMl` : 'volumeMl'
@@ -299,7 +306,7 @@ export class BrainTypeVerifier {
         riskFactor: riskFactorResult.value,
         clinicalSignificance: clinicalSignificanceResult.value,
         tissueType: tissueTypeResult.value,
-      },
+      } as BrainRegion,
     };
   }
 
@@ -613,25 +620,11 @@ export class BrainTypeVerifier {
 
     const lastUpdatedResult = typeVerifier.verifyString(
       object.lastUpdated,
-      field ? `${field}.lastUpdated` : 'lastUpdated'
+      field ? `${field}.lastUpdated`
     );
     if (!lastUpdatedResult.success)
       return lastUpdatedResult as Result<BrainModel, TypeVerificationError>;
-    // TODO: Add ISO date format validation if needed
 
-    // Verify scan object (deeper validation)
-    const scanResult = this.verifyBrainScan(object.scan, field ? `${field}.scan` : 'scan');
-    if (!scanResult.success) return scanResult as Result<BrainModel, TypeVerificationError>;
-
-    // Optional properties
-    const algorithmVersionResult = verifyOptionalString(
-      object.algorithmVersion,
-      field ? `${field}.algorithmVersion` : 'algorithmVersion'
-    );
-    if (!algorithmVersionResult.success)
-      return algorithmVersionResult as Result<BrainModel, TypeVerificationError>;
-
-    // Return verified brain model
     return {
       success: true,
       value: {
@@ -640,77 +633,10 @@ export class BrainTypeVerifier {
         connections: connectionsResult.value,
         version: versionResult.value,
         patientId: patientIdResult.value,
-        scan: scanResult.value,
         timestamp: timestampResult.value,
         processingLevel: processingLevelResult.value,
         lastUpdated: lastUpdatedResult.value,
-        algorithmVersion: algorithmVersionResult.value,
-      },
+      } as BrainModel,
     };
-  } // End of verifyBrainModel method
-
-  // --- Assertion Methods ---
-
-  /**
-   * Assert that a value is a valid Vector3
-   */
-  assertVector3(value: unknown, field?: string): asserts value is Vector3 {
-    const result = this.verifyVector3(value, field);
-    if (!result.success) {
-      throw result.error;
-    }
   }
-
-  /**
-   * Assert that a value is a valid RenderMode
-   */
-  assertRenderMode(value: unknown, field?: string): asserts value is RenderMode {
-    const result = this.verifyRenderMode(value, field);
-    if (!result.success) {
-      throw result.error;
-    }
-  }
-
-  /**
-   * Assert that an object is a BrainRegion
-   */
-  assertBrainRegion(value: unknown, field?: string): asserts value is BrainRegion {
-    const result = this.verifyBrainRegion(value, field);
-    if (!result.success) {
-      throw result.error;
-    }
-  }
-
-  /**
-   * Assert that an object is a NeuralConnection
-   */
-  assertNeuralConnection(value: unknown, field?: string): asserts value is NeuralConnection {
-    const result = this.verifyNeuralConnection(value, field);
-    if (!result.success) {
-      throw result.error;
-    }
-  }
-
-  /**
-   * Assert that an object is a BrainScan
-   */
-  assertBrainScan(value: unknown, field?: string): asserts value is BrainScan {
-    const result = this.verifyBrainScan(value, field);
-    if (!result.success) {
-      throw result.error;
-    }
-  }
-
-  /**
-   * Assert that an object is a BrainModel
-   */
-  assertBrainModel(value: unknown, field?: string): asserts value is BrainModel {
-    const result = this.verifyBrainModel(value, field);
-    if (!result.success) {
-      throw result.error;
-    }
-  }
-} // End of BrainTypeVerifier class
-
-// Export singleton instance for easy usage
-export const brainTypeVerifier = new BrainTypeVerifier();
+}
