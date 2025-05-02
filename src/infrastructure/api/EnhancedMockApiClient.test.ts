@@ -6,7 +6,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import axios from 'axios'; // Import axios for mocking its methods
-import { EnhancedMockApiClient } from '../EnhancedMockApiClient'; // Adjust path as necessary
+import { EnhancedMockApiClient } from './EnhancedMockApiClient'; // Corrected import path
 import type { BrainModel } from '@domain/types'; // Import BrainModel type
 import { BrainTypeVerifier } from '@domain/utils/brain/type-verification'; // Import verifier
 

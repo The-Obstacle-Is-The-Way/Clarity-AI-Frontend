@@ -319,8 +319,9 @@ export class EnhancedMockApiClient implements IApiClient {
       connections: ['region-mock-2'],
       color: '#FF0000',
       activityLevel: 'high',
-      type: 'cortical',
-      hemisphere: 'left',
+      hemisphereLocation: 'left',
+      dataConfidence: 0.95,
+      isActive: true,
       metrics: { density: 0.9, thickness: 2.8, surfaceArea: 130 },
     };
 
@@ -333,8 +334,9 @@ export class EnhancedMockApiClient implements IApiClient {
       connections: ['region-mock-1'],
       color: '#0000FF',
       activityLevel: 'low',
-      type: 'subcortical',
-      hemisphere: 'right',
+      hemisphereLocation: 'right',
+      dataConfidence: 0.88,
+      isActive: true,
       metrics: { density: 0.7, thickness: 1.5, surfaceArea: 40 },
     };
 
