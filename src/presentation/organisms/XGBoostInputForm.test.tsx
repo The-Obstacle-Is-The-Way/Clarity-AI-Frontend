@@ -23,10 +23,10 @@ vi.mock('@/components/ui/checkbox', () => ({
 
 vi.mock('@/components/ui/select', () => ({
   Select: ({ children, ...props }: any) => <select {...props}>{children}</select>,
-  SelectContent: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  SelectContent: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
   SelectItem: ({ children, value, ...props }: any) => <option value={value} {...props}>{children}</option>,
-  SelectTrigger: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  SelectValue: (props: any) => <span {...props} />,
+  SelectTrigger: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+  SelectValue: (props: any) => null,
 }));
 
 describe('XGBoostInputForm', () => {
