@@ -1,7 +1,7 @@
 /* eslint-disable */
-import { ApiClient } from '@api/apiClient'; // Corrected casing
-import { EnhancedMockApiClient } from '@api/EnhancedMockApiClient';
-import type { IApiClient } from '@api/IApiClient';
+import { ApiClient } from './apiClient'; // Corrected casing
+import { EnhancedMockApiClient } from './EnhancedMockApiClient';
+import type { IApiClient } from './IApiClient';
 
 /**
  * ApiGateway - Implementation of the clean hexagonal architecture pattern
