@@ -12,7 +12,11 @@ import { vi } from 'vitest';
 
 // Import theme types and components
 import type { ThemeMode } from '@application/providers/ThemeProvider';
-import { ThemeProvider, useTheme, type ThemeProviderState } from '@application/providers/ThemeProvider';
+import {
+  ThemeProvider,
+  useTheme,
+  type ThemeProviderState,
+} from '@application/providers/ThemeProvider';
 
 // Context providers
 import { AuthProvider } from '@application/context/AuthContext';
@@ -147,4 +151,4 @@ export function render(ui: ReactElement, options: ExtendedRenderOptions = {}) {
 }
 
 // Re-export everything from testing-library
-export * from '@testing-library/react'; 
+export * from '@testing-library/react';

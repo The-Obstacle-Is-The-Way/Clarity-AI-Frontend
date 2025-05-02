@@ -138,7 +138,7 @@ describe('PatientListPage', () => {
   it.skip('should update search term and trigger refetch after debounce', () => {
     // This test would verify that typing in the search box and waiting for the debounce
     // period will trigger a search with the entered term.
-    // 
+    //
     // Currently, this test is causing timeouts during the test suite runs,
     // likely due to issues with timer mocking and the debounce implementation.
     //

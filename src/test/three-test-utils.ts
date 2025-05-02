@@ -119,4 +119,4 @@ export const createR3fTestProps = () => ({
     remove: vi.fn(),
     children: [],
   },
-}); 
+});
