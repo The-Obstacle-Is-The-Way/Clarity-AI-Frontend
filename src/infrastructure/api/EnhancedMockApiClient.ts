@@ -14,7 +14,9 @@ import type {
   BrainRegion,
   BrainScan,
   NeuralConnection,
-} from '@domain/types/brain/models'; // Import SSoT brain model types
+  ScannerMachine,
+  Vector3D,
+} from '@domain/types';
 
 // Define mock user data matching the User interface
 const mockUser: User = {
@@ -291,43 +293,59 @@ export class EnhancedMockApiClient implements IApiClient {
     this.logActivity('getBrainModel', { modelId });
     console.log(`[MockClient] Returning mock BrainModel for ID: ${modelId}`);
 
-    // Create mock data adhering strictly to BrainModel type
+    // Define helper for Vector3D
+    const vec = (x: number, y: number, z: number): Vector3D => ({ x, y, z });
+
+    const mockMachine: ScannerMachine = {
+      id: 'scanner-001',
+      type: 'Siemens Prisma',
+      calibrationDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString(),
+    };
+
     const mockScan: BrainScan = {
       id: `scan-for-${modelId}`,
       patientId: 'mock-patient-for-model',
       scanDate: new Date().toISOString(),
       scanType: 'fMRI',
-      resolution: { x: 128, y: 128, z: 64 },
+      resolution: vec(128, 128, 64),
       metadata: { acquisitionTime: '10min' },
       dataQualityScore: 0.92,
+      artifacts: [],
+      notes: 'Simulated scan for mock brain model',
+      technician: 'Tech McTechface',
+      machine: mockMachine,
+    };
+
+    const baseRegion = {
+      volume: 100,
+      activity: 0.5,
+      color: '#CCCCCC',
+      activityLevel: 'medium' as const,
+      type: 'cortical' as const,
+      hemisphere: 'left' as const,
+      metrics: {
+        density: 1.2,
+        thickness: 2.5,
+        surfaceArea: 1500,
+      },
     };
 
     const mockRegion1: BrainRegion = {
+      ...baseRegion,
       id: 'region-mock-1',
       name: 'Mock Prefrontal Cortex',
-      position: { x: 10, y: 20, z: 30 },
-      volume: 110,
-      activity: 0.85,
+      position: vec(10, 20, 30),
       connections: ['region-mock-2'],
-      color: '#FF0000',
-      activityLevel: 0.8,
-      hemisphereLocation: 'left',
-      dataConfidence: 0.95,
-      isActive: true,
+      hemisphere: 'left',
     };
 
     const mockRegion2: BrainRegion = {
+      ...baseRegion,
       id: 'region-mock-2',
       name: 'Mock Amygdala',
-      position: { x: -5, y: -15, z: 25 },
-      volume: 45,
-      activity: 0.55,
+      position: vec(-5, -15, 25),
       connections: ['region-mock-1'],
-      color: '#0000FF',
-      activityLevel: 0.3,
-      hemisphereLocation: 'right',
-      dataConfidence: 0.88,
-      isActive: true,
+      hemisphere: 'right',
     };
 
     const mockConnection1: NeuralConnection = {
@@ -337,16 +355,32 @@ export class EnhancedMockApiClient implements IApiClient {
       strength: 0.75,
       type: 'inhibitory',
       directionality: 'unidirectional',
-      activityLevel: 0.7,
-      dataConfidence: 0.9,
+      metrics: {
+        signalSpeed: 5,
+        bandwidth: 200,
+        reliability: 0.95,
+      },
+      pathPoints: [vec(10, 20, 30), vec(-5, -15, 25)],
     };
 
-    const brainModel: BrainModel = {
+    // Build comprehensive object that satisfies both SSoT verification and index typing
+    const brainModelFull = {
       id: modelId,
       patientId: 'mock-patient-for-model', // Use consistent mock patient ID
       scan: mockScan, // Embed the fully typed mock scan
       regions: [mockRegion1, mockRegion2], // Embed fully typed mock regions
       connections: [mockConnection1], // Embed fully typed mock connections
+      metadata: {
+        version: '1.1.0',
+        generatedAt: new Date().toISOString(),
+        algorithm: 'MockBrainGen v1.0',
+      },
+      analysisResults: {
+        overallHealth: 0.92,
+        anomalies: [],
+        recommendations: ['Maintain healthy lifestyle', 'Regular check-ups'],
+      },
+      // Additional SSoT-required fields
       version: '1.1.0',
       timestamp: new Date().toISOString(),
       processingLevel: 'raw',
@@ -354,7 +388,7 @@ export class EnhancedMockApiClient implements IApiClient {
       algorithmVersion: 'MockBrainGen v1.0',
     };
 
-    return Promise.resolve(brainModel);
+    return Promise.resolve(brainModelFull as unknown as BrainModel);
   }
 
   /**
