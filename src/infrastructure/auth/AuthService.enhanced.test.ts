@@ -164,9 +164,9 @@ describe('EnhancedAuthService', () => {
 
       // --- Verification ---
       // Aggressively run timers and wait for promises
-      await act(async () => {
-        await vi.runAllTimersAsync();
-      });
+      // await act(async () => { // Reverted act wrapper
+      await vi.runAllTimersAsync();
+      // });
       const result = await resultPromise;
 
       // Ensure refreshToken was called correctly
@@ -233,9 +233,9 @@ describe('EnhancedAuthService', () => {
 
       // --- Verification ---
       // Run timers and await promise
-      await act(async () => {
-          await vi.runAllTimersAsync();
-      });
+      // await act(async () => { // Reverted act wrapper
+      await vi.runAllTimersAsync();
+      // });
       const result = await resultPromise;
 
       // Ensure refreshToken was called

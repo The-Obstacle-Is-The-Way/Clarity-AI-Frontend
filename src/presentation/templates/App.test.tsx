@@ -13,19 +13,25 @@ vi.mock('./App', () => ({
 }));
 
 // Mock the router and other potential dependencies
-vi.mock('react-router-dom', () => ({
-  Routes: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="mock-routes">{children}</div>
-  ),
-  Route: ({ path, element }: { path: string; element: React.ReactNode }) => (
-    <div data-testid={`mock-route-${path}`}>{element}</div>
-  ),
-  BrowserRouter: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="mock-browser-router">{children}</div>
-  ),
-  useLocation: () => ({ pathname: '/' }),
-  useNavigate: () => vi.fn(),
-}));
+// Extend the original module to keep MemoryRouter available
+vi.mock('react-router-dom', async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual, // Keep original exports like MemoryRouter
+        Routes: ({ children }: { children: React.ReactNode }) => (
+            <div data-testid="mock-routes">{children}</div>
+        ),
+        Route: ({ path, element }: { path: string; element: React.ReactNode }) => (
+            <div data-testid={`mock-route-${path}`}>{element}</div>
+        ),
+        // Keep BrowserRouter mock if needed, or remove if MemoryRouter is sufficient
+        BrowserRouter: ({ children }: { children: React.ReactNode }) => (
+            <div data-testid="mock-browser-router">{children}</div>
+        ),
+        useLocation: () => ({ pathname: '/' }),
+        useNavigate: () => vi.fn(),
+    };
+});
 
 describe('App', () => {
   it('renders main application structure', async () => {
