@@ -2,16 +2,13 @@
  * NOVAMIND Neural Test Suite
  * TreatmentResponsePredictor testing with quantum precision
  */
-import { describe, it, expect } from 'vitest'; // Removed unused vi import
+import { describe, it, expect, vi } from 'vitest'; // Added vi
 
 import { screen } from '@testing-library/react';
-import '@testing-library/jest-dom'; // Removed unused render, fireEvent
-// Removed unused React import
-// Removed unused userEvent import
+import '@testing-library/jest-dom';
 import TreatmentResponsePredictor from './TreatmentResponsePredictor'; // Assuming default export
 import { renderWithProviders } from '../../test/test-utils.unified'; // Correct import path
 import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
-// Removed unused AssessmentScore import
 import type {
   PatientDemographics,
   ClinicalData,
@@ -19,6 +16,23 @@ import type {
   DataPermissions,
   TreatmentData,
 } from '../../../domain/types/clinical/patient';
+
+// Mock dependencies
+vi.mock('@presentation/atoms/Button', () => ({
+  default: (props: any) => <button {...props} />
+}));
+vi.mock('@application/hooks/useTreatmentPrediction', () => ({
+  useTreatmentPrediction: vi.fn(() => ({
+    treatmentConfig: { treatmentType: 'ssri' },
+    predictionResult: null,
+    featureImportance: null,
+    isPredicting: false,
+    predictionError: null,
+    updateTreatmentConfig: vi.fn(),
+    predictTreatmentResponse: vi.fn(),
+    resetPrediction: vi.fn(),
+  }))
+}));
 // Removed unused imports from @domain/types/clinical/patient
 // Removed unused RiskAssessment import
 // TreatmentResponse type is likely in treatment.ts, but not needed for this mock setup yet

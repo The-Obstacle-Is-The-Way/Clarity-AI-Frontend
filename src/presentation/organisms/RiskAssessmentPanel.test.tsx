@@ -4,12 +4,22 @@
  * RiskAssessmentPanel testing with quantum precision
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest'; // Added vi
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import RiskAssessmentPanel from './RiskAssessmentPanel';
 import { renderWithProviders } from '../../test/test-utils.unified';
 import { RiskLevel, type RiskAssessment } from '@domain/types/clinical/risk';
+
+// Mock dependencies
+vi.mock('@presentation/atoms/Button', () => ({
+  default: (props: any) => <button {...props} />
+}));
+vi.mock('@api/XGBoostService', () => ({
+  xgboostService: {
+    predictRisk: vi.fn(() => Promise.resolve({ ok: true, val: { risk_level: 'low', risk_score: 0.1, confidence: 0.9, factors: [], recommendations: [] } }))
+  }
+}));
 
 // Mock data with clinical precision
 const mockRiskAssessments: RiskAssessment[] = [
