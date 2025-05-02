@@ -1,7 +1,7 @@
 // src/presentation/pages/PatientListPage.test.tsx
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import PatientListPage from './PatientListPage';
 import { usePatients } from '@application/hooks/usePatients';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -31,6 +31,19 @@ describe('PatientListPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks(); // Clear mocks before each test
+    // Minimal setup: Only mock the initial return value needed for render
+    mockUsePatients.mockReturnValue({
+        isLoading: false,
+        data: { items: [], total: 0, page: 1, size: 10, pages: 0 }, // Empty initial data
+        error: null,
+    });
+  });
+
+  afterEach(() => {
+      vi.restoreAllMocks();
+      if (vi.isMockFunction(setTimeout)) { // Ensure timers are restored if faked
+          vi.useRealTimers();
+      }
   });
 
   it('should render loading state initially', () => {
@@ -102,32 +115,42 @@ describe('PatientListPage', () => {
     });
   });
 
-it('should update search term and trigger refetch after debounce', async () => {
+  it('should update search term and trigger refetch after debounce', async () => {
     vi.useFakeTimers(); // Use fake timers for debounce
-    const initialData = {
-        items: [{ id: '1', first_name: 'Alice' }],
-        total: 1, page: 1, size: 10, pages: 1
-    };
-    mockUsePatients.mockReturnValue({ isLoading: false, data: initialData, error: null });
+
     renderWithProviders(<PatientListPage />);
+
+    // Initial render call
+    expect(mockUsePatients).toHaveBeenCalledTimes(1);
+    expect(mockUsePatients).toHaveBeenCalledWith(expect.objectContaining({ search: '' }));
 
     const searchInput = screen.getByPlaceholderText(/Search patients.../i);
     fireEvent.change(searchInput, { target: { value: 'test search' } });
 
-    // Should not have been called immediately
-    expect(usePatients).toHaveBeenCalledTimes(1); // Initial call
-    expect(usePatients).toHaveBeenCalledWith(expect.objectContaining({ search: '' }));
+    // IMPORTANT: Assert *before* advancing timers
+    // Expect NO additional calls yet
+    expect(mockUsePatients).toHaveBeenCalledTimes(1);
+
+    // Mock the return value *for the expected second call*
+    mockUsePatients.mockReturnValueOnce({
+        isLoading: false,
+        data: { items: [{ id: 'found' }], total: 1, page: 1, size: 10, pages: 1 }, // Simulate search results
+        error: null,
+    });
 
     // Fast-forward time past the debounce period (500ms)
-    vi.advanceTimersByTime(500);
+    act(() => {
+       vi.advanceTimersByTime(500);
+    });
 
     // Now the hook should be called with the new search term
     await waitFor(() => {
-        expect(usePatients).toHaveBeenCalledTimes(2);
-        expect(usePatients).toHaveBeenCalledWith(expect.objectContaining({ search: 'test search', page: 1 }));
+      expect(mockUsePatients).toHaveBeenCalledTimes(2);
     });
+    // Verify the arguments of the second call specifically
+    expect(mockUsePatients).toHaveBeenNthCalledWith(2, expect.objectContaining({ search: 'test search', page: 1 }));
 
     vi.useRealTimers(); // Restore real timers
-});
+  });
 
 });
