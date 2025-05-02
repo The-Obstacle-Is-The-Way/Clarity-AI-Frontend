@@ -45,7 +45,7 @@ class HttpError extends Error {
 /**
  * ApiClient class for making HTTP requests
  */
-export class ApiClient {
+export class ApiClient implements IApiClient {
   public baseUrl: string;
   public headers: Record<string, string>;
   private responseInterceptors: ResponseInterceptor[];
@@ -323,6 +323,57 @@ export class ApiClient {
 
     return url.toString();
   }
+
+  // --- IApiClient Implementation --- 
+
+  clearAuthToken(): void {
+    this.setAuthToken(null);
+    // Optionally remove from localStorage if stored there
+    localStorage.removeItem('authToken'); 
+  }
+
+  isAuthenticated(): boolean {
+    // Check if the token exists and potentially validate it (basic check here)
+    return !!this.authToken;
+  }
+
+  async login(email: string, password: string): Promise<any> {
+    // Assuming a /auth/login endpoint
+    const response = await this.post<any>('/auth/login', { email, password });
+    if (response && response.token) { // Adjust based on actual response structure
+      this.setAuthToken(response.token);
+      localStorage.setItem('authToken', response.token); // Store token
+    }
+    return response; 
+  }
+
+  getPatients(): Promise<any[]> {
+    // Assuming a /patients endpoint
+    return this.get<any[]>('/ml/patients/'); // Match path from console errors
+  }
+
+  getPatientById(patientId: string): Promise<any> {
+    // Assuming a /patients/{id} endpoint
+    return this.get<any>(`/ml/patients/${patientId}`); // Match path structure
+  }
+
+  getBrainModel(modelId?: string): Promise<any> {
+    // Assuming a /brain-models/{id} endpoint, default if no ID?
+    const endpoint = modelId ? `/ml/brain/brain-models/${modelId}` : '/ml/brain/brain-models'; // Match path from console errors
+    return this.get<any>(endpoint);
+  }
+
+  predictTreatmentResponse(patientId: string, treatmentData: any): Promise<any> {
+    // Assuming a /predictions/treatment endpoint
+    return this.post<any>(`/predictions/treatment/${patientId}`, treatmentData);
+  }
+
+  getRiskAssessment(patientId: string): Promise<any> {
+    // Assuming a /risk-assessment/{id} endpoint
+    return this.get<any>(`/risk-assessment/${patientId}`);
+  }
+
+  // --------------------------------
 }
 
 // Create and export a singleton instance of ApiClient
