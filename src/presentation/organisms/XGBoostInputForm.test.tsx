@@ -1,32 +1,32 @@
 // src/presentation/organisms/XGBoostInputForm.test.tsx
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import XGBoostInputForm from './XGBoostInputForm';
 
 // Mock the UI components from Shadcn since they're not available in tests
 vi.mock('@/components/ui/button', () => ({
-  Button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
+  Button: ({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => <button {...props}>{children}</button>,
 }));
 
 vi.mock('@/components/ui/input', () => ({
-  Input: (props: any) => <input {...props} />,
+  Input: (props: React.InputHTMLAttributes<HTMLInputElement>) => <input {...props} />,
 }));
 
 vi.mock('@/components/ui/label', () => ({
-  Label: ({ children, ...props }: any) => <label {...props}>{children}</label>,
+  Label: ({ children, ...props }: React.LabelHTMLAttributes<HTMLLabelElement>) => <label {...props}>{children}</label>,
 }));
 
 vi.mock('@/components/ui/checkbox', () => ({
-  Checkbox: (props: any) => <input type="checkbox" {...props} />,
+  Checkbox: (props: React.InputHTMLAttributes<HTMLInputElement>) => <input type="checkbox" {...props} />,
 }));
 
 vi.mock('@/components/ui/select', () => ({
-  Select: ({ children, ...props }: any) => <select {...props}>{children}</select>,
+  Select: ({ children, ...props }: React.ComponentProps<'select'>) => <select {...props}>{children}</select>,
   SelectContent: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
-  SelectItem: ({ children, value, ...props }: any) => <option value={value} {...props}>{children}</option>,
+  SelectItem: ({ children, value, ...props }: React.ComponentProps<'option'>) => <option value={value} {...props}>{children}</option>,
   SelectTrigger: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
-  SelectValue: (props: any) => null,
+  SelectValue: (_props: unknown) => null,
 }));
 
 describe('XGBoostInputForm', () => {
