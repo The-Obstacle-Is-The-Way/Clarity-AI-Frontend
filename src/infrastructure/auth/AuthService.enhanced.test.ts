@@ -139,6 +139,9 @@ describe('EnhancedAuthService', () => {
 
     // Instantiate the service after spies
     authService = new EnhancedAuthService('https://api.test.com');
+
+    vi.spyOn(window, 'setTimeout');
+    dispatchEventSpy.mockClear(); // Clear event dispatch spy
   });
 
   afterEach(() => {
