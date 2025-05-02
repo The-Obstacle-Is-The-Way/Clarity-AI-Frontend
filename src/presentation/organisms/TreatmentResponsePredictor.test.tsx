@@ -33,6 +33,13 @@ vi.mock('@application/hooks/useTreatmentPrediction', () => ({
     resetPrediction: vi.fn(),
   }))
 }));
+// Explicitly mock the service used indirectly by the hook
+vi.mock('@api/XGBoostService', () => ({
+  xgboostService: {
+    predictTreatmentResponse: vi.fn(() => Promise.resolve({ ok: true, val: { response_level: 'good', response_probability: 0.8 } }))
+    // Add other methods if needed by the hook implicitly
+  }
+}));
 // Removed unused imports from @domain/types/clinical/patient
 // Removed unused RiskAssessment import
 // TreatmentResponse type is likely in treatment.ts, but not needed for this mock setup yet
