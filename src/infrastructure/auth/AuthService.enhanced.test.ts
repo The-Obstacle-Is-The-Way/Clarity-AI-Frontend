@@ -10,6 +10,7 @@ import '@testing-library/jest-dom'; // Import waitFor
 import { act } from '@testing-library/react'; // Add import for act
 import { EnhancedAuthService } from './AuthService.enhanced';
 import { AuthTokens, AuthUser, AuthApiClient } from './index'; // Import AuthApiClient for mocking
+import { SpyInstance } from 'vitest';
 
 // Rely on the global window.localStorage mock defined in src/test/setup.ts
 // Use window.localStorage.* spies for storage interactions
@@ -106,6 +107,9 @@ const mockGetCurrentUser = vi.fn().mockImplementation(async () => {
   return Promise.resolve(mockUser);
 });
 
+vi.stubGlobal('CustomEvent', CustomEvent);
+
+// Global spies for event dispatching
 describe('EnhancedAuthService', () => {
   let authService: EnhancedAuthService;
   // Create a mock for dispatchEvent
