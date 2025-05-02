@@ -186,9 +186,8 @@ export class BrainTypeVerifier {
       object.activityLevel,
       field ? `${field}.activityLevel` : 'activityLevel'
     );
-    if (!activityLevelResult.success) {
+    if (!activityLevelResult.success)
       return activityLevelResult as Result<BrainRegion, TypeVerificationError>;
-    }
     if (activityLevelResult.value < 0 || activityLevelResult.value > 1) {
       return {
         success: false,
@@ -287,26 +286,29 @@ export class BrainTypeVerifier {
     if (!tissueTypeResult.success)
       return tissueTypeResult as Result<BrainRegion, TypeVerificationError>;
 
-    // Return verified brain region
+    const verifiedRegion: BrainRegion = {
+      id: idResult.value,
+      name: nameResult.value,
+      position: positionResult.value,
+      color: colorResult.value,
+      connections: connectionsResult.value,
+      hemisphereLocation: hemisphereLocationResult.value,
+      dataConfidence: dataConfidenceResult.value,
+      activityLevel: activityLevelResult.value,
+      isActive: isActiveResult.value,
+      volume: volumeResult.value,
+      activity: activityResult.value,
+    } as BrainRegion;
+
+    if (volumeMlResult.value !== undefined) verifiedRegion.volumeMl = volumeMlResult.value;
+    if (riskFactorResult.value !== undefined) verifiedRegion.riskFactor = riskFactorResult.value;
+    if (clinicalSignificanceResult.value !== undefined)
+      verifiedRegion.clinicalSignificance = clinicalSignificanceResult.value;
+    if (tissueTypeResult.value !== undefined) verifiedRegion.tissueType = tissueTypeResult.value;
+
     return {
       success: true,
-      value: {
-        id: idResult.value,
-        name: nameResult.value,
-        position: positionResult.value,
-        color: colorResult.value,
-        connections: connectionsResult.value,
-        hemisphereLocation: hemisphereLocationResult.value,
-        dataConfidence: dataConfidenceResult.value,
-        activityLevel: activityLevelResult.value,
-        isActive: isActiveResult.value,
-        volume: volumeResult.value,
-        activity: activityResult.value,
-        volumeMl: volumeMlResult.value,
-        riskFactor: riskFactorResult.value,
-        clinicalSignificance: clinicalSignificanceResult.value,
-        tissueType: tissueTypeResult.value,
-      } as BrainRegion,
+      value: verifiedRegion,
     };
   }
 
@@ -419,21 +421,22 @@ export class BrainTypeVerifier {
     if (!pathwayLengthResult.success)
       return pathwayLengthResult as Result<NeuralConnection, TypeVerificationError>;
 
-    // Return verified neural connection
-    return {
-      success: true,
-      value: {
-        id: idResult.value,
-        sourceId: sourceIdResult.value,
-        targetId: targetIdResult.value,
-        strength: strengthResult.value,
-        type: typeEnumResult.value,
-        directionality: directionalityResult.value,
-        activityLevel: activityLevelResult.value,
-        dataConfidence: dataConfidenceResult.value,
-        pathwayLength: pathwayLengthResult.value,
-      },
-    };
+    const verifiedConnection: NeuralConnection = {
+      id: idResult.value,
+      sourceId: sourceIdResult.value,
+      targetId: targetIdResult.value,
+      strength: strengthResult.value,
+      type: typeEnumResult.value,
+      directionality: directionalityResult.value,
+      activityLevel: activityLevelResult.value,
+      dataConfidence: dataConfidenceResult.value,
+    } as NeuralConnection;
+
+    if (pathwayLengthResult.value !== undefined) {
+      verifiedConnection.pathwayLength = pathwayLengthResult.value;
+    }
+
+    return { success: true, value: verifiedConnection };
   }
 
   /**
@@ -532,24 +535,26 @@ export class BrainTypeVerifier {
     if (!processingMethodResult.success)
       return processingMethodResult as Result<BrainScan, TypeVerificationError>;
 
-    return {
-      success: true,
-      value: {
-        id: idResult.value,
-        patientId: patientIdResult.value,
-        scanDate: scanDateResult.value,
-        scanType: scanTypeResult.value,
-        resolution: resolutionResult.value,
-        metadata: metadataResult.value,
-        dataQualityScore: dataQualityScoreResult.value,
-        scannerModel: scannerModelResult.value,
-        contrastAgent: contrastAgentResult.value,
-        notes: notesResult.value,
-        technician: technicianResult.value,
-        processingMethod: processingMethodResult.value,
-      },
-    };
-  } // End of verifyBrainScan method
+    const verifiedScan: BrainScan = {
+      id: idResult.value,
+      patientId: patientIdResult.value,
+      scanDate: scanDateResult.value,
+      scanType: scanTypeResult.value,
+      resolution: resolutionResult.value,
+      metadata: metadataResult.value,
+      dataQualityScore: dataQualityScoreResult.value,
+    } as BrainScan;
+
+    if (scannerModelResult.value !== undefined) verifiedScan.scannerModel = scannerModelResult.value;
+    if (contrastAgentResult.value !== undefined)
+      verifiedScan.contrastAgent = contrastAgentResult.value;
+    if (notesResult.value !== undefined) verifiedScan.notes = notesResult.value;
+    if (technicianResult.value !== undefined) verifiedScan.technician = technicianResult.value;
+    if (processingMethodResult.value !== undefined)
+      verifiedScan.processingMethod = processingMethodResult.value;
+
+    return { success: true, value: verifiedScan };
+  }
 
   /**
    * Verify that an object conforms to the BrainModel interface (from SSoT)

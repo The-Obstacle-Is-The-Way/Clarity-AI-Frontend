@@ -300,8 +300,14 @@ export class EnhancedMockApiClient implements IApiClient {
       resolution: { x: 128, y: 128, z: 64 },
       metadata: { acquisitionTime: '10min' },
       dataQualityScore: 0.92,
+      artifacts: [],
       notes: 'Mock scan data',
       technician: 'Mock Tech',
+      machine: {
+        id: 'mock-scanner-02',
+        type: 'Mock Scanner',
+        calibrationDate: new Date().toISOString(),
+      },
     };
 
     const mockRegion1: BrainRegion = {
@@ -343,32 +349,16 @@ export class EnhancedMockApiClient implements IApiClient {
       dataConfidence: 0.9,
     };
 
-    return Promise.resolve({
+    const brainModel: BrainModel = {
       id: modelId,
       patientId: 'mock-patient-for-model', // Use consistent mock patient ID
       scan: mockScan, // Embed the fully typed mock scan
       regions: [mockRegion1, mockRegion2], // Embed fully typed mock regions
       connections: [mockConnection1], // Embed fully typed mock connections
-      // Required fields from BrainModel SSoT
-      version: '1.1.0',
-      timestamp: new Date().toISOString(),
-      processingLevel: 'raw',
-      lastUpdated: new Date().toISOString(),
-      // Optional field
       algorithmVersion: 'MockBrainGen v1.0',
+    };
 
-      // Additional mock metadata beyond the SSoT (allowed by verifier)
-      metadata: {
-        version: '1.1.0',
-        generatedAt: new Date().toISOString(),
-        algorithm: 'MockBrainGen v1.0',
-      },
-      analysisResults: {
-        overallHealth: 0.78,
-        anomalies: ['Slight asymmetry detected'],
-        recommendations: ['Monitor region-mock-2 activity'],
-      },
-    });
+    return Promise.resolve(brainModel);
   }
 
   /**
