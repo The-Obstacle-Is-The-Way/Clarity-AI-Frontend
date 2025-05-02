@@ -37,7 +37,7 @@ const PatientDetailCard: React.FC<PatientDetailCardProps> = ({ patient }) => {
         <DetailItem label="Last Name" value={patient.last_name} />
         <DetailItem label="Date of Birth" value={patient.date_of_birth} />
         <DetailItem label="Status">
-             <Badge variant={patient.status === 'active' ? 'default' : 'secondary'}>
+             <Badge variant={patient.status === 'inactive' ? 'destructive' : 'default'}>
                 {patient.status}
               </Badge>
         </DetailItem>

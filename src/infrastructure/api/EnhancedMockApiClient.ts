@@ -76,18 +76,22 @@ export class EnhancedMockApiClient implements IApiClient {
     await this.delay();
     console.log(`[MockClient] login called for ${email} (Simulating cookie setting)`);
     this.logActivity('POST_Request', { endpoint: '/api/v1/auth/login', data: { email } });
-    // Return structure might need adjustment based on IApiClient definition
-    // For now, return mock user/token structure if needed for compatibility
+    
+    // Return structure to match test expectations
     return Promise.resolve({
+      token: 'mock-access-token-for-test',
+      id: mockUser.id,
+      name: `${mockUser.first_name} ${mockUser.last_name}`,
+      role: mockUser.roles[0],
+      // Additional fields from original implementation
       access_token: 'mock-access-token-from-unused-login',
       refresh_token: 'mock-refresh-token-from-unused-login',
       token_type: 'bearer',
       expires_in: 3600,
-      // Include mock user data if the interface expects it from login
       user: {
-          id: mockUser.id,
-          email: mockUser.email,
-          roles: mockUser.roles
+        id: mockUser.id,
+        email: mockUser.email,
+        roles: mockUser.roles
       }
     });
   }
