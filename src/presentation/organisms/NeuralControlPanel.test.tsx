@@ -77,7 +77,9 @@ vi.mock('@presentation/atoms/Tooltip', () => ({
 }));
 vi.mock('@presentation/atoms/Badge', () => ({
   Badge: ({ children, ...props }: { children?: ReactNode }) => (
-    <span data-testid="mock-badge" {...props}>{children}</span>
+    <span data-testid="mock-badge" {...props}>
+      {children}
+    </span>
   ),
 }));
 vi.mock('@presentation/atoms/Card', () => ({
@@ -87,9 +89,7 @@ vi.mock('@presentation/atoms/Card', () => ({
     </div>
   ),
   CardContent: ({ children, ...props }: { children?: ReactNode }) => (
-    <div {...props}>
-      {children}
-    </div>
+    <div {...props}>{children}</div>
   ),
   CardDescription: ({ children, ...props }: { children?: ReactNode }) => (
     <p {...props}>{children}</p>
@@ -138,7 +138,8 @@ vi.mock('framer-motion', () => ({
 // Mock the missing coordinator module
 vi.mock('@application/coordinators/NeuralVisualizationCoordinator', () => ({
   useVisualizationCoordinator: vi.fn(() => ({
-    state: { /* provide minimal placeholder state matching component expectations */
+    state: {
+      /* provide minimal placeholder state matching component expectations */
       renderMode: 'anatomical',
       detailLevel: 'medium',
       currentTimeScale: 'daily',
