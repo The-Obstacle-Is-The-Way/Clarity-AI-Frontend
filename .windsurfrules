@@ -1,3 +1,344 @@
+# Novamind Frontend Agentic Development Guide (.cursorrules)
+
+## MISSION: Implement E2E Integration (docs/E2E/README.md)
+
+Your primary directive is to implement the frontend features required to fully integrate with the Clarity-AI-Backend, following the phases and tasks outlined in `docs/E2E/README.md`. Prioritize Phase 1 (Foundation & Core Services) before moving to Phase 2 (Feature Integration per Domain).
+
+**CRITICAL:** Before implementing any feature, **VERIFY** the exact backend API endpoint, request/response schema, and operational status. The E2E checklist is a guide; adapt to the verified backend reality.
+
+## CORE DEVELOPMENT RULES (Concise)
+
+1.  **ARCHITECTURE:** Strict `src/{domain|application|infrastructure|presentation}`. Atomic Design in `presentation/`. Path aliases (`@/*`). PURE TYPESCRIPT (.ts/.tsx). ESM only.
+2.  **TYPE SAFETY:** `strict: true`. No `any`. Use `unknown`, `zod`, custom `Error` subtypes.
+3.  **STACK:** React (`/facebook/react`), Vite (`/vitejs/vite`), TypeScript (`/microsoft/typescript`), Tailwind (`/tailwindlabs/tailwindcss`), R3F (`/pmndrs/react-three-fiber`).
+4.  **STATE:** UI (`useState`/`useReducer`), Global (Context: `AuthContext`), Server (**TanStack Query `/tanstack/query` MANDATORY**), Forms (**React Hook Form `/react-hook-form/react-hook-form` + Zod MANDATORY**).
+5.  **COMPONENTS:** Functional only. Explicit Props+TSDoc. Explicit return type. `React.memo`/`useCallback`/`useMemo` for performance. Error Boundaries.
+6.  **STYLING:** Tailwind CSS (`/tailwindlabs/tailwindcss`). Logical class grouping (`clsx`/`tailwind-merge`). Minimal custom classes/theme.
+7.  **API CLIENT:** Centralized `src/infrastructure/api/apiClient.ts` (use axios/fetch). Implement request/response interceptors (auth, logging, error handling). Create specific service wrappers (`PatientService`, `AuthService`).
+8.  **TESTING:** Vitest (`/vitest-dev/vitest`) + RTL (`/testing-library/react-testing-library`) for unit/integration/component tests. Aim for high coverage. E2E (Cypress/Playwright) setup is needed for Phase 3.
+9.  **HIPAA:** Use masking components. Secure token handling. UI respects roles. Trigger backend audits.
+10. **DOCUMENTATION:** TSDoc for exports. Update `docs/E2E/README.md` checklist. ADRs for major decisions.
+11. **GIT:** Conventional Commits (`type(scope): desc`). Feature branches (`feature/...`).
+12. **QUALITY:** Pre-commit hooks (lint, format, types). Clean code. Address linter/type errors promptly.
+
+## CURRENT FOCUS (Example - Adjust based on progress)
+
+- **Verify & Implement:** Phase 1, Item 2: Authentication Integration (Confirm backend endpoints, implement `LoginPage`, `LoginForm`, `AuthContext`, `authService.ts`, protected routes).
+- **Refactor:** Consolidate any components/pages found outside the standard `src/{layer}` structure.
+
+**AGENT BEHAVIOR:** Work iteratively. Implement feature -> Write tests -> Refactor -> Commit. Communicate progress against the E2E checklist. Ask for clarification if backend API details are missing or ambiguous.
+
+# Novamind Digital Twin: Development Rules
+- PURE TYPESCRIPT TS NO JS 
+
+## Environment
+```bash
+node >= 18.0.0
+npm >= 9.0.0
+```
+
+## Required Extensions
+- ESLint + Prettier
+- TypeScript
+- Tailwind CSS IntelliSense
+- Error Lens
+
+## Editor Config
+```json
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
+```
+
+## Core Architecture Rules
+
+### Module System
+- ESM only (type: "module")
+- TypeScript only (.ts/.tsx)
+- Path aliases required (@domain/...)
+- No CommonJS (except .cjs configs)
+- PURE TYPESCRIPT TS NO JS 
+
+### Directory Structure
+```
+src/
+├── domain/           # Core business logic
+├── application/      # Use cases, state
+├── infrastructure/   # External services
+└── presentation/     # UI (Atomic Design)
+    ├── atoms/       # Basic components
+    ├── molecules/   # Combined atoms
+    ├── organisms/   # Complex UI
+    ├── templates/   # Layouts
+    └── pages/       # Routes
+```
+
+### Import Rules
+- Domain → No external imports
+- Application → Domain only
+- Infrastructure → Domain, Application
+- Presentation → All layers
+
+### Type Safety
+- Strict mode enabled
+- No any, use unknown
+- Type guards required
+- Explicit error types
+
+### Component Rules
+- Props interface with JSDoc
+- Explicit return type
+- Error boundary wrapper
+- Memoize when needed
+```typescript
+// ✅ Performance optimization
+const Component = memo(({ data }: Props) => {
+  const memoizedCallback = useCallback(() => {}, []);
+  const memoizedValue = useMemo(() => compute(data), [data]);
+  return <div>{/* Implementation */}</div>;
+});
+```
+
+### State Management
+- Local state for UI
+- Context for theme/auth
+- Query hooks for server state
+- Form state via React Hook Form
+
+### HIPAA Compliance
+- Mask sensitive data
+- Secure data transmission
+- Role-based access
+- Audit logging
+
+### Error Handling
+```typescript
+try {
+  await secureOperation();
+} catch (error) {
+  errorBoundary.capture(error);
+  logger.error('Operation failed', { context: error });
+}
+```
+
+### Documentation
+- TSDoc for public APIs
+- README per directory
+- OpenAPI for HTTP endpoints
+- Architecture decisions recorded
+
+## Scripts & Commands
+
+1. **Development**
+   ```bash
+   # Start dev server
+   npm run dev
+   
+   # Type checking
+   npm run typecheck
+   
+   # Linting
+   npm run lint
+   
+   # Formatting
+   npm run format
+   ```
+
+2. **Testing**
+   ```bash
+   # Run all tests
+   npm test
+   
+   # Watch mode
+   npm run test:watch
+   
+   # Coverage
+   npm run test:coverage
+   
+   # Specific tests
+   npm test -- path/to/test.test.ts
+   ```
+
+3. **Building**
+   ```bash
+   # Production build
+   npm run build
+   
+   # Preview build
+   npm run preview
+   ```
+
+## Git Workflow
+
+1. **Branch Naming**
+   ```bash
+   feature/brain-visualization
+   fix/memory-leak
+   refactor/api-client
+   test/brain-model
+   ```
+
+2. **Commit Messages**
+   ```bash
+   # Format: <type>(<scope>): <description>
+   
+   feat(visualization): add neural pathway highlighting
+   fix(memory): resolve WebGL context leak
+   refactor(api): implement clean architecture pattern
+   test(model): add brain region tests
+   ```
+
+3. **Pre-commit Checks**
+   ```bash
+   # Runs automatically on commit
+   - Type checking
+   - Linting
+   - Tests
+   - Format checking
+   ```
+
+## Code Quality
+
+1. **Linting**
+   ```bash
+   # Check all files
+   npm run lint
+   
+   # Fix automatically
+   npm run lint -- --fix
+   
+   # Check specific files
+   npm run lint src/domain/**/*.ts
+   ```
+
+2. **Type Checking**
+   ```bash
+   # Check all files
+   npm run typecheck
+   
+   # Watch mode
+   npm run typecheck -- --watch
+   ```
+
+3. **Testing**
+   ```bash
+   # Run specific test suites
+   npm test -- --testPathPattern=brain
+   
+   # Update snapshots
+   npm test -- -u
+   
+   # Run with coverage
+   npm run test:coverage
+   ```
+
+## Debugging
+
+1. **Development**
+   ```bash
+   # Start with debugger
+   npm run dev -- --inspect
+   
+   # Debug tests
+   npm run test:debug
+   ```
+
+2. **Browser Tools**
+   - React DevTools
+   - Redux DevTools
+   - Performance profiler
+   - Network inspector
+
+3. **Logging**
+   ```typescript
+   // Use structured logging
+   logger.info('Brain model loaded', {
+     modelId,
+     regions: regions.length
+   });
+   ```
+
+## Performance Monitoring
+
+1. **Build Analysis**
+   ```bash
+   # Analyze bundle size
+   npm run analyze
+   
+   # Check performance
+   npm run lighthouse
+   ```
+
+2. **Runtime Metrics**
+   - FPS monitoring
+   - Memory usage
+   - Network requests
+   - React renders
+
+3. **Error Tracking**
+   ```typescript
+   // Use error boundaries
+   window.onerror = (error) => {
+     errorTracker.capture(error);
+   };
+   ```
+
+## Deployment
+
+1. **Environment Setup**
+   ```bash
+   # Set environment
+   export NODE_ENV=production
+   
+   # Build for production
+   npm run build
+   ```
+
+2. **Verification**
+   ```bash
+   # Preview build
+   npm run preview
+   
+   # Run e2e tests
+   npm run test:e2e
+   ```
+
+3. **Release**
+   ```bash
+   # Create release
+   npm version patch
+   
+   # Deploy
+   npm run deploy
+   ```
+
+## Documentation
+
+1. **Code Comments**
+   ```typescript
+   /** 
+    * Processes neural pathway data
+    * @param data - Raw neural data
+    * @returns Processed pathway model
+    */
+   ```
+
+2. **README Updates**
+   - Feature documentation
+   - API changes
+   - Breaking changes
+   - Migration guides
+
+3. **Architecture Docs**
+   - Design decisions
+   - System diagrams
+   - Data flow
+   - Performance considerations
+
 # Novamind Digital Twin: UI Implementation Rules
 
 ## Component Architecture
@@ -222,3 +563,4 @@
      queryFn: () => fetchBrainModel(id)
    });
    ```
+
