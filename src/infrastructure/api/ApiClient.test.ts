@@ -4,80 +4,77 @@
  * apiClient testing with quantum precision
  */
 
-import { describe, it, expect, vi, beforeEach, beforeAll, afterAll, afterEach } from 'vitest';
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
-import { apiClient } from './ApiGateway'; // Use relative path
-
-// Define MSW handlers for the API endpoints used in tests
-const handlers = [
-  // Use relative path for the handler
-  http.get('/api/patients', () => {
-    console.log('[MSW] Mocking GET /api/patients');
-    return HttpResponse.json([
-      { id: 'patient-001', name: 'Quantum Patient Zero' },
-      { id: 'patient-002', name: 'Neural Patient Alpha' },
-    ]);
-  }),
-
-  // Use relative path for the handler
-  http.get('/api/ml/patients/', () => {
-    console.log('[MSW] Mocking GET /api/ml/patients/');
-    return HttpResponse.json([
-      { id: 'ml-patient-001', name: 'ML Patient Zero' },
-      { id: 'ml-patient-002', name: 'ML Patient Alpha' },
-    ]);
-  }),
-
-  // Use relative path for the handler
-  http.post('/api/auth/login', async ({ request }) => {
-    console.log('[MSW] Mocking POST /api/auth/login');
-    const body = await request.json();
-    // You could add assertions on the body if needed
-    console.log('[MSW] Received login payload:', body);
-    return HttpResponse.json({ success: true, token: 'msw_mock_token_123' });
-  }),
-
-  // Add other handlers as needed for different tests or endpoints
-];
-
-// Setup the MSW server
-const server = setupServer(...handlers);
-
-// Lifecycle hooks for MSW server
-beforeAll(() => server.listen({ onUnhandledRequest: 'bypass' })); // Changed to bypass unhandled requests
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { apiClient } from './ApiGateway';
 
 describe('apiClient', () => {
   beforeEach(() => {
+    // Mock the global fetch function
+    vi.stubGlobal('fetch', vi.fn());
     // Clear any potential spies or other mocks if necessary
-    vi.clearAllMocks();
+    // vi.clearAllMocks(); // fetch mock is cleared in afterEach
     // Reset auth token if needed between tests, depends on ApiClient implementation
-    // apiClient.setAuthToken(null); // Example
+    apiClient.setAuthToken(null); 
+  });
+
+  afterEach(() => {
+    // Clear the fetch mock after each test
+    vi.mocked(fetch).mockClear();
+    // Restore fetch to its original implementation
+    vi.unstubAllGlobals();
   });
 
   it('processes GET requests with mathematical precision', async () => {
-    // No need to force USE_MOCK_API, MSW intercepts the real call
-    const result = await apiClient.get('/ml/patients/');
+    const mockResponseData = [
+      { id: 'ml-patient-001', name: 'ML Patient Zero' },
+      { id: 'ml-patient-002', name: 'ML Patient Alpha' },
+    ];
+    // Configure the fetch mock for this specific test case
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => mockResponseData,
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    } as Response);
 
-    // Assert with quantum verification based on MSW handler response
-    expect(result).toBeDefined();
-    expect(Array.isArray(result)).toBe(true);
-    expect(result).toHaveLength(2);
-    expect((result as any[])[0].id).toBe('ml-patient-001');
+    // Call the ApiClient method
+    const result = await apiClient.get('/api/ml/patients/'); // Use the path the client expects
+
+    // Verify fetch was called correctly (optional but good)
+    expect(fetch).toHaveBeenCalledTimes(1);
+    // URL check needs to account for the baseUrl logic in ApiClient
+    // Since NODE_ENV=test, baseUrl is http://localhost
+    expect(fetch).toHaveBeenCalledWith('http://localhost/api/ml/patients/', expect.any(Object));
+
+    // Assert with quantum verification based on mock response
+    expect(result).toEqual(mockResponseData); // Direct comparison with mocked data
   });
 
   it('processes POST requests with clinical precision', async () => {
     const payload = { username: 'neural-scientist', password: 'quantum-safe' };
+    const mockResponseData = { success: true, token: 'vi_mock_token_456' };
+
+    // Configure the fetch mock for this specific test case
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => mockResponseData,
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    } as Response);
 
     // Act with quantum precision
-    const result = await apiClient.post('/auth/login', payload);
+    const result = await apiClient.post('/api/auth/login', payload);
 
-    // Assert with clinical verification based on MSW handler response
-    expect(result).toBeDefined();
-    expect((result as any).success).toBe(true);
-    expect((result as any).token).toBe('msw_mock_token_123');
+    // Verify fetch was called correctly
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith('http://localhost/api/auth/login', expect.objectContaining({
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
+    }));
+
+    // Assert with clinical verification based on mock response
+    expect(result).toEqual(mockResponseData);
   });
 
   it('supports neural authorization patterns', () => {

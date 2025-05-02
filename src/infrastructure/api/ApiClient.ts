@@ -74,6 +74,9 @@ export class ApiClient implements IApiClient {
    */
   setAuthToken(token: string | null): void {
     this.authToken = token;
+    if (token) {
+      this.headers['Authorization'] = `Bearer ${token}`;
+    }
   }
 
   /**
