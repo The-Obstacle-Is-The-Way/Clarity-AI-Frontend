@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query'; // Removed unused useQuery
 import type { RiskAssessment } from '@domain/types/clinical/risk';
 import type { RiskPredictionRequest } from '@api/XGBoostService';
 import { xgboostService } from '@api/XGBoostService';
-import Button from '@presentation/atoms/Button';
+import { Button } from '@presentation/atoms/button';
 
 interface RiskAssessmentPanelProps {
   patientId: string;
@@ -226,7 +226,7 @@ const RiskAssessmentPanel: React.FC<RiskAssessmentPanelProps> = ({
         <Button
           variant="primary"
           size="sm"
-          isLoading={isPredicting}
+          data-loading={isPredicting}
           onClick={() => predictRisk()}
           fullWidth
         >
