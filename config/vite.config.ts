@@ -31,9 +31,9 @@ export default defineConfig(({ command, mode }) => {
       sourcemap: true,
       rollupOptions: {
         input: {
-          // Add explicit inputs
+          // Use path.resolve with __dirname and '..' for correct relative paths
           main: path.resolve(__dirname, '../index.html'), // Default entry point
-          neuralControlPanelDemo: path.resolve(__dirname, '../neural-control-panel-demo.html'), // New demo page at root
+          // Remove neuralControlPanelDemo as it doesn't exist
         },
         output: {
           manualChunks: {
@@ -118,7 +118,7 @@ export default defineConfig(({ command, mode }) => {
     },
     // Explicitly define PostCSS config path for Vite
     css: {
-      postcss: './config/postcss/postcss.config.cjs',
+      postcss: path.resolve(__dirname, './postcss/postcss.config.cjs'),
     },
     // Initialize define object here
     define: {},
