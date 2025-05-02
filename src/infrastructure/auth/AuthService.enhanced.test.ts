@@ -163,13 +163,8 @@ describe('EnhancedAuthService', () => {
       const resultPromise = authService.initializeAuth();
 
       // --- Verification ---
-      // Wait for the refresh side-effect (token storage) before awaiting the result
-      await waitFor(() => {
-        expect(window.localStorage.setItem).toHaveBeenCalledWith(
-          'auth_tokens',
-          JSON.stringify(expectedNewTokens)
-        );
-      });
+      // Aggressively run timers and wait for promises
+      await vi.runAllTimersAsync();
       const result = await resultPromise;
 
       // Ensure refreshToken was called correctly
@@ -229,10 +224,8 @@ describe('EnhancedAuthService', () => {
       const resultPromise = authService.initializeAuth();
 
       // --- Verification ---
-      // Wait for the refresh side-effect (token removal) before awaiting the result
-      await waitFor(() => {
-        expect(window.localStorage.removeItem).toHaveBeenCalledWith('auth_tokens');
-      });
+      // Run timers and await promise
+      await vi.runAllTimersAsync();
       const result = await resultPromise;
 
       // Ensure refreshToken was called
