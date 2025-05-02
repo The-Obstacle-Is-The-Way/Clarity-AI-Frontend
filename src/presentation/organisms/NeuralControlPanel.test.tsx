@@ -14,7 +14,7 @@ import { renderWithProviders } from '../../test/test-utils.unified'; // Correct 
 
 // Mock dependencies
 vi.mock('@presentation/atoms/Button', () => ({
-  default: (props: React.ComponentProps<'button'>) => <button {...props}>{props.children}</button>,
+  Button: (props: React.ComponentProps<'button'>) => <button {...props}>{props.children}</button>,
 }));
 vi.mock('@presentation/atoms/Select', () => ({
   Select: ({ children, ...props }: { children?: ReactNode }) => (

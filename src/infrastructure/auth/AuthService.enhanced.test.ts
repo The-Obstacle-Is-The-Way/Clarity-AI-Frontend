@@ -342,9 +342,10 @@ describe('EnhancedAuthService', () => {
       await waitFor(() => {
         expect(dispatchEventSpy).toHaveBeenCalled();
         // Check the event type more safely
-        const dispatchedEvent = dispatchEventSpy.mock.calls.find(call => call[0].type === 'auth:session-expired');
-        expect(dispatchedEvent).toBeDefined();
-        expect(dispatchedEvent[0].type).toBe('auth:session-expired');
+        const dispatchedEventCall = dispatchEventSpy.mock.calls.find(call => call[0].type === 'auth:session-expired');
+        expect(dispatchedEventCall).toBeDefined(); // Ensure the event was actually dispatched
+        // Check the type on the first argument of the found call
+        expect(dispatchedEventCall?.[0].type).toBe('auth:session-expired'); 
       });
       // Check tokens were cleared
       await waitFor(() => {

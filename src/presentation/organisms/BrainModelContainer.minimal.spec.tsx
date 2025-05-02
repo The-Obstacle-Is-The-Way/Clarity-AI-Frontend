@@ -18,12 +18,16 @@ import React from 'react';
 
 vi.mock('@presentation/templates/BrainModelContainer', () => ({
   default: function MockBrainModelContainer(props: any) {
-     
+    // Destructure patientId and spread the rest
+    const { patientId, ...restProps } = props;
+    // Pass only valid DOM props (restProps) to the div
     return React.createElement(
       'div',
       {
         'data-testid': 'mock-brain-model-container',
-        ...props,
+        // Pass patientId as a data attribute if needed for testing, otherwise omit
+        'data-patient-id': patientId, 
+        ...restProps, // Spread only the remaining props
       },
       'Mocked Container'
     );

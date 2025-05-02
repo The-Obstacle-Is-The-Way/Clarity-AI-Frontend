@@ -178,17 +178,16 @@ describe('PatientListPage', () => {
       isPlaceholderData: false,
     });
 
-    // Fast-forward time past the debounce period (500ms)
-    await act(async () => {
-      await vi.runAllTimersAsync();
-    });
+    // Explicitly advance timers past the debounce period (assuming 500ms)
+    await vi.advanceTimersByTimeAsync(501);
 
     // Now the hook should be called with the new search term
+    // Increased timeout might still be needed if underlying async is slow
     await waitFor(
       () => {
         expect(mockUsePatients).toHaveBeenCalledTimes(2);
       },
-      { timeout: 10000 } // Increase waitFor timeout drastically
+      { timeout: 5000 } // Keep a reasonable timeout
     );
 
     // Verify the arguments of the second call specifically

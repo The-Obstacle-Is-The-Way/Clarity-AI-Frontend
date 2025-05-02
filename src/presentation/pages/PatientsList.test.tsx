@@ -95,7 +95,7 @@ describe('PatientsList Page', () => {
     expect(screen.getByText(/Test Patient Two/i)).toBeInTheDocument();
     expect(screen.getByText(/GAD/i)).toBeInTheDocument();
     // Check for the actual button text rendered by the component
-    expect(screen.getAllByRole('button', { name: /brain model/i })).toHaveLength(2);
+    expect(screen.getAllByRole('button', { name: /view profile/i })).toHaveLength(2);
   });
 
   it('navigates to patient profile on button click', async () => {
@@ -104,12 +104,12 @@ describe('PatientsList Page', () => {
 
     // Find the button for the first patient
     // Use a more robust selector if possible, e.g., based on patient ID within the button/row
-    const brainModelButtons = screen.getAllByRole('button', { name: /brain model/i });
-    await user.click(brainModelButtons[0]); // Click the correct button
+    const viewProfileButtons = screen.getAllByRole('button', { name: /view profile/i });
+    await user.click(viewProfileButtons[0]); // Click the correct button
 
     // Assert navigation was called
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-    // Assert navigation was called to the brain model page
+    // Assert navigation was called to the brain model page for patient p1
     expect(mockNavigate).toHaveBeenCalledWith('/brain-model/p1');
   });
 
