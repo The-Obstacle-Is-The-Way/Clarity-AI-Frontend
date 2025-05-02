@@ -210,4 +210,16 @@ Next priorities:
 3. Conduct HIPAA compliance review
 4. Integrate E2E tests into CI pipeline
 
-This E2E integration provides the architectural blueprint for achieving a truly integrated and powerful digital twin platform. Let the synthesis continue. 
+This E2E integration provides the architectural blueprint for achieving a truly integrated and powerful digital twin platform. Let the synthesis continue.
+
+## Phase 2 & 3 Documentation Map (2024-06-XX)
+
+| Phase | Purpose | Doc File |
+|-------|---------|----------|
+| **2** | Backend Endpoint Catalogue (all remaining routers) | `Backend_API_Verification_Phase2.md` |
+|       | Frontend Task Checklist per Domain | `Frontend_Integration_Checklist_Phase2.md` |
+| **3** | CI/CD, Release Flow & Final HIPAA Review | **TBD – will be generated once Phase 2 near-completion** |
+
+Navigate to `/docs/E2E/**` to open any of these in the sidebar.
+
+--- 

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { ApiClient } from './apiClient'; // Corrected casing
+import { ApiClient } from './ApiClient'; // Corrected casing
 import { EnhancedMockApiClient } from './EnhancedMockApiClient';
 import type { IApiClient } from './IApiClient';
 
@@ -15,7 +15,8 @@ import type { IApiClient } from './IApiClient';
  */
 export class ApiGateway implements IApiClient {
   private static instance: IApiClient;
-  private static mockMode = true; // Default to mock mode for demonstration
+  // Determine initial mock mode from env variable (defaults to false)
+  private static mockMode = import.meta.env.VITE_USE_MOCK_API === 'true';
 
   /**
    * Get the API client instance - singleton pattern
@@ -23,19 +24,12 @@ export class ApiGateway implements IApiClient {
   public static getInstance(): IApiClient {
     if (!this.instance) {
       // For production, we'll check env vars to determine mode
+      const envFlag = import.meta.env.VITE_USE_MOCK_API;
+      // Highest-priority: explicit env flag, then localStorage toggle, then static mockMode
       const useMockApi =
-        // Remove the automatic development check to default to the REAL API
-        // process.env.NODE_ENV === 'development' || 
-        // Simplify for development: Always use mock if NODE_ENV is development
-        // unless explicitly disabled via localStorage override maybe?
-        // For now, prioritizing development use case where backend might be down.
-        false; // Remove other conditions for simplicity during debugging
-        /*
-        this.mockMode ||
-        // Detect if we're in a GitHub Codespace and allow override
-        (window.location.hostname.includes('githubpreview.dev') &&
-          !localStorage.getItem('use_real_api'));
-        */
+        envFlag !== undefined
+          ? envFlag === 'true'
+          : localStorage.getItem('use_mock_api') === 'true' || this.mockMode;
 
       console.info(`🧠 Novamind API Gateway: Using ${useMockApi ? 'MOCK' : 'REAL'} API client (NODE_ENV: ${process.env.NODE_ENV})`);
       console.log(`[ApiGateway] Checking NODE_ENV: ${process.env.NODE_ENV}`);

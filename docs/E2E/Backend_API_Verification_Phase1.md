@@ -1,5 +1,9 @@
 # Backend API Verification Summary (Phase 1)
 
+        "/Users/ray/Desktop/CLARITY-DIGITAL-TWIN/Clarity-AI-Backend",
+        "/Users/ray/Desktop/CLARITY-DIGITAL-TWIN/Clarity-AI-Frontend"
+            - Both are available via MCP Tool
+
 This document summarizes the verified backend API endpoints and schemas identified in the `Clarity-AI-Backend` codebase (`/Users/ray/Desktop/CLARITY-DIGITAL-TWIN/Clarity-AI-Backend`) relevant to Phase 1 frontend integration.
 
 **Base Path:** `/api/v1/`
@@ -90,9 +94,48 @@ This document summarizes the verified backend API endpoints and schemas identifi
 
 ---
 
-## Discrepancies & Frontend Impact Summary
+## 4. Additional Findings & Data-Contract Clarifications (2024-06-XX)
 
-1.  **Patients API:** Backend uses `Dict[str, Any]` due to in-memory store, frontend uses typed `Patient`. Frontend services need to correctly format requests and parse dictionary responses, potentially mapping them to the `Patient` type. Lack of a "Get List" endpoint needs clarification.
-2.  **Brain Model API:**
-    *   **Endpoint Mismatch:** Frontend mock/service uses `/brain-models/{model_id}`; Backend uses `/digital-twins/{patient_id}/visualization`. Frontend `brain-model.service.ts` needs significant updates to use the correct path and parameter (`patient_id`).
-    *   **Schema Mismatch:** Backend returns `Dict[str, Any]`; Frontend expects typed `BrainModel`. Frontend needs to adapt to the actual structure returned by the visualization endpoint. 
+### 4.1  Cookie-Centric Auth Flow
+
+*   **HttpOnly Cookies** – The backend sets `access_token` & `refresh_token` simultaneously on a successful `/auth/login` **and** `/auth/refresh` call.  These cookies are **HttpOnly** & **Secure** (when served over HTTPS).  The frontend must therefore:
+    *   Always send `withCredentials: true` on XHR / Fetch calls that require authentication.
+    *   Detect a `401` from any protected endpoint and attempt **silent refresh** via `POST /api/v1/auth/refresh` before forcing user re-authentication.
+*   **Token Expiry (`expires_in`)** – Although returned in the JSON body, the backend **does not** automatically extend the cookie expiry.  The frontend should rely on cookie presence/absence as source-of-truth and treat the JSON value as advisory only.
+
+### 4.2  Patients Store Constraints
+
+*   **In-Memory Only** – Data **does not persist** between backend restarts.  This is acceptable for Phase 1 prototyping, but the frontend must be prepared for 404s after a page reload when the backend store is empty.
+*   **No List Endpoint** – The absence of `GET /patients/` means listing all patients will require either:
+    1. Waiting for a backend fix *(preferred – see checklist below)*, or
+    2. Maintaining a local cache / pushing IDs from another domain service.
+
+### 4.3  Digital-Twin (Visualization) API Nuances
+
+*   **Auth Required** – Every `/digital-twins/*` path enforces `get_current_user`; calls will fail with 401 if cookies are missing or expired.
+*   **Optional Query Parameter** – Leaving `visualization_type` unset defaults to `brain_model_3d`; the backend currently ignores unrecognised values.
+*   **Response Shape** – The response is an **opaque** `Dict[str, Any]`.  Early inspection of dev data reveals:
+
+    ```json
+    {
+      "mesh": { "vertices": [...] , "faces": [...] },
+      "regions": [{ "id": "hippocampus", "activity": 0.83 }, ...],
+      "timestamp": "2024-06-05T13:47:22Z"
+    }
+    ```
+
+    This shape is **not stabilised**; the frontend must implement resilient validators (e.g. Zod "passthrough") instead of strict typing at this stage.
+
+---
+
+## 5. Backend-Side Checklist  
+*(use `[ ]` unchecked / `[x]` done markers)*
+
+- [ ]  **Add `GET /api/v1/patients/`** – simple list endpoint returning `list(_PATIENT_STORE.values())`.
+- [ ]  **Expose explicit JSON schema for Digital-Twin visualization** – at `digital_twin_schemas.py` to remove `Dict[str, Any]` ambiguity.
+- [ ]  **Implement sliding-expiry on `refresh_token`** – so browser keeps session alive when refresh succeeds.
+- [x]  **Confirm CORS settings** – current FastAPI app already whitelists `http://localhost:3000`.
+
+---
+
+*Document updated automatically by Novamind Frontend Agent – 2024-06-XX* 
