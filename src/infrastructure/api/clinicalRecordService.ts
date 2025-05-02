@@ -1,5 +1,5 @@
 // src/infrastructure/api/clinicalRecordService.ts
-import { apiClient } from './apiClient';
+import { apiClient } from './ApiGateway';
 import type {
   ClinicalRecord,
   PaginatedClinicalRecordsResponse,
