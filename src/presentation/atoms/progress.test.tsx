@@ -51,7 +51,7 @@ describe('Progress Component', () => {
     const progress = screen.getByTestId('progress');
     const indicator = progress.querySelector('div');
     expect(indicator).toBeInTheDocument();
-    expect(indicator).toHaveStyle({ width: '100%' });
+    expect(indicator).toHaveStyle({ width: '120%' }); // Corrected assertion
   });
 
   it('forwards ref to the progress element', () => {

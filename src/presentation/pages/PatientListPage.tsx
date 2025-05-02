@@ -35,8 +35,7 @@ const PatientListPage: React.FC = () => {
     return () => {
       clearTimeout(handler);
     };
-    // Only depend on searchTerm to trigger the effect
-  }, [searchTerm]);
+  }, [searchTerm, debouncedSearchTerm]);
 
   const { data, error, isLoading, isFetching, isPreviousData } = usePatients({
     page: currentPage,

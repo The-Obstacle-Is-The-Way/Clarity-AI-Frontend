@@ -11,6 +11,21 @@ import '@testing-library/jest-dom'; // Removed unused render, fireEvent
 import { NeuralControlPanel } from './NeuralControlPanel'; // Corrected to named import
 import { renderWithProviders } from '../../test/test-utils.unified'; // Correct import path
 
+// Mock dependencies
+vi.mock('@presentation/atoms/Button', () => ({
+    default: (props: any) => <button {...props}>{props.children}</button>
+}));
+vi.mock('@presentation/atoms/Select', () => ({
+    Select: ({ children, ...props }: any) => <select {...props}>{children}</select>,
+    SelectContent: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    SelectItem: ({ children, ...props }: any) => <option {...props}>{children}</option>,
+    SelectTrigger: ({ children, ...props }: any) => <button {...props}>{children}</button>,
+    SelectValue: (props: any) => <span {...props} />,
+}));
+vi.mock('@presentation/atoms/Label', () => ({
+    Label: ({ children, ...props }: any) => <label {...props}>{children}</label>
+}));
+
 // Mock data with clinical precision
 // Mock data with clinical precision - Requires specific props for NeuralControlPanel
 // Mock data with clinical precision - Based on NeuralControlPanelProps

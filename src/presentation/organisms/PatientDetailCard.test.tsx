@@ -51,7 +51,8 @@ describe('PatientDetailCard', () => {
     const statusElement = screen.getByText('Status').nextSibling?.firstChild;
     expect(statusElement).toHaveTextContent('active');
     expect(statusElement).toHaveAttribute('data-testid', 'badge');
-    expect(statusElement).toHaveAttribute('data-variant', 'default'); // Assuming active = default
+    // Active status should map to 'default' variant in ProfilePage logic
+    expect(statusElement).toHaveAttribute('data-variant', 'default');
   });
 
   it('should handle missing or N/A values gracefully', () => {
@@ -64,10 +65,10 @@ describe('PatientDetailCard', () => {
     expect(screen.getByText('Last Name').nextSibling).toHaveTextContent('N/A'); // Check explicit N/A
 
     // Check status Badge for inactive
-     const statusElement = screen.getByText('Status').nextSibling?.firstChild;
+    const statusElement = screen.getByText('Status').nextSibling?.firstChild;
     expect(statusElement).toHaveTextContent('inactive');
-    expect(statusElement).toHaveAttribute('data-variant', 'secondary'); // Assuming inactive = secondary
-
+    // Inactive status should map to 'destructive' variant in ProfilePage logic
+    expect(statusElement).toHaveAttribute('data-variant', 'destructive');
   });
 
   // Add more tests if complex logic or masking is added later

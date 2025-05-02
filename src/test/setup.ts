@@ -62,6 +62,17 @@ const toggleMatchMedia = (matches: boolean) => {
 };
 vi.stubGlobal('toggleMatchMedia', toggleMatchMedia);
 
+// Mock PointerEvent methods for Radix UI components in JSDOM
+if (typeof window !== 'undefined' && !window.PointerEvent) {
+  class MockPointerEvent extends Event { constructor(type: string, props: PointerEventInit) { super(type, props); } }
+  window.PointerEvent = MockPointerEvent as any;
+  // Add necessary methods if tests require them
+  Element.prototype.setPointerCapture = vi.fn();
+  Element.prototype.releasePointerCapture = vi.fn();
+  Element.prototype.hasPointerCapture = vi.fn(() => false);
+}
+
+
 // Initial media match state
 const globalCurrentMatchesState = false;
 vi.stubGlobal('globalCurrentMatchesState', globalCurrentMatchesState);

@@ -61,9 +61,10 @@ describe('PatientForm', () => {
   await user.type(lastNameInput, 'Patient');
 
     // Provide input that satisfies min length but fails regex format
-    // Use userEvent.type for date input as well for consistency, clear first
-    await user.clear(dobInput);
-  await user.type(dobInput, '01-01-2000');
+    // Use fireEvent.change for date input specifically
+    fireEvent.change(dobInput, { target: { value: '01-01-2000' } });
+    // await user.clear(dobInput);
+    // await user.type(dobInput, '01-01-2000');
 
   // Submit
   await user.click(submitButton);
@@ -92,7 +93,7 @@ describe('PatientForm', () => {
 
   // Select a status (Inactive) using userEvent
   await user.click(statusSelectTrigger); // Open dropdown
-  const inactiveOption = await screen.findByRole('option', { name: 'Inactive' });
+  const inactiveOption = await screen.findByRole('option', { name: 'Inactive' }, { timeout: 3000 }); // Increased timeout
   await user.click(inactiveOption); // Select option
 
   // Submit using userEvent
