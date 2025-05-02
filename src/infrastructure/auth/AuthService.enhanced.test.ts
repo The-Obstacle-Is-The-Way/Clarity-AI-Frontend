@@ -163,21 +163,18 @@ describe('EnhancedAuthService', () => {
       const resultPromise = authService.initializeAuth();
 
       // --- Verification ---
-      // Aggressively run timers and wait for promises
-      // await act(async () => { // Reverted act wrapper
-      await vi.runAllTimersAsync();
-      // });
+      // Wait for the refresh side-effect (token storage) before awaiting the result
+      await waitFor(() => {
+        expect(window.localStorage.setItem).toHaveBeenCalledWith(
+          'auth_tokens',
+          JSON.stringify(expectedNewTokens)
+        );
+      });
       const result = await resultPromise;
 
       // Ensure refreshToken was called correctly
       expect(mockRefreshToken).toHaveBeenCalledTimes(1);
       expect(mockRefreshToken).toHaveBeenCalledWith(expiredTokens.refreshToken);
-
-      // Ensure new tokens were stored
-      expect(window.localStorage.setItem).toHaveBeenCalledWith(
-        'auth_tokens',
-        JSON.stringify(expectedNewTokens)
-      );
 
       // Ensure user was fetched after successful refresh
       expect(mockGetCurrentUser).toHaveBeenCalledTimes(1);

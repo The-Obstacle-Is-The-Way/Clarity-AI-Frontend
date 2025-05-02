@@ -11,8 +11,8 @@ import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Group, Mesh, Vector3, Color } from 'three';
-import { useBrainModel } from '../providers/BrainModelProvider';
-import { BrainRegionData } from '../../test/mocks/mockBrainData';
+import { useBrainModel } from '@application/context/BrainModelProvider';
+import type { BrainRegion as DomainBrainRegion } from '@domain/types/brain/models';
 
 // Color utilities
 const getColorForValue = (value: number, min: number, max: number, colormap: string): string => {
@@ -191,7 +191,7 @@ const Connection: React.FC<ConnectionProps> = ({ startPosition, endPosition, str
 // Main brain visualization component props
 interface BrainModelVisualizationProps {
   modelId: string;
-  regionData?: BrainRegionData;
+  regionData?: DomainBrainRegion[];
   viewMode?: 'anatomical' | 'functional' | 'connectivity';
   colormapType?: 'rainbow' | 'heatmap' | 'blueRed';
   dataRange?: [number, number];
@@ -352,39 +352,39 @@ export const BrainModelVisualization: React.FC<BrainModelVisualizationProps> = (
 
         {/* Brain regions */}
         <group>
-          {data &&
-            Object.values(data).map((region) => {
-              // Determine region color based on view mode
-              let regionColor = region.color || '#ffffff';
-
-              if (mode === 'functional' && region.value !== undefined) {
-                regionColor = getColorForValue(region.value, range[0], range[1], colormap);
-              }
-
-              return (
-                <BrainRegion
-                  key={region.id}
-                  id={region.id}
-                  name={region.name}
-                  position={region.coordinates}
-                  size={region.size}
-                  color={regionColor}
-                  isSelected={selectedRegion === region.id}
-                  isHighlighted={highlightedRegion === region.id}
-                  onClick={handleRegionClick}
-                  onHover={handleRegionHover}
-                />
-              );
-            })}
+          {data && Array.isArray(data) && data.map((region: DomainBrainRegion) => {
+            const colorValue = mode === 'functional' ? region.activityLevel : 50;
+            const regionColor = getColorForValue(
+              colorValue,
+              range[0],
+              range[1],
+              colormap
+            );
+            return (
+              <BrainRegion
+                key={region.id}
+                id={region.id}
+                name={region.name}
+                position={[region.position.x, region.position.y, region.position.z]}
+                size={0.2}
+                color={regionColor}
+                isSelected={region.id === selectedRegion}
+                isHighlighted={region.id === highlightedRegion}
+                onClick={handleRegionClick}
+                onHover={handleRegionHover}
+              />
+            );
+          })}
 
           {/* Connections between regions (in connectivity mode) */}
           {mode === 'connectivity' &&
             data &&
-            Object.values(data).map((region) => {
+            Array.isArray(data) &&
+            data.map((region) => {
               if (!region.connections) return null;
 
-              return region.connections.map((targetId) => {
-                const targetRegion = data[targetId];
+              return region.connections.map((targetId: string) => {
+                const targetRegion = data.find((r) => r.id === targetId);
                 if (!targetRegion) return null;
 
                 // Skip duplicate connections
