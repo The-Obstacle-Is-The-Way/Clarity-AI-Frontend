@@ -14,7 +14,7 @@ import type {
   BrainRegion,
   BrainScan,
   NeuralConnection,
-} from '@domain/types'; // Import necessary domain types
+} from '@domain/types/brain/models'; // Import SSoT brain model types
 
 // Define mock user data matching the User interface
 const mockUser: User = {
@@ -300,14 +300,8 @@ export class EnhancedMockApiClient implements IApiClient {
       resolution: { x: 128, y: 128, z: 64 },
       metadata: { acquisitionTime: '10min' },
       dataQualityScore: 0.92,
-      artifacts: [],
       notes: 'Mock scan data',
       technician: 'Mock Tech',
-      machine: {
-        id: 'mock-scanner-02',
-        type: 'Mock Scanner',
-        calibrationDate: new Date().toISOString(),
-      },
     };
 
     const mockRegion1: BrainRegion = {
@@ -345,12 +339,8 @@ export class EnhancedMockApiClient implements IApiClient {
       strength: 0.75,
       type: 'inhibitory',
       directionality: 'unidirectional',
-      metrics: { signalSpeed: 0.9, bandwidth: 0.7, reliability: 0.95 },
-      pathPoints: [
-        { x: 10, y: 20, z: 30 },
-        { x: 2.5, y: 2.5, z: 27.5 },
-        { x: -5, y: -15, z: 25 },
-      ],
+      activityLevel: 0.7,
+      dataConfidence: 0.9,
     };
 
     return Promise.resolve({
@@ -359,12 +349,15 @@ export class EnhancedMockApiClient implements IApiClient {
       scan: mockScan, // Embed the fully typed mock scan
       regions: [mockRegion1, mockRegion2], // Embed fully typed mock regions
       connections: [mockConnection1], // Embed fully typed mock connections
-      version: '1.0.0',
-      // Optional algorithmVersion for testing optional handling
-      algorithmVersion: 'MockAlgo-v1',
+      // Required fields from BrainModel SSoT
+      version: '1.1.0',
       timestamp: new Date().toISOString(),
       processingLevel: 'raw',
       lastUpdated: new Date().toISOString(),
+      // Optional field
+      algorithmVersion: 'MockBrainGen v1.0',
+
+      // Additional mock metadata beyond the SSoT (allowed by verifier)
       metadata: {
         version: '1.1.0',
         generatedAt: new Date().toISOString(),

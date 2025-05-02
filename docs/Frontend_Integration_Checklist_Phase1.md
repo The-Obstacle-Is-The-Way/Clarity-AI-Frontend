@@ -3,7 +3,10 @@
 This checklist outlines the frontend tasks required to integrate with the verified backend API for Phase 1 features, based on the findings in `docs/Backend_API_Verification_Phase1.md`.
 
 **Reference:** `docs/E2E/README.md` (Phase 1)
-
+**DIRECTORIES**: 
+        "/Users/ray/Desktop/CLARITY-DIGITAL-TWIN/Clarity-AI-Backend",
+        "/Users/ray/Desktop/CLARITY-DIGITAL-TWIN/Clarity-AI-Frontend"
+            - Both are available via MCP Tool
 ---
 
 ## Prerequisites
