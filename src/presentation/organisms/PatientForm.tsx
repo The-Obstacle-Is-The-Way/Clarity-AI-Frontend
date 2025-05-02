@@ -1,6 +1,6 @@
 // src/presentation/organisms/PatientForm.tsx
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFormContext, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createPatientSchema, type CreatePatientInput } from '@domain/patients/patientSchemas';
 import { Button } from "@presentation/atoms/button";
@@ -32,7 +32,11 @@ interface PatientFormProps {
  * Reusable form component for creating or editing patient data.
  * Uses React Hook Form and Zod for validation.
  */
-const PatientForm: React.FC<PatientFormProps> = ({ onSubmit, isLoading = false, defaultValues }) => {
+const PatientForm: React.FC<PatientFormProps> = ({
+  onSubmit,
+  isLoading = false,
+  defaultValues,
+}) => {
   const form = useForm<CreatePatientInput>({
     resolver: zodResolver(createPatientSchema),
     defaultValues: defaultValues || {
