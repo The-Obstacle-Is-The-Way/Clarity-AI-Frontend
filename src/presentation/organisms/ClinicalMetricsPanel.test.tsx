@@ -3,10 +3,11 @@
  * ClinicalMetricsPanel component testing with quantum precision
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Import waitFor
 // Removed unused userEvent import
+// Removed unused TooltipProvider import
 import { ClinicalMetricsPanel } from './ClinicalMetricsPanel';
 import { renderWithProviders } from '../../test/test-utils.unified'; // Import the correct render function
 
@@ -80,9 +81,26 @@ const mockProps = {
 };
 
 describe('ClinicalMetricsPanel', () => {
-  // Re-enabled suite
+  // Add mock for matchMedia required by framer-motion in jsdom
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn().mockImplementation((query: string) => ({
+        matches: false, // Default to false (light mode)
+        media: query,
+        onchange: null,
+        addListener: vi.fn(), // Deprecated but needed for some libraries
+        removeListener: vi.fn(), // Deprecated but needed for some libraries
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals(); // Clean up global stubs
+    vi.clearAllMocks(); // Ensure mocks are cleared
   });
 
   it('renders metrics tabs and activity content when data is provided', () => {
@@ -107,21 +125,16 @@ describe('ClinicalMetricsPanel', () => {
   // it("displays loading state..." ) // Removed loading state test - relies on internal state/props
 
   it('applies custom class name with mathematical precision', async () => {
-    // Make the test function async
-    const { container } = renderWithProviders(<ClinicalMetricsPanel {...mockProps} />);
+    const customClass = 'custom-panel-class';
+    // Pass the custom class along with other default mock props if needed
+    renderWithProviders(<ClinicalMetricsPanel {...mockProps} className={customClass} />);
 
-    // The first child div of the container should have the class (motion.div)
-    // Use container.children[0] as it might be more reliable than firstChild
-    // Use getByTestId for reliable selection
-    // Use findByTestId to handle potential async rendering from framer-motion
-    // Revert to checking className on the container's child, wrap in waitFor for animation
-    // console.log('ClinicalMetricsPanel DOM before waitFor:', container.innerHTML); // Optional: Keep log for debugging
-    // Now that className is passed to Card, wait for the Card's rendered div element using a more specific query
+    // Use waitFor to ensure the component has fully rendered after state updates/effects
     await waitFor(() => {
-      // Query for the div element that should have the base Card classes AND the custom class
-      const cardElement = container.querySelector('div.rounded-xl.border.shadow');
-      expect(cardElement).not.toBeNull(); // Ensure the element is found
-      expect(cardElement).toHaveClass('custom-panel-class');
+      // Use getByTestId for a more robust selection
+      const cardElement = screen.getByTestId('card');
+      expect(cardElement).toBeInTheDocument(); // Ensure the element is found
+      expect(cardElement).toHaveClass(customClass);
     });
   });
 
