@@ -1,7 +1,8 @@
 // src/presentation/organisms/PatientForm.test.tsx
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'; // Added act
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import userEvent from '@testing-library/user-event'; // Import userEvent
 import PatientForm from './PatientForm';
 import { BrowserRouter } from 'react-router-dom'; // If any internal links are used
 
@@ -47,46 +48,57 @@ describe('PatientForm', () => {
   });
 
   it('should display validation error for invalid date format', async () => {
-    renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
-    const dobInput = screen.getByLabelText(/Date of Birth/i);
-    const submitButton = screen.getByRole('button', { name: /Create Patient/i });
+  // Setup userEvent
+  const user = userEvent.setup();
+  renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
+    const firstNameInput = screen.getByLabelText(/First Name/i);
+  const lastNameInput = screen.getByLabelText(/Last Name/i);
+  const dobInput = screen.getByLabelText(/Date of Birth/i);
+  const submitButton = screen.getByRole('button', { name: /Create Patient/i });
+
+  // Fill required fields
+  await user.type(firstNameInput, 'Test');
+  await user.type(lastNameInput, 'Patient');
 
     // Provide input that satisfies min length but fails regex format
-    fireEvent.change(dobInput, { target: { value: '01-01-2000' } });
-    fireEvent.click(submitButton);
+    // Use userEvent.type for date input as well for consistency, clear first
+    await user.clear(dobInput);
+  await user.type(dobInput, '01-01-2000');
 
-    await waitFor(() => {
-      expect(screen.getByText('Date of Birth must be in YYYY-MM-DD format')).toBeInTheDocument();
-    });
-    expect(mockOnSubmit).not.toHaveBeenCalled();
+  // Submit
+  await user.click(submitButton);
+
+  // Check for the specific format error message
+  const errorMessage = await screen.findByText('Date of Birth must be in YYYY-MM-DD format');
+    expect(errorMessage).toBeInTheDocument();
+  expect(mockOnSubmit).not.toHaveBeenCalled();
   });
 
   it('should call onSubmit with correct data when form is valid', async () => {
-    renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
+    // Setup userEvent
+  const user = userEvent.setup();
+  renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
 
-    const firstNameInput = screen.getByLabelText(/First Name/i);
-    const lastNameInput = screen.getByLabelText(/Last Name/i);
-    const dobInput = screen.getByLabelText(/Date of Birth/i);
+  const firstNameInput = screen.getByLabelText(/First Name/i);
+  const lastNameInput = screen.getByLabelText(/Last Name/i);
+  const dobInput = screen.getByLabelText(/Date of Birth/i);
     const statusSelectTrigger = screen.getByRole('combobox'); // Shadcn select trigger
-    const submitButton = screen.getByRole('button', { name: /Create Patient/i });
+  const submitButton = screen.getByRole('button', { name: /Create Patient/i });
 
-    // Fill in valid data
-    fireEvent.change(firstNameInput, { target: { value: 'Test' } });
-    fireEvent.change(lastNameInput, { target: { value: 'Patient' } });
-    fireEvent.change(dobInput, { target: { value: '2000-01-01' } });
+  // Fill in valid data using userEvent
+  await user.type(firstNameInput, 'Test');
+    await user.type(lastNameInput, 'Patient');
+  await user.type(dobInput, '2000-01-01');
 
-    // Select a status (Inactive)
-    fireEvent.mouseDown(statusSelectTrigger); // Open the dropdown
+  // Select a status (Inactive) using userEvent
+  await user.click(statusSelectTrigger); // Open dropdown
+  const inactiveOption = await screen.findByRole('option', { name: 'Inactive' });
+  await user.click(inactiveOption); // Select option
 
-    // Find the option within the document body (portal support)
-    // The text should match the capitalized/formatted value: "Inactive"
-    const inactiveOption = await waitFor(() => screen.getByRole('option', { name: 'Inactive' }));
+  // Submit using userEvent
+  await user.click(submitButton);
 
-    fireEvent.click(inactiveOption); // Click the found option
-
-    // Submit
-    fireEvent.click(submitButton);
-
+    // Assertions (remain the same, wrapped in waitFor for onSubmit mock)
     await waitFor(() => {
       expect(mockOnSubmit).toHaveBeenCalledTimes(1);
       expect(mockOnSubmit).toHaveBeenCalledWith({
