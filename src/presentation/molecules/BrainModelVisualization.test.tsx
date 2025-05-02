@@ -7,9 +7,9 @@ import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/re
 import '@testing-library/jest-dom'; // Add cleanup
 import userEvent from '@testing-library/user-event';
 import { BrainModelVisualization } from './BrainModelVisualization'; // Corrected: Use named import and correct path
-import { BrainModelProvider } from '../../providers/BrainModelProvider'; // Corrected relative path
-import { ThemeProvider } from '../presentation/providers/ThemeProvider';
-import { mockBrainRegionData } from '../test/mocks/mockBrainData';
+import { BrainModelProvider } from '@application/providers/BrainModelProvider'; // Use alias
+import { ThemeProvider } from '@application/providers/ThemeProvider'; // Use alias
+import { mockBrainRegionData } from '@test/mocks/mockBrainData'; // Use alias
 
 // Create a custom renderer that includes all required providers
 function renderWithProviders(ui: React.ReactElement, initialBrainState = {}) {

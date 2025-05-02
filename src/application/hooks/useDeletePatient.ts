@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast'; // Assuming react-hot-toast is used
 
 import { deletePatient as deletePatientApi } from '@infrastructure/api/patientService';
-import { PATIENTS_QUERY_KEY, PATIENT_DETAIL_QUERY_KEY_PREFIX } from '../queries/queryKeys'; // Corrected relative path
+import { PATIENTS_QUERY_KEY, PATIENT_DETAIL_QUERY_KEY_PREFIX } from '@application/queries/queryKeys'; // Use alias
 
 /**
  * Hook for deleting a patient.
