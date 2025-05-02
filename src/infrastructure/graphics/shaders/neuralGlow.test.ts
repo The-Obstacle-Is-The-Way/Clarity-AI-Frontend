@@ -6,7 +6,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { Color } from 'three';
-import { createNeuralGlowUniforms } from '../../../presentation/shaders/neuralGlow';
+import { createNeuralGlowUniforms } from '@presentation/shaders/neuralGlow'; // Corrected path using alias
 
 describe('createNeuralGlowUniforms', () => {
   it('processes data with mathematical precision', () => {

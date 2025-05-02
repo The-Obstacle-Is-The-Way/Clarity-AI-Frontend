@@ -23,14 +23,12 @@ mockIntersectionObserver.mockReturnValue({
 });
 window.IntersectionObserver = mockIntersectionObserver;
 
-// Mock ResizeObserver
-const mockResizeObserver = vi.fn();
-mockResizeObserver.mockReturnValue({
+// Mock ResizeObserver more robustly
+window.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
-});
-window.ResizeObserver = mockResizeObserver;
+}));
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {

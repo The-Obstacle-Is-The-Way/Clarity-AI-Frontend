@@ -7,6 +7,7 @@ import '../../test/setup';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Import waitFor
+import { act } from '@testing-library/react'; // Add import for act
 import { EnhancedAuthService } from './AuthService.enhanced';
 import { AuthTokens, AuthUser, AuthApiClient } from './index'; // Import AuthApiClient for mocking
 

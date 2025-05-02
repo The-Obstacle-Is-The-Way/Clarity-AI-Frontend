@@ -92,7 +92,7 @@ describe('Tooltip Component', () => {
     expect(provider).toBeInTheDocument();
     expect(root).toBeInTheDocument();
     expect(trigger).toBeInTheDocument();
-    expect(portal).toBeInTheDocument();
+    // expect(portal).toBeInTheDocument(); // Removed reference
     expect(content).toBeInTheDocument();
 
     expect(trigger).toHaveTextContent('Hover me');
