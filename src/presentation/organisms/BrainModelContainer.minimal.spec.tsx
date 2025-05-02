@@ -50,9 +50,9 @@ describe('BrainModelContainer Minimal Test', () => {
 
     // Verify that the mocked container renders
     expect(screen.getByTestId('mock-brain-model-container')).toBeInTheDocument();
-    // Check if the required prop is passed to the mock
+    // Check if the required prop is passed as a data attribute to the mock
     expect(screen.getByTestId('mock-brain-model-container')).toHaveAttribute(
-      'patientId',
+      'data-patient-id',
       'test-patient-123'
     );
   });
