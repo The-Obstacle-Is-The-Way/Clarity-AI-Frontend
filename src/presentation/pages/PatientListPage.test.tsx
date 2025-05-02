@@ -11,7 +11,7 @@ import { BrowserRouter } from 'react-router-dom';
 vi.mock('@application/hooks/usePatients');
 vi.mock('@presentation/organisms/PatientTable', () => ({
   // Simple mock that just displays number of patients
-  default: ({ patients }: { patients: any[] }) => (
+  default: ({ patients }: { patients: unknown[] }) => ( // Use unknown[] instead of any[]
     <div data-testid="patient-table">Patients: {patients.length}</div>
   ),
 }));
@@ -77,7 +77,7 @@ describe('PatientListPage', () => {
     expect(screen.getByRole('button', { name: /Next/i })).toBeDisabled();
   });
 
-  it('should handle pagination clicks', () => {
+  it('should handle pagination clicks', async () => {
      const mockDataPage1 = {
       items: Array.from({ length: 10 }, (_, i) => ({ id: `p${i + 1}` })),
       total: 25,

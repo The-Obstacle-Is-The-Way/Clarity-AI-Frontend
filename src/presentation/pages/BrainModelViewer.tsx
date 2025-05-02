@@ -5,7 +5,7 @@ import { useBrainVisualization } from '@hooks/useBrainVisualization';
 import type { BrainRegion } from '@domain/types/brain/models'; // Corrected import path
 import type { RenderMode } from '@domain/types/brain/visualization'; // Keep this correct import
 // Remove potentially conflicting import if it exists elsewhere
-import Button from '@presentation/atoms/Button'; // Corrected import casing
+import Button from '@presentation/atoms/Button'; // Ensure correct casing
 
 interface BrainModelViewerProps {
   patientId?: string;
@@ -284,9 +284,13 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
               <h3 className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
                 {selectedRegion.name}
               </h3>
-              <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
-                {selectedRegion.description || 'No description available.'}
-              </p>
+              {/* Removed description as it does not exist on BrainRegion type */}
+              {/* Optionally display clinicalSignificance if relevant */}
+              {selectedRegion.clinicalSignificance && (
+                <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+                  Clinical Significance: {selectedRegion.clinicalSignificance}
+                </p>
+              )}
 
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
@@ -298,38 +302,15 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
                 <div className="flex justify-between text-xs">
                   <span className="text-neutral-500">Activity Level:</span>
                   <span className="font-medium text-neutral-700 dark:text-neutral-300">
-                    {selectedRegion.data?.activity !== undefined
-                      ? selectedRegion.data.activity.toFixed(2)
+                    {selectedRegion.activity !== undefined /* Use activity */
+                      ? selectedRegion.activity.toFixed(2)
                       : 'N/A'}
                   </span>
                 </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-neutral-500">Significance:</span>
-                  <span className="font-medium text-neutral-700 dark:text-neutral-300">
-                    {selectedRegion.significance !== undefined
-                      ? selectedRegion.significance.toFixed(2)
-                      : 'N/A'}
-                  </span>
-                </div>
+                {/* Removed Significance as it does not exist on BrainRegion type */}
               </div>
 
-              {selectedRegion.functions && selectedRegion.functions.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="mb-2 text-sm font-medium text-neutral-800 dark:text-neutral-200">
-                    Functions
-                  </h4>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedRegion.functions.map((func, i) => (
-                      <span
-                        key={i}
-                        className="inline-block rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/50 dark:text-blue-200"
-                      >
-                        {func}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Removed Functions section as it does not exist on BrainRegion type */}
 
               <Button
                 size="sm"
