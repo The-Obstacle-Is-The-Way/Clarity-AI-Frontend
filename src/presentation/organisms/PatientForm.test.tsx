@@ -105,6 +105,12 @@ describe('PatientForm', () => {
   const inactiveOption = await screen.findByRole('option', { name: 'Inactive' }, { timeout: 3000 }); // Increased timeout
   await user.click(inactiveOption); // Select option
 
+  // Ensure state updates propagate before submitting
+  await act(async () => {
+      // Small delay might help in some cases, though usually not needed with userEvent
+      await new Promise(r => setTimeout(r, 50));
+  });
+
   // Submit using userEvent
   await user.click(submitButton);
 
