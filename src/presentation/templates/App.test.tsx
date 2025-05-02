@@ -4,7 +4,7 @@
  */
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
-import { renderWithProviders } from '../test/test-utils';
+import { renderWithProviders } from '../../test/test-utils.unified.tsx'; // Corrected path and extension
 
 // Mock the App component rather than importing it directly
 // This avoids the @styles/index.css import that's causing issues
