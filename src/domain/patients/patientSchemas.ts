@@ -12,13 +12,13 @@ export const createPatientSchema = z.object({
   first_name: z.string().min(1, { message: 'First name is required' }).max(100),
   last_name: z.string().min(1, { message: 'Last name is required' }).max(100),
   date_of_birth: z
-    .union([
-      z.string().length(0), // Allow empty string
-      z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
-        message: 'Date of Birth must be in YYYY-MM-DD format',
-      }),
-    ])
-    .refine((value) => value.length > 0, { message: 'Date of Birth is required' }), // Add required check
+    .string()
+    .regex(/^$|^\d{4}-\d{2}-\d{2}$/, {
+        message: "Date of Birth must be in YYYY-MM-DD format",
+    })
+    .refine(val => val.length > 0, {
+        message: "Date of Birth is required",
+    }),
   status: z.enum(patientStatuses, { message: 'Invalid patient status' }),
   // Add validation for other required fields here
 });
