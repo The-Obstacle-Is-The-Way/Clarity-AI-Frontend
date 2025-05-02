@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '@application/hooks/useAuth'; // Adjust path as necessary
-import { Card, CardContent, CardHeader, CardTitle } from '@presentation/atoms/card'; // Assuming Card components exist
-import { Badge } from '@presentation/atoms/badge'; // Assuming Badge component exists
+import { Card, CardContent, CardHeader, CardTitle } from '@presentation/atoms/Card'; // Correct casing
+import { Badge } from '@presentation/atoms/Badge'; // Correct casing
 
 /**
  * @description Renders the user profile page, displaying details of the logged-in user.
@@ -43,11 +43,15 @@ const ProfilePage: React.FC = (): React.ReactElement => {
           <div className="flex flex-col space-y-1">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Roles</span>
             <div className="flex flex-wrap gap-2 pt-1">
-              {user.roles?.map((role) => (
-                <Badge key={role} variant="secondary">
-                  {role}
-                </Badge>
-              )) || <Badge variant="outline">No roles assigned</Badge>}
+              {user.roles && user.roles.length > 0 ? (
+                user.roles.map((role) => (
+                  <Badge key={role} variant="secondary">
+                    {role}
+                  </Badge>
+                ))
+              ) : (
+                <span className="text-sm text-gray-500 italic">No roles assigned</span>
+              )}
             </div>
           </div>
            <div className="flex flex-col space-y-1">
