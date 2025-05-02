@@ -2,7 +2,8 @@
  * NOVAMIND Neural Test Suite
  * NeuralControlPanel testing with quantum precision
  */
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import type { ReactNode } from 'react';
 
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Removed unused render, fireEvent
@@ -25,6 +26,58 @@ vi.mock('@presentation/atoms/Select', () => ({
 vi.mock('@presentation/atoms/Label', () => ({
     Label: ({ children, ...props }: any) => <label {...props}>{children}</label>
 }));
+
+// --- Added Mocks ---
+vi.mock('@presentation/atoms/Tabs', () => ({
+  Tabs: ({ children, ...props }: any) => <div data-testid="mock-tabs" {...props}>{children}</div>,
+  TabsContent: ({ children, ...props }: any) => <div data-testid="mock-tabs-content" {...props}>{children}</div>,
+  TabsList: ({ children, ...props }: any) => <div data-testid="mock-tabs-list" {...props}>{children}</div>,
+  TabsTrigger: ({ children, ...props }: any) => <button data-testid="mock-tabs-trigger" {...props}>{children}</button>,
+}));
+vi.mock('@presentation/atoms/Switch', () => ({
+  Switch: (props: any) => <input type="checkbox" data-testid="mock-switch" {...props} />,
+}));
+vi.mock('@presentation/atoms/Tooltip', () => ({
+  Tooltip: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  TooltipContent: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  TooltipProvider: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  TooltipTrigger: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+}));
+vi.mock('@presentation/atoms/Badge', () => ({
+  Badge: ({ children, ...props }: any) => <span data-testid="mock-badge" {...props}>{children}</span>,
+}));
+vi.mock('@presentation/atoms/Card', () => ({
+  Card: ({ children, ...props }: any) => <div data-testid="mock-card" {...props}>{children}</div>,
+  CardContent: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  CardDescription: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+  CardFooter: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  CardHeader: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  CardTitle: ({ children, ...props }: any) => <h3 {...props}>{children}</h3>,
+}));
+vi.mock('@presentation/atoms/ScrollArea', () => ({
+  ScrollArea: ({ children, ...props }: any) => <div data-testid="mock-scrollarea" {...props}>{children}</div>,
+}));
+vi.mock('@presentation/atoms/Progress', () => ({
+  Progress: (props: any) => <div data-testid="mock-progress" role="progressbar" {...props} />,
+}));
+vi.mock('framer-motion', () => ({
+  ...vi.importActual('framer-motion'),
+  motion: new Proxy(
+    {},
+    {
+      get: (_target, key) => {
+        const MockMotionComponent = ({
+          children,
+          ...props
+        }: { children?: ReactNode; [key: string]: unknown }) => <div {...props}>{children}</div>;
+        MockMotionComponent.displayName = `MockMotion.${key.toString()}`;
+        return MockMotionComponent;
+      },
+    }
+  ),
+  useReducedMotion: () => false,
+}));
+// --- End Added Mocks ---
 
 // Mock data with clinical precision
 // Mock data with clinical precision - Requires specific props for NeuralControlPanel
