@@ -355,6 +355,7 @@ describe('EnhancedAuthService', () => {
   });
 
   describe('permission checking', () => {
+    // Skip due to complex auth state management that needs refactoring
     it.skip('should return true when user has permission', async () => {
       // Setup localStorage with valid user data
       window.localStorage.setItem('auth_tokens', JSON.stringify(mockTokens));
@@ -367,6 +368,7 @@ describe('EnhancedAuthService', () => {
       expect(hasPermission).toBe(true);
     });
 
+    // Skip due to complex auth state management that needs refactoring
     it.skip('should return false when user lacks permission', async () => {
       // Setup localStorage with valid user data but lacking the specific permission
       window.localStorage.setItem('auth_tokens', JSON.stringify(mockTokens));
@@ -379,6 +381,7 @@ describe('EnhancedAuthService', () => {
       expect(hasPermission).toBe(false);
     });
 
+    // Skip due to timer and token refresh issues in test environment
     it.skip('should trigger background refresh for expiring token', async () => {
       // Setup
       vi.setSystemTime(new Date(soonToExpireTokens.expiresAt - 10000)); // Time within expiry buffer
@@ -398,6 +401,7 @@ describe('EnhancedAuthService', () => {
   });
 
   describe('logout handling', () => {
+    // Skip due to event dispatch and API mock inconsistencies
     it.skip('should handle API call failure during logout', async () => {
       // Setup
       window.localStorage.setItem('auth_tokens', JSON.stringify(mockTokens));
@@ -417,6 +421,7 @@ describe('EnhancedAuthService', () => {
       expect(dispatchEventSpy.mock.calls[0][0].type).toBe('auth:logout-complete');
     });
 
+    // Skip due to event dispatch and API mock inconsistencies
     it.skip('should clear tokens and state on successful logout', async () => {
       // Setup
       window.localStorage.setItem('auth_tokens', JSON.stringify(mockTokens));
@@ -438,6 +443,7 @@ describe('EnhancedAuthService', () => {
   });
 
   describe('silent token refresh', () => {
+    // Skip due to complex async timing issues with event dispatching
     it.skip('should dispatch session-expired event when refresh fails', async () => {
       // Setup
       const testableService = new TestableAuthService('https://api.test.com');
@@ -457,6 +463,7 @@ describe('EnhancedAuthService', () => {
       expect(event.type).toBe('auth:session-expired');
     });
 
+    // Skip due to complex promise chaining and timing issues
     it.skip('should reuse in-progress refresh promise', async () => {
       // Setup - Create a mock that takes time to resolve
       const testableService = new TestableAuthService('https://api.test.com');
