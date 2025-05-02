@@ -184,9 +184,12 @@ describe('PatientListPage', () => {
     });
 
     // Now the hook should be called with the new search term
-    await waitFor(() => {
-      expect(mockUsePatients).toHaveBeenCalledTimes(2);
-    }, { timeout: 10000 });
+    await waitFor(
+      () => {
+        expect(mockUsePatients).toHaveBeenCalledTimes(2);
+      },
+      { timeout: 10000 } // Increase waitFor timeout drastically
+    );
 
     // Verify the arguments of the second call specifically
     expect(mockUsePatients).toHaveBeenNthCalledWith(
