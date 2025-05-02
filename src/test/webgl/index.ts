@@ -6,6 +6,21 @@
 
 import { vi } from 'vitest';
 
+// Define types for memory tracking
+interface TrackedObject {
+  id?: string;
+  type?: string;
+  [key: string]: unknown;
+}
+
+interface WebGLMemoryTracking {
+  allocatedObjects: Set<TrackedObject>;
+  disposedObjects: Set<TrackedObject>;
+  trackObject: (obj: TrackedObject) => void;
+  untrackObject: (obj: TrackedObject) => void;
+  objectTypes: Record<string, number>;
+}
+
 // Mock WebGL context
 class MockWebGLRenderingContext {
   canvas: HTMLCanvasElement;
@@ -159,16 +174,18 @@ export function setupWebGLMocks(options = { monitorMemory: false, debugMode: fal
   // Initialize memory tracking if enabled
   if (options.monitorMemory) {
     // Define the structure for memory tracking on globalThis
-    (globalThis as any).__WEBGL_MEMORY_TRACKING__ = {
-      allocatedObjects: new Set<any>(),
-      disposedObjects: new Set<any>(),
-      trackObject: (obj: any) => {
-        (globalThis as any).__WEBGL_MEMORY_TRACKING__?.allocatedObjects.add(obj);
+    (globalThis as { __WEBGL_MEMORY_TRACKING__?: WebGLMemoryTracking }).__WEBGL_MEMORY_TRACKING__ = {
+      allocatedObjects: new Set<TrackedObject>(),
+      disposedObjects: new Set<TrackedObject>(),
+      trackObject: (obj: TrackedObject) => {
+        const memTrack = (globalThis as { __WEBGL_MEMORY_TRACKING__?: WebGLMemoryTracking }).__WEBGL_MEMORY_TRACKING__;
+        memTrack?.allocatedObjects.add(obj);
       },
-      untrackObject: (obj: any) => {
-        if ((globalThis as any).__WEBGL_MEMORY_TRACKING__) {
-          (globalThis as any).__WEBGL_MEMORY_TRACKING__.allocatedObjects.delete(obj);
-          (globalThis as any).__WEBGL_MEMORY_TRACKING__.disposedObjects.add(obj);
+      untrackObject: (obj: TrackedObject) => {
+        const memTrack = (globalThis as { __WEBGL_MEMORY_TRACKING__?: WebGLMemoryTracking }).__WEBGL_MEMORY_TRACKING__;
+        if (memTrack) {
+          memTrack.allocatedObjects.delete(obj);
+          memTrack.disposedObjects.add(obj);
         }
       },
       objectTypes: {},
@@ -191,7 +208,7 @@ export function cleanupWebGLMocks() {
   vi.clearAllMocks();
 
   // Return memory tracking report if enabled
-  const trackingData = (globalThis as any).__WEBGL_MEMORY_TRACKING__;
+  const trackingData = (globalThis as { __WEBGL_MEMORY_TRACKING__?: WebGLMemoryTracking }).__WEBGL_MEMORY_TRACKING__;
   if (trackingData) {
     const report = {
       leakedObjectCount: trackingData.allocatedObjects.size,
@@ -201,7 +218,7 @@ export function cleanupWebGLMocks() {
     };
 
     // Clean up tracking
-    delete (globalThis as any).__WEBGL_MEMORY_TRACKING__;
+    delete (globalThis as { __WEBGL_MEMORY_TRACKING__?: WebGLMemoryTracking }).__WEBGL_MEMORY_TRACKING__;
 
     return report;
   }
