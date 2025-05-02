@@ -1,7 +1,8 @@
 // src/test/setup.ts - Test environment setup
 import 'whatwg-fetch'; // Polyfill for fetch in test environment
 import { server } from './mocks/server';
-import { vi, beforeAll, afterEach, afterAll } from 'vitest';
+import { vi, beforeAll, afterEach, afterAll, beforeEach } from 'vitest';
+import '@testing-library/jest-dom';
 
 // Mock localStorage
 const localStorageMock = {
@@ -14,73 +15,50 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 vi.stubGlobal('mockLocalStorage', localStorageMock);
 
 // Mock IntersectionObserver
-class MockIntersectionObserver {
-  readonly root: Element | null;
-  readonly rootMargin: string;
-  readonly thresholds: ReadonlyArray<number>;
-  
-  constructor() {
-    this.root = null;
-    this.rootMargin = '0px';
-    this.thresholds = [0];
-  }
-  
-  disconnect() {
-    return null;
-  }
-  
-  observe() {
-    return null;
-  }
-  
-  takeRecords() {
-    return [];
-  }
-  
-  unobserve() {
-    return null;
-  }
-}
+const mockIntersectionObserver = vi.fn();
+mockIntersectionObserver.mockReturnValue({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+});
+window.IntersectionObserver = mockIntersectionObserver;
 
 // Mock ResizeObserver
-class MockResizeObserver {
-  constructor(_callback: ResizeObserverCallback) {}
-  disconnect() {
-    return null;
-  }
-  observe() {
-    return null;
-  }
-  unobserve() {
-    return null;
-  }
-}
-
-// Setup global mocks
-global.IntersectionObserver = MockIntersectionObserver;
-global.ResizeObserver = MockResizeObserver as any;
+const mockResizeObserver = vi.fn();
+mockResizeObserver.mockReturnValue({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+});
+window.ResizeObserver = mockResizeObserver;
 
 // Mock window.matchMedia
-const createMatchMedia = (matches: boolean) => (query: string) => ({
-  matches,
-  media: query,
-  onchange: null,
-  addListener: vi.fn(), // Deprecated
-  removeListener: vi.fn(), // Deprecated
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-  dispatchEvent: vi.fn(),
-});
-
-// Set up matchMedia with false as default
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation(createMatchMedia(false)),
+  value: vi.fn().mockImplementation((query: string) => ({
+    matches: false, // Default behavior: assume no media query matches
+    media: query,
+    onchange: null,
+    addListener: vi.fn(), // Deprecated but may be used by some libraries
+    removeListener: vi.fn(), // Deprecated but may be used by some libraries
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
 });
 
 // Helper to toggle matchMedia for tests (exposed via vi.stubGlobal rather than globalThis)
 const toggleMatchMedia = (matches: boolean) => {
-  window.matchMedia = vi.fn().mockImplementation(createMatchMedia(matches));
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }));
 };
 vi.stubGlobal('toggleMatchMedia', toggleMatchMedia);
 
@@ -90,7 +68,14 @@ vi.stubGlobal('globalCurrentMatchesState', globalCurrentMatchesState);
 
 // Mock window objects needed for React Three Fiber
 if (typeof global.TextEncoder === 'undefined') {
-  global.TextEncoder = require('util').TextEncoder;
+  // Use dynamic import instead of require for ESM compatibility
+  import('util')
+    .then((util) => {
+      global.TextEncoder = util.TextEncoder;
+    })
+    .catch((err) => {
+      console.error('Failed to dynamically import util for TextEncoder polyfill:', err);
+    });
 }
 
 // Configure MSW
@@ -109,7 +94,8 @@ export const setupServer = () => {
 // Create directory for MSW server if it doesn't exist yet
 try {
   setupServer();
-} catch (error) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+} catch (_error) {
   console.warn('MSW server not set up. Will need to create server.ts in test/mocks/');
 }
 
@@ -121,3 +107,13 @@ afterEach(() => {
   localStorageMock.removeItem.mockClear();
   localStorageMock.clear.mockClear();
 });
+
+// Global setup/teardown can go here if needed
+beforeEach(() => {
+  // Reset mocks before each test if not using restoreMocks: true in config
+});
+
+// Example of mocking a global API
+// vi.mock('some-global-library', () => ({
+//   // Mock implementation
+// }));

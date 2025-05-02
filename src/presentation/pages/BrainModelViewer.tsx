@@ -5,7 +5,7 @@ import { useBrainVisualization } from '@hooks/useBrainVisualization';
 import type { BrainRegion } from '@domain/types/brain/models'; // Corrected import path
 import type { RenderMode } from '@domain/types/brain/visualization'; // Keep this correct import
 // Remove potentially conflicting import if it exists elsewhere
-import Button from '@presentation/atoms/Button';
+import Button from '@presentation/atoms/Button'; // Corrected import casing
 
 interface BrainModelViewerProps {
   patientId?: string;
@@ -277,131 +277,72 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
           )}
         </div>
 
-        {/* Details Panel */}
-        <div className="w-80 overflow-y-auto border-l border-neutral-200 bg-white dark:border-neutral-800 dark:bg-background-card">
+        {/* Sidebar/Info Panel */}
+        <div className="w-1/4 overflow-y-auto border-l border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-background-card">
           {selectedRegion ? (
-            <div className="p-6">
-              <div className="mb-4">
-                <h2 className="mb-2 text-lg font-semibold">Brain Model Visualization</h2>
-                <p className="text-neutral-600 dark:text-neutral-400">
-                  {selectedRegion
-                    ? `Viewing ${selectedRegion.name}`
-                    : 'Select a region to view details'}
-                </p>
-              </div>
-              <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
+            <div className="rounded-lg bg-background p-4 dark:bg-background-elevated">
+              <h3 className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
                 {selectedRegion.name}
-              </h2>
-              <p className="mb-4 mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                {selectedRegion.clinicalSignificance || 'No clinical significance noted.'}{' '}
-                {/* Use clinicalSignificance */}
+              </h3>
+              <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+                {selectedRegion.description || 'No description available.'}
               </p>
 
-              {/* Region Metrics */}
-              <div className="mt-4 space-y-4">
-                {/* Activity Level */}
-                <div>
-                  <h3 className="mb-1 text-xs font-medium text-neutral-500">Activity Level</h3>
-                  <div className="h-2 w-full rounded-full bg-neutral-100 dark:bg-neutral-800">
-                    <div
-                      className="h-2 rounded-full bg-blue-600"
-                      style={{
-                        width: `${selectedRegion.activityLevel * 100 || 0}%`, // Use activityLevel (assuming 0-1 range)
-                      }}
-                    ></div>
-                  </div>
-                  <div className="mt-1 flex justify-between text-xs">
-                    <span>0%</span>
-                    <span>{Math.round(selectedRegion.activityLevel * 100) || 0}%</span>{' '}
-                    {/* Use activityLevel */}
-                    <span>100%</span>
-                  </div>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="text-neutral-500">Volume:</span>
+                  <span className="font-medium text-neutral-700 dark:text-neutral-300">
+                    {selectedRegion.volume ? selectedRegion.volume.toFixed(2) + ' cm³' : 'N/A'}
+                  </span>
                 </div>
-
-                {/* Volume */}
-                <div>
-                  <h3 className="mb-1 text-xs font-medium text-neutral-500">Volume</h3>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">
-                      {selectedRegion.volume || selectedRegion.volumeMl || 'N/A'} cm³{' '}
-                      {/* Use volume or volumeMl */}
-                    </span>
-                    <span className="text-xs text-neutral-500">
-                      {/* Removed percentile as it's not available */}
-                    </span>
-                  </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-neutral-500">Activity Level:</span>
+                  <span className="font-medium text-neutral-700 dark:text-neutral-300">
+                    {selectedRegion.data?.activity !== undefined
+                      ? selectedRegion.data.activity.toFixed(2)
+                      : 'N/A'}
+                  </span>
                 </div>
-
-                {/* Connectivity Strength */}
-                <div>
-                  <h3 className="mb-1 text-xs font-medium text-neutral-500">Connectivity</h3>
-                  <div className="h-2 w-full rounded-full bg-neutral-100 dark:bg-neutral-800">
-                    <div
-                      className="h-2 rounded-full bg-green-500"
-                      style={{
-                        width: `${((selectedRegion.connections?.length || 0) / 10) * 100}%`, // Add null check
-                      }}
-                    ></div>
-                  </div>
-                  <div className="mt-1 flex justify-between text-xs">
-                    <span>Low</span>
-                    <span>{selectedRegion.connections?.length || 0} connections</span>{' '}
-                    {/* Add null check */}
-                    <span>High</span>
-                  </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-neutral-500">Significance:</span>
+                  <span className="font-medium text-neutral-700 dark:text-neutral-300">
+                    {selectedRegion.significance !== undefined
+                      ? selectedRegion.significance.toFixed(2)
+                      : 'N/A'}
+                  </span>
                 </div>
-
-                {/* Associated Conditions - Removed as 'anomalies' property doesn't exist */}
               </div>
 
-              <Button variant="outline" size="sm" fullWidth onClick={handleResetView}>
-                Clear Selection
-              </Button>
-            </div>
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center p-6 text-center">
-              <svg
-                className="mb-4 h-16 w-16 text-neutral-300 dark:text-neutral-700"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1}
-                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                />
-              </svg>
-              <h3 className="mb-2 text-lg font-medium text-neutral-900 dark:text-white">
-                Select a Brain Region
-              </h3>
-              <p className="mb-8 text-sm text-neutral-500 dark:text-neutral-400">
-                Click on any region in the brain model to view detailed information
-              </p>
-
-              {brainModel && (
-                <div className="max-h-64 w-full overflow-auto rounded-lg bg-neutral-50 p-4 dark:bg-neutral-800/50">
-                  <h4 className="mb-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                    Available Regions
+              {selectedRegion.functions && selectedRegion.functions.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="mb-2 text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                    Functions
                   </h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {brainModel.regions.map(
-                      (
-                        region // Removed explicit type
-                      ) => (
-                        <div
-                          key={region.id}
-                          className="cursor-pointer truncate rounded border border-neutral-200 bg-white px-2 py-1.5 text-xs text-neutral-800 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
-                          onClick={() => handleRegionSelect(region.id)}
-                        >
-                          {region.name}
-                        </div>
-                      )
-                    )}
+                  <div className="flex flex-wrap gap-1">
+                    {selectedRegion.functions.map((func, i) => (
+                      <span
+                        key={i}
+                        className="inline-block rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/50 dark:text-blue-200"
+                      >
+                        {func}
+                      </span>
+                    ))}
                   </div>
                 </div>
               )}
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleResetView}
+                className="mt-6 w-full"
+              >
+                Close Details
+              </Button>
+            </div>
+          ) : (
+            <div className="text-center text-neutral-500 dark:text-neutral-400">
+              <p>Select a brain region to view details.</p>
             </div>
           )}
         </div>
