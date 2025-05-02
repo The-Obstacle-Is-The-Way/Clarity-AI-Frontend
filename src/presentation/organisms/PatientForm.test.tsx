@@ -1,6 +1,6 @@
 // src/presentation/organisms/PatientForm.test.tsx
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'; // Added act
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'; // Removed act
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event'; // Import userEvent
 import PatientForm from './PatientForm';
@@ -57,31 +57,30 @@ describe('PatientForm', () => {
   });
 
   it('should display validation error for invalid date format', async () => {
-  // Setup userEvent
-  const user = userEvent.setup();
-  renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
+    // Setup userEvent
+    const user = userEvent.setup();
+    renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
     const firstNameInput = screen.getByLabelText(/First Name/i);
-  const lastNameInput = screen.getByLabelText(/Last Name/i);
-  const dobInput = screen.getByLabelText(/Date of Birth/i);
-  const submitButton = screen.getByRole('button', { name: /Create Patient/i });
+    const lastNameInput = screen.getByLabelText(/Last Name/i);
+    const dobInput = screen.getByLabelText(/Date of Birth/i);
+    const submitButton = screen.getByRole('button', { name: /Create Patient/i });
 
-  // Fill required fields
-  await user.type(firstNameInput, 'Test');
-  await user.type(lastNameInput, 'Patient');
+    // Fill required fields
+    await user.type(firstNameInput, 'Test');
+    await user.type(lastNameInput, 'Patient');
 
-    // Provide input that satisfies min length but fails regex format
-    // Use fireEvent.change for date input specifically
-    fireEvent.change(dobInput, { target: { value: '01-01-2000' } });
-    // await user.clear(dobInput);
-    // await user.type(dobInput, '01-01-2000');
+    // Provide invalid date format using userEvent
+    // fireEvent.change(dobInput, { target: { value: '01-01-2000' } });
+    await user.clear(dobInput); // Clear first in case of default/previous value
+    await user.type(dobInput, '01-01-2000');
 
-  // Submit
-  await user.click(submitButton);
+    // Submit
+    await user.click(submitButton);
 
-  // Check for the specific format error message
-  const errorMessage = await screen.findByText('Date of Birth must be in YYYY-MM-DD format');
+    // Check for the specific format error message
+    const errorMessage = await screen.findByText('Date of Birth must be in YYYY-MM-DD format');
     expect(errorMessage).toBeInTheDocument();
-  expect(mockOnSubmit).not.toHaveBeenCalled();
+    expect(mockOnSubmit).not.toHaveBeenCalled();
   });
 
   it('should call onSubmit with correct data when form is valid', async () => {
@@ -102,15 +101,12 @@ describe('PatientForm', () => {
 
     // Select a status (Inactive) using userEvent
     await user.click(statusSelectTrigger); // Open dropdown
-    const inactiveOption = await screen.findByRole('option', { name: 'Inactive' }, { timeout: 3000 }); // Increased timeout
+    // Add a wait specifically for the dropdown content to be present
+    await screen.findByRole('listbox'); // Default role for Radix SelectContent
+    const inactiveOption = await screen.findByRole('option', { name: 'Inactive' }); // Removed timeout, findByRole waits
     await user.click(inactiveOption); // Select option
 
-    // Ensure state updates propagate before submitting (Keep this act wrapper for now)
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 50));
-    });
-
-    // Submit using userEvent (keep this)
+    // Submit using userEvent
     await user.click(submitButton);
 
     // Assertions (remain the same, wrapped in waitFor for onSubmit mock)
