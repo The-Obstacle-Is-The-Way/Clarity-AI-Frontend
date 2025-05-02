@@ -3,7 +3,7 @@
  * XGBoost Service API
  * Handles all interactions with the XGBoost prediction backend
  */
-import { apiClient } from '@api/apiClient'; // Corrected casing, removed duplicate
+import { apiClient } from '@api/ApiGateway';
 import {
   validateData,
   isRiskPredictionRequest,

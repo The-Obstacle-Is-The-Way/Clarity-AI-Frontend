@@ -15,6 +15,7 @@ import { ApiResponse } from './types';
 import { ApiProxyService } from './ApiProxyService';
 import { toast } from 'react-toastify'; // Import toast
 import NProgress from 'nprogress'; // Import NProgress
+import type { IApiClient } from './IApiClient'; // Add this import
 
 // Request options type
 export interface RequestOptions extends RequestInit {
@@ -376,9 +377,6 @@ export class ApiClient implements IApiClient {
   // --------------------------------
 }
 
-// Create and export a singleton instance of ApiClient
-// Read base URL from environment variable, default to /api
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
-
-// This is what the tests and services expect to import
-export const apiClient = new ApiClient(apiBaseUrl);
+// Remove the direct export of ApiClient instance below
+// const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/';
+// export const apiClient = new ApiClient(apiBaseUrl);

@@ -1,5 +1,5 @@
 // src/infrastructure/api/analyticsService.ts
-import { apiClient } from './apiClient';
+import { apiClient } from './ApiGateway';
 import type {
   XGBoostInput,
   XGBoostPrediction,

@@ -37,9 +37,12 @@ export class ApiGateway implements IApiClient {
         */
 
       console.info(`🧠 Novamind API Gateway: Using ${useMockApi ? 'MOCK' : 'REAL'} API client (NODE_ENV: ${process.env.NODE_ENV})`);
+      console.log(`[ApiGateway] Checking NODE_ENV: ${process.env.NODE_ENV}`);
 
       // If we detect API connection errors, we can auto-fallback to mock mode
-      this.instance = useMockApi ? new EnhancedMockApiClient() : new ApiClient();
+      // Provide the required baseUrl for the real ApiClient
+      const realApiClient = new ApiClient(import.meta.env.VITE_API_BASE_URL || '/'); 
+      this.instance = useMockApi ? new EnhancedMockApiClient() : realApiClient;
     }
 
     return this.instance;

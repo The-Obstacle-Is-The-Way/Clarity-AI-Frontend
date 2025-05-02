@@ -7,7 +7,7 @@
 import { describe, it, expect, vi, beforeEach, beforeAll, afterAll, afterEach } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import { apiClient } from './apiClient'; // Use relative path
+import { apiClient } from './ApiGateway'; // Use relative path
 
 // Define MSW handlers for the API endpoints used in tests
 const handlers = [

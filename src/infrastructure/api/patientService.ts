@@ -1,5 +1,5 @@
 // src/infrastructure/api/patientService.ts
-import { apiClient } from './apiClient';
+import { apiClient } from './ApiGateway';
 import type {
   Patient,
   PaginatedPatientsResponse,

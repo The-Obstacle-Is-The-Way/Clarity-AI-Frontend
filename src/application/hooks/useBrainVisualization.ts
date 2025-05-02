@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Vector3 } from '@domain/types/shared/common'; // Use type import
 import type { BrainRegion, BrainModel, NeuralConnection } from '@domain/types/brain/models'; // Use type import
 import type { RenderMode } from '@domain/types/brain/visualization'; // Use type import
-import { apiClient } from '../../infrastructure/api/apiClient'; // Use relative path
+import { apiClient } from '../../infrastructure/api/ApiGateway'; // Use relative path
 
 // Keep local definition from remote
 interface BrainViewState {

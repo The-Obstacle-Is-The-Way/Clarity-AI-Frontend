@@ -6,7 +6,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { brainModelService } from '@services/brain/brain-model.service'; // Corrected path
-import { apiClient } from '@infrastructure/api/apiClient'; // Import the actual apiClient
+import { apiClient } from '@infrastructure/api/ApiGateway'; // Import the actual apiClient
 import type { BrainModel, BrainRegion, NeuralConnection } from '@domain/types/brain/models';
 
 describe('Brain Model Service', () => {

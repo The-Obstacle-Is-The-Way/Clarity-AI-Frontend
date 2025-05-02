@@ -10,7 +10,7 @@ import type { BrainModel, BrainRegion, NeuralConnection } from '@domain/types/br
 import { type Result, success, failure } from '@/domain/types/shared/common'; // Corrected path alias and location
 
 // Import the shared apiClient instance (corrected casing)
-import { apiClient } from '@infrastructure/api/apiClient';
+import { apiClient } from '@infrastructure/api/ApiGateway';
 
 /**
  * Brain Model Service
