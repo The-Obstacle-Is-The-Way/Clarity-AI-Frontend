@@ -640,3 +640,6 @@ export class BrainTypeVerifier {
     };
   }
 }
+
+// Instantiate and export a singleton for convenience
+export const brainTypeVerifier = new BrainTypeVerifier();

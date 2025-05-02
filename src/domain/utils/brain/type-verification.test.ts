@@ -5,9 +5,10 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { brainTypeVerifier } from '@domain/utils/brain/type-verification';
+// Import from the central index file
+import { brainTypeVerifier } from '@domain/utils/index';
 import { RenderMode } from '@domain/types/brain/visualization';
-import { TypeVerificationError } from '../../../domain/utils/shared/type-verification';
+import { TypeVerificationError } from '@domain/utils/shared/type-verification';
 // Import SSoT types for mocks
 import type {
   BrainModel,
