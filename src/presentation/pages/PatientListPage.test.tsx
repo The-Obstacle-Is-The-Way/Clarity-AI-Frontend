@@ -134,17 +134,48 @@ describe('PatientListPage', () => {
     expect(screen.getByText(/Page 2 of 2/i)).toBeInTheDocument();
   });
 
-  // Skip this test for now since it's causing timeout issues
-  it.skip('should update search term and trigger refetch after debounce', () => {
-    // This test would verify that typing in the search box and waiting for the debounce
-    // period will trigger a search with the entered term.
-    //
-    // Currently, this test is causing timeouts during the test suite runs,
-    // likely due to issues with timer mocking and the debounce implementation.
-    //
-    // Future improvements:
-    // 1. Refactor the component to make the debounce logic more testable
-    // 2. Consider using a different approach to test the search functionality
-    // 3. Implement a custom Jest/Vitest matcher for debounced functions
+  // Implement the skipped test for search functionality
+  it('should update search term and trigger refetch after debounce', async () => {
+    // Set up fake timers to control debounce
+    vi.useFakeTimers();
+    
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    
+    // Initial render
+    const mockData = {
+      items: [{ id: '1', first_name: 'John', last_name: 'Doe' }],
+      total: 1,
+      page: 1,
+      size: 10,
+      pages: 1,
+    };
+    
+    mockUsePatients.mockReturnValue({
+      isLoading: false,
+      data: mockData,
+      error: null,
+      isPlaceholderData: false,
+    });
+    
+    renderWithProviders(<PatientListPage />);
+    
+    // Find the search input
+    const searchInput = screen.getByPlaceholderText(/Search patients/i);
+    
+    // Type in search box
+    await user.type(searchInput, 'Smith');
+    
+    // Fast-forward past debounce timer
+    await vi.advanceTimersByTimeAsync(500); // Assuming 300-500ms debounce
+    
+    // Verify the hook was called with the search term
+    await waitFor(() => {
+      expect(mockUsePatients).toHaveBeenCalledWith(
+        expect.objectContaining({ searchTerm: 'Smith' })
+      );
+    });
+    
+    // Restore real timers
+    vi.useRealTimers();
   });
 });

@@ -56,44 +56,47 @@ describe('PatientForm', () => {
     expect(mockOnSubmit).not.toHaveBeenCalled();
   });
 
-  // Update the skipped test to use fake timers
-  it('should display validation error for invalid date format', async () => {
-    // Setup fake timers for predictable behavior
-    vi.useFakeTimers();
+  // Fix the test that's timing out - use a simpler direct validation approach
+  it('should validate date format correctly', async () => {
+    // Use a simplified approach that directly tests the validation logic
+    const mockOnSubmit = vi.fn();
     
-    // Setup userEvent with advanceTimers option
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-    
+    // Render form
     renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
+    
+    // Get form elements
     const firstNameInput = screen.getByLabelText(/First Name/i);
     const lastNameInput = screen.getByLabelText(/Last Name/i);
     const dobInput = screen.getByLabelText(/Date of Birth/i);
     const submitButton = screen.getByRole('button', { name: /Create Patient/i });
-
-    // Fill required fields
-    await user.type(firstNameInput, 'Test');
-    await user.type(lastNameInput, 'Patient');
-
-    // Provide invalid date format
-    await user.clear(dobInput);
-    await user.type(dobInput, '01-01-2000');
-
-    // Submit form
-    await user.click(submitButton);
     
-    // Run timers
-    await vi.runAllTimersAsync();
-
-    // Check for date format error message
+    // Fill in invalid date directly without userEvent
+    fireEvent.change(firstNameInput, { target: { value: 'Test' } });
+    fireEvent.change(lastNameInput, { target: { value: 'Patient' } });
+    fireEvent.change(dobInput, { target: { value: '01-01-2000' } }); // Invalid format
+    
+    // Submit form
+    fireEvent.click(submitButton);
+    
+    // Check for validation error (without using fake timers)
     await waitFor(() => {
-      const errorElement = screen.queryByText(/Date of Birth must be in YYYY-MM-DD format/i);
-      expect(errorElement).toBeInTheDocument();
+      const errorMessage = screen.queryByText(/Date of Birth must be in YYYY-MM-DD format/i);
+      expect(errorMessage).toBeInTheDocument();
     });
     
+    // Confirm submission didn't happen
     expect(mockOnSubmit).not.toHaveBeenCalled();
     
-    // Restore real timers after the test
-    vi.useRealTimers();
+    // Now fix the date and resubmit to verify validation clears
+    fireEvent.change(dobInput, { target: { value: '2000-01-01' } }); // Valid format
+    
+    fireEvent.click(submitButton);
+    
+    // Check validation error is gone
+    await waitFor(() => {
+      const errorMessage = screen.queryByText(/Date of Birth must be in YYYY-MM-DD format/i);
+      expect(errorMessage).not.toBeInTheDocument();
+    });
   });
 
   it('should update select visually and not show errors on valid submission attempt', async () => {

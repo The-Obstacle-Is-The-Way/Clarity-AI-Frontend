@@ -178,7 +178,7 @@ describe('EnhancedAuthService', () => {
       expect(testAuthService.refreshTimeoutWasScheduled).toBe(true);
     });
 
-    it.skip('should attempt to refresh token when it has expired', async () => {
+    it('should attempt to refresh token when it has expired', async () => {
       // --- Setup ---
       // Set time AFTER expiry
       const expiryTime = expiredTokens.expiresAt;
@@ -213,7 +213,7 @@ describe('EnhancedAuthService', () => {
       expect(result.tokens).toEqual(expectedNewTokens);
     });
 
-    it.skip('should handle token refresh failure during initialization', async () => {
+    it('should handle token refresh failure during initialization', async () => {
       // --- Setup ---
       // Set time AFTER expiry
       const expiryTime = expiredTokens.expiresAt;
@@ -248,15 +248,24 @@ describe('EnhancedAuthService', () => {
       expect(result.tokens).toBeNull();
     });
 
-    it.skip('should attempt token refresh on 401 error from getCurrentUser', async () => {
+    it('should attempt token refresh on 401 error from getCurrentUser', async () => {
       // Setup
       vi.setSystemTime(new Date(mockTokens.expiresAt - 10000)); // Set time BEFORE expiry
       window.localStorage.setItem('auth_tokens', JSON.stringify(mockTokens));
-      mockGetCurrentUser.mockRejectedValueOnce(new Error('401 Unauthorized')); // Configure specific mock response
-      mockRefreshToken.mockResolvedValueOnce({ ...mockTokens, accessToken: 'new-token' }); // Configure specific mock response
-      mockGetCurrentUser.mockResolvedValueOnce(mockUser); // Configure specific mock response (Second call succeeds)
+      
+      // First getCurrentUser call fails with 401
+      const unauthorizedError = new Error('401 Unauthorized');
+      unauthorizedError.name = 'UnauthorizedError';
+      mockGetCurrentUser.mockRejectedValueOnce(unauthorizedError);
+      
+      // Refresh succeeds
+      const refreshedTokens = { ...mockTokens, accessToken: 'new-token' };
+      mockRefreshToken.mockResolvedValueOnce(refreshedTokens);
+      
+      // Second getCurrentUser call succeeds
+      mockGetCurrentUser.mockResolvedValueOnce(mockUser);
 
-      // Execute - making sure we await the promise
+      // Execute
       const resultPromise = authService.initializeAuth();
       
       // Run timers and then await the promise
@@ -264,15 +273,16 @@ describe('EnhancedAuthService', () => {
       const result = await resultPromise;
 
       // Verify
-      expect(mockRefreshToken).toHaveBeenCalled();
+      expect(mockRefreshToken).toHaveBeenCalledWith(mockTokens.refreshToken);
       expect(mockGetCurrentUser).toHaveBeenCalledTimes(2);
       expect(result.isAuthenticated).toBe(true);
       expect(result.user).toEqual(mockUser);
+      expect(result.tokens).toEqual(refreshedTokens);
     });
   });
 
   describe('ensureValidToken middleware', () => {
-    it.skip('should return token when valid and not expiring soon', async () => {
+    it('should return token when valid and not expiring soon', async () => {
       // --- Setup ---
       // Set time well before expiry
       vi.setSystemTime(new Date(mockTokens.expiresAt - 1000000)); // e.g., 16 mins before expiry
@@ -289,7 +299,7 @@ describe('EnhancedAuthService', () => {
       expect(token).toBe(mockTokens.accessToken);
     });
 
-    it.skip('should refresh token when it is expiring soon', async () => {
+    it('should refresh token when it is expiring soon', async () => {
       // --- Setup ---
       // Set time just within the expiry buffer (e.g., 4 mins before expiry)
       const expiryTime = soonToExpireTokens.expiresAt;
@@ -355,12 +365,15 @@ describe('EnhancedAuthService', () => {
   });
 
   describe('permission checking', () => {
-    // Skip due to complex auth state management that needs refactoring
-    it.skip('should return true when user has permission', async () => {
-      // Setup localStorage with valid user data
-      window.localStorage.setItem('auth_tokens', JSON.stringify(mockTokens));
-      window.localStorage.setItem('auth_user', JSON.stringify(mockUser));
-
+    it('should return true when user has permission', async () => {
+      // Setup - Use the authService state directly instead of localStorage
+      // First initialize with a valid user and tokens
+      mockRefreshToken.mockResolvedValueOnce(mockTokens);
+      mockGetCurrentUser.mockResolvedValueOnce(mockUser);
+      
+      // Initialize auth
+      await authService.initializeAuth();
+      
       // Execute
       const hasPermission = authService.hasPermission('read:patients');
 
@@ -368,21 +381,37 @@ describe('EnhancedAuthService', () => {
       expect(hasPermission).toBe(true);
     });
 
-    // Skip due to complex auth state management that needs refactoring
-    it.skip('should return false when user lacks permission', async () => {
-      // Setup localStorage with valid user data but lacking the specific permission
-      window.localStorage.setItem('auth_tokens', JSON.stringify(mockTokens));
-      window.localStorage.setItem('auth_user', JSON.stringify(mockUser)); // mockUser doesn't have 'administer'
-
-      // Execute
+    it('should return false when user lacks permission', async () => {
+      // Setup - Use the authService state directly
+      // First initialize with a valid user and tokens
+      mockRefreshToken.mockResolvedValueOnce(mockTokens);
+      mockGetCurrentUser.mockResolvedValueOnce(mockUser);
+      
+      // Initialize auth
+      await authService.initializeAuth();
+      
+      // Execute - check for a permission the user doesn't have
       const hasPermission = authService.hasPermission('administer');
 
       // Verify
       expect(hasPermission).toBe(false);
     });
 
-    // Skip due to timer and token refresh issues in test environment
+    // Document the skip reason for this test
     it.skip('should trigger background refresh for expiring token', async () => {
+      // This test remains skipped due to complex timing issues related to token refresh.
+      // The test attempts to verify that a background refresh is triggered when a token is close to expiry.
+      // Challenges include:
+      // 1. The refresh is triggered via setTimeout, which is difficult to predictably test
+      // 2. The background refresh happens asynchronously, making it hard to observe
+      // 3. Race conditions can occur between the refresh promise and the test assertions
+      //
+      // TODO: To fix this test, consider:
+      // - Refactoring the AuthService to use a more testable approach for scheduling token refreshes
+      // - Creating a mock implementation of setTimeout that provides more control
+      // - Adding a callback mechanism to make the background refresh observable in tests
+      
+      // Original test code remains below
       // Setup
       vi.setSystemTime(new Date(soonToExpireTokens.expiresAt - 10000)); // Time within expiry buffer
       window.localStorage.setItem('auth_tokens', JSON.stringify(soonToExpireTokens));
@@ -443,8 +472,22 @@ describe('EnhancedAuthService', () => {
   });
 
   describe('silent token refresh', () => {
-    // Skip due to complex async timing issues with event dispatching
+    // Document the skip reason for this test
     it.skip('should dispatch session-expired event when refresh fails', async () => {
+      // This test remains skipped due to complex async timing issues with event dispatching.
+      // The test attempts to verify that a session-expired event is dispatched when token refresh fails.
+      //
+      // Challenges include:
+      // 1. Event dispatch timing is difficult to predict in the test environment
+      // 2. The event dispatch happens within an async flow, making it hard to reliably observe
+      // 3. Testing both the event type and payload requires careful mock synchronization
+      //
+      // TODO: To fix this test, consider:
+      // - Using a more explicit event handling pattern that's easier to test
+      // - Adding a custom event listener that can be observed directly in tests
+      // - Refactoring to make the event dispatch more synchronous or providing a callback
+      
+      // Original test code remains below
       // Setup
       const testableService = new TestableAuthService('https://api.test.com');
       window.localStorage.setItem('auth_tokens', JSON.stringify(expiredTokens));
@@ -465,6 +508,21 @@ describe('EnhancedAuthService', () => {
 
     // Skip due to complex promise chaining and timing issues
     it.skip('should reuse in-progress refresh promise', async () => {
+      // This test remains skipped due to complex promise chaining and timing issues.
+      // The test attempts to verify that multiple refresh token calls during an in-progress refresh
+      // will reuse the same promise rather than creating multiple refresh requests.
+      // 
+      // Challenges include:
+      // 1. Creating a controlled environment for multiple async calls to the same method
+      // 2. Verifying promise identity across asynchronous operations
+      // 3. Managing promise resolution timing during the test
+      //
+      // TODO: To fix this test, consider:
+      // - Refactoring the test to use jest.spyOn on internal methods
+      // - Using a more robust approach to track promise identity
+      // - Adding instrumentation to the AuthService class to expose promise reuse metrics
+      
+      // Original test code remains below
       // Setup - Create a mock that takes time to resolve
       const testableService = new TestableAuthService('https://api.test.com');
       window.localStorage.setItem('auth_tokens', JSON.stringify(mockTokens));
