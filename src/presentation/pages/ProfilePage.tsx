@@ -54,11 +54,11 @@ const ProfilePage: React.FC = (): React.ReactElement => {
               )}
             </div>
           </div>
-           <div className="flex flex-col space-y-1">
+          <div className="flex flex-col space-y-1">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</span>
-             <Badge variant={user.is_active ? 'default' : 'destructive'}>
-                {user.is_active ? 'Active' : 'Inactive'}
-              </Badge>
+            <Badge variant={user.is_active ? 'default' : 'destructive'}>
+              {user.is_active ? 'Active' : 'Inactive'}
+            </Badge>
           </div>
           {/* Add more user details as needed */}
         </CardContent>
