@@ -10,7 +10,32 @@ import '@testing-library/jest-dom'; // Restored render, removed unused fireEvent
 import { setupWebGLMocks, cleanupWebGLMocks } from '../../test/webgl'; // Fixed relative path
 import { PatientHeader } from './PatientHeader';
 // Removed unused renderWithProviders import
-import type { Patient } from '../../../domain/types/clinical/patient'; // Added import for Patient type
+import type { Patient } from '@domain/types/clinical/patient'; // Use path alias
+import type { ReactNode } from 'react';
+
+vi.mock('framer-motion', () => ({
+  ...vi.importActual('framer-motion'), // Keep original exports
+  motion: new Proxy(
+    {},
+    {
+      // Mock the 'motion' proxy
+      get: (_target, key) => {
+        // Return a simple functional component that just renders children
+        // This bypasses the motion component's internal logic (like matchMedia checks)
+        const MockMotionComponent = ({
+          children,
+          ...props
+        }: {
+          children?: ReactNode;
+          [key: string]: unknown;
+        }) => <div {...props}>{children}</div>;
+        MockMotionComponent.displayName = `MockMotion.${key.toString()}`;
+        return MockMotionComponent;
+      },
+    }
+  ),
+  useReducedMotion: () => false, // Mock the hook directly
+}));
 
 // Setup WebGL mocks with memory monitoring - Moved outside describe block
 beforeEach(() => {
