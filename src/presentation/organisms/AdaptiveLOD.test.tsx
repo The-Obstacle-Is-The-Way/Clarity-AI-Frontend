@@ -3,11 +3,11 @@
  * Replaced with minimal test to prevent hanging from useFrame animation loop
  */
 
-import React from 'react'; // Re-added for React.ReactNode type
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { AdaptiveLOD } from './AdaptiveLOD';
+import AdaptiveLOD from '@presentation/common/AdaptiveLOD';
 
-// Mock React Three Fiber
+// Mock React Three Fiber hooks and components
 vi.mock('@react-three/fiber', () => ({
   useFrame: vi.fn(),
   useThree: () => ({
@@ -17,17 +17,18 @@ vi.mock('@react-three/fiber', () => ({
       dispose: vi.fn(),
     },
     camera: {
-      position: { set: vi.fn() },
+      position: { set: vi.fn(), distanceTo: vi.fn().mockReturnValue(100) }, // Mock distanceTo
       lookAt: vi.fn(),
     },
     scene: {},
+    size: { width: 800, height: 600 }, // Mock size
   }),
   Canvas: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="mock-canvas">{children}</div>
   ),
 }));
 
-// Mock Three.js
+// Mock Three.js objects
 vi.mock('three', () => ({
   WebGLRenderer: vi.fn().mockImplementation(() => ({
     setSize: vi.fn(),
@@ -39,11 +40,7 @@ vi.mock('three', () => ({
     position: { set: vi.fn() },
     lookAt: vi.fn(),
   })),
-  Vector3: vi.fn().mockImplementation(() => ({
-    set: vi.fn(),
-    normalize: vi.fn(),
-    multiplyScalar: vi.fn(),
-  })),
+  Vector3: vi.fn(),
   Color: vi.fn(),
   MeshBasicMaterial: vi.fn(),
   MeshStandardMaterial: vi.fn(),
@@ -53,7 +50,7 @@ vi.mock('three', () => ({
 }));
 
 // Minimal test to verify component can be imported
-describe('AdaptiveLOD (Minimal)', () => {
+describe('AdaptiveLOD Component Import Test', () => {
   it('exists as a module', () => {
     expect(AdaptiveLOD).toBeDefined();
   });

@@ -11,8 +11,8 @@ import { apiClient } from './ApiGateway'; // Use relative path
 
 // Define MSW handlers for the API endpoints used in tests
 const handlers = [
-  // Use the full expected URL including the mock origin and base path
-  http.get('http://localhost/api/patients', () => {
+  // Use relative path for the handler
+  http.get('/api/patients', () => {
     console.log('[MSW] Mocking GET /api/patients');
     return HttpResponse.json([
       { id: 'patient-001', name: 'Quantum Patient Zero' },
@@ -20,8 +20,8 @@ const handlers = [
     ]);
   }),
 
-  // Add handler for ml/patients endpoint
-  http.get('http://localhost/api/ml/patients/', () => {
+  // Use relative path for the handler
+  http.get('/api/ml/patients/', () => {
     console.log('[MSW] Mocking GET /api/ml/patients/');
     return HttpResponse.json([
       { id: 'ml-patient-001', name: 'ML Patient Zero' },
@@ -29,8 +29,8 @@ const handlers = [
     ]);
   }),
 
-  // Use the full expected URL including the mock origin and base path
-  http.post('http://localhost/api/auth/login', async ({ request }) => {
+  // Use relative path for the handler
+  http.post('/api/auth/login', async ({ request }) => {
     console.log('[MSW] Mocking POST /api/auth/login');
     const body = await request.json();
     // You could add assertions on the body if needed

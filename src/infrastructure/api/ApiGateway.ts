@@ -39,10 +39,19 @@ export class ApiGateway implements IApiClient {
       console.info(`🧠 Novamind API Gateway: Using ${useMockApi ? 'MOCK' : 'REAL'} API client (NODE_ENV: ${process.env.NODE_ENV})`);
       console.log(`[ApiGateway] Checking NODE_ENV: ${process.env.NODE_ENV}`);
 
+      // Determine base URL based on environment
+      let baseUrl = '/'; // Default for development/production relative paths
+      if (process.env.NODE_ENV === 'test') {
+        baseUrl = 'http://localhost'; // Use absolute path for MSW in tests
+      } else {
+        baseUrl = import.meta.env.VITE_API_BASE_URL || '/'; // Use Vite env var or default
+      }
+      console.log(`[ApiGateway] Determined baseUrl: ${baseUrl}`);
+
       // If we detect API connection errors, we can auto-fallback to mock mode
       // Provide the required baseUrl for the real ApiClient
-      const realApiClient = new ApiClient(import.meta.env.VITE_API_BASE_URL || '/'); 
-      this.instance = useMockApi ? new EnhancedMockApiClient() : realApiClient;
+      const realApiClient = new ApiClient(baseUrl);
+      this.instance = useMockApi ? new EnhancedMockApiClient({}) : realApiClient;
     }
 
     return this.instance;
