@@ -26,10 +26,10 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '@/components/ui/card'; // Path is now correct, re-added components for TS ignore
-import { ScrollArea } from '@/components/ui/scroll-area'; // Correct path
-import { Progress } from '@/components/ui/progress'; // Correct path
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'; // Added missing Tooltip imports
+} from "@presentation/atoms/Card"; // Corrected path
+import { ScrollArea } from "@presentation/atoms/scroll-area"; // Corrected path
+import { Progress } from "@presentation/atoms/progress"; // Corrected path
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@presentation/atoms/Tooltip"; // Corrected path
 
 // Icons
 import {
@@ -262,7 +262,7 @@ export const BiometricMonitorPanel: React.FC<BiometricMonitorPanelProps> = ({
   // We'll define some dummy data for the biometrics
   const biometricData = [
     { id: 1, name: 'Heart Rate', value: 78, unit: 'bpm', icon: <Heart className="h-4 w-4" />, color: 'text-red-500', change: '+2%', normal: '60-100' },
-    { id: 2, name: 'Respiratory Rate', value: 16, unit: 'bpm', icon: <PulseIcon className="h-4 w-4" />, color: 'text-blue-500', change: '-1%', normal: '12-20' },
+    { id: 2, name: 'Respiratory Rate', value: 16, unit: 'bpm', icon: <Activity className="h-4 w-4" />, color: 'text-blue-500', change: '-1%', normal: '12-20' },
     { id: 3, name: 'Blood Oxygenation', value: 98, unit: '%', icon: <Activity className="h-4 w-4" />, color: 'text-green-500', change: '0%', normal: '95-100' },
     { id: 4, name: 'Glucose Level', value: 105, unit: 'mg/dL', icon: <Braces className="h-4 w-4" />, color: 'text-yellow-500', change: '+5%', normal: '80-130' },
     { id: 5, name: 'Cortisol Level', value: 12, unit: 'μg/dL', icon: <Brain className="h-4 w-4" />, color: 'text-purple-500', change: '-3%', normal: '5-23' },

@@ -29,9 +29,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'; // Correct path
+} from "@presentation/atoms/Card"; // Corrected path
 // Removed unused ScrollArea import
-import { Progress } from '@/components/ui/progress'; // Correct path
+import { Progress } from "@presentation/atoms/progress"; // Corrected path
 
 // Icons
 import {
