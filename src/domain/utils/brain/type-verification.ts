@@ -602,6 +602,13 @@ export class BrainTypeVerifier {
     if (!patientIdResult.success)
       return patientIdResult as Result<BrainModel, TypeVerificationError>;
 
+    // Verify scan object (required)
+    const scanResult = this.verifyBrainScan(
+      object.scan,
+      field ? `${field}.scan` : 'scan'
+    );
+    if (!scanResult.success) return scanResult as Result<BrainModel, TypeVerificationError>;
+
     const timestampResult = typeVerifier.verifyString(
       object.timestamp,
       field ? `${field}.timestamp` : 'timestamp'
@@ -625,18 +632,34 @@ export class BrainTypeVerifier {
     if (!lastUpdatedResult.success)
       return lastUpdatedResult as Result<BrainModel, TypeVerificationError>;
 
+    // Optional algorithmVersion
+    const algorithmVersionResult = verifyOptionalString(
+      object.algorithmVersion,
+      field ? `${field}.algorithmVersion` : 'algorithmVersion'
+    );
+    if (!algorithmVersionResult.success)
+      return algorithmVersionResult as Result<BrainModel, TypeVerificationError>;
+
+    // Build verified BrainModel object
+    const verifiedModel: BrainModel = {
+      id: idResult.value,
+      regions: regionsResult.value,
+      connections: connectionsResult.value,
+      version: versionResult.value,
+      patientId: patientIdResult.value,
+      scan: scanResult.value,
+      timestamp: timestampResult.value,
+      processingLevel: processingLevelResult.value,
+      lastUpdated: lastUpdatedResult.value,
+    } as BrainModel;
+
+    if (algorithmVersionResult.value !== undefined) {
+      (verifiedModel as Partial<BrainModel>).algorithmVersion = algorithmVersionResult.value;
+    }
+
     return {
       success: true,
-      value: {
-        id: idResult.value,
-        regions: regionsResult.value,
-        connections: connectionsResult.value,
-        version: versionResult.value,
-        patientId: patientIdResult.value,
-        timestamp: timestampResult.value,
-        processingLevel: processingLevelResult.value,
-        lastUpdated: lastUpdatedResult.value,
-      } as BrainModel,
+      value: verifiedModel,
     };
   }
 }

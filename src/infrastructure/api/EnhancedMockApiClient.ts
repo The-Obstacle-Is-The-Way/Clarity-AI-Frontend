@@ -359,6 +359,12 @@ export class EnhancedMockApiClient implements IApiClient {
       scan: mockScan, // Embed the fully typed mock scan
       regions: [mockRegion1, mockRegion2], // Embed fully typed mock regions
       connections: [mockConnection1], // Embed fully typed mock connections
+      version: '1.0.0',
+      // Optional algorithmVersion for testing optional handling
+      algorithmVersion: 'MockAlgo-v1',
+      timestamp: new Date().toISOString(),
+      processingLevel: 'raw',
+      lastUpdated: new Date().toISOString(),
       metadata: {
         version: '1.1.0',
         generatedAt: new Date().toISOString(),
