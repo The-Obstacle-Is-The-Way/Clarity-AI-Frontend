@@ -118,7 +118,6 @@ describe('Button Component', () => {
     expect(button).toHaveClass('px-3');
     // expect(button).toHaveClass('text-xs'); // Removed text-xs assertion for sm size as it is not in the variant
   });
-  });
 
   it('renders with size lg', () => {
     renderWithProviders(
