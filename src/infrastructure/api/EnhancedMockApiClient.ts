@@ -11,12 +11,14 @@ import type { User } from '@application/context/AuthContext'; // Import User typ
 import { ApiError, ApiResponse } from './types'; // Assuming types for existing mocks
 import type {
   BrainModel,
-  BrainRegion,
-  BrainScan,
-  NeuralConnection,
   ScannerMachine,
   Vector3D,
 } from '@domain/types';
+import type {
+  BrainRegion,
+  BrainScan,
+  NeuralConnection,
+} from '@domain/types/brain/models';
 
 // Define mock user data matching the User interface
 const mockUser: User = {
@@ -310,24 +312,19 @@ export class EnhancedMockApiClient implements IApiClient {
       resolution: vec(128, 128, 64),
       metadata: { acquisitionTime: '10min' },
       dataQualityScore: 0.92,
-      artifacts: [],
       notes: 'Simulated scan for mock brain model',
       technician: 'Tech McTechface',
-      machine: mockMachine,
     };
 
     const baseRegion = {
       volume: 100,
       activity: 0.5,
       color: '#CCCCCC',
-      activityLevel: 'medium' as const,
+      activityLevel: 0.5,
       type: 'cortical' as const,
-      hemisphere: 'left' as const,
-      metrics: {
-        density: 1.2,
-        thickness: 2.5,
-        surfaceArea: 1500,
-      },
+      hemisphereLocation: 'left' as const,
+      dataConfidence: 0.95,
+      isActive: true,
     };
 
     const mockRegion1: BrainRegion = {
@@ -336,7 +333,7 @@ export class EnhancedMockApiClient implements IApiClient {
       name: 'Mock Prefrontal Cortex',
       position: vec(10, 20, 30),
       connections: ['region-mock-2'],
-      hemisphere: 'left',
+      hemisphereLocation: 'left',
     };
 
     const mockRegion2: BrainRegion = {
@@ -345,7 +342,7 @@ export class EnhancedMockApiClient implements IApiClient {
       name: 'Mock Amygdala',
       position: vec(-5, -15, 25),
       connections: ['region-mock-1'],
-      hemisphere: 'right',
+      hemisphereLocation: 'right',
     };
 
     const mockConnection1: NeuralConnection = {
@@ -355,12 +352,8 @@ export class EnhancedMockApiClient implements IApiClient {
       strength: 0.75,
       type: 'inhibitory',
       directionality: 'unidirectional',
-      metrics: {
-        signalSpeed: 5,
-        bandwidth: 200,
-        reliability: 0.95,
-      },
-      pathPoints: [vec(10, 20, 30), vec(-5, -15, 25)],
+      activityLevel: 0.7,
+      dataConfidence: 0.9,
     };
 
     // Build comprehensive object that satisfies both SSoT verification and index typing
