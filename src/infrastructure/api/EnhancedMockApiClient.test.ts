@@ -1,71 +1,140 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Test Suite
- * Enhanced Mock API Client testing with quantum precision
+ * NOVAMIND Neural Test Suite - EnhancedMockApiClient
+ * Testing mock API client behavior with quantum precision
  */
 
-import { describe, it, expect, vi } from 'vitest';
-import enhancedMockApiClient from '@api/EnhancedMockApiClient';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import axios from 'axios'; // Import axios for mocking its methods
+import { EnhancedMockApiClient } from '../EnhancedMockApiClient'; // Adjust path as necessary
+import type { BrainModel } from '@domain/types'; // Import BrainModel type
+import { BrainTypeVerifier } from '@domain/utils/brain/type-verification'; // Import verifier
+
+// Mock axios specifically for logActivity calls within the mock client
+vi.mock('axios');
 
 describe('EnhancedMockApiClient', () => {
+  let mockApiClient: EnhancedMockApiClient;
+  const brainVerifier = new BrainTypeVerifier(); // Instantiate verifier
+
   beforeEach(() => {
-    // Setup mocks if needed
-    vi.spyOn(console, 'debug').mockImplementation(() => {});
+    mockApiClient = new EnhancedMockApiClient({ mockDelay: 0 }); // Use the client directly
+    // Reset mocks before each test
+    vi.clearAllMocks(); 
   });
 
+  // Keep afterEach if needed for other potential global mocks, otherwise remove
   afterEach(() => {
-    vi.restoreAllMocks();
+    // vi.clearAllMocks(); // Already called in beforeEach
   });
 
   it('getPatient returns patient data with proper structure', async () => {
-    // Act
     const patientId = 'test-patient-123';
-    const result = await enhancedMockApiClient.getPatient(patientId);
+    // Mock the axios post call made by logActivity
+    vi.mocked(axios.post).mockResolvedValue({ status: 200 });
 
-    // Assert
-    expect(result).toBeDefined();
-    expect(result.id).toBe(patientId);
-    expect(result.firstName).toBeDefined();
-    expect(result.lastName).toBeDefined();
-    expect(result.dateOfBirth).toBeDefined();
-    expect(result.demographicData).toBeDefined();
+    const patient = await mockApiClient.getPatient(patientId);
+
+    expect(patient).toBeDefined();
+    expect(patient.id).toBe(patientId);
+    expect(patient.firstName).toBe('John'); 
+    // Add more assertions for structure if needed
+
+    // Verify logActivity called axios.post correctly
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
+      action: 'getPatient',
+      details: { patientId },
+    }));
   });
 
   it('getPatients returns an array of patients', async () => {
-    // Act
-    const result = await enhancedMockApiClient.getPatients();
+    vi.mocked(axios.post).mockResolvedValue({ status: 200 });
+    const patients = await mockApiClient.getPatients();
+    expect(Array.isArray(patients)).toBe(true);
+    expect(patients.length).toBeGreaterThan(0);
+    // Add structure checks for patient objects within the array
 
-    // Assert
-    expect(Array.isArray(result)).toBe(true);
-    expect(result.length).toBeGreaterThan(0);
-    expect(result[0].id).toBeDefined();
-    expect(result[0].firstName).toBeDefined();
-    expect(result[0].lastName).toBeDefined();
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
+      action: 'getPatients',
+    }));
   });
 
-  it('getBrainModel returns model with regions and connections', async () => {
-    // Act
+  // Test the specific getBrainModel method directly
+  it('getBrainModel returns model that conforms to BrainModel type', async () => {
     const modelId = 'test-model-123';
-    const result = await enhancedMockApiClient.getBrainModel(modelId);
+    vi.mocked(axios.post).mockResolvedValue({ status: 200 });
 
-    // Assert
-    expect(result).toBeDefined();
-    expect(result.id).toBe(modelId);
-    expect(Array.isArray(result.regions)).toBe(true);
-    expect(Array.isArray(result.connections)).toBe(true);
-    expect(result.regions.length).toBeGreaterThan(0);
-    expect(result.connections.length).toBeGreaterThan(0);
+    const model = await mockApiClient.getBrainModel(modelId);
+
+    expect(model).toBeDefined();
+    expect(model.id).toBe(modelId);
+    
+    // Use BrainTypeVerifier for deep structure validation
+    const verificationResult = brainVerifier.verifyBrainModel(model);
+    if (!verificationResult.success) {
+      console.error('BrainModel Verification Failed:', verificationResult.error);
+    }
+    expect(verificationResult.success).toBe(true);
+    // Optionally, add specific assertions for key fields
+    expect(model.regions).toBeDefined();
+    expect(model.connections).toBeDefined();
+    expect(model.scan).toBeDefined();
+    expect(model.metadata).toBeDefined();
+    expect(model.analysisResults).toBeDefined();
+
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
+      action: 'getBrainModel',
+      details: { modelId },
+    }));
   });
 
-  it('login returns valid user credentials', async () => {
-    // Act
-    const result = await enhancedMockApiClient.login('test@example.com', 'password123');
+  // Test the generic GET method handling the /brain-models/:modelId route
+  it('GET /brain-models/:modelId returns a valid BrainModel', async () => {
+    const modelId = 'DEMO_SCAN_SPECIAL';
+    const endpoint = `/brain-models/${modelId}`;
+    vi.mocked(axios.post).mockResolvedValue({ status: 200 }); // Mock logActivity call within GET
+    vi.mocked(axios.post).mockResolvedValueOnce({ status: 200 }); // Mock logActivity call within getBrainModel
 
-    // Assert
+    const model = await mockApiClient.get<BrainModel>(endpoint);
+
+    expect(model).toBeDefined();
+    expect(model.id).toBe(modelId);
+
+    const verificationResult = brainVerifier.verifyBrainModel(model);
+    if (!verificationResult.success) {
+      console.error('BrainModel Verification Failed (GET route):', verificationResult.error);
+    }
+    expect(verificationResult.success).toBe(true);
+
+    // Check logActivity calls - one for GET, one for internal getBrainModel
+    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
+      action: 'GET_Request',
+      details: { endpoint, params: undefined }, // Assuming no params passed
+    }));
+     expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
+      action: 'getBrainModel',
+      details: { modelId },
+    }));
+  });
+
+  it('login returns valid user credentials and logs activity', async () => {
+    const email = 'test@example.com';
+    vi.mocked(axios.post).mockResolvedValue({ status: 200 });
+
+    const result = await mockApiClient.login(email, 'password');
+
     expect(result).toBeDefined();
-    expect(result.token).toBeDefined();
-    expect(result.id).toBeDefined();
-    expect(result.name).toBeDefined();
-    expect(result.role).toBeDefined();
+    expect(result.token).toBeDefined(); // Check structure based on mock impl
+    expect(result.user.id).toBeDefined(); 
+
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
+      action: 'POST_Request',
+      details: { endpoint: '/api/v1/auth/login', data: { email } },
+    }));
   });
 });

@@ -8,6 +8,13 @@ import axios from 'axios';
 import { IApiClient } from './IApiClient';
 import type { ApiPatient } from './ApiClient.runtime';
 import type { User } from '@application/context/AuthContext'; // Import User type
+import { ApiError, ApiResponse } from './types'; // Assuming types for existing mocks
+import type {
+  BrainModel,
+  BrainRegion,
+  BrainScan,
+  NeuralConnection,
+} from '@domain/types'; // Import necessary domain types
 
 // Define mock user data matching the User interface
 const mockUser: User = {
@@ -130,6 +137,14 @@ export class EnhancedMockApiClient implements IApiClient {
       console.log('[MockClient] Returning mock patient list');
       const patients = await this.getPatients();
       return Promise.resolve(patients as unknown as T);
+    }
+    // Handle /brain-models/:modelId pattern
+    const brainModelMatch = endpoint.match(/^\/brain-models\/([^/]+)$/);
+    if (brainModelMatch) {
+      const modelId = brainModelMatch[1];
+      console.log(`[MockClient] Returning mock BrainModel for ID from GET: ${modelId}`);
+      const brainModel = await this.getBrainModel(modelId); // Call the specific mock method
+      return Promise.resolve(brainModel as unknown as T);
     }
 
     console.warn(`[MockClient] Unhandled GET request for: ${endpoint}`);
@@ -271,61 +286,90 @@ export class EnhancedMockApiClient implements IApiClient {
   /**
    * Get brain model data
    */
-  async getBrainModel(modelId: string): Promise<{
-    id: string;
-    patientId: string;
-    scanDate: string;
-    regions: Array<{
-      id: string;
-      name: string;
-      coordinates: [number, number, number];
-      size: number;
-      connections: string[];
-    }>;
-    connections: Array<{
-      from: string;
-      to: string;
-      strength: number;
-    }>;
-  }> {
+  async getBrainModel(modelId: string = 'DEMO_SCAN_001'): Promise<BrainModel> {
     await this.delay();
     this.logActivity('getBrainModel', { modelId });
+    console.log(`[MockClient] Returning mock BrainModel for ID: ${modelId}`);
 
-    return {
-      id: modelId,
-      patientId: 'patient-1',
-      scanDate: '2023-10-15',
-      regions: [
-        {
-          id: 'r1',
-          name: 'prefrontal cortex',
-          coordinates: [0, 5, 0],
-          size: 3,
-          connections: ['r2', 'r3'],
-        },
-        {
-          id: 'r2',
-          name: 'amygdala',
-          coordinates: [2, 0, 1],
-          size: 1,
-          connections: ['r1'],
-        },
-        {
-          id: 'r3',
-          name: 'hippocampus',
-          coordinates: [-2, 0, 1],
-          size: 1.5,
-          connections: ['r1', 'r2'],
-        },
-      ],
-      connections: [
-        { from: 'r1', to: 'r2', strength: 0.8 },
-        { from: 'r1', to: 'r3', strength: 0.6 },
-        { from: 'r2', to: 'r1', strength: 0.5 },
-        { from: 'r3', to: 'r1', strength: 0.7 },
-        { from: 'r3', to: 'r2', strength: 0.4 },
+    // Create mock data adhering strictly to BrainModel type
+    const mockScan: BrainScan = {
+      id: `scan-for-${modelId}`,
+      patientId: 'mock-patient-for-model',
+      scanDate: new Date().toISOString(),
+      scanType: 'fMRI',
+      resolution: { x: 128, y: 128, z: 64 },
+      metadata: { acquisitionTime: '10min' },
+      dataQualityScore: 0.92,
+      artifacts: [],
+      notes: 'Mock scan data',
+      technician: 'Mock Tech',
+      machine: {
+        id: 'mock-scanner-02',
+        type: 'Mock Scanner',
+        calibrationDate: new Date().toISOString(),
+      },
+    };
+
+    const mockRegion1: BrainRegion = {
+      id: 'region-mock-1',
+      name: 'Mock Prefrontal Cortex',
+      position: { x: 10, y: 20, z: 30 },
+      volume: 110,
+      activity: 0.85,
+      connections: ['region-mock-2'],
+      color: '#FF0000',
+      activityLevel: 'high',
+      type: 'cortical',
+      hemisphere: 'left',
+      metrics: { density: 0.9, thickness: 2.8, surfaceArea: 130 },
+    };
+
+    const mockRegion2: BrainRegion = {
+      id: 'region-mock-2',
+      name: 'Mock Amygdala',
+      position: { x: -5, y: -15, z: 25 },
+      volume: 45,
+      activity: 0.55,
+      connections: ['region-mock-1'],
+      color: '#0000FF',
+      activityLevel: 'low',
+      type: 'subcortical',
+      hemisphere: 'right',
+      metrics: { density: 0.7, thickness: 1.5, surfaceArea: 40 },
+    };
+
+    const mockConnection1: NeuralConnection = {
+      id: 'conn-mock-1-2',
+      sourceId: 'region-mock-1',
+      targetId: 'region-mock-2',
+      strength: 0.75,
+      type: 'inhibitory',
+      directionality: 'unidirectional',
+      metrics: { signalSpeed: 0.9, bandwidth: 0.7, reliability: 0.95 },
+      pathPoints: [
+        { x: 10, y: 20, z: 30 },
+        { x: 2.5, y: 2.5, z: 27.5 },
+        { x: -5, y: -15, z: 25 },
       ],
     };
+
+    return Promise.resolve({
+      id: modelId,
+      patientId: 'mock-patient-for-model', // Use consistent mock patient ID
+      scan: mockScan, // Embed the fully typed mock scan
+      regions: [mockRegion1, mockRegion2], // Embed fully typed mock regions
+      connections: [mockConnection1], // Embed fully typed mock connections
+      metadata: {
+        version: '1.1.0',
+        generatedAt: new Date().toISOString(),
+        algorithm: 'MockBrainGen v1.0',
+      },
+      analysisResults: {
+        overallHealth: 0.78,
+        anomalies: ['Slight asymmetry detected'],
+        recommendations: ['Monitor region-mock-2 activity'],
+      },
+    });
   }
 
   /**
