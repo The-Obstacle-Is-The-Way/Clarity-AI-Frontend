@@ -12,8 +12,8 @@ import { renderWithProviders } from '../../test/test-utils.unified';
 import { RiskLevel, type RiskAssessment } from '@domain/types/clinical/risk';
 
 // Mock dependencies
-vi.mock('@presentation/atoms/Button', () => ({
-  default: (props: any) => <button {...props} />
+vi.mock('@presentation/atoms/button', () => ({
+  Button: (props: any) => <button {...props} />
 }));
 vi.mock('@api/XGBoostService', () => ({
   xgboostService: {
