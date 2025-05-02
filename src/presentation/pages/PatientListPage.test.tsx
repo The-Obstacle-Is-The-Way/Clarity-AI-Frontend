@@ -172,7 +172,7 @@ describe('PatientListPage', () => {
     // Verify the search param was updated
     await waitFor(() => {
       expect(mockUsePatients).toHaveBeenCalledWith(
-        expect.objectContaining({ searchTerm: 'Smith' })
+        expect.objectContaining({ search: 'Smith' })
       );
     });
   });
