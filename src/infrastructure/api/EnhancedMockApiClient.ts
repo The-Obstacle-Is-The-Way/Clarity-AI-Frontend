@@ -300,14 +300,6 @@ export class EnhancedMockApiClient implements IApiClient {
       resolution: { x: 128, y: 128, z: 64 },
       metadata: { acquisitionTime: '10min' },
       dataQualityScore: 0.92,
-      artifacts: [],
-      notes: 'Mock scan data',
-      technician: 'Mock Tech',
-      machine: {
-        id: 'mock-scanner-02',
-        type: 'Mock Scanner',
-        calibrationDate: new Date().toISOString(),
-      },
     };
 
     const mockRegion1: BrainRegion = {
@@ -355,6 +347,10 @@ export class EnhancedMockApiClient implements IApiClient {
       scan: mockScan, // Embed the fully typed mock scan
       regions: [mockRegion1, mockRegion2], // Embed fully typed mock regions
       connections: [mockConnection1], // Embed fully typed mock connections
+      version: '1.1.0',
+      timestamp: new Date().toISOString(),
+      processingLevel: 'raw',
+      lastUpdated: new Date().toISOString(),
       algorithmVersion: 'MockBrainGen v1.0',
     };
 
