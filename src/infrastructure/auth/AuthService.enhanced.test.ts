@@ -145,27 +145,46 @@ describe('EnhancedAuthService', () => {
 
   describe('initializeAuth with token auto-refresh', () => {
     it('should attempt to refresh token when it has expired', async () => {
-      // Setup with expired token
-      vi.setSystemTime(new Date(expiredTokens.expiresAt + 10000)); // Set time AFTER expiry
-      window.localStorage.setItem('auth_tokens', JSON.stringify(expiredTokens));
-      mockRefreshToken.mockResolvedValueOnce(mockTokens); // Configure specific mock response
-      mockGetCurrentUser.mockResolvedValueOnce(mockUser); // Configure specific mock response
+      // --- Setup ---
+      // Set time AFTER expiry
+      const expiryTime = expiredTokens.expiresAt;
+      vi.setSystemTime(new Date(expiryTime + 10000));
 
-      // Execute
+      // Store expired token
+      window.localStorage.setItem('auth_tokens', JSON.stringify(expiredTokens));
+
+      // Mock API responses *before* service call
+      const expectedNewTokens = { ...mockTokens, accessToken: 'refreshed-token-1' };
+      mockRefreshToken.mockResolvedValueOnce(expectedNewTokens);
+      mockGetCurrentUser.mockResolvedValueOnce(mockUser);
+
+      // --- Execute ---
       const resultPromise = authService.initializeAuth();
 
-      // We need to advance timers AND await the promise
-      await vi.runAllTimersAsync();
+      // --- Verification ---
+      // Aggressively run timers and wait for promises
+      await act(async () => {
+        await vi.runAllTimersAsync();
+      });
       const result = await resultPromise;
 
-      // Verify refresh was attempted
+      // Ensure refreshToken was called correctly
+      expect(mockRefreshToken).toHaveBeenCalledTimes(1);
       expect(mockRefreshToken).toHaveBeenCalledWith(expiredTokens.refreshToken);
+
+      // Ensure new tokens were stored
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         'auth_tokens',
-        JSON.stringify(mockTokens)
+        JSON.stringify(expectedNewTokens)
       );
+
+      // Ensure user was fetched after successful refresh
+      expect(mockGetCurrentUser).toHaveBeenCalledTimes(1);
+
+      // Ensure final state is correct
       expect(result.isAuthenticated).toBe(true);
       expect(result.user).toEqual(mockUser);
+      expect(result.tokens).toEqual(expectedNewTokens);
     });
 
     it('should set up refresh timeout for tokens that will expire soon', async () => {
@@ -196,23 +215,40 @@ describe('EnhancedAuthService', () => {
     });
 
     it('should handle token refresh failure during initialization', async () => {
-      // Setup
-      vi.setSystemTime(new Date(expiredTokens.expiresAt + 10000)); // Set time AFTER expiry
-      window.localStorage.setItem('auth_tokens', JSON.stringify(expiredTokens));
-      mockRefreshToken.mockRejectedValueOnce(new Error('Refresh token expired')); // Configure specific mock response
+      // --- Setup ---
+      // Set time AFTER expiry
+      const expiryTime = expiredTokens.expiresAt;
+      vi.setSystemTime(new Date(expiryTime + 10000));
 
-      // Execute
+      // Store expired token
+      window.localStorage.setItem('auth_tokens', JSON.stringify(expiredTokens));
+
+      // Mock refresh to fail
+      const refreshError = new Error('Refresh token expired');
+      mockRefreshToken.mockRejectedValueOnce(refreshError);
+
+      // --- Execute ---
       const resultPromise = authService.initializeAuth();
 
-      // We need to advance timers AND await the promise
-      await vi.runAllTimersAsync();
+      // --- Verification ---
+      // Run timers and await promise
+      await act(async () => {
+          await vi.runAllTimersAsync();
+      });
       const result = await resultPromise;
 
-      // Verify
+      // Ensure refreshToken was called
+      expect(mockRefreshToken).toHaveBeenCalledTimes(1);
       expect(mockRefreshToken).toHaveBeenCalledWith(expiredTokens.refreshToken);
+
+      // Ensure tokens were cleared
+      expect(window.localStorage.removeItem).toHaveBeenCalledWith('auth_tokens');
+
+      // Ensure final state is correct (not authenticated, error set)
       expect(result.isAuthenticated).toBe(false);
       expect(result.error).toBe('Session expired');
-      expect(window.localStorage.removeItem).toHaveBeenCalledWith('auth_tokens');
+      expect(result.user).toBeNull();
+      expect(result.tokens).toBeNull();
     });
 
     it('should attempt token refresh on 401 error from getCurrentUser', async () => {

@@ -9,15 +9,38 @@ import '@testing-library/jest-dom';
 import { renderWithProviders } from '../../test/test-utils.unified';
 import { setupWebGLMocks, cleanupWebGLMocks } from '../../test/webgl/setup-test';
 import { TimelineEvent } from './TimelineEvent';
-// Removed unused import: import { renderWithProviders } from '../../test/test-utils.unified';
-// Import the necessary event types
 import type {
   SymptomEvent,
   TreatmentEvent,
   DiagnosisEvent,
   AssessmentEvent,
 } from '@domain/types/clinical/events';
-// Removed unused import: import { ClinicalEvent } from '@domain/types/clinical/events';
+
+// Mock dependencies
+vi.mock('@presentation/atoms/Badge', () => ({
+    Badge: ({ children, ...props }: any) => <span {...props}>{children}</span>
+}));
+vi.mock('@presentation/atoms/Tooltip', () => ({
+  Tooltip: ({ children }: any) => <div>{children}</div>,
+  TooltipContent: ({ children }: any) => <div>{children}</div>,
+  TooltipProvider: ({ children }: any) => <div>{children}</div>,
+  TooltipTrigger: ({ children }: any) => <div>{children}</div>,
+}));
+vi.mock('@presentation/atoms/Button', () => ({
+  default: (props: any) => <button {...props} />
+}));
+vi.mock('framer-motion', async (importOriginal) => {
+    const actual = await importOriginal() as any;
+    return {
+        ...actual, // Keep actual exports
+        motion: { // Mock the motion factory
+          div: ({ children, ...props }: any) => <div {...props}>{children}</div>, // Mock motion.div
+          // Add other motion elements if needed (e.g., span, button)
+        },
+        AnimatePresence: ({ children }: any) => <>{children}</>, // Mock AnimatePresence
+    };
+});
+
 
 // Setup WebGL mocks with memory monitoring - Moved outside describe block
 beforeEach(() => {

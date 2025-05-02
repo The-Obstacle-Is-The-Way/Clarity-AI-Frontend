@@ -22,16 +22,21 @@ const PatientListPage: React.FC = () => {
   React.useEffect(() => {
     const handler = setTimeout(() => {
         // Only trigger refetch if search term actually changed
-        if(searchTerm !== debouncedSearchTerm) {
-            setDebouncedSearchTerm(searchTerm);
-            setCurrentPage(1); // Reset to first page on new search
-        }
+        // Check against the current debounced value before setting
+        setDebouncedSearchTerm((currentDebouncedTerm) => {
+            if (searchTerm !== currentDebouncedTerm) {
+                setCurrentPage(1); // Reset to first page on new search
+                return searchTerm; // Update debounced term
+            }
+            return currentDebouncedTerm; // No change
+        });
     }, 500); // 500ms debounce
 
     return () => {
       clearTimeout(handler);
     };
-  }, [searchTerm, debouncedSearchTerm]);
+    // Only depend on searchTerm to trigger the effect
+  }, [searchTerm]);
 
   const { data, error, isLoading, isFetching, isPreviousData } = usePatients({
     page: currentPage,
