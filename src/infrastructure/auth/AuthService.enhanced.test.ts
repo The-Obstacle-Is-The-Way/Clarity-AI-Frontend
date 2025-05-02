@@ -229,10 +229,10 @@ describe('EnhancedAuthService', () => {
       const resultPromise = authService.initializeAuth();
 
       // --- Verification ---
-      // Run timers and await promise
-      // await act(async () => { // Reverted act wrapper
-      await vi.runAllTimersAsync();
-      // });
+      // Wait for the refresh side-effect (token removal) before awaiting the result
+      await waitFor(() => {
+        expect(window.localStorage.removeItem).toHaveBeenCalledWith('auth_tokens');
+      });
       const result = await resultPromise;
 
       // Ensure refreshToken was called
