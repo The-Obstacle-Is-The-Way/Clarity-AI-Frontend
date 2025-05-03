@@ -4,426 +4,295 @@
  * Provides robust authentication state and methods to the application with
  * enhanced HIPAA compliance, 2FA, and client-side encryption.
  */
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ApiClient } from '@infrastructure/api/ApiClient';
-import { authClient } from '@infrastructure/clients/authClient';
-import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient';
-import { encryptionService } from '@infrastructure/services/encryptionService';
-import { SessionTimeoutModal } from './SessionTimeoutModal';
+import { useIdleTimer } from 'react-idle-timer';
+import { toast } from 'sonner';
+
+import {
+  AppAuthContext as AuthContext,
+  type AppAuthContextType,
+} from '@/application/context/AuthContext.tsx';
+import { useAuthService } from '@application/hooks/useAuthService';
 import type { User, Permission } from '@domain/types/auth/auth';
-// Comment out unresolved imports
-// import { authService } from '@application/services/authService'; 
-// import type { AuthContextType, AuthProviderProps } from './authTypes'; 
-// Correct context import and type import
-import { AppAuthContext as AuthContext, type AppAuthContextType } from '@/application/context/AuthContext.tsx'; 
-// Correct hook import path
-// import { useAuth } from '@/application/hooks/useAuth'; 
-
-// Constants for session management
-const SESSION_WARNING_TIME = 5 * 60 * 1000; // 5 minutes warning before expiration
-const SESSION_CHECK_INTERVAL = 30 * 1000; // Check every 30 seconds
-const ENCRYPTION_ENABLED = true; // Toggle for client-side encryption
-
-// Security tracking for suspicious activities
-interface SecurityMetrics {
-  failedLoginAttempts: number;
-  lastFailedAttempt: number | null;
-  lockoutUntil: number | null;
-  suspiciousActivities: Array<{
-    timestamp: number;
-    activity: string;
-    details: string;
-  }>;
-}
+import { AuditEventType } from '@domain/types/audit/AuditEventType';
+import SessionTimeoutModal from './SessionTimeoutModal';
+import { useAuditLog } from '@application/hooks/useAuditLog';
 
 interface EnhancedAuthProviderProps {
   children: React.ReactNode;
+  sessionTimeoutMinutes?: number;
+  sessionWarningMinutes?: number;
 }
 
+// Default values
+const DEFAULT_SESSION_TIMEOUT_MINUTES = 30;
+const DEFAULT_SESSION_WARNING_MINUTES = 5;
+
 /**
- * Enhanced Authentication Provider
+ * Provides authentication context with enhanced features like session management,
+ * idle timeout, and audit logging.
  */
-export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ children }) => {
+export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
+  children,
+  sessionTimeoutMinutes = DEFAULT_SESSION_TIMEOUT_MINUTES,
+  sessionWarningMinutes = DEFAULT_SESSION_WARNING_MINUTES,
+}) => {
   const navigate = useNavigate();
+  const {
+    login: serviceLogin,
+    logout: serviceLogout,
+    checkAuthStatus,
+    verifyMFA: serviceVerifyMFA,
+    renewSession: serviceRenewSession,
+  } = useAuthService();
 
-  // Authentication state
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { log: logAudit } = useAuditLog();
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [requiresMFA, setRequiresMFA] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isSessionTimeoutModalOpen, setIsSessionTimeoutModalOpen] =
+    useState<boolean>(false);
+  const [sessionExpiresAt, setSessionExpiresAt] = useState<number | null>(null);
 
-  // Session management
-  const [sessionExpiresAt, setSessionExpiresAt] = useState<number>(0);
-  const [showSessionWarning, setShowSessionWarning] = useState<boolean>(false);
+  const timeout = sessionTimeoutMinutes * 60 * 1000;
+  const promptTimeout = sessionWarningMinutes * 60 * 1000;
 
-  // Security metrics
-  const [securityMetrics, setSecurityMetrics] = useState<SecurityMetrics>({
-    failedLoginAttempts: 0,
-    lastFailedAttempt: null,
-    lockoutUntil: null,
-    suspiciousActivities: [],
-  });
+  // --- Session Management & Initialization ---
 
-  /**
-   * Track suspicious activity
-   */
-  const trackSuspiciousActivity = useCallback((activity: string, details: string) => {
-    setSecurityMetrics((prev) => ({
-      ...prev,
-      suspiciousActivities: [
-        ...prev.suspiciousActivities,
-        { timestamp: Date.now(), activity, details },
-      ],
-    }));
-
-    // Log to audit system
-    auditLogClient.log(AuditEventType.SUSPICIOUS_ACTIVITY, {
-      action: 'suspicious_activity_detected',
-      details: `${activity}: ${details}`,
-      result: 'failure',
-    });
-  }, []);
-
-  /**
-   * Check session expiration time
-   */
-  const checkSessionExpiration = useCallback((): number => {
-    if (!sessionExpiresAt) return Infinity;
-    return sessionExpiresAt - Date.now();
-  }, [sessionExpiresAt]);
-
-  /**
-   * Logout handler with audit logging
-   */
-  const logout = useCallback(async () => {
-    const userId = user?.id;
-    try {
-      await authClient.logout();
-      setUser(null);
-      setIsAuthenticated(false);
-      setSessionExpiresAt(0);
-
-      // Log successful logout
-      auditLogClient.log(AuditEventType.USER_LOGOUT, {
-        action: 'user_logout',
-        userId: userId,
-        details: 'User logged out successfully',
-        result: 'success',
-      });
-    } catch (err) {
-      // Log logout error
-      auditLogClient.log(AuditEventType.USER_LOGOUT, {
-        action: 'user_logout',
-        userId: userId,
-        details: `Logout failed: ${err instanceof Error ? err.message : 'Unknown error'}`,
-        result: 'failure',
-      });
-      console.error('Logout failed:', err);
-      setError('Failed to logout.');
-    }
-  }, [user]);
-
-  // Placeholder function to extend session
-  const extendSession = useCallback(async () => {
-    console.log("Extending session...");
-    try {
-      // Call renewSession which returns SessionVerification
-      const result = authClient.renewSession(); 
-      
-      // Check if renewal was considered valid by the client
-      if (result.valid && result.remainingTime) {
-        // Update local expiration time based on the renewed session\'s remaining time
-        setSessionExpiresAt(Date.now() + result.remainingTime);
-        setShowSessionWarning(false);
-        auditLogClient.log(AuditEventType.USER_SESSION_RENEWED, {
-          action: 'session_renew',
-          details: 'User session extended successfully',
-          result: 'success',
-        });
-      } else {
-        // Throw error if renewal was not valid
-        throw new Error('Session renewal failed or returned invalid result.');
-      }
-    } catch (err) {
-       auditLogClient.log(AuditEventType.USER_SESSION_RENEWED, {
-          action: 'session_renew',
-          details: `Session extension failed: ${err instanceof Error ? err.message : 'Unknown error'}`,
-          result: 'failure',
-        });
-      console.error("Failed to extend session:", err);
-      // Optionally logout user if extension fails critically
-      // logout(); 
-    }
-  }, [user]); // Keep user dependency for audit log, or remove if not needed
-
-  /**
-   * Initialize authentication state from storage with encryption
-   */
   const initializeAuth = useCallback(async () => {
+    setIsLoading(true);
     try {
-      if (authClient.isAuthenticated()) {
-        let currentUser = authClient.getCurrentUser();
-
-        // Decrypt sensitive user data if encryption is enabled
-        if (ENCRYPTION_ENABLED && currentUser) {
-          currentUser = {
-            ...currentUser,
-            // Decrypt any encrypted fields
-            profile: currentUser.profile
-              ? encryptionService.decryptObject(currentUser.profile)
-              : currentUser.profile,
-          };
-        }
-
-        const sessionVerification = authClient.verifySession();
-
-        if (currentUser && sessionVerification.valid && sessionVerification.remainingTime) {
-          setUser(currentUser);
-          setIsAuthenticated(true);
-          setSessionExpiresAt(Date.now() + sessionVerification.remainingTime);
-
-          // Log session restoration
-          auditLogClient.log(AuditEventType.USER_SESSION_VERIFY, {
-            action: 'session_restore',
-            details: 'User session restored with enhanced security',
-            result: 'success',
-          });
-        }
+      const authStatus = await checkAuthStatus();
+      setIsAuthenticated(authStatus.isAuthenticated);
+      setUser(authStatus.user);
+      setSessionExpiresAt(authStatus.sessionExpiresAt ?? null);
+      if (authStatus.isAuthenticated && authStatus.user) {
+        logAudit(AuditEventType.USER_SESSION_VALIDATED, {
+          userId: authStatus.user.id,
+        });
       }
     } catch (err) {
-      console.error('Failed to initialize auth state:', err);
-      setError('Authentication session could not be restored.');
-
-      // Track as suspicious if error is unexpected
-      if (err instanceof Error && !err.message.includes('expired')) {
-        trackSuspiciousActivity(
-          'session_restore_failed',
-          `Unexpected error during session restoration: ${err.message}`
-        );
-      }
+      setError('Failed to check authentication status.');
+      setIsAuthenticated(false);
+      setUser(null);
+      setSessionExpiresAt(null);
+      logAudit(AuditEventType.USER_SESSION_VALIDATION_FAILED, {
+        error: err instanceof Error ? err.message : String(err),
+      });
     } finally {
       setIsLoading(false);
     }
-  }, [trackSuspiciousActivity]);
+  }, [checkAuthStatus, logAudit]);
 
-  /**
-   * Login handler with enhanced security
-   */
-  const login = useCallback(
-    async (email: string, password: string, rememberMe: boolean = false): Promise<boolean> => {
-      setIsLoading(true);
-      setError(null);
-
-      // Check for account lockout
-      if (securityMetrics.lockoutUntil && securityMetrics.lockoutUntil > Date.now()) {
-        const remainingLockoutTime = Math.ceil(
-          (securityMetrics.lockoutUntil - Date.now()) / 1000 / 60
-        );
-        setError(
-          `Account temporarily locked. Please try again in ${remainingLockoutTime} minutes.`
-        );
-        setIsLoading(false);
-        return false;
-      }
-
-      try {
-        // Attempt login through auth client
-        const result = await authClient.login({
-          email,
-          password,
-          rememberMe,
-        });
-
-        // Handle successful initial authentication
-        if (result.success && result.user && result.token) {
-          // Check if 2FA is required
-          if (result.requiresMFA) {
-            setRequiresMFA(true);
-            setIsLoading(false);
-
-            // Navigate to MFA verification page
-            navigate('/mfa-verify', { state: { email } });
-            return false;
-          }
-
-          // Encrypt sensitive data if enabled
-          let processedUser = result.user;
-          if (ENCRYPTION_ENABLED && processedUser.profile) {
-            processedUser = {
-              ...processedUser,
-              profile: encryptionService.encryptObject(processedUser.profile),
-            };
-          }
-
-          setUser(processedUser);
-          setIsAuthenticated(true);
-          setSessionExpiresAt(result.token.expiresAt);
-
-          // Reset security metrics on successful login
-          setSecurityMetrics({
-            failedLoginAttempts: 0,
-            lastFailedAttempt: null,
-            lockoutUntil: null,
-            suspiciousActivities: securityMetrics.suspiciousActivities,
-          });
-
-          setIsLoading(false);
-          return true;
-        } else {
-          // Handle failed login
-          setError(result.error || 'Authentication failed.');
-
-          // Track failed login attempts
-          const now = Date.now();
-          const newAttempts = securityMetrics.failedLoginAttempts + 1;
-
-          // Implement progressive lockout after multiple failed attempts
-          let lockoutUntil = null;
-          if (newAttempts >= 5) {
-            // Lock for 15 minutes after 5 failed attempts
-            lockoutUntil = now + 15 * 60 * 1000;
-
-            // Log suspicious activity
-            trackSuspiciousActivity(
-              'multiple_failed_logins',
-              `Account locked after ${newAttempts} failed login attempts`
-            );
-          }
-
-          setSecurityMetrics({
-            ...securityMetrics,
-            failedLoginAttempts: newAttempts,
-            lastFailedAttempt: now,
-            lockoutUntil,
-          });
-
-          setIsLoading(false);
-          return false;
-        }
-      } catch (err) {
-        // Log unexpected errors
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-        setError(`Authentication error: ${errorMessage}`);
-        trackSuspiciousActivity('login_error', errorMessage);
-        setIsLoading(false);
-        return false;
-      }
-    },
-    [navigate, securityMetrics, trackSuspiciousActivity]
-  );
-
-  /**
-   * Check permission with enhanced role-based access
-   */
-  const hasPermission = useCallback(
-    (permission: Permission): boolean => {
-      if (!user) return false;
-
-      // Check if user has the specific permission
-      if (user.permissions.includes(permission)) {
-        // Log access attempt for sensitive operations
-        if (
-          permission.includes('MODIFY') ||
-          permission.includes('DELETE') ||
-          permission.includes('PHI')
-        ) {
-          auditLogClient.log(AuditEventType.PERMISSION_CHANGE, {
-            action: `permission_check: ${permission}`,
-            details: `Permission ${permission} granted for user ${user.id}`,
-            result: 'success',
-          });
-        }
-        return true;
-      }
-
-      // Log denied permissions for audit
-      auditLogClient.log(AuditEventType.PERMISSION_CHANGE, {
-        action: `permission_check: ${permission}`,
-        details: `Permission ${permission} denied for user ${user.id}`,
-        result: 'failure',
-      });
-
-      return false;
-    },
-    [user]
-  );
-
-  /**
-   * Initialize auth state on mount
-   */
   useEffect(() => {
     initializeAuth();
   }, [initializeAuth]);
 
-  /**
-   * Session monitoring
-   * Checks session status periodically and sets warning when close to expiration
-   */
-  useEffect(() => {
-    if (!isAuthenticated) return;
+  // --- Login/Logout/MFA Logic ---
 
-    const checkSession = () => {
-      const remainingTime = checkSessionExpiration();
+  const login = useCallback(
+    async (
+      email: string,
+      password: string,
+      rememberMe: boolean | undefined = false
+    ): Promise<boolean> => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const result = await serviceLogin(email, password, rememberMe);
+        setIsAuthenticated(result.isAuthenticated);
+        setUser(result.user);
+        setSessionExpiresAt(result.sessionExpiresAt ?? null);
 
-      if (remainingTime <= 0) {
-        // Session expired, log out
-        auditLogClient.log(AuditEventType.USER_TIMEOUT, {
-          action: 'session_expired',
-          details: 'User session expired',
-          result: 'success',
-        });
-        logout();
-      } else if (remainingTime <= SESSION_WARNING_TIME) {
-        // Show warning when less than warning threshold remaining
-        setShowSessionWarning(true);
+        if (result.isAuthenticated && result.user) {
+          logAudit(AuditEventType.USER_LOGIN_SUCCESS, {
+            userId: result.user.id,
+            email,
+          });
+          toast.success('Login successful!');
+          return true;
+        } else {
+          setError(result.error || 'Login failed. Please check your credentials.');
+          logAudit(AuditEventType.USER_LOGIN_FAILURE, { email, error: result.error });
+          toast.error(result.error || 'Login failed.');
+          return false;
+        }
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        setError(`Login failed: ${errorMessage}`);
+        setIsAuthenticated(false);
+        setUser(null);
+        setSessionExpiresAt(null);
+        logAudit(AuditEventType.USER_LOGIN_FAILURE, { email, error: errorMessage });
+        toast.error(`Login failed: ${errorMessage}`);
+        return false;
+      } finally {
+        setIsLoading(false);
       }
-    };
+    },
+    [serviceLogin, logAudit, navigate]
+  );
 
-    // Initial check
-    checkSession();
-
-    // Set up periodic checks
-    const interval = setInterval(checkSession, SESSION_CHECK_INTERVAL);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [isAuthenticated, checkSessionExpiration, logout]);
-
-  /**
-   * Renew current session
-   */
-  const renewSession = useCallback((): void => {
-    if (!isAuthenticated) return;
-
+  const logout = useCallback(async () => {
+    const userId = user?.id;
+    setIsLoading(true);
+    setError(null);
     try {
-      // Use auth client to renew session
-      const verification = authClient.renewSession();
+      await serviceLogout();
+      setIsAuthenticated(false);
+      setUser(null);
+      setSessionExpiresAt(null);
+      logAudit(AuditEventType.USER_LOGOUT, { userId: userId ?? 'unknown' });
+      toast.info('You have been logged out.');
+      navigate('/login');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(`Logout failed: ${errorMessage}`);
+      logAudit(AuditEventType.USER_LOGOUT_FAILED, {
+        userId: userId ?? 'unknown',
+        error: errorMessage,
+      });
+      toast.error(`Logout failed: ${errorMessage}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [serviceLogout, logAudit, navigate, user?.id]);
 
-      if (verification.valid && verification.remainingTime) {
-        setSessionExpiresAt(Date.now() + verification.remainingTime);
-        setShowSessionWarning(false);
-
-        // Log session renewal
-        auditLogClient.log(AuditEventType.USER_SESSION_RENEWED, {
-          action: 'session_renewed',
-          details: 'User session renewed',
-          result: 'success',
+  const verifyMFA = useCallback(
+    async (code: string): Promise<boolean> => {
+      if (!user) {
+        setError('Cannot verify MFA without a user session.');
+        return false;
+      }
+      setIsLoading(true);
+      setError(null);
+      try {
+        const result = await serviceVerifyMFA(user.id, code);
+        if (result.success) {
+          setIsAuthenticated(true);
+          setUser(result.user ?? user);
+          setSessionExpiresAt(result.sessionExpiresAt ?? sessionExpiresAt);
+          logAudit(AuditEventType.USER_MFA_VERIFY_SUCCESS, { userId: user.id });
+          toast.success('MFA verification successful!');
+          navigate('/');
+          return true;
+        } else {
+          setError(result.error || 'MFA verification failed.');
+          logAudit(AuditEventType.USER_MFA_VERIFY_FAILURE, {
+            userId: user.id,
+            error: result.error,
+          });
+          toast.error(result.error || 'MFA verification failed.');
+          return false;
+        }
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        setError(`MFA verification failed: ${errorMessage}`);
+        logAudit(AuditEventType.USER_MFA_VERIFY_FAILURE, {
+          userId: user.id,
+          error: errorMessage,
         });
+        toast.error(`MFA verification failed: ${errorMessage}`);
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [user, serviceVerifyMFA, logAudit, navigate, sessionExpiresAt]
+  );
+
+  // --- Session Renewal & Expiration Check ---
+
+  const renewSession = useCallback(async () => {
+    if (!user) return;
+    try {
+      const result = await serviceRenewSession(user.id);
+      if (result.success && result.sessionExpiresAt) {
+        setSessionExpiresAt(result.sessionExpiresAt);
+        logAudit(AuditEventType.USER_SESSION_RENEWED, { userId: user.id });
+        toast.info('Session extended.');
+      } else {
+        logAudit(AuditEventType.USER_SESSION_RENEWAL_FAILED, {
+          userId: user.id,
+          error: result.error,
+        });
+        toast.warning(result.error || 'Could not extend session.');
       }
     } catch (err) {
-      console.error('Session renewal error:', err);
-      trackSuspiciousActivity(
-        'session_renewal_error',
-        `Error renewing session: ${err instanceof Error ? err.message : 'Unknown error'}`
-      );
+      logAudit(AuditEventType.USER_SESSION_RENEWAL_FAILED, {
+        userId: user.id,
+        error: err instanceof Error ? err.message : String(err),
+      });
+      toast.error('Failed to extend session.');
     }
-  }, [isAuthenticated, trackSuspiciousActivity]);
+  }, [user, serviceRenewSession, logAudit, toast]);
+
+  const checkSessionExpiration = useCallback(() => {
+    if (!sessionExpiresAt) return Infinity;
+    const now = Date.now();
+    const remainingTime = sessionExpiresAt - now;
+    if (remainingTime <= 0) {
+      if (isAuthenticated) {
+        logAudit(AuditEventType.USER_SESSION_EXPIRED, { userId: user?.id });
+        toast.warning('Your session has expired. Please log in again.');
+        logout();
+      }
+      return 0;
+    }
+    return remainingTime;
+  }, [sessionExpiresAt, isAuthenticated, user?.id, logAudit, logout, toast]);
+
+  // --- Idle Timer Logic ---
+
+  const { reset } = useIdleTimer({
+    onIdle: () => {
+      if (isAuthenticated) {
+        logAudit(AuditEventType.USER_SESSION_TIMEOUT_IDLE, { userId: user?.id });
+        toast.warning('You have been logged out due to inactivity.');
+        logout();
+      }
+    },
+    onActive: () => {
+      // console.log('User is active');
+    },
+    onPrompt: () => {
+      if (isAuthenticated) {
+        logAudit(AuditEventType.USER_SESSION_TIMEOUT_WARNING, { userId: user?.id });
+        setIsSessionTimeoutModalOpen(true);
+      }
+    },
+    timeout,
+    promptTimeout,
+    throttle: 500,
+    crossTab: true,
+    syncTimers: 200,
+  });
+
+  const extendSession = useCallback(() => {
+    console.log('Extending session...');
+    reset();
+    renewSession();
+    setIsSessionTimeoutModalOpen(false);
+    logAudit(AuditEventType.USER_SESSION_EXTENDED_MANUALLY, { userId: user?.id });
+    toast.info('Session extended.');
+  }, [renewSession, logAudit, user?.id, toast, reset]);
+
+  // --- Permissions ---
+
+  const hasPermission = useCallback(
+    (permission: Permission): boolean => {
+      return user?.permissions?.includes(permission) ?? false;
+    },
+    [user?.permissions]
+  );
+
+  // --- Context Value ---
 
   /**
-   * Context value
+   * Memoized context value to prevent unnecessary re-renders.
    */
   const contextValue = useMemo<AppAuthContextType>(
     () => ({
@@ -431,15 +300,15 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
       isLoading,
       error,
       user,
-      login: async (email, password, rememberMe) => {
-        await login(email, password, rememberMe);
-      },
+      login,
       logout,
+      verifyMFA,
       checkSessionExpiration,
       renewSession,
-      hasPermission,
       extendSession,
+      hasPermission,
       getSessionExpiration: checkSessionExpiration,
+      clearError: () => setError(null),
     }),
     [
       isAuthenticated,
@@ -448,29 +317,25 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
       user,
       login,
       logout,
+      verifyMFA,
       checkSessionExpiration,
       renewSession,
-      hasPermission,
       extendSession,
+      hasPermission,
     ]
   );
-
-  // Calculate props for SessionTimeoutModal
-  const sessionTimeoutInMinutes = 60; // Example: Assume 60 min session
-  const warningThresholdInMinutes = SESSION_WARNING_TIME / (60 * 1000);
 
   return (
     <AuthContext.Provider value={contextValue}>
       {children}
-      {showSessionWarning && (
-        <SessionTimeoutModal 
-          warningThreshold={SESSION_WARNING_TIME} 
-          timeoutInMinutes={sessionTimeoutInMinutes} 
-          warningThresholdInMinutes={warningThresholdInMinutes} 
-          onLogout={logout} 
-          onExtendSession={extendSession}
-        />
-      )}
+      <SessionTimeoutModal
+        isOpen={isSessionTimeoutModalOpen}
+        onClose={() => setIsSessionTimeoutModalOpen(false)}
+        onExtend={extendSession}
+        remainingTime={promptTimeout / 1000}
+        warningThreshold={DEFAULT_SESSION_WARNING_MINUTES * 60}
+        onExtendSession={extendSession}
+      />
     </AuthContext.Provider>
   );
 };
