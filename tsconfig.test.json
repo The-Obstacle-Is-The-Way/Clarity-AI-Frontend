@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true
+  },
+  "include": [
+    "vitest.config.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/setupTests.ts",
+    "src/test/**/*.ts",
+    "src/test/**/*.tsx",
+    "src/mocks/**/*.ts",
+    "src/mocks/**/*.tsx",
+    "src/**/mocks/**/*.ts",
+    "src/**/mocks/**/*.tsx",
+    "src/infrastructure/testing/**/*.ts",
+    "src/infrastructure/testing/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+} 

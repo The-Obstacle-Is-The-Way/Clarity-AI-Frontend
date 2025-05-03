@@ -79,6 +79,15 @@
     "node_modules",
     "dist",
     "coverage",
-    ".vite"
-  ]
+    ".vite",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "src/test",
+    "src/mocks",
+    "src/**/mocks",
+    "src/setupTests.ts"
+  ],
+  "references": [{ "path": "./tsconfig.node.json" }]
 } 
