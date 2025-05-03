@@ -10,7 +10,7 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { Group, Mesh, Vector3, Color } from 'three';
+import { Mesh, Vector3 } from 'three';
 import { useBrainModel } from '@application/context/BrainModelProvider';
 import type { BrainRegion as DomainBrainRegion } from '@domain/types/brain/models';
 
@@ -190,6 +190,7 @@ const Connection: React.FC<ConnectionProps> = ({ startPosition, endPosition, str
 
 // Main brain visualization component props
 interface BrainModelVisualizationProps {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   modelId: string;
   regionData?: DomainBrainRegion[];
   viewMode?: 'anatomical' | 'functional' | 'connectivity';

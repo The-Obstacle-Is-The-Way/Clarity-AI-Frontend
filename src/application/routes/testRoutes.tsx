@@ -6,7 +6,8 @@
  * with mathematical precision and architectural elegance.
  */
 
-import React from 'react';
+// We don't need React import for route definitions
+// import React from 'react';
 import { Route } from 'react-router-dom';
 import BrainVisualization from '@presentation/organisms/BrainVisualization';
 import NeuralControlPanel from '@presentation/organisms/NeuralControlPanel';

@@ -232,7 +232,7 @@ export const mockApi = {
     return patient;
   },
 
-  async searchPatients(query: string) {
+  async searchPatients(_query: string) {
     await simulateLatency();
 
     // Mock search - in real API would filter by query

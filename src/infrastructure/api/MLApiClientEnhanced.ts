@@ -13,6 +13,7 @@
  * and monitoring capabilities for production usage.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ApiClient } from './ApiClient';
 import type { IMLClient } from './IMLClient';
 import type { IApiClient } from './IApiClient';
@@ -84,7 +85,9 @@ export class MLApiError extends Error {
 export class MLApiClientEnhanced implements IMLClient {
   private readonly baseClient: IMLClient;
   private apiClient: IApiClient;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private cache: Map<string, { data: any; timestamp: number }> = new Map();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private cacheTTL = 5 * 60 * 1000;
   private retryConfig: RetryConfig;
 

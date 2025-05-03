@@ -7,7 +7,7 @@
  * visualization with customizable parameters for clinically meaningful output.
  */
 
-import { Vector3, Color, ShaderMaterial, AdditiveBlending, DoubleSide } from 'three';
+import { Vector3, Color, ShaderMaterial } from 'three';
 import type { IUniform } from 'three';
 import * as THREE from 'three';
 import type { ShaderMaterialParameters, Blending, Side } from 'three';

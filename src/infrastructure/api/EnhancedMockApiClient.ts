@@ -7,9 +7,9 @@
 import axios from 'axios';
 import { IApiClient } from './IApiClient';
 import type { ApiPatient } from './ApiClient.runtime';
-import { mockApi, getMockDb } from './mockApi';
+// import { mockApi, getMockDb } from './mockApi';
 import { type User, UserRole, Permission } from '@domain/types/auth/auth';
-import { type ApiError, type ApiResponse } from './types'; // Import ApiError as type only
+// import { type ApiError, type ApiResponse } from './types'; // Import ApiError as type only
 import type { BrainModel, ScannerMachine, Vector3D } from '@domain/types';
 import type { BrainRegion, BrainScan, NeuralConnection } from '@domain/types/brain/models';
 
@@ -330,7 +330,8 @@ export class EnhancedMockApiClient implements IApiClient {
     // Define helper for Vector3D
     const vec = (x: number, y: number, z: number): Vector3D => ({ x, y, z });
 
-    const mockMachine: ScannerMachine = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const mockMachine: ScannerMachine = {
       id: 'scanner-001',
       type: 'Siemens Prisma',
       calibrationDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString(),

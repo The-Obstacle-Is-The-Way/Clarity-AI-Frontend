@@ -1,8 +1,9 @@
 /* eslint-disable */
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MLApiClient } from '@infrastructure/api/MLApiClient';
 import { ApiClient } from '@/infrastructure/api/ApiClient';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { BrainModelMetadata } from '@domain/models/brain/BrainModel'; // Import BrainModelMetadata
 
 /**
@@ -84,7 +85,7 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
   // Digital twin methods
   const generateDigitalTwin = useCallback(
     (
-      patientId: string,
+      _patientId: string,
       patientData: Record<string, unknown>,
       options?: Record<string, unknown>
     ) => {
@@ -96,14 +97,14 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
   const createDigitalTwinSession = useCallback(
     (
       therapistId: string,
-      patientId: string,
+      _patientId: string,
       sessionType?: string,
       sessionParams?: Record<string, unknown>
     ) => {
       return withLoadingState(() =>
         apiClientInstance.createDigitalTwinSession(
           therapistId,
-          patientId,
+          _patientId,
           sessionType,
           sessionParams
         )

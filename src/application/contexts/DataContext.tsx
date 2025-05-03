@@ -10,8 +10,6 @@ import React, {
   createContext,
   useContext,
   useState,
-  useCallback,
-  useMemo,
   useEffect,
   type ReactNode,
 } from 'react';
@@ -203,7 +201,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, mockData =
   const [modelsError, setModelsError] = useState<Error | null>(null);
 
   // Load patient data with neural precision
-  const refreshPatientData = async (patientId: string) => {
+  const refreshPatientData = async (_patientId: string) => {
     setIsLoadingPatient(true);
     setPatientError(null);
 
@@ -228,7 +226,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children, mockData =
   };
 
   // Load brain models with neural precision
-  const refreshBrainModels = async (patientId: string) => {
+  const refreshBrainModels = async (_patientId: string) => {
     setIsLoadingModels(true);
     setModelsError(null);
 

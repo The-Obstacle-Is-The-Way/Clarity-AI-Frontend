@@ -14,6 +14,7 @@ import { auditLogClient, AuditEventType } from '../../infrastructure/clients/aud
 interface SessionTimeoutModalProps {
   timeoutInMinutes: number;
   warningThresholdInMinutes: number;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   warningThreshold: number;
   onLogout: () => void;
   onExtendSession?: () => void;

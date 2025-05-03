@@ -17,6 +17,7 @@ import { SafeArray } from '../../domain/types/shared/common'; // Use relative pa
 // @ts-ignore: TS2305 - Module '"@react-three/drei"' has no exported member 'Html'. (Likely type/config issue)
 import { Html } from '@react-three/drei'; // Added missing import
 // Do not import Three.js geometries - use them directly in R3F JSX
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Group } from 'three';
 
 // Neural-safe prop definition with explicit typing

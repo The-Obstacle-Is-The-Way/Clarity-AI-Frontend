@@ -18,7 +18,7 @@ enum AuditEventType {
 
 // Mock audit log client for tests
 const auditLogClient = {
-  log: (eventType: AuditEventType, data: any) => {
+  log: (_eventType: AuditEventType, _data: any) => {
     // Mock implementation that does nothing in tests
     return;
   },
