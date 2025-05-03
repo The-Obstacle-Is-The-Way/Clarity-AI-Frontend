@@ -97,7 +97,8 @@ interface AuthContextType extends Omit<AuthState, 'token'> {
   clearError: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// Export AuthContext so it can be used for testing providers
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Auth provider props
 interface AuthProviderProps {

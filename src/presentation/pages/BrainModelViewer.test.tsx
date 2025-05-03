@@ -63,10 +63,14 @@ vi.mock('@application/hooks/useBrainVisualization', () => ({
 
 // Mock presentation components used by BrainModelViewer
 vi.mock('@presentation/atoms/Button', () => ({
-  default: (props: React.ComponentProps<'button'>) => <button {...props}>{props.children}</button>,
+  Button: (props: React.ComponentProps<'button'>) => (
+    <button {...props}>{props.children}</button>
+  ),
 }));
 vi.mock('@presentation/atoms/Slider', () => ({
-  Slider: (props: React.ComponentProps<'input'>) => <input type="range" {...props} />,
+  Slider: (props: React.ComponentProps<'input'>) => (
+    <input type="range" {...props} />
+  ),
 }));
 vi.mock('@presentation/atoms/Popover', () => ({
   Popover: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
@@ -114,7 +118,7 @@ vi.mock('@presentation/common/VisualizationErrorBoundary', () => ({
   ),
 }));
 vi.mock('@/presentation/atoms/LoadingIndicator', () => ({
-  default: () => <div data-testid="mock-loading-indicator">Loading...</div>,
+  LoadingIndicator: () => <div data-testid="mock-loading-indicator">Loading...</div>,
 }));
 
 // Mock data with clinical precision
