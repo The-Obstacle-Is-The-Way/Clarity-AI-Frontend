@@ -5,11 +5,11 @@
 
 import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Environment, useGLTF, Bounds } from '@react-three/drei';
+import { OrbitControls, Environment, useGLTF } from '@react-three/drei';
 import { Physics, usePlane, useBox } from '@react-three/cannon';
 import { Vector3, Color, MathUtils } from 'three';
 import { motion } from 'framer-motion';
-import { Stats } from 'stats.js';
+import Stats from 'stats.js';
 import {
   Card,
   CardContent,
@@ -235,18 +235,15 @@ const NeuralVisualization = React.memo(
         <directionalLight position={[-10, 10, 5]} intensity={0.8} castShadow />
 
         <VisualizationErrorBoundary fallback={<LoadingFallback />}>
-          <Bounds fit clip observe damping={6} margin={1.2}>
-            <BrainModelContainer
-              brainModel={brainModel}
-              renderMode={renderMode}
-              selectedRegions={selectedRegions}
-              onSelectRegion={onSelectRegion}
-            />
-          </Bounds>
-          <OrbitControls enableDamping dampingFactor={0.05} rotateSpeed={0.5} zoomSpeed={0.8} />
-          <Environment preset="city" />
-          <usePerformanceMonitor />
+          <BrainModelContainer
+            brainModel={brainModel}
+            renderMode={renderMode}
+            selectedRegions={selectedRegions}
+            onSelectRegion={onSelectRegion}
+          />
         </VisualizationErrorBoundary>
+        <OrbitControls enableDamping dampingFactor={0.05} rotateSpeed={0.5} zoomSpeed={0.8} />
+        <Environment preset="city" />
       </Canvas>
     );
   }

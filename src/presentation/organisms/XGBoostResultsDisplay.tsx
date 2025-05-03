@@ -25,16 +25,14 @@ const XGBoostResultsDisplay: React.FC<XGBoostResultsDisplayProps> = ({ result })
   if (!result) return null;
 
   // Format feature importance data for chart
-  const featureImportanceData = Object.entries(result.featureImportance || {})
-    .map(([name, value]) => ({
-      name,
-      value: typeof value === 'number' ? value : 0,
-    }))
+  const featureImportanceData = Object.entries(result.feature_importance || {})
+    .map(([name, value]) => ({ name, value }))
     .sort((a, b) => b.value - a.value);
 
-  // Calculate prediction percentage for display (0-100%)
-  const predictionPercentage = (result.prediction * 100).toFixed(1);
-  const confidencePercentage = (result.confidence * 100).toFixed(1);
+  // Calculate percentage based on prediction_score
+  const predictionPercentage = (result.prediction_score * 100).toFixed(1);
+
+  const predictionColor = result.prediction_score > 0.7 ? 'text-destructive' : result.prediction_score > 0.4 ? 'text-warning' : 'text-success';
 
   return (
     <div className="space-y-6" data-testid="prediction-result">
@@ -47,13 +45,14 @@ const XGBoostResultsDisplay: React.FC<XGBoostResultsDisplayProps> = ({ result })
             <div className="border rounded-lg p-4 text-center">
               <div className="text-lg font-semibold">Prediction</div>
               <div className="text-3xl font-bold text-primary" data-testid="prediction-value">
-                {predictionPercentage}%
-              </div>
-            </div>
-            <div className="border rounded-lg p-4 text-center">
-              <div className="text-lg font-semibold">Confidence</div>
-              <div className="text-3xl font-bold text-primary" data-testid="confidence-value">
-                {confidencePercentage}%
+                <div className="text-sm text-muted-foreground">Prediction Score</div>
+                <div className={`text-3xl font-bold ${predictionColor}`}>{predictionPercentage}%</div>
+                {/* Display Confidence Interval if available and needed */}
+                {result.confidence_interval && (
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Confidence Interval: [{result.confidence_interval[0].toFixed(2)}, {result.confidence_interval[1].toFixed(2)}]
+                  </div>
+                )}
               </div>
             </div>
           </div>

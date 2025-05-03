@@ -1,6 +1,6 @@
 import React, { Suspense, useRef, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, AdaptiveDpr, PerformanceMonitor } from '@react-three/drei';
+import { OrbitControls, Environment } from '@react-three/drei';
 import { Button } from '@/presentation/atoms'; // Corrected import
 import BrainModelContainer from '@presentation/organisms/BrainModelContainer';
 import VisualizationErrorBoundary from '@/presentation/common/VisualizationErrorBoundary';
@@ -9,6 +9,7 @@ import { useBrainModel } from '@application/context/BrainModelProvider'; // Corr
 import { useBrainVisualization } from '@hooks/useBrainVisualization';
 import type { BrainRegion } from '@domain/types/brain/models'; // Corrected import path
 import type { RenderMode } from '@domain/types/brain/visualization'; // Keep this correct import
+import { useTheme } from 'next-themes';
 // Remove potentially conflicting import if it exists elsewhere
 
 interface BrainModelViewerProps {
