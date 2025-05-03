@@ -5,11 +5,11 @@
  * options to extend the session or logout safely.
  */
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/presentation/atoms/display/Card';
 import { Button } from '@presentation/atoms';
-import { Progress } from '@/components/ui/progress';
+import { Progress } from '@/presentation/atoms/feedback/progress';
 import { useSecureAuth } from '../hooks/useSecureAuth';
-import { auditLogService } from '../../infrastructure/services/auditLogService';
+import { auditLogClient } from '../../infrastructure/clients/auditLogClient';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -20,6 +20,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from '@radix-ui/react-alert-dialog';
+import { AuditEventType } from '../../infrastructure/clients/auditLogClient';
 
 interface SessionTimeoutModalProps {
   timeoutInMinutes: number;
@@ -80,7 +81,7 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
     setVisible(false);
 
     // Log session extension for audit purposes
-    auditLogService.logAction({
+    auditLogClient.log(AuditEventType.USER_SESSION_RENEWED, {
       action: 'SESSION_EXTENDED',
       details: 'User extended their session',
       timestamp: new Date().toISOString(),
@@ -90,7 +91,7 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
   // Logout handler
   const handleLogout = useCallback(() => {
     // Log logout for audit purposes
-    auditLogService.logAction({
+    auditLogClient.log(AuditEventType.USER_TIMEOUT, {
       action: 'SESSION_TIMEOUT_LOGOUT',
       details: 'User logged out due to session timeout',
       timestamp: new Date().toISOString(),
