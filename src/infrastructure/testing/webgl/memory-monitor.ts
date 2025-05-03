@@ -125,7 +125,7 @@ function countLivingObjects(refs: Set<WeakRef<any>>): number {
  * Register a new object for memory tracking
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function trackObject(obj: any // eslint-disable-line @typescript-eslint/no-explicit-any, type: string): void {
+export function trackObject(obj: any, type: string): void {
   if (!currentSnapshot) return;
 
   if (!currentSnapshot.objects.has(type)) {
@@ -144,7 +144,7 @@ export function trackObject(obj: any // eslint-disable-line @typescript-eslint/n
  * Mark an object as disposed/cleaned up
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function markDisposed(obj: any // eslint-disable-line @typescript-eslint/no-explicit-any, type: string): void {
+export function markDisposed(obj: any, type: string): void {
   if (!currentSnapshot) return;
 
   const typeSet = currentSnapshot.objects.get(type);
