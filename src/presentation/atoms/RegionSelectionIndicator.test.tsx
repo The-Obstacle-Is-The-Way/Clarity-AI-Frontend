@@ -70,7 +70,11 @@ vi.mock('@react-spring/three', () => {
       get: function (_target, prop) {
         const MockComponent = React.forwardRef<unknown, MockAnimatedProps>(
           (props: MockAnimatedProps, _ref) => {
-            return React.createElement('div', { 'data-testid': 'mock-animated-mesh' }, props.children);
+            return React.createElement(
+              'div',
+              { 'data-testid': 'mock-animated-mesh' },
+              props.children
+            );
           }
         );
         MockComponent.displayName = `mockAnimated.${String(prop)}`;
