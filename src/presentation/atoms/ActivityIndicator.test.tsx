@@ -64,18 +64,10 @@ vi.mock('@react-spring/three', () => {
       {},
       {
         get: function (_target, prop) {
-          // Return a simple component that renders children, or null
-          const MockAnimatedComponent = React.forwardRef<unknown, { children?: React.ReactNode }>((props, ref) => {
-            // Pass ref if needed, though likely not for these mocks
-            // We just want to avoid rendering a 'div' for R3F elements
-            // Casting ref to any to simplify mock, assuming ref isn't crucial here
-            const passThroughProps = { ...(props as any), ref: ref as any }; 
-            // Render children directly or return null if no children
-            // Or, more simply, just return children to avoid wrapping
-            // return <>{props.children}</>; // Option 1: Fragment
-            // Option 2: Directly use the prop as a component type (less safe)
-            // const Component = String(prop); return React.createElement(Component, passThroughProps);
-            // Safest: Just render children in a fragment
+          // Return a simple component that renders children within a Fragment
+          // Use specific props type if known, otherwise keep basic { children? }
+          const MockAnimatedComponent = React.forwardRef<unknown, { children?: React.ReactNode }>((props, _ref) => {
+            // Directly return children wrapped in a Fragment, ignore ref and other props for this mock
             return React.createElement(React.Fragment, {}, props.children);
           });
           MockAnimatedComponent.displayName = `mockAnimated.${String(prop)}`;
