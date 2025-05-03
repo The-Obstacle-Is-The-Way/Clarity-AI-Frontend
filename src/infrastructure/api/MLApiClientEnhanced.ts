@@ -16,9 +16,6 @@
 import { ApiClient } from './ApiClient';
 import type { IMLClient } from './IMLClient';
 import type { IApiClient } from './IApiClient';
-// Import inversify decorators and types (assuming inversifyJS)
-import { injectable, inject } from 'inversify';
-import { TYPES } from '@/infrastructure/di/types'; // Assuming types are defined here
 // Comment out incorrect import path until errorHandler is located/implemented
 // import { handleApiError } from '@/application/utils/errorHandler';
 
@@ -84,18 +81,19 @@ export class MLApiError extends Error {
 /**
  * Enhanced ML API client with production-grade resilience
  */
-@injectable()
 export class MLApiClientEnhanced implements IMLClient {
   private readonly baseClient: IMLClient;
+  private apiClient: IApiClient;
   private cache: Map<string, { data: any; timestamp: number }> = new Map();
   private cacheTTL = 5 * 60 * 1000;
   private retryConfig: RetryConfig;
 
   constructor(
-    @inject(TYPES.MLClient) baseClient: IMLClient,
-    @inject(TYPES.ApiClient) private apiClient?: IApiClient
+    baseClient: IMLClient,
+    apiClient: IApiClient
   ) {
     this.baseClient = baseClient;
+    this.apiClient = apiClient;
 
     // Configure default retry settings
     this.retryConfig = {
