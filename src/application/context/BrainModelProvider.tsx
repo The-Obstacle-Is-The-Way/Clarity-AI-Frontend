@@ -7,7 +7,8 @@
  */
 
 import React, { createContext, useContext, useState, useReducer, useEffect } from 'react';
-import { BrainRegionData } from '../../test/mocks/mockBrainData';
+// Core domain types
+import type { BrainRegion as BrainRegionData, NeuralConnection } from '@domain/types/brain/models';
 
 // State types
 export interface BrainModelState {

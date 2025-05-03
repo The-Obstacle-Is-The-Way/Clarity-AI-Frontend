@@ -6,7 +6,15 @@
  * with clinical precision and HIPAA-compliant data handling
  */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  type ReactNode
+} from 'react';
 
 // Brain model data structure with clinical precision
 export interface BrainModel {
