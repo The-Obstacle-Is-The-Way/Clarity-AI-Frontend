@@ -121,6 +121,7 @@ export class EnhancedAuthService {
 
     console.log('[refreshTokenSilently] Starting new token refresh...');
     // Create and store the promise reference first before execution
+    console.log('[refreshTokenSilently DEBUG] Calling this.client.refreshToken with:', tokens.refreshToken);
     const refreshTokenCall = this.client?.refreshToken(tokens.refreshToken);
 
     // Check if the call returned a promise-like object before chaining
@@ -212,6 +213,8 @@ export class EnhancedAuthService {
   async initializeAuth(): Promise<AuthState> {
     const tokens = this.getStoredTokens();
 
+    console.log('[initializeAuth DEBUG] Start. Tokens found:', !!tokens);
+
     if (!tokens) {
       return {
         user: null,
@@ -222,10 +225,13 @@ export class EnhancedAuthService {
       };
     }
 
+    console.log('[initializeAuth DEBUG] Checking token expiry (strict)...');
     if (this.isTokenExpiredOrExpiring(tokens, 0)) {
       // Strict expiry check for initialization
+      console.log('[initializeAuth DEBUG] Token strictly expired. Attempting refresh...');
       try {
         const newTokens = await this.refreshTokenSilently();
+        console.log('[initializeAuth DEBUG] Refresh attempt result:', newTokens ? 'Success' : 'Failed');
         if (!newTokens) {
           return {
             user: null,
@@ -236,7 +242,9 @@ export class EnhancedAuthService {
           };
         }
 
+        console.log('[initializeAuth DEBUG] Refresh successful. Getting user...');
         const user = await this.client?.getCurrentUser();
+        console.log('[initializeAuth DEBUG] Got user after refresh:', user ? user.id : 'null');
         return {
           user,
           tokens: newTokens,
@@ -246,6 +254,7 @@ export class EnhancedAuthService {
         };
       } catch (error) {
         this.clearTokens();
+        console.error('[initializeAuth DEBUG] Error during refresh/get user after expiry:', error);
         return {
           user: null,
           tokens: null,
@@ -257,7 +266,9 @@ export class EnhancedAuthService {
     }
 
     try {
+      console.log('[initializeAuth DEBUG] Token not expired. Getting user...');
       const user = await this.client?.getCurrentUser();
+      console.log('[initializeAuth DEBUG] Got user initially:', user ? user.id : 'null');
       return {
         user,
         tokens,
@@ -266,6 +277,7 @@ export class EnhancedAuthService {
         error: null,
       };
     } catch (error) {
+      console.error('[initializeAuth DEBUG] Error getting user initially:', error);
       // Check if error is due to token issues
       if (
         error instanceof Error &&
@@ -273,11 +285,15 @@ export class EnhancedAuthService {
           error.message.includes('unauthorized') ||
           error.message.includes('Unauthorized'))
       ) {
+        console.log('[initializeAuth DEBUG] Unauthorized error caught. Attempting refresh...');
         // Try token refresh once
         try {
           const newTokens = await this.refreshTokenSilently();
+          console.log('[initializeAuth DEBUG] Refresh attempt after 401 result:', newTokens ? 'Success' : 'Failed');
           if (newTokens) {
+            console.log('[initializeAuth DEBUG] Refresh after 401 successful. Getting user again...');
             const user = await this.client?.getCurrentUser();
+            console.log('[initializeAuth DEBUG] Got user after 401-refresh:', user ? user.id : 'null');
             return {
               user,
               tokens: newTokens,
@@ -287,6 +303,7 @@ export class EnhancedAuthService {
             };
           }
         } catch (refreshError) {
+          console.error('[initializeAuth DEBUG] Refresh attempt after 401 failed:', refreshError);
           console.error('Refresh attempt failed:', refreshError);
         }
       }
