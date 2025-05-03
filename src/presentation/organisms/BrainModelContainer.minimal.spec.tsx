@@ -9,8 +9,9 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'; // Import afterEach
 // Using React for createElement
-import { screen, cleanup } from '@testing-library/react'; // Import cleanup (waitFor comes from test-utils)
-import { renderWithProviders } from '../../test/test-utils.unified'; // Removed unused waitFor
+import { screen, cleanup, within } from '@testing-library/react'; // Import cleanup (waitFor comes from test-utils)
+import '@testing-library/jest-dom'; // Import within
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 
 // Mock the component under test directly to bypass internal complexities
 // Import React for createElement
