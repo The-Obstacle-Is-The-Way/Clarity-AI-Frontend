@@ -6,21 +6,18 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.unified';
+// import userEvent from '@testing-library/user-event'; // Removed unused import
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Corrected path
 import { setupWebGLMocks, cleanupWebGLMocks } from '../../test/webgl/setup-test';
 import { TimelineEvent } from './TimelineEvent';
-import type {
-  SymptomEvent,
-  TreatmentEvent,
-  DiagnosisEvent,
-  AssessmentEvent,
-} from '@domain/types/clinical/events';
+import type { ClinicalEvent } from '@/domain/types/clinical/events'; // Corrected path
 
 // Mock dependencies
 vi.mock('@/presentation/atoms', () => ({
-  Badge: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => (
+  Badge: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
     <span {...props}>{children}</span>
   ),
+  // Add Tooltip mocks if necessary
 }));
 vi.mock('@presentation/atoms/Tooltip', () => ({
   Tooltip: ({ children }: any) => <div>{children}</div>,
@@ -31,32 +28,33 @@ vi.mock('@presentation/atoms/Tooltip', () => ({
 vi.mock('@presentation/atoms/Button', () => ({
   Button: (props: any) => <button {...props}>{props.children}</button>
 }));
-vi.mock('framer-motion', async (importOriginal) => {
-    const actual = await importOriginal() as any;
-    return {
-        ...actual, // Keep actual exports
-        motion: { // Mock the motion factory
-          div: ({ children, ...props }: any) => <div {...props}>{children}</div>, // Mock motion.div
-          // Add other motion elements if needed (e.g., span, button)
-        },
-        AnimatePresence: ({ children }: any) => <>{children}</>, // Mock AnimatePresence
-    };
-});
 vi.mock('lucide-react', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, React.FC<React.SVGProps<SVGSVGElement>>>;
-  const IconMock = (props: React.SVGProps<SVGSVGElement>) => <svg {...props} />; // Define mock component
+  const IconMock = (props: React.SVGProps<SVGSVGElement>) => <svg {...props} />;
   return {
     ...actual,
-    // Replace specific icons with the mock
     Pill: IconMock,
     Activity: IconMock,
     FileText: IconMock,
     Brain: IconMock,
     Calendar: IconMock,
-    // Add other icons used by TimelineEvent if needed
   };
 });
-
+// Mock framer-motion if used
+vi.mock('framer-motion', async (importOriginal) => {
+    const actual = (await importOriginal()) as Record<string, any>; // Use any temporarily if structure is complex
+    return {
+        ...actual,
+        motion: new Proxy({}, {
+            get: (_target, key) => {
+                const MockMotion = ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => <div {...props}>{children}</div>;
+                MockMotion.displayName = `MockMotion.${String(key)}`;
+                return MockMotion;
+            }
+        }),
+        AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>, // Mock AnimatePresence
+    };
+});
 
 // Setup WebGL mocks with memory monitoring - Moved outside describe block
 beforeEach(() => {
@@ -170,7 +168,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockSymptomEvent as SymptomEvent} // Use correct type assertion
+        event={mockSymptomEvent as ClinicalEvent} // Use correct type assertion
         isSelected={false}
         onClick={handleClick}
       />
@@ -186,7 +184,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockMedicationEvent as TreatmentEvent} // Use correct type assertion
+        event={mockMedicationEvent as ClinicalEvent} // Use correct type assertion
         isSelected={false}
         onClick={handleClick}
       />
@@ -201,7 +199,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockDiagnosisEvent as DiagnosisEvent} // Use correct type assertion
+        event={mockDiagnosisEvent as ClinicalEvent} // Use correct type assertion
         isSelected={true}
         onClick={handleClick}
       />
@@ -225,7 +223,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockAssessmentEvent as AssessmentEvent} // Use correct type assertion
+        event={mockAssessmentEvent as ClinicalEvent} // Use correct type assertion
         isSelected={true}
         onClick={handleClick}
         showNeuralCorrelation={true}
@@ -248,7 +246,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockAssessmentEvent as AssessmentEvent} // Use correct type assertion
+        event={mockAssessmentEvent as ClinicalEvent} // Use correct type assertion
         isSelected={true}
         onClick={handleClick}
         showNeuralCorrelation={false}
@@ -264,7 +262,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockSymptomEvent as SymptomEvent} // Use correct type assertion
+        event={mockSymptomEvent as ClinicalEvent} // Use correct type assertion
         isSelected={false}
         onClick={handleClick}
       />
@@ -279,7 +277,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockMedicationEvent as TreatmentEvent} // Use correct type assertion
+        event={mockMedicationEvent as ClinicalEvent} // Use correct type assertion
         isSelected={false}
         onClick={handleClick}
         colorClass="border-blue-400 bg-blue-50"
@@ -296,7 +294,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockSymptomEvent as SymptomEvent} // Use correct type assertion
+        event={mockSymptomEvent as ClinicalEvent} // Use correct type assertion
         isSelected={false}
         onClick={handleClick}
       />
@@ -312,7 +310,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockSymptomEvent as SymptomEvent} // Use correct type assertion
+        event={mockSymptomEvent as ClinicalEvent} // Use correct type assertion
         isSelected={false}
         onClick={handleClick}
         showTime={false}
