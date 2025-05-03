@@ -1,16 +1,15 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * RegionSelectionPanel testing with quantum precision
  */
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-
-import { screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom'; // render is imported from unified utils, removed unused fireEvent
-// Removed unused React import (new JSX transform)
-// Removed unused userEvent import
-import RegionSelectionPanel from './RegionSelectionPanel'; // Reverted to default import
+import { screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+// import userEvent from '@testing-library/user-event'; // Removed unused import
+import RegionSelectionPanel from './RegionSelectionPanel';
+// import type { BrainRegion } from '@/domain/types/brain/models'; // Removed unused import
 import { render } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
-import { type BrainRegion } from '@/domain/types/brain/brainRegionTypes';
 
 // Mock data with clinical precision
 // Mock data with clinical precision - Requires specific props for RegionSelectionPanel

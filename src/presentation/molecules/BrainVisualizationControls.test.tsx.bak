@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * BrainVisualizationControls testing with quantum precision
  */
 import { describe, it, expect, vi } from "vitest";
