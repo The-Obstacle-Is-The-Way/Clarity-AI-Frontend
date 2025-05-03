@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * TimelineEvent component testing with quantum precision
  */
 // Removed unused React import (new JSX transform)
@@ -17,8 +17,10 @@ import type {
 } from '@domain/types/clinical/events';
 
 // Mock dependencies
-vi.mock('@presentation/atoms/Badge', () => ({
-    Badge: ({ children, ...props }: any) => <span {...props}>{children}</span>
+vi.mock('@/presentation/atoms', () => ({
+  Badge: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => (
+    <span {...props}>{children}</span>
+  ),
 }));
 vi.mock('@presentation/atoms/Tooltip', () => ({
   Tooltip: ({ children }: any) => <div>{children}</div>,
@@ -40,6 +42,20 @@ vi.mock('framer-motion', async (importOriginal) => {
         AnimatePresence: ({ children }: any) => <>{children}</>, // Mock AnimatePresence
     };
 });
+vi.mock('lucide-react', async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, React.FC<React.SVGProps<SVGSVGElement>>>;
+  const IconMock = (props: React.SVGProps<SVGSVGElement>) => <svg {...props} />; // Define mock component
+  return {
+    ...actual,
+    // Replace specific icons with the mock
+    Pill: IconMock,
+    Activity: IconMock,
+    FileText: IconMock,
+    Brain: IconMock,
+    Calendar: IconMock,
+    // Add other icons used by TimelineEvent if needed
+  };
+});
 
 
 // Setup WebGL mocks with memory monitoring - Moved outside describe block
@@ -52,7 +68,7 @@ afterEach(() => {
 });
 
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * TimelineEvent component testing with quantum precision
  */
 
