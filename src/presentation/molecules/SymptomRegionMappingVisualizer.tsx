@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural-Safe Molecular Component
+ * CLARITY-AI Neural-Safe Molecular Component
  * SymptomRegionMappingVisualizer - Quantum-level symptom-to-region mapping
  * with neuropsychiatric precision and clinical intelligence
  */
