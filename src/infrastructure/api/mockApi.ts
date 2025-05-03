@@ -253,25 +253,37 @@ export const mockApi = {
 
   async getBrainModel(modelId: string) {
     await simulateLatency();
-
     const model = db.brainModels.get(modelId);
     if (!model) {
-      throw new Error(`Brain model not found: ${modelId}`);
+      throw new Error(`Brain model ${modelId} not found`);
     }
-
-    return model;
+    // Correct types based on properties accessed in the return
+    return (model.regions || []).map((region: { 
+      id: string; 
+      name: string; 
+      volume: number;
+      coordinates: { x: number; y: number; z: number };
+      connections?: { targetId: string; strength: number }[];
+      clinicalSignificance?: string;
+    }) => ({
+      id: region.id,
+      name: region.name,
+      volume: region.volume,
+      coordinates: region.coordinates,
+      connections: region.connections?.map((conn: { targetId: string; strength: number }) => ({
+        targetId: conn.targetId,
+        strength: conn.strength,
+      })),
+      clinicalSignificance: region.clinicalSignificance,
+    }));
   },
 
   // Diagnostics and treatment
   async getDiagnosticMarkers(modelId: string) {
     await simulateLatency();
-
     const model = db.brainModels.get(modelId);
-    if (!model) {
-      throw new Error(`Brain model not found: ${modelId}`);
-    }
-
-    return model.diagnosticMarkers || [];
+    // Correct type based on property accessed
+    return model?.diagnosticMarkers?.map((marker: { regionId: string }) => marker.regionId) || [];
   },
 
   async getRegionalActivation(modelId: string) {
@@ -283,7 +295,7 @@ export const mockApi = {
     }
 
     // Generate activation data for each brain region
-    return (model.regions || []).map((region) => ({
+    return (model.regions || []).map((region: { id: string }) => ({
       regionId: region.id,
       regionName: region.name,
       activation: Math.random() * 0.9 + 0.1, // 0.1 - 1.0
@@ -301,7 +313,7 @@ export const mockApi = {
 
     // Find regions with diagnostic markers
     const affectedRegions = model.diagnosticMarkers
-      ? model.diagnosticMarkers.map((marker) => marker.regionId)
+      ? model.diagnosticMarkers.map((marker: { regionId: string }) => marker.regionId)
       : [];
 
     // Filter treatments that target affected regions
@@ -330,19 +342,49 @@ export const mockApi = {
     return {
       regions: model.regions,
       connections:
-        model.regions?.flatMap((region) =>
-          (region.connections || []).map((conn) => ({
+        model.regions?.flatMap((region: { id: string; connections?: { targetId: string }[] }) =>
+          (region.connections || []).map((conn: { targetId: string }) => ({
             sourceId: region.id,
             targetId: conn.targetId,
             strength: conn.strength,
           }))
         ) || [],
-      activationData: (model.regions || []).map((region) => ({
+      activationData: (model.regions || []).map((region: { id: string }) => ({
         regionId: region.id,
         activation: Math.random() * 0.9 + 0.1, // 0.1 - 1.0
       })),
       renderMode: params.renderMode || 'standard',
       resolution: params.resolution || 'medium',
+    };
+  },
+
+  async getNeuralConnections(modelId: string) {
+    await simulateLatency();
+    const model = db.brainModels.get(modelId);
+    if (!model) {
+      return [];
+    }
+    // Correct types based on properties accessed
+    return (
+      model.regions?.flatMap((region: { id: string; connections?: { targetId: string; strength: number }[] }) =>
+        (region.connections || []).map((conn: { targetId: string; strength: number }) => ({
+          sourceId: region.id,
+          targetId: conn.targetId,
+          strength: conn.strength,
+        }))
+      ) || []
+    );
+  },
+
+  async getActivationData(modelId: string) {
+    await simulateLatency();
+    const model = db.brainModels.get(modelId);
+    // Correct type based on properties accessed
+    return {
+      activationData: (model.regions || []).map((region: { id: string; activityLevel: number }) => ({
+        regionId: region.id,
+        activity: region.activityLevel,
+      })),
     };
   },
 };

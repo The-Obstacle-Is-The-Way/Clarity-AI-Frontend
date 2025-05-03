@@ -35,7 +35,7 @@ export interface IMLClient {
   sendMessageToSession(
     sessionId: string,
     message: string,
-    senderId: string,
+    senderId?: string,
     senderType?: string,
     messageParams?: Record<string, unknown>
   ): Promise<any>;

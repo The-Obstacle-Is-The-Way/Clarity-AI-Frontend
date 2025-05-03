@@ -1,6 +1,7 @@
 import React, { useState, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Header } from '@presentation/molecules';
+import Sidebar from '@presentation/organisms/Sidebar';
 import LoadingIndicator from '@/presentation/atoms/feedback/LoadingIndicator';
 import { Button } from '@presentation/atoms';
 import ErrorBoundary from './ErrorBoundary';

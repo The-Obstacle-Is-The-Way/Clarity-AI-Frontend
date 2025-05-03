@@ -14,6 +14,10 @@ import { SessionTimeoutModal } from './SessionTimeoutModal';
 import type { User, Permission } from '@domain/types/auth/auth';
 import { authService } from '@application/services/authService';
 import type { AuthContextType, AuthProviderProps } from './authTypes'; // Keep this type import
+import { useAuth } from './useAuth'; // Adjust path as needed
+import { EncryptionService } from '@/infrastructure/services/EncryptionService';
+// Import AuthContext
+import { AuthContext } from '@/application/context/AuthContext';
 
 // Constants for session management
 const SESSION_WARNING_TIME = 5 * 60 * 1000; // 5 minutes warning before expiration

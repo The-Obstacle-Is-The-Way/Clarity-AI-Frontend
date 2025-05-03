@@ -15,6 +15,8 @@ import MainLayout from '@presentation/templates/MainLayout';
 const Settings: React.FC = () => {
   // Removed unused isDarkMode, toggleDarkMode
   const { theme, setTheme } = useTheme();
+  // Add state to track if settings have changed
+  const [isDirty, setIsDirty] = useState(false);
   // Removed unused selectedTheme state
   const [notificationSettings, setNotificationSettings] = useState({
     emailAlerts: true,
@@ -38,6 +40,7 @@ const Settings: React.FC = () => {
   const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const themeValue = e.target.value as ThemeMode; // Use ThemeMode type
     setTheme(themeValue);
+    setIsDirty(true); // Mark as dirty
   };
 
   // Notification settings handler
@@ -47,6 +50,7 @@ const Settings: React.FC = () => {
       ...prev,
       [name]: checked,
     }));
+    setIsDirty(true); // Mark as dirty
   };
 
   // Data privacy settings handler
@@ -58,6 +62,7 @@ const Settings: React.FC = () => {
       ...prev,
       [name]: newValue,
     }));
+    setIsDirty(true); // Mark as dirty
   };
 
   // Visualization settings handler
@@ -71,6 +76,7 @@ const Settings: React.FC = () => {
       ...prev,
       [name]: newValue,
     }));
+    setIsDirty(true); // Mark as dirty
   };
 
   // Save all settings
@@ -84,7 +90,7 @@ const Settings: React.FC = () => {
       visualizationSettings,
     });
 
-    // Show success message
+    setIsDirty(false); // Reset dirty state after saving
     alert('Settings saved successfully!');
   };
 
