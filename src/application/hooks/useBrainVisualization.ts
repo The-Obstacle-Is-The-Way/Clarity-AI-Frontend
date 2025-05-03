@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Vector3 } from '@domain/types/shared/common'; // Use type import
 import type { BrainRegion, BrainModel, NeuralConnection } from '@domain/types/brain/models'; // Use type import
 import type { RenderMode } from '@domain/types/brain/visualization'; // Use type import
-import { apiClient } from '../../infrastructure/api/ApiGateway'; // Use relative path
+import { digitalTwinService } from '@infrastructure/api/digitalTwinService';
 
 // Keep local definition from remote
 interface BrainViewState {
@@ -55,13 +55,11 @@ export function useBrainVisualization(options?: UseBrainVisualizationOptions) {
     queryKey: ['brainModel', mergedOptions.patientId],
     queryFn: async () => {
       console.log('[DEBUG] Fetching brain model for:', mergedOptions.patientId);
-      // Assuming apiClient returns the correct BrainModel type or needs validation/mapping
-      // Construct the correct path and use apiClient.get
-      const modelPath = `brain-models/${mergedOptions.patientId}`;
-      const data = await apiClient.get(modelPath);
-      console.log('[DEBUG] Received brain model:', data);
-      // TODO: Add runtime validation if apiClient doesn't guarantee BrainModel structure
-      return data as BrainModel; // Cast needed if getBrainModel has generic return
+      const data = await digitalTwinService.getVisualization(mergedOptions.patientId!);
+      console.log('[DEBUG] Received brain visualization:', data);
+
+      // TODO: adapt BrainModel typing; for now cast loosely
+      return data as unknown as BrainModel;
     },
     enabled: !mergedOptions.disabled,
     staleTime: 5 * 60 * 1000, // 5 minutes
