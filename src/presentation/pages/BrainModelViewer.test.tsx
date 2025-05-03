@@ -8,7 +8,7 @@ import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Removed unused render, fireEvent
 // Removed unused React import
 // Removed unused userEvent import
-import BrainModelViewer from './BrainModelViewer'; // Reverted to default import
+import BrainModelViewer from './BrainModelViewer'; // Corrected to default import based on file export
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified';
 import { RenderMode } from '@domain/types/brain/visualization'; // Import for mock
 // Removed unused BrainRegion import

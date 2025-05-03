@@ -9,7 +9,7 @@ import type { Mock } from 'vitest';
 import { vi, describe, it, expect, beforeEach } from 'vitest'; // Import vi, Mock, etc.
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path (using relative)
+import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.unified'; // Using alias
 
 // Simple card component to test
 interface CardProps {

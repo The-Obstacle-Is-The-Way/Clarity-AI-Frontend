@@ -11,13 +11,13 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 vi.mock('@application/hooks/useCreatePatient');
 vi.mock('@presentation/organisms/PatientForm', () => ({
   // Mock form that captures onSubmit prop
-  default: ({ onSubmit, isLoading }: { onSubmit: (data: any) => void; isLoading: boolean }) => (
+  default: ({ onSubmit, isLoading }: { onSubmit: (data: any) => void; isLoading?: boolean }) => (
     <form data-testid="mock-patient-form" onSubmit={(e) => {
         e.preventDefault();
         // Simulate submitting some data
         onSubmit({ first_name: 'Mocked', last_name: 'Submit', date_of_birth: '2024-01-01', status: 'active' });
     }}>
-      <button type="submit" disabled={isLoading}>Submit Mock Form</button>
+      <button type="submit" disabled={isLoading ?? false}>Submit Mock Form</button>
     </form>
   ),
 }));
