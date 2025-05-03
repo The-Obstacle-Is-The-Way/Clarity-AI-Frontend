@@ -9,7 +9,7 @@ import { screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Added 'within' import, removed fireEvent
 // Remove MemoryRouter import, it's provided by renderWithProviders
 import userEvent from '@testing-library/user-event';
-import Dashboard from '@/presentation/pages/Dashboard'; // Corrected path
+import Dashboard from './Dashboard'; // Use relative path
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 
 import type * as ReactRouterDom from 'react-router-dom'; // Type import for mocking
