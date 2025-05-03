@@ -237,6 +237,7 @@ export class MockWebGLRenderingContext {
   bindTexture(): void {}
   texImage2D(): void {}
   texParameteri(): void {}
+  texImage3D(): void {}
   activeTexture(): void {}
   generateMipmap(): void {}
 
