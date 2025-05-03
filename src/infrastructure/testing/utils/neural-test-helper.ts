@@ -13,11 +13,11 @@ import { vi } from 'vitest';
  * @param implementation Optional implementation function
  * @returns The spy object
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function createNeuralSafeSpy<T extends object, K extends keyof T>(
   object: T,
   method: K,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  implementation?: (...args: any // eslint-disable-line @typescript-eslint/no-explicit-any[]) => any
+  implementation?: (...args: any[]) => any
 ) {
   // Preserve original method for coverage instrumentation
   const originalMethod = object[method];

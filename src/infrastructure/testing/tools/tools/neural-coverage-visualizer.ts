@@ -55,7 +55,7 @@ const COVERAGE_THRESHOLDS = {
  * Generate neural-safe coverage report with clinical precision
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function generateCoverageVisual(coverageData: any // eslint-disable-line @typescript-eslint/no-explicit-any, outputDir: string): void {
+export function generateCoverageVisual(coverageData: any, outputDir: string): void {
   console.log(
     chalk.hex(NEURAL_COLORS.highlight)(
       '🧠 NOVAMIND Neural Coverage Visualizer: Generating visualization with quantum precision'
@@ -63,7 +63,6 @@ export function generateCoverageVisual(coverageData: any // eslint-disable-line 
   );
 
   // Group components by type for neural-safe visualization
-// eslint-disable-next-line
   const atomicGroups: Record<string, ComponentCoverage[]> = {
     atoms: [],
     molecules: [],
@@ -74,7 +73,6 @@ export function generateCoverageVisual(coverageData: any // eslint-disable-line 
   };
 
   // Process coverage data with mathematical elegance
-// eslint-disable-next-line
   Object.entries(coverageData).forEach(([filePath, data]: [string, any]) => {
     if (!filePath.includes('src/presentation')) {
       return;
@@ -118,7 +116,6 @@ export function generateCoverageVisual(coverageData: any // eslint-disable-line 
   });
 
   // Calculate group averages with mathematical elegance
-// eslint-disable-next-line
   const coverageGroups: CoverageGroup[] = Object.entries(atomicGroups).map(([name, components]) => {
     const componentCount = components.length;
 
@@ -526,7 +523,7 @@ function generateHTMLReport(coverageGroups: CoverageGroup[]): string {
  * Parse coverage data with quantum precision
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseCoverageData(coveragePath: string): any // eslint-disable-line @typescript-eslint/no-explicit-any {
+export function parseCoverageData(coveragePath: string): any {
   try {
     const coverageJson = fs.readFileSync(coveragePath, 'utf8');
     return JSON.parse(coverageJson);
