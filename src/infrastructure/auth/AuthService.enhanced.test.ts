@@ -16,7 +16,9 @@ import {
 import { act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Import waitFor
 // Use relative paths since aliases might not resolve in test runner context
-import { AuthApiClient, AuthTokens, AuthUser, AuthState, ApiError, EnhancedAuthService } from './index';
+import { AuthApiClient, AuthTokens, AuthUser, AuthState } from './index';
+import { EnhancedAuthService } from './AuthService.enhanced';
+import { ApiError } from '../api/ApiClient';
 import { createInitialAuthState } from '../../application/contexts/AuthContext';
 import { UserProfile } from '../../domain/user/UserProfile';
 import { AuthTokens as AuthTokensDomain } from '../../domain/auth/AuthTokens';
@@ -35,8 +37,6 @@ vi.mock('./index', async (importOriginal) => {
   
   return {
     ...actual,
-    // Add EnhancedAuthService directly from the actual import
-    EnhancedAuthService: actual.EnhancedAuthService,
     // Mock the auth client
     AuthApiClient: mockAuthApiClient,
   };
@@ -50,6 +50,14 @@ beforeEach(() => {
   vi.clearAllMocks();
 
   // Reset localStorage - Handled by global setup (src/test/setup.ts)
+  vi.useFakeTimers(); // Use fake timers for consistent Date.now()
+  vi.spyOn(window.localStorage, 'getItem');
+  vi.spyOn(window.localStorage, 'setItem');
+  vi.spyOn(window.localStorage, 'removeItem');
+  vi.spyOn(window, 'dispatchEvent');
+
+  // REMOVED: Don't create the instance here anymore
+  // authService = new EnhancedAuthService();
 });
 
 afterEach(() => {
@@ -76,6 +84,30 @@ class TestableAuthService extends EnhancedAuthService {
   // Reset the tracking flag
   public resetTestFlags(): void {
     this.refreshTimeoutWasScheduled = false;
+  }
+  
+  // Add getCurrentState method for test access
+  public getCurrentState(): AuthState {
+    // Simplified implementation that doesn't rely on private properties
+    const tokens = this.exposedGetStoredTokens(); // Use a new exposed method
+    return {
+      user: null, // We can't easily get this in the test
+      tokens,
+      isAuthenticated: !!tokens,
+      isLoading: false,
+      error: null
+    };
+  }
+  
+  // Expose getStoredTokens for testing
+  public exposedGetStoredTokens(): AuthTokens | null {
+    try {
+      const tokensJson = window.localStorage.getItem('auth_tokens');
+      if (!tokensJson) return null;
+      return JSON.parse(tokensJson) as AuthTokens;
+    } catch {
+      return null;
+    }
   }
 }
 
@@ -158,7 +190,7 @@ describe('EnhancedAuthService', () => {
     vi.spyOn(window.localStorage, 'getItem');
     vi.spyOn(window.localStorage, 'setItem');
     vi.spyOn(window.localStorage, 'removeItem');
-    vi.spyOn(window.dispatchEvent);
+    vi.spyOn(window, 'dispatchEvent');
 
     // REMOVED: Don't create the instance here anymore
     // authService = new EnhancedAuthService();

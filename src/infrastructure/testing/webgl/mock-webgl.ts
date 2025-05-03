@@ -288,7 +288,7 @@ export class MockWebGLRenderingContext {
   clear(): void {}
   clearColor(): void {}
   clearDepth(): void {}
-  clearStencil(): void {}
+  clearStencil(stencil: number): void {}
   frontFace(): void {}
   cullFace(): void {}
   disable(): void {}
