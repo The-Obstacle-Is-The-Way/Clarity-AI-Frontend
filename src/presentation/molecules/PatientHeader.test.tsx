@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * PatientHeader testing with quantum precision
  */
 // Removed unused React import (new JSX transform)
@@ -53,7 +53,7 @@ afterEach(() => {
 });
 
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * PatientHeader testing with quantum precision
  */
 
