@@ -168,6 +168,22 @@ const Brain3DScene: React.FC<{
 }) => {
   // Use the context hook to get detail config
   const detailConfig = useDetailConfig();
+  const { camera } = useThree(); // Get camera instance
+
+  // <<< ADDED DIAGNOSTIC LOG >>>
+  useEffect(() => {
+    if (camera) {
+      console.log(
+        `[Brain3DScene] Initializing Scene... Camera Pos:`, camera.position.toArray(),
+        `| Regions: ${brainModel?.regions?.length ?? 0}`,
+        `| Connections: ${brainModel?.connections?.length ?? 0}`,
+        `| Render Mode: ${renderMode}`,
+        `| High Perf: ${highPerformanceMode}`
+      );
+    }
+  // Ensure dependencies are correct to avoid excessive logging
+  }, [camera, brainModel, renderMode, highPerformanceMode]);
+  // <<< END ADDED DIAGNOSTIC LOG >>>
 
   const safeRegions = brainModel.regions || [];
   const safeConnections = brainModel.connections || [];
@@ -209,6 +225,22 @@ const Brain3DScene: React.FC<{
     // Example: Filter by connection strength if available
     return safeConnections; // Keep all connections for now
   }, [safeConnections /*, detailConfig */]); // Removed detailConfig dependency
+
+  // <<< ADDED PROP LOGGING >>>
+  console.log('[Brain3DScene] Props before rendering Connections:', {
+    connections: filteredConnections,
+    regions: safeRegions,
+    renderMode,
+    visualizationSettings,
+    highPerformanceMode,
+  });
+  console.log('[Brain3DScene] Props before rendering Region Groups:', {
+    regionGroups,
+    renderMode,
+    visualizationSettings,
+    highPerformanceMode,
+  });
+  // <<< END ADDED PROP LOGGING >>>
 
   return (
     <group>
@@ -409,7 +441,11 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
 
     return (
       <Canvas
-        style={{ background: backgroundColor || settings.backgroundColor }} // Use settings bg
+        style={{
+          background: backgroundColor || settings.backgroundColor, // <<< REMOVED DEBUG BACKGROUND
+          width: '100%', // Ensure width/height are applied if passed via style
+          height: '100%'
+         }}
         camera={{ position: cameraPosition, fov: cameraFov }}
         dpr={[1, highPerformanceMode ? 1.5 : 2]} // Use direct prop
         gl={{
@@ -431,6 +467,8 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
           {...(onCameraMove && { onCameraMove })}
           initialPosition={cameraPosition}
         />
+        {/* <<< REMOVED SIMPLE TEST MESH >>> */}
+
         {/* Wrap scene content in AdaptiveLOD */}
         <AdaptiveLOD
           // forceDetailLevel={currentDetailLevel} // Removed invalid prop

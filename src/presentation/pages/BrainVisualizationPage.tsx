@@ -187,8 +187,8 @@ const BrainVisualizationPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="mb-6">
+    <div className="container mx-auto p-4 min-h-screen flex flex-col">
+      <div className="mb-6 flex-shrink-0">
         <h1 className="text-2xl font-bold">Brain Visualization</h1>
         <div className="text-gray-600 dark:text-gray-400">
           <p>
@@ -198,7 +198,7 @@ const BrainVisualizationPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="mb-6 rounded-lg bg-white p-4 shadow-md dark:bg-gray-800">
+      <div className="mb-6 rounded-lg bg-white p-4 shadow-md dark:bg-gray-800 flex-shrink-0">
         {/* Control Panel Content */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -224,8 +224,8 @@ const BrainVisualizationPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <div className="h-96 overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800 md:col-span-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 flex-grow">
+        <div className="h-full overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800 md:col-span-2">
           {/* Wrap the BrainVisualizationContainer with ThemeProvider */}
           <ThemeWrapper>
             <BrainVisualizationContainer
@@ -233,13 +233,15 @@ const BrainVisualizationPage: React.FC = () => {
               patientId={id} // Pass patientId if available from route param
               onRegionSelect={handleRegionSelect}
               // Remove invalid props: brainData, activeRegions, viewMode
+              height="100%"
+              width="100%"
             />
           </ThemeWrapper>
         </div>
 
-        <div className="rounded-lg bg-white p-4 shadow-md dark:bg-gray-800">
-          <h2 className="mb-4 text-lg font-medium">Brain Regions</h2>
-          <div className="max-h-80 space-y-2 overflow-y-auto">
+        <div className="h-full rounded-lg bg-white p-4 shadow-md dark:bg-gray-800 flex flex-col">
+          <h2 className="mb-4 text-lg font-medium flex-shrink-0">Brain Regions</h2>
+          <div className="space-y-2 overflow-y-auto flex-grow">
             {brainData.map((region) => (
               <div
                 key={region.id}
