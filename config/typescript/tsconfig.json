@@ -90,5 +90,5 @@
     "src/setupTests.ts",
     "src/infrastructure/testing"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./config/typescript/tsconfig.node.json" }]
 } 
