@@ -423,7 +423,9 @@ export class MLApiClientEnhanced implements IMLClient {
   }
   
   async sendMessageToSession(sessionId: string, message: string, senderId?: string, senderType?: 'therapist' | 'patient' | 'system', messageParams?: any): Promise<any> {
-    const apiCall = () => this.baseClient.sendMessageToSession(sessionId, message, senderId, senderType, messageParams);
+    // Provide a default 'system' if senderType is undefined, or ensure it aligns with baseClient expectations
+    const effectiveSenderType = senderType ?? 'system'; 
+    const apiCall = () => this.baseClient.sendMessageToSession(sessionId, message, senderId, effectiveSenderType, messageParams);
     return this.withRetry(apiCall, 'sendMessageToSession');
   }
 
