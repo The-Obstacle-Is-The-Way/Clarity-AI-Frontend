@@ -13,11 +13,12 @@ import {
   AppAuthContext as AuthContext,
   type AppAuthContextType,
 } from '@/application/context/AuthContext.tsx';
-import { useAuthService } from '@application/hooks/useAuthService';
+import { useSecureAuth } from '@application/hooks/useSecureAuth';
 import type { User, Permission } from '@domain/types/auth/auth';
 import { AuditEventType } from '@domain/types/audit/AuditEventType';
 import { SessionTimeoutModal } from './SessionTimeoutModal';
 import { useAuditLog } from '@application/hooks/useAuditLog';
+import { useAuthContext } from '@application/context/AuthContext';
 
 interface EnhancedAuthProviderProps {
   children: React.ReactNode;
@@ -45,7 +46,7 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
     checkAuthStatus,
     verifyMFA: serviceVerifyMFA,
     renewSession: serviceRenewSession,
-  } = useAuthService();
+  } = useSecureAuth();
 
   const { log: logAudit } = useAuditLog();
 
@@ -152,187 +153,4 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
         userId: userId ?? 'unknown',
         error: errorMessage,
       });
-      toast.error(`Logout failed: ${errorMessage}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [serviceLogout, logAudit, navigate, user?.id]);
-
-  const verifyMFA = useCallback(
-    async (code: string): Promise<boolean> => {
-      if (!user) {
-        setError('Cannot verify MFA without a user session.');
-        return false;
-      }
-      setIsLoading(true);
-      setError(null);
-      try {
-        const result = await serviceVerifyMFA(user.id, code);
-        if (result.success) {
-          setIsAuthenticated(true);
-          setUser(result.user ?? user);
-          setSessionExpiresAt(result.sessionExpiresAt ?? sessionExpiresAt);
-          logAudit(AuditEventType.USER_MFA_VERIFY_SUCCESS, { userId: user.id });
-          toast.success('MFA verification successful!');
-          navigate('/');
-          return true;
-        } else {
-          setError(result.error || 'MFA verification failed.');
-          logAudit(AuditEventType.USER_MFA_VERIFY_FAILURE, {
-            userId: user.id,
-            error: result.error,
-          });
-          toast.error(result.error || 'MFA verification failed.');
-          return false;
-        }
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        setError(`MFA verification failed: ${errorMessage}`);
-        logAudit(AuditEventType.USER_MFA_VERIFY_FAILURE, {
-          userId: user.id,
-          error: errorMessage,
-        });
-        toast.error(`MFA verification failed: ${errorMessage}`);
-        return false;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [user, serviceVerifyMFA, logAudit, navigate, sessionExpiresAt]
-  );
-
-  // --- Session Renewal & Expiration Check ---
-
-  const renewSession = useCallback(async () => {
-    if (!user) return;
-    try {
-      const result = await serviceRenewSession(user.id);
-      if (result.success && result.sessionExpiresAt) {
-        setSessionExpiresAt(result.sessionExpiresAt);
-        logAudit(AuditEventType.USER_SESSION_RENEWED, { userId: user.id });
-        toast.info('Session extended.');
-      } else {
-        logAudit(AuditEventType.USER_SESSION_RENEWAL_FAILED, {
-          userId: user.id,
-          error: result.error,
-        });
-        toast.warning(result.error || 'Could not extend session.');
-      }
-    } catch (err) {
-      logAudit(AuditEventType.USER_SESSION_RENEWAL_FAILED, {
-        userId: user.id,
-        error: err instanceof Error ? err.message : String(err),
-      });
-      toast.error('Failed to extend session.');
-    }
-  }, [user, serviceRenewSession, logAudit, toast]);
-
-  const checkSessionExpiration = useCallback(() => {
-    if (!sessionExpiresAt) return Infinity;
-    const now = Date.now();
-    const remainingTime = sessionExpiresAt - now;
-    if (remainingTime <= 0) {
-      if (isAuthenticated) {
-        logAudit(AuditEventType.USER_SESSION_EXPIRED, { userId: user?.id });
-        toast.warning('Your session has expired. Please log in again.');
-        logout();
-      }
-      return 0;
-    }
-    return remainingTime;
-  }, [sessionExpiresAt, isAuthenticated, user?.id, logAudit, logout, toast]);
-
-  // --- Idle Timer Logic ---
-
-  const { reset } = useIdleTimer({
-    onIdle: () => {
-      if (isAuthenticated) {
-        logAudit(AuditEventType.USER_SESSION_TIMEOUT_IDLE, { userId: user?.id });
-        toast.warning('You have been logged out due to inactivity.');
-        logout();
-      }
-    },
-    onActive: () => {
-      // console.log('User is active');
-    },
-    onPrompt: () => {
-      if (isAuthenticated) {
-        logAudit(AuditEventType.USER_SESSION_TIMEOUT_WARNING, { userId: user?.id });
-        setIsSessionTimeoutModalOpen(true);
-      }
-    },
-    timeout,
-    promptTimeout,
-    throttle: 500,
-    crossTab: true,
-    syncTimers: 200,
-  });
-
-  const extendSession = useCallback(() => {
-    console.log('Extending session...');
-    reset();
-    renewSession();
-    setIsSessionTimeoutModalOpen(false);
-    logAudit(AuditEventType.USER_SESSION_EXTENDED_MANUALLY, { userId: user?.id });
-    toast.info('Session extended.');
-  }, [renewSession, logAudit, user?.id, toast, reset]);
-
-  // --- Permissions ---
-
-  const hasPermission = useCallback(
-    (permission: Permission): boolean => {
-      return user?.permissions?.includes(permission) ?? false;
-    },
-    [user?.permissions]
-  );
-
-  // --- Context Value ---
-
-  /**
-   * Memoized context value to prevent unnecessary re-renders.
-   */
-  const contextValue = useMemo<AppAuthContextType>(
-    () => ({
-      isAuthenticated,
-      isLoading,
-      error,
-      user,
-      login,
-      logout,
-      verifyMFA,
-      checkSessionExpiration,
-      renewSession,
-      extendSession,
-      hasPermission,
-      getSessionExpiration: checkSessionExpiration,
-      clearError: () => setError(null),
-    }),
-    [
-      isAuthenticated,
-      isLoading,
-      error,
-      user,
-      login,
-      logout,
-      verifyMFA,
-      checkSessionExpiration,
-      renewSession,
-      extendSession,
-      hasPermission,
-    ]
-  );
-
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-      <SessionTimeoutModal
-        isOpen={isSessionTimeoutModalOpen}
-        onClose={() => setIsSessionTimeoutModalOpen(false)}
-        onExtend={extendSession}
-        remainingTime={promptTimeout / 1000}
-        warningThreshold={DEFAULT_SESSION_WARNING_MINUTES * 60}
-        onExtendSession={extendSession}
-      />
-    </AuthContext.Provider>
-  );
-};
+      toast.error(`
