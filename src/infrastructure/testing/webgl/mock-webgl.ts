@@ -226,6 +226,20 @@ export class MockWebGLRenderingContext {
   }
   useProgram(): void {}
 
+  // Texture methods
+  // eslint-disable-next-line
+  createTexture(): Record<string, unknown> {
+    const texture = {};
+    this.textures.push(texture);
+    return texture;
+  }
+
+  bindTexture(): void {}
+  texImage2D(): void {}
+  texParameteri(): void {}
+  activeTexture(): void {}
+  generateMipmap(): void {}
+
   // Uniform methods
   // eslint-disable-next-line
   getUniformLocation(): Record<string, unknown> {
