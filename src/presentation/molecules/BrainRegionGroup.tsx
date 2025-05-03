@@ -16,6 +16,7 @@ import { RenderMode } from '@domain/types/brain/visualization';
 import { SafeArray } from '../../domain/types/shared/common'; // Use relative path
 // @ts-ignore: TS2305 - Module '"@react-three/drei"' has no exported member 'Html'. (Likely type/config issue)
 import { Html } from '@react-three/drei'; // Added missing import
+// Do not import Three.js geometries - use them directly in R3F JSX
 
 // Neural-safe prop definition with explicit typing
 interface BrainRegionGroupProps {
