@@ -8,8 +8,9 @@ import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // render is imported from unified utils, removed unused fireEvent
 // Removed unused React import (new JSX transform)
 // Removed unused userEvent import
-import RegionSelectionPanel from './RegionSelectionPanel'; // Assuming default export
-import { render } from '../../test/test-utils.unified'; // Fixed relative path
+import { RegionSelectionPanel } from './RegionSelectionPanel';
+import { render } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { type BrainRegion } from '@/domain/types/brain/brainRegionTypes';
 
 // Mock data with clinical precision
 // Mock data with clinical precision - Requires specific props for RegionSelectionPanel

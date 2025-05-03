@@ -8,8 +8,9 @@ import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // render is imported from unified utils, removed unused fireEvent
 // Removed unused React import (new JSX transform)
 // Removed unused userEvent import
-import ClinicalDataOverlay from './ClinicalDataOverlay'; // Assuming default export
-import { render } from '../../test/test-utils.unified'; // Import the unified render
+import { ClinicalDataOverlay } from './ClinicalDataOverlay';
+import { type ClinicalDataPoint } from '@/domain/types/clinical/clinicalDataTypes'; // Adjusted import
+import { render } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 import type { BrainModel } from '@domain/types/brain/models'; // Import BrainModel
 
 // Mock data with clinical precision
