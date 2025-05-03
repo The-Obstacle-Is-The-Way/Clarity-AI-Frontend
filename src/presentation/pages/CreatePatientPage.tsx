@@ -1,8 +1,8 @@
 // src/presentation/pages/CreatePatientPage.tsx
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import PatientForm from '@presentation/organisms/PatientForm';
-import { useCreatePatient } from '@application/hooks/usePatients';
+import PatientForm from '@/presentation/organisms/PatientForm';
+import { useCreatePatient } from '@/application/hooks/useCreatePatient';
 import type { CreatePatientInput } from '@domain/patients/patientSchemas';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/presentation/atoms";
 import { Button } from "@/presentation/atoms";
@@ -14,7 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/presentation/atoms";
  */
 const CreatePatientPage: React.FC = () => {
   const navigate = useNavigate();
-  const { mutate: createPatient, isLoading, error, isError } = useCreatePatient();
+  const { mutate: createPatient, isPending: isLoading, error, isError } = useCreatePatient();
 
   const handleFormSubmit = (data: CreatePatientInput) => {
     console.log('Submitting patient data:', data);
