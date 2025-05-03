@@ -64,12 +64,16 @@ vi.mock('@react-spring/three', () => {
       {},
       {
         get: function (_target, prop) {
+          // Define props type explicitly
+          type MockProps = { children?: React.ReactNode; [key: string]: any };
+
           // Return a simple component that renders children within a Fragment
-          // Use specific props type if known, otherwise keep basic { children? }
-          const MockAnimatedComponent = React.forwardRef<unknown, { children?: React.ReactNode }>((props, _ref) => {
-            // Directly return children wrapped in a Fragment, ignore ref and other props for this mock
-            return React.createElement(React.Fragment, {}, props.children);
-          });
+          const MockAnimatedComponent = React.forwardRef<unknown, MockProps>(
+            (props: MockProps, _ref) => {
+              // Directly return children wrapped in a Fragment
+              return React.createElement(React.Fragment, {}, props.children);
+            }
+          );
           MockAnimatedComponent.displayName = `mockAnimated.${String(prop)}`;
           return MockAnimatedComponent;
         },

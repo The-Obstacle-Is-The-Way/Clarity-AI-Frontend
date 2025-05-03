@@ -55,28 +55,34 @@ vi.mock('three', () => {
 
 // Mock react-spring/three
 vi.mock('@react-spring/three', () => {
+  // Define a minimal props type allowing children
+  type MockAnimatedProps = { children?: React.ReactNode };
+
+  // Mock useSpring
+  const useSpring = vi.fn(() => ({
+    scale: { get: vi.fn(() => 1) }, // Mock scale spring value
+  }));
+
+  // Mock animated components to just render children via Fragment
+  const animated = new Proxy(
+    {},
+    {
+      get: function (_target, prop) {
+        const MockComponent = React.forwardRef<unknown, MockAnimatedProps>(
+          (props: MockAnimatedProps, _ref) => {
+            return React.createElement(React.Fragment, null, props.children);
+          }
+        );
+        MockComponent.displayName = `mockAnimated.${String(prop)}`;
+        return MockComponent;
+      },
+    }
+  );
+
   return {
-    useSpring: vi.fn(() => ({ spring: 0 })),
-    animated: new Proxy(
-      {},
-      {
-        get: function (target, prop) {
-          const MockAnimatedComponent = React.forwardRef(function (props, ref) {
-            return React.createElement(
-              'div',
-              {
-                'data-testid': `mock-animated-${String(prop)}`,
-                ref,
-                ...props,
-              },
-              props.children
-            );
-          });
-          MockAnimatedComponent.displayName = `animated.${String(prop)}`;
-          return MockAnimatedComponent;
-        },
-      }
-    ),
+    __esModule: true, // Ensure this is treated as an ES module
+    useSpring,
+    animated,
   };
 });
 
