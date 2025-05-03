@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MLApiClient } from '@infrastructure/api/MLApiClient';
 
@@ -9,9 +9,12 @@ import { MLApiClient } from '@infrastructure/api/MLApiClient';
  * This hook provides access to the ML API client with added React state management
  * for tracking loading states and errors.
  */
-export function useML() {
-  const [loading, setLoading] = useState<boolean>(false);
+export const useML = (config?: { enablePolling?: boolean; pollInterval?: number }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+
+  // Instantiate the API client
+  const apiClientInstance = useMemo(() => new MLApiClient(), []);
 
   const resetError = useCallback(() => {
     setError(null);
@@ -21,7 +24,7 @@ export function useML() {
    * Handle API requests with loading and error state management
    */
   const withLoadingState = useCallback(async <T>(apiCall: () => Promise<T>): Promise<T> => {
-    setLoading(true);
+    setIsLoading(true);
     setError(null);
 
     try {
@@ -31,46 +34,46 @@ export function useML() {
       setError(err instanceof Error ? err : new Error(String(err)));
       throw err;
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }, []);
 
   // Text analysis methods
   const processText = useCallback(
     (text: string, modelType?: string, options?: Record<string, unknown>) => {
-      return withLoadingState(() => MLApiClient.processText(text, modelType, options));
+      return withLoadingState(() => apiClientInstance.processText(text, modelType, options));
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   const detectDepression = useCallback(
     (text: string, options?: Record<string, unknown>) => {
-      return withLoadingState(() => MLApiClient.detectDepression(text, options));
+      return withLoadingState(() => apiClientInstance.detectDepression(text, options));
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   const assessRisk = useCallback(
     (text: string, riskType?: string, options?: Record<string, unknown>) => {
-      return withLoadingState(() => MLApiClient.assessRisk(text, riskType, options));
+      return withLoadingState(() => apiClientInstance.assessRisk(text, riskType, options));
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   const analyzeSentiment = useCallback(
     (text: string, options?: Record<string, unknown>) => {
-      return withLoadingState(() => MLApiClient.analyzeSentiment(text, options));
+      return withLoadingState(() => apiClientInstance.analyzeSentiment(text, options));
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   const analyzeWellnessDimensions = useCallback(
     (text: string, dimensions?: string[], options?: Record<string, unknown>) => {
       return withLoadingState(() =>
-        MLApiClient.analyzeWellnessDimensions(text, dimensions, options)
+        apiClientInstance.analyzeWellnessDimensions(text, dimensions, options)
       );
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   // Digital twin methods
@@ -81,10 +84,10 @@ export function useML() {
       options?: Record<string, unknown>
     ) => {
       return withLoadingState(() =>
-        MLApiClient.generateDigitalTwin(patientId, patientData, options)
+        apiClientInstance.generateDigitalTwin(patientId, patientData, options)
       );
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   const createDigitalTwinSession = useCallback(
@@ -95,75 +98,86 @@ export function useML() {
       sessionParams?: Record<string, unknown>
     ) => {
       return withLoadingState(() =>
-        MLApiClient.createDigitalTwinSession(therapistId, patientId, sessionType, sessionParams)
+        apiClientInstance.createDigitalTwinSession(
+          therapistId,
+          patientId,
+          sessionType,
+          sessionParams
+        )
       );
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   const getDigitalTwinSession = useCallback(
     (sessionId: string) => {
-      return withLoadingState(() => MLApiClient.getDigitalTwinSession(sessionId));
+      return withLoadingState(() => apiClientInstance.getDigitalTwinSession(sessionId));
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   const sendMessageToSession = useCallback(
     (
       sessionId: string,
       message: string,
-      senderId: string,
+      senderId?: string,
       senderType?: string,
       messageParams?: Record<string, unknown>
     ) => {
       return withLoadingState(() =>
-        MLApiClient.sendMessageToSession(sessionId, message, senderId, senderType, messageParams)
+        apiClientInstance.sendMessageToSession(
+          sessionId,
+          message,
+          senderId,
+          senderType,
+          messageParams
+        )
       );
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   const endDigitalTwinSession = useCallback(
     (sessionId: string, endReason?: string) => {
-      return withLoadingState(() => MLApiClient.endDigitalTwinSession(sessionId, endReason));
+      return withLoadingState(() => apiClientInstance.endDigitalTwinSession(sessionId, endReason));
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   const getSessionInsights = useCallback(
     (sessionId: string, insightType?: string) => {
-      return withLoadingState(() => MLApiClient.getSessionInsights(sessionId, insightType));
+      return withLoadingState(() => apiClientInstance.getSessionInsights(sessionId, insightType));
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   // PHI protection methods
   const detectPHI = useCallback(
     (text: string, detectionLevel?: string) => {
-      return withLoadingState(() => MLApiClient.detectPHI(text, detectionLevel));
+      return withLoadingState(() => apiClientInstance.detectPHI(text, detectionLevel));
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   const redactPHI = useCallback(
     (text: string, replacement?: string, detectionLevel?: string) => {
-      return withLoadingState(() => MLApiClient.redactPHI(text, replacement, detectionLevel));
+      return withLoadingState(() => apiClientInstance.redactPHI(text, replacement, detectionLevel));
     },
-    [withLoadingState]
+    [withLoadingState, apiClientInstance]
   );
 
   // Health check methods
   const checkMLHealth = useCallback(() => {
-    return withLoadingState(() => MLApiClient.checkMLHealth());
-  }, [withLoadingState]);
+    return withLoadingState(() => apiClientInstance.checkMLHealth());
+  }, [withLoadingState, apiClientInstance]);
 
   const checkPHIHealth = useCallback(() => {
-    return withLoadingState(() => MLApiClient.checkPHIHealth());
-  }, [withLoadingState]);
+    return withLoadingState(() => apiClientInstance.checkPHIHealth());
+  }, [withLoadingState, apiClientInstance]);
 
   return {
     // State
-    loading,
+    isLoading,
     error,
     resetError,
 
