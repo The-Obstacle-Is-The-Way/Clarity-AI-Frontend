@@ -9,7 +9,8 @@ import '@testing-library/jest-dom'; // Added 'within' import, removed fireEvent
 // Remove MemoryRouter import, it's provided by renderWithProviders
 import userEvent from '@testing-library/user-event';
 import Dashboard from '@pages/Dashboard'; // Use correct alias
-import { renderWithProviders } from '../../test/test-utils.unified'; // Use relative path
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { Card } from '@/presentation/atoms';
 
 import type * as ReactRouterDom from 'react-router-dom'; // Type import for mocking
 

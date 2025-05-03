@@ -5,10 +5,12 @@
 import { describe, it, expect, vi } from 'vitest';
 
 // Removed unused React import
-import { render, screen, waitFor } from '../../test/test-utils.unified'; // Use unified render and import waitFor
+import { renderWithProviders as render, screen, waitFor } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 // Removed unused userEvent import
 import BrainVisualizationPage from '@presentation/pages/BrainVisualizationPage'; // Corrected import path
 import { renderWithProviders } from '../../test/test-utils.unified';
+import { useBrainVisualizationContext } from '@application/context/BrainVisualizationContext';
+import { useBrainModel } from '@application/hooks/useBrainModel';
 
 // Mock the child component that uses R3F heavily
 vi.mock('@organisms/BrainVisualizationContainer', () => ({
