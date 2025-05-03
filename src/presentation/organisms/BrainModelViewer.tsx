@@ -14,7 +14,7 @@ import {
   // useContextBridge, // Removed - Not available in this version
 } from '@react-three/drei';
 import { Vector3 } from 'three'; // Removed unused Color, ShaderMaterial, AdditiveBlending, Group, Clock, Quaternion, Matrix4
-import { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls'; // <<< RESTORED IMPORT
+// import { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls'; // Cannot find module, removed
 import { Bloom, /* DepthOfField, */ EffectComposer } from '@react-three/postprocessing'; // Restored EffectComposer, Commented out DepthOfField due to TS2305
 import { KernelSize } from 'postprocessing'; // Restored import
 // Removed ThemeContext import as useContextBridge is unavailable
@@ -31,7 +31,7 @@ import NeuralConnections from '@presentation/molecules/NeuralConnections';
 // Import domain types
 import type { BrainModel, BrainRegion } from '@domain/types/brain/models'; // Restored BrainRegion
 // Removed unused import: import { NeuralConnection } from '@domain/types/brain/models';
-import type { ThemeSettings, VisualizationSettings } from '@domain/types/brain/visualization';
+import type { VisualizationSettings } from '@domain/types/brain/visualization';
 import {
   RenderMode,
   defaultVisualizationSettings, // Import defaults
@@ -92,7 +92,7 @@ const CameraController: React.FC<{
   initialTarget?: [number, number, number];
 }> = ({ onCameraMove, initialPosition = [0, 0, 10], initialTarget = [0, 0, 0] }) => {
   const { camera, gl } = useThree(); // <<< ADD gl needed for controls
-  const controlsRef = useRef<OrbitControlsImpl>(null); // <<< RESTORE specific type for ref
+  const controlsRef = useRef<any>(null); // <<< Use any for ref as OrbitControlsImpl is removed
 
   // Set initial camera position
   useEffect(() => {
@@ -169,7 +169,7 @@ const Brain3DScene: React.FC<{
   onConnectionHover,
 }) => {
   // Use the context hook to get detail config
-  const detailConfig = useDetailConfig();
+  // const detailConfig = useDetailConfig(); // Removed unused variable
   const { camera } = useThree(); // Get camera instance
 
   const safeRegions = brainModel.regions || [];
@@ -315,10 +315,10 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
   console.log('[BrainModelViewer] Visualization State Status:', visualizationState.status);
 
   // Removed ThemeContext and useContextBridge usage
-  const ContextBridge = ({ children }: { children: React.ReactNode }) => <>{children}</>; // Keep placeholder for now
+  // const ContextBridge = ({ children }: { children: React.ReactNode }) => <>{children}</>; // Removed unused variable
 
   // Removed themeSettings from context
-  const themeSettings = {}; // Placeholder - theme settings might need to be passed as props now
+  // const themeSettings = {}; // Removed unused variable
 
   // Merge incoming visualization settings with defaults and props
   const settings: VisualizationSettings = useMemo(() => {
@@ -442,7 +442,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
 
         {/* Wrap scene content in AdaptiveLOD */}
         <AdaptiveLOD
-          // forceDetailLevel={currentDetailLevel} // Removed invalid prop
+          // forceDetailLevel prop removed as it doesn't exist
           // Pass other AdaptiveLOD props if needed
         >
           {/* Brain model visualization - Now inside AdaptiveLOD */}

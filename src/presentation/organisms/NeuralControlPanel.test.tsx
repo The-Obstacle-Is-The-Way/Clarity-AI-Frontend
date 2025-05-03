@@ -6,14 +6,14 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { ReactNode } from 'react';
 
-import { screen, fireEvent } from '@testing-library/react';
+import { screen } from '@testing-library/react'; // Removed unused fireEvent
 import '@testing-library/jest-dom'; // Removed unused render, fireEvent
 // Removed unused React import
 // Removed unused userEvent import
 import { NeuralControlPanel } from './NeuralControlPanel'; // Corrected to named import
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
-import { BrainRegion } from '@/domain/types/brain/brainRegionTypes';
-import { type NeuralActivityLevel } from '@/domain/types/brain/activity';
+// Removed unused BrainRegion import
+// Removed unused NeuralActivityLevel import
 
 // Mock dependencies
 vi.mock('@presentation/atoms/Button', () => ({
@@ -218,11 +218,11 @@ describe('NeuralControlPanel', () => {
   // Add more component-specific tests
 
   // Mocks for context and child components
-  const mockSetRenderMode = vi.fn();
-  const mockSetSelectedRegion = vi.fn();
-  const mockSetActivityThreshold = vi.fn();
-  const mockContextValue = {
-    renderMode: 'surface',
-    selectedRegion: null,
-  };
+  // const mockSetRenderMode = vi.fn(); // Removed unused variable
+  // const mockSetSelectedRegion = vi.fn(); // Removed unused variable
+  // const mockSetActivityThreshold = vi.fn(); // Removed unused variable
+  // const mockContextValue = { // Removed unused variable
+  //   renderMode: 'surface',
+  //   selectedRegion: null,
+  // };
 });

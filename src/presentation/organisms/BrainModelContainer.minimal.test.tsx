@@ -115,7 +115,6 @@ vi.mock('./BrainModelContainer', () => ({
 
 // Now import the mocked component
 import BrainModelContainer from './BrainModelContainer';
-import { useBrainModel } from '@application/hooks/useBrainModel';
 
 describe('BrainModelContainer', () => {
   beforeEach(() => {

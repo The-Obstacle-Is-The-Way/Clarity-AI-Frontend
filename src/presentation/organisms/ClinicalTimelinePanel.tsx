@@ -12,10 +12,8 @@ import React, { useState, useCallback, useMemo } from 'react'; // Removed unused
 // Import named export from correct Shadcn path
 import { Button } from '@/components/ui/button';
 import { Badge } from "@/presentation/atoms"; // Use index
-import { Card } from "@/presentation/atoms"; // Removed unused CardHeader, CardTitle, CardContent, CardDescription
-import { ScrollArea } from "@/presentation/atoms"; // Removed unused ScrollBar
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/presentation/atoms"; // Use index
-import { ScrollArea, ScrollBar } from "@/presentation/atoms"; // Use index
+import { Card } from "@/presentation/atoms"; // Kept single Card import
+import { ScrollArea } from "@/presentation/atoms"; // Kept single ScrollArea import
 import {
   Select,
   SelectContent,
