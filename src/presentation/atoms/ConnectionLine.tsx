@@ -7,7 +7,7 @@ import React, { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber'; // Removed unused extend
 import * as THREE from 'three';
 // Named imports removed, using THREE namespace import above
-import type { ThemeSettings } from '@domain/types/brain/visualization';
+import type { VisualizationSettings } from '@domain/types/brain/visualization';
 // Neural-safe prop definition with explicit typing
 interface ConnectionLineProps {
   // Connection endpoints
@@ -39,8 +39,8 @@ interface ConnectionLineProps {
   isActive?: boolean;
   isHighlighted?: boolean;
 
-  // Theme settings
-  themeSettings: ThemeSettings;
+  // Visualization settings - Renamed for consistency
+  visualizationSettings: VisualizationSettings;
 
   // Interaction callbacks
   onClick?: (id: string) => void;
@@ -69,7 +69,7 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
   flowDirection = 'forward',
   isActive = false,
   isHighlighted = false,
-  themeSettings,
+  visualizationSettings,
   onClick,
   onHover,
 }) => {
@@ -146,18 +146,20 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
   // Calculate visual parameters
   const visualParams = useMemo(() => {
     // Base color with neural precision
-    let lineColor = color || themeSettings.connectionBaseColor;
+    let lineColor = color || visualizationSettings.connectionBaseColor;
     let lineThickness = thickness * (0.5 + strength * 0.5); // Scale by connection strength
     let lineOpacity = opacity * Math.max(0.3, strength); // Stronger connections more visible
 
     // Active state enhancement
     if (isActive) {
-      lineColor = themeSettings.activeConnectionColor || themeSettings.accentColor;
+      // Use highlight color for active connections if available, else keep base/mapped color
+      lineColor = visualizationSettings.highlightColor || lineColor;
       lineOpacity = Math.min(1, lineOpacity * 1.3);
     }
 
     // Highlight state enhancement
     if (isHighlighted) {
+      lineColor = visualizationSettings.highlightColor || lineColor;
       lineThickness *= 1.5;
       lineOpacity = Math.min(1, lineOpacity * 1.5);
     }
@@ -167,7 +169,15 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
       thickness: lineThickness,
       opacity: lineOpacity,
     };
-  }, [color, thickness, opacity, strength, isActive, isHighlighted, themeSettings]);
+  }, [
+    color,
+    thickness,
+    opacity,
+    strength,
+    isActive,
+    isHighlighted,
+    visualizationSettings,
+  ]);
 
   // Update material when visual parameters change
   useEffect(() => {

@@ -57,20 +57,26 @@ export class EnhancedMockApiClient implements IApiClient {
     details: any
   ): void {
     if (typeof window !== 'undefined' && this.auditEnabled) {
-      try {
-        // Use a relative path for the audit log endpoint if base URL is /api
-        axios.post('/api/audit-logs', {
-            action,
-            timestamp: new Date().toISOString(),
-            details,
-            userId: mockUser.id, // Use mock user ID
-          })
-          .catch(() => {
-            console.debug('[Mock Audit]', action, details);
-          });
-      } catch (e) {
-        console.debug('[Mock Audit]', action, details);
-      }
+      // Directly log to console for mock audit, avoid network call
+      console.debug('[Mock Audit]', action, {
+        details,
+        timestamp: new Date().toISOString(),
+        userId: mockUser.id, // Include mock user ID in log
+      });
+      // try {
+      //   // Use a relative path for the audit log endpoint if base URL is /api
+      //   axios.post('/api/audit-logs', {
+      //       action,
+      //       timestamp: new Date().toISOString(),
+      //       details,
+      //       userId: mockUser.id, // Use mock user ID
+      //     })
+      //     .catch(() => {
+      //       console.debug('[Mock Audit]', action, details);
+      //     });
+      // } catch (e) {
+      //   console.debug('[Mock Audit]', action, details);
+      // }
     } else {
       console.debug('[Mock Audit]', action, details);
     }
