@@ -9,7 +9,6 @@
 // Export components from their respective categories
 
 // Display Atoms
-export * from './display/alert'; // Note: Moved alert to feedback, keeping export path for now if desired, or change to './feedback/alert'
 export * from './display/Avatar';
 export * from './display/Badge';
 export * from './display/Card';
@@ -18,7 +17,7 @@ export * from './display/table';
 
 // Feedback Atoms
 export * from './feedback/ActivityIndicator';
-export * from './feedback/alert'; // Corrected location
+export * from './feedback/alert'; // Correct location
 export * from './feedback/LoadingIndicator';
 export * from './feedback/popover';
 export * from './feedback/progress';

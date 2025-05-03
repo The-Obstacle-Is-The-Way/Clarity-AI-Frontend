@@ -1,36 +1,28 @@
-import React, { useState, Suspense } from 'react'; // Removed unused useCallback
-
+import React, { useState, useEffect, useRef } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/presentation/atoms";
 import { useBrainVisualization } from '@hooks/useBrainVisualization';
 import { RenderMode } from '@domain/types/brain/visualization';
-import Card from '@presentation/atoms/Card';
-// Removed unused BrainVisualizationControls import
 import BrainVisualization from '@presentation/organisms/BrainVisualization';
+import BiometricMonitorPanel from "@presentation/organisms/BiometricMonitorPanel";
+import ClinicalTimelinePanel from "@presentation/organisms/ClinicalTimelinePanel";
 
 /**
  * DigitalTwin Demo Page
  * Demonstrates the brain visualization component with controls
  */
 const DigitalTwinDemo: React.FC = () => {
-  const [currentPatientId] = useState<string>('demo-patient'); // Removed unused setCurrentPatientId
-  const [renderMode] = useState<RenderMode>(RenderMode.ANATOMICAL); // Removed unused setRenderMode
+  const [currentPatientId] = useState<string>('demo-patient');
+  const [renderMode] = useState<RenderMode>(RenderMode.ANATOMICAL);
 
   const {
     brainModel,
-    // activeRegions, // Removed unused variable
-    // setActiveRegions, // Removed unused variable
     isLoading,
     error,
-    // resetView, // Removed unused variable
-    // setRenderMode: setVisualizationRenderMode, // Removed unused variable
   } = useBrainVisualization({
     patientId: currentPatientId,
     highlightActiveRegions: true,
     autoRotate: false,
   });
-
-  // Removed unused handleRegionToggle function
-
-  // Removed unused handleRenderModeChange function
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">
@@ -39,7 +31,6 @@ const DigitalTwinDemo: React.FC = () => {
       </h1>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        {/* Brain visualization container - larger portion */}
         <div className="lg:col-span-9">
           <Card className="h-[calc(100vh-200px)] min-h-[500px]">
             <Suspense
@@ -49,18 +40,11 @@ const DigitalTwinDemo: React.FC = () => {
                 </div>
               }
             >
-              <BrainVisualization
-              // patientId={currentPatientId} // Removed invalid prop
-              // initialActiveRegions={activeRegions} // Removed invalid prop
-              // renderMode={renderMode} // Removed invalid prop
-              // onRegionClick={handleRegionToggle} // Removed invalid prop
-              // height="100%" // Removed invalid prop
-              />
+              <BrainVisualization />
             </Suspense>
           </Card>
         </div>
 
-        {/* Controls - sidebar */}
         <div className="space-y-4 lg:col-span-3">
           <Card>
             <h2 className="mb-4 text-xl font-semibold">Digital Twin Details</h2>
@@ -81,8 +65,7 @@ const DigitalTwinDemo: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Model Version</h3>
-                  <p>{brainModel?.version || 'N/A'}</p>{' '}
-                  {/* Use version instead of non-existent metadata.modelVersion */}
+                  <p>{brainModel?.version || 'N/A'}</p>
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Regions</h3>
@@ -90,16 +73,11 @@ const DigitalTwinDemo: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Neural Pathways</h3>
-                  <p>{brainModel?.connections?.length || 0} connections mapped</p>{' '}
-                  {/* Use connections instead of non-existent pathways */}
+                  <p>{brainModel?.connections?.length || 0} connections mapped</p>
                 </div>
               </div>
             )}
           </Card>
-
-          {/* <BrainVisualizationControls
-            // Props removed as they were invalid or unused
-          /> */}
 
           <Card>
             <h2 className="mb-4 text-xl font-semibold">Visualization Legend</h2>
@@ -112,7 +90,7 @@ const DigitalTwinDemo: React.FC = () => {
                 <div className="mr-2 h-4 w-4 rounded-full bg-gray-500"></div>
                 <span>Inactive Region</span>
               </div>
-              {renderMode === RenderMode.FUNCTIONAL && ( // Corrected enum member
+              {renderMode === RenderMode.FUNCTIONAL && (
                 <div className="flex items-center">
                   <div className="mr-2 h-4 w-4 rounded-full bg-blue-500"></div>
                   <span>Activity Level</span>

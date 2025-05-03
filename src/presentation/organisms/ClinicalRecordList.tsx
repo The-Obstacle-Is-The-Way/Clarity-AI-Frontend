@@ -1,14 +1,20 @@
 // src/presentation/organisms/ClinicalRecordList.tsx
 import React, { useState } from 'react';
 import { useClinicalRecords } from '@application/hooks/useClinicalRecords';
-import { Alert, AlertDescription, AlertTitle } from '@presentation/atoms/alert';
-import { Skeleton } from '@presentation/atoms/skeleton';
-import { Button } from '@presentation/atoms/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@presentation/atoms/table";
+import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
+import { Skeleton } from '@/presentation/atoms';
+import { Button } from '@/presentation/atoms';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/presentation/atoms/display/table';
 import { Terminal, FileText } from 'lucide-react';
 import type { ClinicalRecord } from '@domain/clinical-records/clinicalRecordTypes';
-import { Badge } from "@presentation/atoms/Badge";
-import { format } from 'date-fns';
+import { ConfirmDialog } from '@/presentation/molecules/ConfirmDialog';
 
 interface ClinicalRecordListProps {
   /** The ID of the patient whose records are being displayed */
@@ -63,8 +69,7 @@ const ClinicalRecordList: React.FC<ClinicalRecordListProps> = ({
     }
 
     if (isError) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'An unknown error occurred.';
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
       return (
         <Alert variant="destructive" className="mt-4">
           <Terminal className="h-4 w-4" />
@@ -85,28 +90,24 @@ const ClinicalRecordList: React.FC<ClinicalRecordListProps> = ({
 
     // Display table with records
     return (
-        <Table className="mt-4">
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Summary</TableHead>
-                    {/* Add more columns as needed, e.g., Clinician */}
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {recordsData.records.map((record: ClinicalRecord) => (
-                    <TableRow key={record.id}>
-                        <TableCell>
-                            {new Date(record.record_date).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell>{record.record_type}</TableCell>
-                        <TableCell>{record.summary}</TableCell>
-                        {/* Add more cells */}
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+      <Table className="mt-4">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Date</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Summary</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {recordsData.records.map((record: ClinicalRecord) => (
+            <TableRow key={record.id}>
+              <TableCell>{new Date(record.record_date).toLocaleDateString()}</TableCell>
+              <TableCell>{record.record_type}</TableCell>
+              <TableCell>{record.summary}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     );
   };
 

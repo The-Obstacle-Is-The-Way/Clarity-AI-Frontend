@@ -10,9 +10,11 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Removed unused render, fireEvent
 import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from '../../test/test-utils.unified'; // Use unified render
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 import * as ReactQuery from '@tanstack/react-query'; // Import for mocking useQuery
 import * as ReactRouterDom from 'react-router-dom'; // Import for mocking
+import { usePatientList } from '@/application/hooks/usePatientList';
+import { Skeleton } from '@/presentation/atoms';
 
 // Mock react-query's useQuery hook
 vi.mock('@tanstack/react-query', async (importOriginal) => {

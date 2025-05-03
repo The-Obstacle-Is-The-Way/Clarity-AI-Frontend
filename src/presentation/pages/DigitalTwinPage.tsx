@@ -6,6 +6,12 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTheme } from '@application/context/ThemeContext';
+import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/presentation/atoms";
+import { Card, CardHeader, CardTitle, CardContent } from "@/presentation/atoms";
+import { ScrollArea, ScrollBar } from "@/presentation/atoms";
+import { Info, Settings, Brain, Zap, Heart } from 'lucide-react';
 
 // Neural visualization coordinator provider (Module missing)
 // import { VisualizationCoordinatorProvider } from "@application/coordinators/NeuralVisualizationCoordinator";
@@ -21,16 +27,8 @@ import ClinicalTimelinePanel from '@presentation/organisms/ClinicalTimelinePanel
 // UI components
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'; // Correct path
 import { Button } from '@/components/ui/button'; // Correct path
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@presentation/atoms/Tooltip'; // Assuming this path is correct
 // Removed unused Badge import
-import { Card } from '@/components/ui/card'; // Correct path
 // Removed unused Separator import
-import { ScrollArea } from '@/components/ui/scroll-area'; // Correct path
 
 // Layout components
 // import DashboardLayout from "@presentation/layouts/DashboardLayout"; // Module missing
@@ -38,8 +36,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'; // Correct path
 
 // Icons
 import {
-  Brain,
-  Settings,
   History,
   List,
   Database,

@@ -9,19 +9,19 @@ import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 // UI components
-import { Badge } from '@presentation/atoms/Badge';
-import Button from '@presentation/atoms/Button'; // Corrected to default import
+import { Badge } from "@/presentation/atoms";
+import { Button } from "@/presentation/atoms";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@presentation/atoms/Tooltip';
+} from "@/presentation/atoms";
 // Collapsible import removed as component doesn't exist at this path
 // Removed unused import: import Card from '@presentation/atoms/Card';
 
 // Icons
-import { ChevronDown, Clock, Brain } from 'lucide-react'; // Removed unused icons
+import { ChevronDown, Clock, Brain, Edit, Trash } from 'lucide-react'; // Removed unused icons
 
 // Domain types
 // Corrected path for clinical event types

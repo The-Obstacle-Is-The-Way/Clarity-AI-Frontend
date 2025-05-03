@@ -2,8 +2,8 @@
 import React from 'react';
 import { useForm, useFormContext, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createPatientSchema, type CreatePatientInput } from '@domain/patients/patientSchemas';
-import { Button } from "@presentation/atoms/button";
+import * as z from 'zod';
+import { Button } from "@/presentation/atoms";
 import {
   Form,
   FormControl,
@@ -12,15 +12,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@presentation/atoms/form"; // Assuming Shadcn form components
-import { Input } from "@presentation/atoms/input";
+} from "@/presentation/atoms"; // Use index named exports
+import { Input } from "@/presentation/atoms"; // Use index named exports
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@presentation/atoms/select"; // Assuming Shadcn select components
+} from "@/presentation/atoms"; // Use index named exports
+import { createPatientSchema, type CreatePatientInput } from '@domain/patients/patientSchemas';
 
 interface PatientFormProps {
   onSubmit: (data: CreatePatientInput) => void;

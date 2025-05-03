@@ -7,8 +7,9 @@
 import { describe, it, expect, vi } from 'vitest'; // Added vi
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import RiskAssessmentPanel from './RiskAssessmentPanel';
-import { renderWithProviders } from '../../test/test-utils.unified';
+import { RiskAssessmentPanel } from './RiskAssessmentPanel';
+import { type RiskFactor } from '@domain/risk-factors/riskFactorTypes'; // Assuming type location
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 import { RiskLevel, type RiskAssessment } from '@domain/types/clinical/risk';
 
 // Mock dependencies

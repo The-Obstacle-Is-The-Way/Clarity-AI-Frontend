@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
-
-import LoadingIndicator from '@atoms/LoadingIndicator';
-import BrainVisualizationContainer from '@organisms/BrainVisualizationContainer';
+import { usePatientDetail } from '@application/hooks/usePatientDetail'; // Assuming this exists
+import LoadingIndicator from "@/presentation/atoms/feedback/LoadingIndicator"; // Explicit default
+import BrainVisualizationContainer from '@presentation/organisms/BrainVisualizationContainer'; // Corrected alias/path
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient';
 import type { BrainRegion } from '@domain/types/brain/models'; // Import correct type
 import { ThemeWrapper } from '@presentation/templates/App';

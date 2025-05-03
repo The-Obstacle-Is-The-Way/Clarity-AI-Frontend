@@ -2,8 +2,8 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Button } from '@presentation/atoms/button';
+import * as z from 'zod';
+import { Button } from '@/presentation/atoms';
 import { useAuth } from '@application/context/AuthContext';
 
 // Define login form schema with Zod

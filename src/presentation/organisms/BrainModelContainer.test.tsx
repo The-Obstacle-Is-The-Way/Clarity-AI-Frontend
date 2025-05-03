@@ -5,8 +5,9 @@
 
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '../../test/test-utils.unified';
+import { render, screen } from '../../infrastructure/testing/utils/test-utils.unified';
 import BrainModelContainer from './BrainModelContainer';
+import { useBrainModel } from '@application/hooks/useBrainModel';
 
 // Mock React Three Fiber
 vi.mock('@react-three/fiber', () => ({

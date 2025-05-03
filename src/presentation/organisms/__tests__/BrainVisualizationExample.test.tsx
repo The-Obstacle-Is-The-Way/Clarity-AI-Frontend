@@ -15,7 +15,9 @@ import {
 // Removed unused React import
 // Import only the default export (the component)
 import BrainVisualization from '../BrainVisualization';
-import { renderWithProviders } from '../../../test/test-utils.unified';
+import { renderWithProviders } from '../../../infrastructure/testing/utils/test-utils.unified';
+import { useSearchParams } from 'react-router-dom';
+import { useBrainModel } from '@/application/hooks/useBrainModel';
 
 // Remove standalone mock component definition
 

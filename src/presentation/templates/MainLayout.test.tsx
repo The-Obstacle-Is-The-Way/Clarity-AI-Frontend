@@ -7,8 +7,9 @@ import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // render is imported from unified utils
 import React from 'react';
 import userEvent from '@testing-library/user-event';
+import { useAuth } from '@application/context/AuthContext';
 import MainLayout from './MainLayout'; // Assuming default export
-import { renderWithProviders as render } from '../../test/test-utils.unified'; // Use the unified render directly
+import { renderWithProviders as render } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 
 // Mock the useTheme hook directly
 vi.mock('@application/hooks/useTheme', () => ({

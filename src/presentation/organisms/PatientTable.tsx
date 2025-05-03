@@ -1,19 +1,13 @@
 // src/presentation/organisms/PatientTable.tsx
 import React from 'react';
 import type { Patient } from '@domain/patients/patientTypes';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@presentation/atoms/table'; // Assuming Shadcn table components are atoms
-import { Badge } from '@presentation/atoms/badge'; // Assuming Badge atom
-import { Skeleton } from "@presentation/atoms/skeleton"; // Assuming Skeleton atom
+import { format } from 'date-fns';
+import { Button } from "@/presentation/atoms";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/presentation/atoms"; // Use index
+import { Badge } from "@/presentation/atoms"; // Use index
+import { Skeleton } from "@/presentation/atoms"; // Use index
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@presentation/utils/cn'; // Assuming cn utility exists
+import { cn } from '@/lib/utils';
 
 interface PatientTableProps {
   patients: Patient[];

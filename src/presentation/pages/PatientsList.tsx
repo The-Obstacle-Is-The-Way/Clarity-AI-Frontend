@@ -6,7 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import type { PatientModel } from '@domain/models/clinical/patient-model';
 import { createPatientModel } from '@domain/models/clinical/patient-model'; // Ensure factory is imported
 // Removed unused RiskLevel import
-import { Button } from '@presentation/atoms/button';
+import { Button } from '@/presentation/atoms';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/presentation/atoms";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/presentation/atoms";
+import { usePatients } from "@application/hooks/usePatients";
 
 const PatientsList: React.FC = () => {
   const navigate = useNavigate();

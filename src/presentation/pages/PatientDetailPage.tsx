@@ -8,10 +8,10 @@ import PatientDetailCard from '@presentation/organisms/PatientDetailCard';
 import PatientForm from '@presentation/organisms/PatientForm';
 import { ConfirmDialog } from '@presentation/molecules/ConfirmDialog';
 import ClinicalRecordList from '@presentation/organisms/ClinicalRecordList';
-import { Alert, AlertDescription, AlertTitle } from '@presentation/atoms/alert';
-import { Skeleton } from '@presentation/atoms/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
+import { Skeleton } from '@/presentation/atoms';
 import { Terminal, ArrowLeft, Edit, X, Trash2 } from 'lucide-react';
-import { Button } from '@presentation/atoms/button';
+import { Button } from '@/presentation/atoms';
 import type { UpdatePatientInput } from '@domain/patients/patientSchemas';
 
 /**

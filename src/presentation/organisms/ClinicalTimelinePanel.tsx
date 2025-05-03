@@ -6,23 +6,22 @@
  */
 
 import React, { useState, useCallback, useMemo } from 'react'; // Removed unused useEffect
-import { cn } from '@application/utils/cn';
+import { cn } from '@/lib/utils';
 
 // UI components
 // Correct import paths for Shadcn components
 // Import named export from correct Shadcn path
 import { Button } from '@/components/ui/button';
-import { Badge } from '@presentation/atoms/badge';
-import Card from '@presentation/atoms/Card'; // Use default import
-// Correct import path for Shadcn component
-import { ScrollArea } from '@presentation/atoms/scroll-area';
+import { Badge } from "@/presentation/atoms"; // Use index
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/presentation/atoms"; // Use index
+import { ScrollArea, ScrollBar } from "@/presentation/atoms"; // Use index
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@presentation/atoms/select'; // Correct import path
+} from "@/presentation/atoms"; // Use index
 
 // Icons
 import {

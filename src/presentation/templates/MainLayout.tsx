@@ -1,7 +1,8 @@
 import React, { type ReactNode } from 'react';
 import { useAuth } from '@application/context/AuthContext';
-import { Button } from '@presentation/atoms/button'; // Assuming Button atom exists
-import { LogOut } from 'lucide-react'; // Using lucide icon
+import { ThemeToggle } from '@/presentation/molecules/ThemeToggle';
+import { Button } from '@/presentation/atoms'; // Corrected import
+import { User, LogOut, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface MainLayoutProps {

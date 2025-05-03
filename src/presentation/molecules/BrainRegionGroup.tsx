@@ -5,10 +5,10 @@
  * with neural clustering and spatial organization
  */
 
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, memo } from 'react';
 // Removed unused Instance, Instances imports
 // Removed unused THREE import
-import RegionMesh from '@presentation/atoms/RegionMesh';
+import RegionMesh from "@/presentation/atoms/data-visualization/RegionMesh"; // Use default import
 import type { BrainRegion } from '@domain/types/brain/models';
 // import type { ThemeSettings } from '@domain/types/brain/visualization'; // Removed
 import type { VisualizationSettings } from '@domain/types/brain/visualization'; // Added
@@ -17,6 +17,7 @@ import { SafeArray } from '../../domain/types/shared/common'; // Use relative pa
 // @ts-ignore: TS2305 - Module '"@react-three/drei"' has no exported member 'Html'. (Likely type/config issue)
 import { Html } from '@react-three/drei'; // Added missing import
 // Do not import Three.js geometries - use them directly in R3F JSX
+import { Group } from 'three';
 
 // Neural-safe prop definition with explicit typing
 interface BrainRegionGroupProps {
@@ -337,4 +338,4 @@ const BrainRegionGroup: React.FC<BrainRegionGroupProps> = ({
   );
 };
 
-export default React.memo(BrainRegionGroup);
+export default memo(BrainRegionGroup);

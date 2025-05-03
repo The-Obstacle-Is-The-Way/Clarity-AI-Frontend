@@ -9,7 +9,7 @@ import '@testing-library/jest-dom'; // Import waitFor
 // Removed unused userEvent import
 // Removed unused TooltipProvider import
 import { ClinicalMetricsPanel } from './ClinicalMetricsPanel';
-import { renderWithProviders } from '../../test/test-utils.unified'; // Import the correct render function
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 
 // Remove local mocks - rely on actual components and global setup
 

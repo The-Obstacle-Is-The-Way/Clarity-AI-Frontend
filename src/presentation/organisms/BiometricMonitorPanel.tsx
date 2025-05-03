@@ -7,7 +7,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion'; // Removed unused AnimatePresence
-import { cn } from '@application/utils/cn';
+import { cn } from '@/lib/utils';
 
 // Neural visualization coordinator
 // import { useVisualizationCoordinator } from "@application/coordinators/NeuralVisualizationCoordinator"; // Module missing
@@ -17,19 +17,12 @@ import { cn } from '@application/utils/cn';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button'; // Correct path and named import
 // Removed unused Tooltip imports
-import { Badge } from '@presentation/atoms/Badge'; // Assuming this path is correct
+import { Badge } from "@/presentation/atoms"; // Use index
 // Correct import path for Shadcn Card components
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@presentation/atoms/Card"; // Corrected path
-import { ScrollArea } from "@presentation/atoms/scroll-area"; // Corrected path
-import { Progress } from "@presentation/atoms/progress"; // Corrected path
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@presentation/atoms/Tooltip"; // Corrected path
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/presentation/atoms"; // Use index
+import { ScrollArea, ScrollBar } from "@/presentation/atoms"; // Use index
+import { Progress } from "@/presentation/atoms"; // Use index
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/presentation/atoms"; // Use index
 
 // Icons
 import {
@@ -51,7 +44,13 @@ import {
   Dna,
   Microscope,
   PulseIcon,
-  Clock
+  Clock,
+  Maximize2,
+  Monitor,
+  BarChart3,
+  RefreshCw,
+  Zap,
+  Info
 } from 'lucide-react';
 
 // Domain types

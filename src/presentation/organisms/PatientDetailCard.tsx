@@ -1,14 +1,9 @@
 // src/presentation/organisms/PatientDetailCard.tsx
 import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/presentation/atoms";
+import { Badge } from "@/presentation/atoms";
+import { cn } from '@/lib/utils';
 import type { Patient } from '@domain/patients/patientTypes';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@presentation/atoms/card";
-import { Badge } from "@presentation/atoms/badge";
 
 interface PatientDetailCardProps {
   patient: Patient;

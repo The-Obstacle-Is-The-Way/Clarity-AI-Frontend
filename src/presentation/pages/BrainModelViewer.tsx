@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react'; // Removed unused useCallback
-
-// Removed unused useTheme import
+import React, { Suspense, useRef, useState, useEffect } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Environment, AdaptiveDpr, PerformanceMonitor } from '@react-three/drei';
+import { Button } from "@/presentation/atoms"; // Corrected import
+import BrainModelContainer from '@presentation/organisms/BrainModelContainer';
+import VisualizationErrorBoundary from '@/presentation/common/VisualizationErrorBoundary';
+import { LoadingIndicator } from '@/presentation/atoms'; // Corrected import
+import { useBrainModel } from '@application/context/BrainModelContext';
 import { useBrainVisualization } from '@hooks/useBrainVisualization';
 import type { BrainRegion } from '@domain/types/brain/models'; // Corrected import path
 import type { RenderMode } from '@domain/types/brain/visualization'; // Keep this correct import
 // Remove potentially conflicting import if it exists elsewhere
-import Button from '@presentation/atoms/Button'; // Ensure correct casing
 
 interface BrainModelViewerProps {
   patientId?: string;

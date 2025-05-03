@@ -1,8 +1,10 @@
 /* eslint-disable */
 import React, { useState } from 'react';
+import { Brain, Monitor, BarChart3, Info } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
-import { Button } from '@presentation/atoms/button';
+import { Button } from "@/presentation/atoms";
 import ClinicalMetricsGroup from '@presentation/molecules/ClinicalMetricsCard';
 
 import BrainVisualization from '@presentation/organisms/BrainVisualization';

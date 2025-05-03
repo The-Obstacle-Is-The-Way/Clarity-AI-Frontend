@@ -20,8 +20,8 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@presentation/atoms/Tooltip'; // Assuming this path is correct
-import { Badge } from '@presentation/atoms/Badge'; // Assuming this path is correct
+} from '@/presentation/atoms'; // Use index
+import { Badge } from '@/presentation/atoms'; // Use index
 import {
   Card,
   CardContent,
@@ -29,9 +29,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@presentation/atoms/Card"; // Corrected path
+} from "@/presentation/atoms"; // Use index
 // Removed unused ScrollArea import
-import { Progress } from "@presentation/atoms/progress"; // Corrected path
+import { Progress } from "@/presentation/atoms"; // Use index
 
 // Icons
 import {

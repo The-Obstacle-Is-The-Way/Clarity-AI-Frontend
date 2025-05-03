@@ -2,13 +2,12 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import PatientForm from '@presentation/organisms/PatientForm';
-import { useCreatePatient } from '@application/hooks/useCreatePatient';
+import { useCreatePatient } from '@application/hooks/usePatients';
 import type { CreatePatientInput } from '@domain/patients/patientSchemas';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@presentation/atoms/card";
-import { Button } from "@presentation/atoms/button";
-import { ArrowLeft } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from "@presentation/atoms/alert"
-import { Terminal } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/presentation/atoms";
+import { Button } from "@/presentation/atoms";
+import { ArrowLeft, Terminal } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from "@/presentation/atoms";
 
 /**
  * Renders the page for creating a new patient.

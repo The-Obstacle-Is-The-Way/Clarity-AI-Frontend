@@ -9,8 +9,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'; // Updated import path
-import { Button } from '@presentation/atoms/button'; // Adjust path if needed
+} from "@radix-ui/react-alert-dialog";
+import { Button } from "@/presentation/atoms"; // Corrected import
 
 interface ConfirmDialogProps {
   /** Whether the dialog is currently open */

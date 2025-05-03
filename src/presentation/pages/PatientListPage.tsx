@@ -2,12 +2,13 @@
 import React, { useState } from 'react';
 import { usePatients } from '@application/hooks/usePatients';
 import PatientTable from '@presentation/organisms/PatientTable';
-import { Button } from '@presentation/atoms/button';
-import { Input } from '@presentation/atoms/input';
-import { Alert, AlertDescription, AlertTitle } from '@presentation/atoms/alert';
+import { Button } from '@/presentation/atoms';
+import { Input } from '@/presentation/atoms';
+import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
 import { Terminal, PlusCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { PaginatedPatientsResponse } from '@domain/patients/patientTypes';
+import { usePatientStore } from '@/application/stores/patientStore';
 
 /**
  * Renders the page displaying a list of patients.

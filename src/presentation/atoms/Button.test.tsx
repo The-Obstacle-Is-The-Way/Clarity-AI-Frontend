@@ -1,7 +1,7 @@
 import React from 'react';
-import { screen, render, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { renderWithProviders } from '../../test/test-utils.unified';
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified';
 import { Button, buttonVariants } from './button';
 import { vi } from 'vitest';
 
@@ -14,7 +14,7 @@ vi.mock('@radix-ui/react-slot', () => ({
   }: {
     children: React.ReactNode;
     className?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   }) => (
     <div data-testid="slot-component" className={className} {...props}>
       {children}

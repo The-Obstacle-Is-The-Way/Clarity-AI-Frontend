@@ -6,10 +6,9 @@
 
 import React from 'react'; // Removed unused useMemo
 import { motion } from 'framer-motion';
-
-// UI components
-import Avatar from '@presentation/atoms/Avatar'; // Corrected to default import
-import { Badge } from '@presentation/atoms/Badge';
+import { useAuth } from '@application/context/AuthContext';
+import Avatar from "@/presentation/atoms/display/Avatar"; // Explicit default import
+import { Badge } from "@/presentation/atoms"; // Use index import
 // Removed unused Button import
 // Removed unused Tooltip imports
 

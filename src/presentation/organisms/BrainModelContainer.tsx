@@ -49,7 +49,7 @@ import RegionSelectionPanel from '@presentation/molecules/RegionSelectionPanel';
 import VisualizationControls from '@presentation/molecules/VisualizationControls';
 import ClinicalDataOverlay from '@presentation/molecules/ClinicalDataOverlay';
 import BrainRegionDetails from '@presentation/molecules/BrainRegionDetails';
-import LoadingIndicator from '@presentation/atoms/LoadingIndicator'; // Correct component name and path
+import LoadingIndicator from "@/presentation/atoms/feedback/LoadingIndicator"; // Explicit default
 // import ErrorMessage from "@presentation/atoms/ErrorMessage"; // Component doesn't exist
 
 // Define neural-safe prop interface

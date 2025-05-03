@@ -10,7 +10,9 @@ import '@testing-library/jest-dom'; // Removed unused render, fireEvent
 // Removed unused React import
 // Removed unused userEvent import
 import { NeuralControlPanel } from './NeuralControlPanel'; // Corrected to named import
-import { renderWithProviders } from '../../test/test-utils.unified'; // Correct import path
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { BrainRegion } from '@/domain/types/brain/brainRegionTypes';
+import { type NeuralActivityLevel } from '@/domain/types/brain/activity';
 
 // Mock dependencies
 vi.mock('@presentation/atoms/Button', () => ({

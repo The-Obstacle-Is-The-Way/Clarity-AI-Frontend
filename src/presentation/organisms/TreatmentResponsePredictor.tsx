@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { z } from 'zod';
+import { Button } from "@/presentation/atoms";
 
 import { useTreatmentPrediction } from '@hooks/useTreatmentPrediction';
 import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
-import { Button } from '@presentation/atoms/Button';
+import {
+  Card,
+  CardContent,
+} from '@presentation/atoms/Card';
 
 interface TreatmentResponsePredictorProps {
   patientId: string;
