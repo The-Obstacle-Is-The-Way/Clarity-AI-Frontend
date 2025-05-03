@@ -8,7 +8,7 @@ import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // render is imported from unified utils, Removed unused fireEvent
 import React from 'react';
 // Removed unused userEvent import
-import { ErrorBoundary } from './ErrorBoundary';
+import ErrorBoundary from './ErrorBoundary'; // Reverted to default import
 import { AuditLogClient } from '@/infrastructure/services/AuditLogClient';
 import { render } from '../../infrastructure/testing/utils/test-utils.unified';
 

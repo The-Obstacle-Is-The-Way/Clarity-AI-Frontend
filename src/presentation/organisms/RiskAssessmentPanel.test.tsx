@@ -8,7 +8,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { RiskAssessmentPanel } from './RiskAssessmentPanel';
+import RiskAssessmentPanel from './RiskAssessmentPanel';
 import { type RiskFactor } from '@domain/risk-factors/riskFactorTypes'; // Assuming type location
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 import { RiskLevel, type RiskAssessment } from '@domain/types/clinical/risk'; // Found and added correct import path
