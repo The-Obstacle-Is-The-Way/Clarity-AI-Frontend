@@ -1,8 +1,15 @@
+/**
+ * NOVAMIND Global Test Setup
+ * Configures the testing environment with quantum precision
+ */
+
 // src/test/setup.ts - Test environment setup
 import 'whatwg-fetch'; // Polyfill for fetch in test environment
 import { server } from './mocks/server';
 import { vi, beforeAll, afterEach, afterAll, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
+
+// Extend Vitest's expect
 
 // Mock localStorage
 const localStorageMock = {
