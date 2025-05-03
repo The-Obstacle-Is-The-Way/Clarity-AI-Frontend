@@ -143,6 +143,21 @@ export class MockWebGLRenderingContext {
     this.canvas = canvas;
   }
 
+  // Return WebGL context attributes
+  getContextAttributes(): WebGLContextAttributes {
+    return {
+      alpha: true,
+      antialias: true,
+      depth: true,
+      failIfMajorPerformanceCaveat: false,
+      powerPreference: 'default',
+      premultipliedAlpha: true,
+      preserveDrawingBuffer: false,
+      stencil: true,
+      desynchronized: false
+    };
+  }
+
   // Mock method implementation with tracking
   getExtension(extensionName: string): unknown {
     // Add mock getExtension
@@ -234,6 +249,14 @@ export class MockWebGLRenderingContext {
     return texture;
   }
 
+  // Framebuffer methods
+  // eslint-disable-next-line
+  createFramebuffer(): Record<string, unknown> {
+    const framebuffer = {};
+    this.framebuffers.push(framebuffer);
+    return framebuffer;
+  }
+
   bindTexture(): void {}
   texImage2D(): void {}
   texParameteri(): void {}
@@ -265,6 +288,9 @@ export class MockWebGLRenderingContext {
   clear(): void {}
   clearColor(): void {}
   clearDepth(): void {}
+  clearStencil(): void {}
+  frontFace(): void {}
+  cullFace(): void {}
   disable(): void {}
   enable(): void {}
   blendFunc(): void {}
