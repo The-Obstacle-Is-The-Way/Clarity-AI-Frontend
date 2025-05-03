@@ -1,9 +1,6 @@
 // src/infrastructure/api/patientService.ts
 import { apiClient } from './ApiGateway';
-import type {
-  Patient,
-  PaginatedPatientsResponse,
-} from '@domain/patients/patientTypes';
+import type { Patient, PaginatedPatientsResponse } from '@domain/patients/patientTypes';
 
 /**
  * Fetches a list of patients from the API, potentially with pagination.
@@ -13,11 +10,13 @@ import type {
  * @param params.search - Optional search term.
  * @returns A promise resolving to the paginated patient data.
  */
-export const getPatients = async (params: {
-  page?: number;
-  limit?: number;
-  search?: string;
-} = {}): Promise<PaginatedPatientsResponse> => {
+export const getPatients = async (
+  params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+  } = {}
+): Promise<PaginatedPatientsResponse> => {
   // Default pagination values if not provided
   const queryParams = {
     page: params.page ?? 1,
@@ -26,12 +25,14 @@ export const getPatients = async (params: {
   };
 
   try {
-    // Adjust the endpoint based on the confirmed backend API structure
-    // Assuming the backend returns data in the PaginatedPatientsResponse structure
-    const response = await apiClient.get<PaginatedPatientsResponse>('/api/v1/patients', {
-    const response = await apiClient.get<PaginatedPatientsResponse>('/patients', {
-      params: queryParams,
-    });
+    // NOTE: Backend currently lacks list endpoint; this call will 404 until fixed.
+    const response = await apiClient.get<PaginatedPatientsResponse>(
+      '/api/v1/patients',
+      {
+        params: queryParams,
+      }
+    );
+
     return response; // apiClient should ideally return the parsed data directly
   } catch (error) {
     console.error('Failed to fetch patients:', error);
@@ -53,7 +54,10 @@ export const updatePatient = async (patientId: string, patientData: Partial<Omit
   }
   try {
     // Adjust endpoint and HTTP method (PUT or PATCH) as needed
-    const response = await apiClient.put<Patient>(`/patients/${patientId}`, patientData);
+    const response = await apiClient.put<Patient>(
+      `/api/v1/patients/${patientId}`,
+      patientData
+    );
     return response;
   } catch (error) {
     console.error(`Failed to update patient with ID ${patientId}:`, error);
@@ -69,7 +73,10 @@ export const updatePatient = async (patientId: string, patientData: Partial<Omit
 export const createPatient = async (patientData: Omit<Patient, 'id' | 'created_at' | 'updated_at'>): Promise<Patient> => {
   try {
     // Adjust endpoint as needed
-    const response = await apiClient.post<Patient>('/patients', patientData);
+    const response = await apiClient.post<Patient>(
+      '/api/v1/patients',
+      patientData
+    );
     return response;
   } catch (error) {
     console.error('Failed to create patient:', error);
@@ -88,7 +95,9 @@ export const getPatientById = async (patientId: string): Promise<Patient> => {
   }
   try {
     // Adjust endpoint as needed
-    const response = await apiClient.get<Patient>(`/patients/${patientId}`);
+    const response = await apiClient.get<Patient>(
+      `/api/v1/patients/${patientId}`
+    );
     return response;
   } catch (error) {
     console.error(`Failed to fetch patient with ID ${patientId}:`, error);
@@ -108,7 +117,7 @@ export const deletePatient = async (patientId: string): Promise<void> => {
   }
   try {
     // Adjust endpoint as needed
-    await apiClient.delete(`/patients/${patientId}`);
+    await apiClient.delete(`/api/v1/patients/${patientId}`);
     // DELETE requests often return 204 No Content, so no response body is expected.
   } catch (error) {
     console.error(`Failed to delete patient with ID ${patientId}:`, error);
