@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Visualization
+ * CLARITY-AI Neural Visualization
  * BrainRegionLabels Molecular Component - clinical region annotation with quantum precision
  */
 
