@@ -32,7 +32,7 @@ vi.mock('@/components/ui/checkbox', () => ({
 vi.mock('@/components/ui/select', () => ({
   Select: ({
     children,
-    _onValueChange,
+    onValueChange: _onValueChange,
     ...props
   }: React.ComponentProps<'select'> & { onValueChange?: (value: string) => void }) => (
     <select {...props}>{children}</select>
