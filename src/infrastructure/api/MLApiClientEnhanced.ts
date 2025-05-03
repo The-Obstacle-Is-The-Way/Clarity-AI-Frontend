@@ -13,8 +13,8 @@
  * and monitoring capabilities for production usage.
  */
 
-import { MLApiClient } from './MLApiClient';
 import { ApiClient } from './apiClient';
+import type { IMLClient } from './IMLClient';
 
 // Error classification for better handling
 export enum MLErrorType {
@@ -79,7 +79,7 @@ export class MLApiError extends Error {
  * Enhanced ML API client with production-grade resilience
  */
 export class MLApiClientEnhanced {
-  private client: MLApiClient;
+  private client: IMLClient;
   private retryConfig: RetryConfig;
 
   constructor(apiClient: ApiClient) {
