@@ -70,7 +70,7 @@ vi.mock('@react-spring/three', () => {
       get: function (_target, prop) {
         const MockComponent = React.forwardRef<unknown, MockAnimatedProps>(
           (props: MockAnimatedProps, _ref) => {
-            return React.createElement(React.Fragment, null, props.children);
+            return React.createElement('div', { 'data-testid': 'mock-animated-mesh' }, props.children);
           }
         );
         MockComponent.displayName = `mockAnimated.${String(prop)}`;
@@ -92,11 +92,11 @@ import { Vector3 } from 'three';
 describe('RegionSelectionIndicator', () => {
   it('renders the mock mesh when selected', () => {
     render(<RegionSelectionIndicator position={new Vector3(0, 0, 0)} scale={1} selected={true} />);
-    expect(screen.getByTestId('mock-animated-mesh')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-animated-mesh')).toBeTruthy();
   });
 
   it('renders the mock mesh when not selected', () => {
     render(<RegionSelectionIndicator position={new Vector3(0, 0, 0)} scale={1} selected={false} />);
-    expect(screen.getByTestId('mock-animated-mesh')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-animated-mesh')).toBeTruthy();
   });
 });
