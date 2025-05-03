@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * Chart testing with quantum precision
  */
 import React from 'react';
@@ -11,8 +11,8 @@ import '@testing-library/jest-dom'; // render is imported from unified utils, re
 // Removed unused userEvent import
 import { Chart } from './Chart';
 import { render } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
-import { useAuth } from '@/application/context/AuthContext';
-import { Alert } from '@/presentation/atoms';
+// import { useAuth } from '@/application/context/AuthContext'; // Removed unused import
+// import { Alert } from '@/presentation/atoms'; // Removed unused import
 
 // Mock data with clinical precision
 // Mock data with clinical precision - Requires specific props for Chart

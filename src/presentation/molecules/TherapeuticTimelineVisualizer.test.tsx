@@ -1,9 +1,9 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * TherapeuticTimelineVisualizer test with clinical precision
  */
-// Removed unused React import (new JSX transform)
-import { describe, it, expect } from 'vitest';
+import React from 'react';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TherapeuticTimelineVisualizer from './TherapeuticTimelineVisualizer';

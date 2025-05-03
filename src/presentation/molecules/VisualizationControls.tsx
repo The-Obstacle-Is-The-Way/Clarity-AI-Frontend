@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Visualization
+ * CLARITY-AI Neural Visualization
  * VisualizationControls Molecular Component - clinical interface for visualization parameters
  * with quantum-level precision and neuropsychiatric awareness
  */

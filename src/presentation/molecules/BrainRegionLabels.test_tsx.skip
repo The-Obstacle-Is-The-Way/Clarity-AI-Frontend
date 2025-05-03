@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * BrainRegionLabels testing - Minimal existence check
  */
 import { describe, it, expect } from 'vitest';

@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Architecture
+ * CLARITY-AI Neural Architecture
  * Placeholder component for strategic testing
  */
 import React from 'react';

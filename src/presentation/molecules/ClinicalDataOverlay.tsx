@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Visualization
+ * CLARITY-AI Neural Visualization
  * ClinicalDataOverlay Molecular Component - neuropsychiatric clinical metrics
  * with HIPAA-compliant data presentation and quantum-level precision
  */
