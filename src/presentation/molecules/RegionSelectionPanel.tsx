@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Visualization
+ * CLARITY-AI Neural Visualization
  * RegionSelectionPanel Molecular Component - interface for neural region selection
  * with clinical precision and anatomical organization
  */
