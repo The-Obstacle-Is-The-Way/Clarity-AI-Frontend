@@ -1,34 +1,49 @@
 // src/presentation/pages/PatientDetailPage.test.tsx
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import PatientDetailPage from './PatientDetailPage';
-import { usePatientDetail } from '@application/hooks/usePatientDetail';
-import { useUpdatePatient } from '@application/hooks/useUpdatePatient'; // Import update hook
+import { usePatientDetail } from '../../application/hooks/usePatientDetail';
+import { useUpdatePatient } from '../../application/hooks/useUpdatePatient';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { MemoryRouter, Route, Routes } from 'react-router-dom'; // Use MemoryRouter
-import type { Patient } from '@domain/patients/patientTypes';
-import { useDeletePatient } from '@application/hooks/useDeletePatient'; // Correct path
-import { useParams } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import type { Patient } from '../../domain/patients/patientTypes';
 
 // Mock dependencies
 vi.mock('@application/hooks/usePatientDetail');
-vi.mock('@application/hooks/useUpdatePatient'); // Mock update hook
+vi.mock('@application/hooks/useUpdatePatient');
 vi.mock('@presentation/organisms/PatientDetailCard', () => ({
   default: ({ patient }: { patient: Patient }) => (
-    <div data-testid="patient-detail-card">Patient: {patient.first_name} {patient.last_name}</div>
+    <div data-testid="patient-detail-card">
+      Patient: {patient.first_name} {patient.last_name}
+    </div>
   ),
 }));
 vi.mock('@presentation/organisms/PatientForm', () => ({
   // Mock form that captures onSubmit and defaultValues
-  default: ({ onSubmit, isLoading, defaultValues }: { onSubmit: (data: any) => void; isLoading: boolean; defaultValues?: any }) => (
-    <form data-testid="mock-patient-form" onSubmit={(e) => {
+  default: ({
+    onSubmit,
+    isLoading,
+    defaultValues,
+  }: {
+    onSubmit: (data: Record<string, unknown>) => void;
+    isLoading: boolean;
+    defaultValues?: Record<string, unknown>;
+  }) => (
+    <form
+      data-testid="mock-patient-form"
+      onSubmit={(e) => {
         e.preventDefault();
         // Simulate submitting updated data (can be simple)
         onSubmit({ ...defaultValues, first_name: 'Updated Name' });
-    }}>
-      <div data-testid="form-default-values">{JSON.stringify(defaultValues)}</div>
-      <button type="submit" disabled={isLoading}>Submit Update</button>
+      }}
+    >
+      <div data-testid="form-default-values">
+        {JSON.stringify(defaultValues)}
+      </div>
+      <button type="submit" disabled={isLoading}>
+        Submit Update
+      </button>
     </form>
   ),
 }));
@@ -49,7 +64,7 @@ const renderWithProvidersAndRoutes = (initialEntries: string[]) => {
   );
 };
 
-describe.skip('PatientDetailPage', () => {
+describe('PatientDetailPage', () => {
   const mockUsePatientDetail = usePatientDetail as jest.Mock;
   const mockMutate = vi.fn();
   const mockUseUpdatePatient = useUpdatePatient as jest.Mock;
