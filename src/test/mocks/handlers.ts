@@ -1,37 +1,16 @@
 // src/test/mocks/handlers.ts
 import { http, HttpResponse } from 'msw';
+import { authHandlers } from '../../infrastructure/mocks/handlers/authHandlers'; // Import the new handlers
 
 // Define handlers for your API endpoints
 export const handlers = [
-  // Auth endpoints
-  http.post('/api/v1/auth/login', () => {
-    return HttpResponse.json({
-      access_token: 'fake-jwt-token',
-      refresh_token: 'fake-refresh-token',
-      user: {
-        id: '123',
-        email: 'test@example.com',
-        name: 'Test User',
-        role: 'doctor'
-      }
-    }, { status: 200 });
-  }),
-  
-  // Add the new handler for /auth/me
-  http.get('/api/v1/auth/me', () => {
-    return HttpResponse.json(
-      {
-        id: 'mock-user-id',
-        email: 'mockuser@novamind.ai',
-        name: 'Mock User',
-        role: 'doctor', // Assuming a default role for tests
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      { status: 200 }
-    );
-  }),
-  
+  // Use the imported auth handlers
+  ...authHandlers,
+
+  // Remove old / duplicated auth handlers
+  // http.post('/api/v1/auth/login', ...) // REMOVED
+  // http.get('/api/v1/auth/me', ...) // REMOVED
+
   // Patient endpoints
   http.get('/api/v1/patients', () => {
     return HttpResponse.json({
