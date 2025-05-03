@@ -14,6 +14,7 @@ import {
   // useContextBridge, // Removed - Not available in this version
 } from '@react-three/drei';
 import { Vector3 } from 'three'; // Removed unused Color, ShaderMaterial, AdditiveBlending, Group, Clock, Quaternion, Matrix4
+import { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls'; // <<< RESTORED IMPORT
 import { Bloom, /* DepthOfField, */ EffectComposer } from '@react-three/postprocessing'; // Restored EffectComposer, Commented out DepthOfField due to TS2305
 import { KernelSize } from 'postprocessing'; // Restored import
 // Removed ThemeContext import as useContextBridge is unavailable
@@ -90,8 +91,8 @@ const CameraController: React.FC<{
   initialPosition?: [number, number, number];
   initialTarget?: [number, number, number];
 }> = ({ onCameraMove, initialPosition = [0, 0, 10], initialTarget = [0, 0, 0] }) => {
-  const { camera } = useThree();
-  const controlsRef = useRef<any>(null);
+  const { camera, gl } = useThree(); // <<< ADD gl needed for controls
+  const controlsRef = useRef<OrbitControlsImpl>(null); // <<< RESTORE specific type for ref
 
   // Set initial camera position
   useEffect(() => {
@@ -120,8 +121,9 @@ const CameraController: React.FC<{
 
   return (
     <OrbitControls
-      // @ts-ignore: TS2339 - Property 'ref' does not exist on type 'IntrinsicAttributes & OrbitControlsProps'.
+      // @ts-ignore: TS2339 - Property 'ref' does not exist on type 'IntrinsicAttributes & OrbitControlsProps'. <-- Keep TS ignore for now, focus is on runtime
       ref={controlsRef}
+      args={[camera, gl.domElement]} // <<< Keep args for now, though OrbitControls itself should be commented out below
       enableDamping
       dampingFactor={0.05}
       rotateSpeed={0.7}
@@ -170,21 +172,6 @@ const Brain3DScene: React.FC<{
   const detailConfig = useDetailConfig();
   const { camera } = useThree(); // Get camera instance
 
-  // <<< ADDED DIAGNOSTIC LOG >>>
-  useEffect(() => {
-    if (camera) {
-      console.log(
-        `[Brain3DScene] Initializing Scene... Camera Pos:`, camera.position.toArray(),
-        `| Regions: ${brainModel?.regions?.length ?? 0}`,
-        `| Connections: ${brainModel?.connections?.length ?? 0}`,
-        `| Render Mode: ${renderMode}`,
-        `| High Perf: ${highPerformanceMode}`
-      );
-    }
-  // Ensure dependencies are correct to avoid excessive logging
-  }, [camera, brainModel, renderMode, highPerformanceMode]);
-  // <<< END ADDED DIAGNOSTIC LOG >>>
-
   const safeRegions = brainModel.regions || [];
   const safeConnections = brainModel.connections || [];
 
@@ -225,22 +212,6 @@ const Brain3DScene: React.FC<{
     // Example: Filter by connection strength if available
     return safeConnections; // Keep all connections for now
   }, [safeConnections /*, detailConfig */]); // Removed detailConfig dependency
-
-  // <<< ADDED PROP LOGGING >>>
-  console.log('[Brain3DScene] Props before rendering Connections:', {
-    connections: filteredConnections,
-    regions: safeRegions,
-    renderMode,
-    visualizationSettings,
-    highPerformanceMode,
-  });
-  console.log('[Brain3DScene] Props before rendering Region Groups:', {
-    regionGroups,
-    renderMode,
-    visualizationSettings,
-    highPerformanceMode,
-  });
-  // <<< END ADDED PROP LOGGING >>>
 
   return (
     <group>
@@ -462,7 +433,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
           intensity={1.0} // Using default intensity
           // color={settings.directionalLightColor} // Property missing
         />
-        {/* Camera controller */}
+        {/* Camera controller - Restored */}
         <CameraController
           {...(onCameraMove && { onCameraMove })}
           initialPosition={cameraPosition}
