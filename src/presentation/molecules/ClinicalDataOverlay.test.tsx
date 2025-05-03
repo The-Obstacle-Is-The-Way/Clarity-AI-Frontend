@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * ClinicalDataOverlay testing with quantum precision
  */
 import { describe, it, expect } from 'vitest'; // Removed unused vi

@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Visualization
+ * CLARITY-AI Neural Visualization
  * BrainRegionDetails Molecular Component - comprehensive analysis interface
  * for specific neural regions with clinical precision
  */

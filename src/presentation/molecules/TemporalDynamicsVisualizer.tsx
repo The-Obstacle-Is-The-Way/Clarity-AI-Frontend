@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural-Safe Molecular Component
+ * CLARITY-AI Neural-Safe Molecular Component
  * TemporalDynamicsVisualizer - Quantum-level temporal dynamics visualization
  * with multi-scale pattern recognition and state transition precision
  */
