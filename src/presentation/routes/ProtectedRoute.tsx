@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@application/context/AuthContext';
-import { MainLayout } from '@presentation/templates/MainLayout';
+import MainLayout from '@presentation/templates/MainLayout';
 
 /**
  * Protected Route Component
