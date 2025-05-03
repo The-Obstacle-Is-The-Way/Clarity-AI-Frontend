@@ -8,8 +8,9 @@ import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // render is imported from unified utils, Removed unused fireEvent
 import React from 'react';
 // Removed unused userEvent import
-import ErrorBoundary from './ErrorBoundary'; // Assuming default export
-import { render } from '../../test/test-utils.unified';
+import { ErrorBoundary } from './ErrorBoundary';
+import { AuditLogClient } from '@/infrastructure/services/AuditLogClient';
+import { render } from '../../infrastructure/testing/utils/test-utils.unified';
 
 // Mock data with clinical precision
 // Mock data with clinical precision - ErrorBoundary requires children

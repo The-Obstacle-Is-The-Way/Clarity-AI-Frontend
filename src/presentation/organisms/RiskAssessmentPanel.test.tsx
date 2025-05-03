@@ -4,13 +4,14 @@
  * RiskAssessmentPanel testing with quantum precision
  */
 
-import { describe, it, expect, vi } from 'vitest'; // Added vi
+import React from 'react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { RiskAssessmentPanel } from './RiskAssessmentPanel';
 import { type RiskFactor } from '@domain/risk-factors/riskFactorTypes'; // Assuming type location
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
-import { RiskLevel, type RiskAssessment } from '@domain/types/clinical/risk';
+// import { RiskLevel, type RiskAssessment } from '@domain/types/clinical/risk'; // Assume this type path is correct, comment out if unused
 
 // Mock dependencies
 vi.mock('@presentation/atoms/button', () => ({

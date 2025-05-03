@@ -3,6 +3,7 @@
  * ClinicalMetricsPanel component testing with quantum precision
  */
 
+import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Import waitFor

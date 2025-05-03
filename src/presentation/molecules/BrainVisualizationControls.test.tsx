@@ -3,7 +3,7 @@
  * Replaced with minimal test to prevent hanging from useFrame animation loop
  */
 
-// Removed unused React import (new JSX transform)
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest'; // Remove beforeEach, afterEach
 import { BrainVisualizationControls } from './BrainVisualizationControls';
 import { type BrainRegion } from '@/domain/types/brain/brainRegionTypes';

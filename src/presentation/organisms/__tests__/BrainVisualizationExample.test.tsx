@@ -5,6 +5,7 @@
  * brain visualization components that use Three.js, without causing
  * test hanging or memory leaks.
  */
+import React from 'react';
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import { screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Remove render

@@ -2,7 +2,8 @@
  * NOVAMIND Neural Test Suite
  * Header testing with quantum precision
  */
-import { describe, it, expect } from 'vitest'; // Removed unused vi
+import React from 'react'; // Add React import
+import { describe, it, expect, vi } from 'vitest'; // Removed unused vi
 
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // render is imported from unified utils, removed unused fireEvent

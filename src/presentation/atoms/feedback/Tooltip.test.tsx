@@ -7,70 +7,13 @@ import { vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
 // Mock Radix UI Tooltip components
-vi.mock('@radix-ui/react-tooltip', () => {
-  const Root = ({
-    children,
-    open,
-    defaultOpen,
-    onOpenChange,
-    ...props
-  }: {
-    children: React.ReactNode;
-    open?: boolean;
-    defaultOpen?: boolean;
-    onOpenChange?: (open: boolean) => void;
-    [key: string]: any;
-  }) => (
-    <div data-testid="tooltip-root" data-state={open ? 'open' : 'closed'} {...props}>
-      {children}
-    </div>
-  );
-
-  const Trigger = React.forwardRef<HTMLButtonElement, any>(({ children, ...props }, ref) => (
-    <button data-testid="tooltip-trigger" ref={ref} {...props}>
-      {children}
-    </button>
-  ));
-
-  const Portal = ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => (
-    <div data-testid="tooltip-portal" {...props}>
-      {children}
-    </div>
-  );
-
-  const Content = React.forwardRef<HTMLDivElement, any>(
-    ({ children, className, sideOffset, side = 'top', ...props }, ref) => (
-      <div
-        data-testid="tooltip-content"
-        data-side={side}
-        data-state="open"
-        ref={ref}
-        className={className}
-        style={{ '--radix-tooltip-content-transform-origin': '0' } as React.CSSProperties}
-        {...props}
-      >
-        {children}
-      </div>
-    )
-  );
-
-  const Provider = ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => (
-    <div data-testid="tooltip-provider" {...props}>
-      {children}
-    </div>
-  );
-
-  Content.displayName = 'Content';
-  Trigger.displayName = 'Trigger';
-
-  return {
-    Root,
-    Trigger,
-    Portal,
-    Content,
-    Provider,
-  };
-});
+vi.mock('@radix-ui/react-tooltip', () => ({
+  Provider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Root: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Trigger: ({ children, asChild }: { children: React.ReactNode, asChild?: boolean }) => asChild ? children : <button>{children}</button>,
+  Portal: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Content: ({ children, sideOffset }: { children: React.ReactNode, sideOffset?: number }) => <div data-testid="tooltip-content">{children} (Offset: {sideOffset})</div>,
+}));
 
 describe('Tooltip Component', () => {
   it('renders tooltip with default props', () => {

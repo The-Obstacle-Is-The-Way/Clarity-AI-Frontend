@@ -11,6 +11,8 @@ import '@testing-library/jest-dom'; // Import within
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 
 // Mock next-themes
+// vi.mock('next-themes', () => ({
+//   useTheme: () => ({ theme: 'light' }),
 vi.mock('next-themes', () => ({
   useTheme: () => ({
     theme: 'light',

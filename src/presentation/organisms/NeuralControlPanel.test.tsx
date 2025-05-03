@@ -2,10 +2,11 @@
  * NOVAMIND Neural Test Suite
  * NeuralControlPanel testing with quantum precision
  */
+import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { ReactNode } from 'react';
 
-import { screen } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Removed unused render, fireEvent
 // Removed unused React import
 // Removed unused userEvent import
@@ -215,4 +216,13 @@ describe('NeuralControlPanel', () => {
   });
 
   // Add more component-specific tests
+
+  // Mocks for context and child components
+  const mockSetRenderMode = vi.fn();
+  const mockSetSelectedRegion = vi.fn();
+  const mockSetActivityThreshold = vi.fn();
+  const mockContextValue = {
+    renderMode: 'surface',
+    selectedRegion: null,
+  };
 });

@@ -11,6 +11,7 @@ import { useBrainModel } from '@application/hooks/useBrainModel';
 
 // Mock React Three Fiber
 vi.mock('@react-three/fiber', () => ({
+  Canvas: ({ children }: { children: React.ReactNode }) => <div data-testid="mock-canvas">{children}</div>,
   useFrame: vi.fn(),
   useThree: () => ({
     gl: {
@@ -24,9 +25,6 @@ vi.mock('@react-three/fiber', () => ({
     },
     scene: {},
   }),
-  Canvas: function MockCanvas(props) {
-    return React.createElement('div', { 'data-testid': 'mock-canvas', ...props }, props.children);
-  },
 }));
 
 // Mock Three.js

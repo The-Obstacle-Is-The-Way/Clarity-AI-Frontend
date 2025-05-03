@@ -8,7 +8,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'; // Removed unused
 // Removed unused React import
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Removed unused render
-import { renderWithProviders } from '../../test/test-utils.unified';
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified';
 
 // Mock react-router-dom components needed by AuthRoute
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -29,6 +29,7 @@ vi.mock('@application/utils/authUtils', () => ({
 import AuthRoute from './AuthRoute';
 // Import the MOCKED checkAuthStatus from its NEW path
 import { checkAuthStatus } from '@application/utils/authUtils';
+import { useAuth } from '@/application/context/AuthContext';
 
 describe('AuthRoute', () => {
   // Cast the mocked function for type safety in tests

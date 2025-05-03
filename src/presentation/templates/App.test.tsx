@@ -2,9 +2,10 @@
  * NOVAMIND Neural Test Suite
  * App component testing with quantum precision
  */
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
-import { renderWithProviders } from '../../test/test-utils.unified.tsx'; // Corrected path and extension
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 
 // Mock the App component rather than importing it directly
 // This avoids the @styles/index.css import that's causing issues

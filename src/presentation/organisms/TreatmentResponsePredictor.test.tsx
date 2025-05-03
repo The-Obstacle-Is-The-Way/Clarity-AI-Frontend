@@ -2,21 +2,16 @@
  * NOVAMIND Neural Test Suite
  * TreatmentResponsePredictor testing with quantum precision
  */
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest'; // Added vi
-
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { TreatmentResponsePredictor } from './TreatmentResponsePredictor';
 import { useTreatmentPrediction } from '@/application/hooks/useTreatmentPrediction'; // Adjusted hook path
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
-import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
-import type {
-  PatientDemographics,
-  ClinicalData,
-  NeuralData,
-  DataPermissions,
-  TreatmentData,
-} from '@domain/types/clinical/patient';
+// import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile'; // Commented out unused/incorrect type
+// import type { PatientData, Demographics } from '@domain/types/clinical/patient'; // Commented out unused/incorrect type
+// import type { TreatmentPrediction } from '@domain/types/predictions/treatment-prediction'; // Commented out unused/incorrect type
 
 // Mock dependencies
 vi.mock('@presentation/atoms/Button', () => ({

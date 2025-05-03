@@ -7,7 +7,9 @@ import '@testing-library/jest-dom';
 import { useTheme } from '@application/hooks/useTheme'; // Correct import path for the hook
 import type { Mock } from 'vitest';
 import { vi, describe, it, expect, beforeEach } from 'vitest'; // Import vi, Mock, etc.
-import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.unified.tsx'; // Use alias
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path (using relative)
 
 // Simple card component to test
 interface CardProps {
