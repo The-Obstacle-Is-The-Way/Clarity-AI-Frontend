@@ -87,7 +87,8 @@
     "src/test",
     "src/mocks",
     "src/**/mocks",
-    "src/setupTests.ts"
+    "src/setupTests.ts",
+    "src/infrastructure/testing"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 } 

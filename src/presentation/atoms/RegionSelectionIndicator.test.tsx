@@ -18,7 +18,7 @@ vi.mock('@react-three/fiber', () => ({
     size: { width: 800, height: 600 },
     clock: { getElapsedTime: vi.fn(() => 0) },
   })),
-  Canvas: function MockCanvas(props) {
+  Canvas: function MockCanvas(props: { children?: React.ReactNode }) {
     return React.createElement('div', { 'data-testid': 'mock-canvas' }, props.children);
   },
 }));
