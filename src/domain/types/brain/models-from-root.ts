@@ -372,9 +372,13 @@ export const ActivityTimeSeries = {
 };
 
 /**
- * Brain processor function that converts raw data to a neurologically-valid model
+ * Brain processor function that converts raw data into a neurologically-valid model.
+ *
+ * @param data - Raw brain model input (potentially untyped)
+ * @returns Strictly typed and clinically safe BrainModelData structure
  */
-export const BrainModel = (data: any // eslint-disable-line @typescript-eslint/no-explicit-any = {}): BrainModelData => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const BrainModel = (data: any = {}): BrainModelData => {
   // Generate a default processed model with clinical precision
   const defaultModel: BrainModelData = {
     regions: [],
@@ -392,8 +396,9 @@ export const BrainModel = (data: any // eslint-disable-line @typescript-eslint/n
   };
 
   // Process regions if provided
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const processedRegions = Array.isArray(data.regions)
-    ? data.regions.map((r: any // eslint-disable-line @typescript-eslint/no-explicit-any) => BrainRegion.create(r))
+    ? data.regions.map((r: any) => BrainRegion.create(r))
     : [];
 
   return {

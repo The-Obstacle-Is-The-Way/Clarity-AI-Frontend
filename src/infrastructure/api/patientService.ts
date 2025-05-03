@@ -28,9 +28,7 @@ export const getPatients = async (
     // NOTE: Backend currently lacks list endpoint; this call will 404 until fixed.
     const response = await apiClient.get<PaginatedPatientsResponse>(
       '/api/v1/patients',
-      {
-        params: queryParams,
-      }
+      { params: queryParams }
     );
 
     return response; // apiClient should ideally return the parsed data directly
@@ -73,10 +71,7 @@ export const updatePatient = async (patientId: string, patientData: Partial<Omit
 export const createPatient = async (patientData: Omit<Patient, 'id' | 'created_at' | 'updated_at'>): Promise<Patient> => {
   try {
     // Adjust endpoint as needed
-    const response = await apiClient.post<Patient>(
-      '/api/v1/patients',
-      patientData
-    );
+    const response = await apiClient.post<Patient>('/api/v1/patients', patientData);
     return response;
   } catch (error) {
     console.error('Failed to create patient:', error);
@@ -95,9 +90,7 @@ export const getPatientById = async (patientId: string): Promise<Patient> => {
   }
   try {
     // Adjust endpoint as needed
-    const response = await apiClient.get<Patient>(
-      `/api/v1/patients/${patientId}`
-    );
+    const response = await apiClient.get<Patient>(`/api/v1/patients/${patientId}`);
     return response;
   } catch (error) {
     console.error(`Failed to fetch patient with ID ${patientId}:`, error);
