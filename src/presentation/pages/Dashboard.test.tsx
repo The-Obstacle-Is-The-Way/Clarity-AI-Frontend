@@ -2,15 +2,15 @@
  * CLARITY-AI Neural Test Suite
  * Dashboard testing with quantum precision
  */
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 
 import { screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Added 'within' import, removed fireEvent
 // Remove MemoryRouter import, it's provided by renderWithProviders
 import userEvent from '@testing-library/user-event';
-import Dashboard from '@pages/Dashboard'; // Use correct alias
+import Dashboard from '@/presentation/pages/Dashboard'; // Corrected path
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
-import { Card } from '@/presentation/atoms';
 
 import type * as ReactRouterDom from 'react-router-dom'; // Type import for mocking
 
