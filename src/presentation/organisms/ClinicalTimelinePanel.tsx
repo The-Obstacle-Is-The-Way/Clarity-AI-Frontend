@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural-Safe Organism Component
+ * CLARITY-AI Neural-Safe Organism Component
  * ClinicalTimelinePanel - Quantum-level temporal clinical data visualization
  * with HIPAA-compliant event tracking and neural correlations
  */

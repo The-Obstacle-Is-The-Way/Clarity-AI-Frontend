@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * ClinicalMetricsPanel component testing with quantum precision
  */
 

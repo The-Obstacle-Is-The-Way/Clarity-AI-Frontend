@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * BrainModelContainer testing with quantum precision
  * FIXED: Test hanging issue
  */

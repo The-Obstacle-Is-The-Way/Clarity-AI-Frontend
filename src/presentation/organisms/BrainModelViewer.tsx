@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Visualization
+ * CLARITY-AI Neural Visualization
  * BrainModelViewer Organism Component - primary visualization engine
  * for neural architecture with clinical precision
  */

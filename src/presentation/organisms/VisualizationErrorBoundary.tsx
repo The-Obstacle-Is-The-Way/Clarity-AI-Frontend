@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural-Safe Common Component
+ * CLARITY-AI Neural-Safe Common Component
  * VisualizationErrorBoundary - Quantum-level error handling
  * with clinical precision error recovery
  */
@@ -84,7 +84,7 @@ export class VisualizationErrorBoundary extends Component<
 
     // Log error if enabled
     if (this.props.logErrors) {
-      console.error('NOVAMIND Visualization Error:', {
+      console.error('CLARITY-AI Visualization Error:', {
         error,
         componentStack,
         message: error.message,
@@ -113,7 +113,7 @@ export class VisualizationErrorBoundary extends Component<
 
     // Check if we've exceeded maximum recovery depth
     if (this.recoveryAttempts > (this.props.maxErrorDepth || 3)) {
-      console.warn('NOVAMIND Visualization: Maximum recovery attempts exceeded');
+      console.warn('CLARITY-AI Visualization: Maximum recovery attempts exceeded');
       return;
     }
 

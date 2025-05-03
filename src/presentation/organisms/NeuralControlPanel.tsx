@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural-Safe Organism Component
+ * CLARITY-AI Neural-Safe Organism Component
  * NeuralControlPanel - Quantum-level control interface
  * with clinical precision and type-safe state management
  */
@@ -218,7 +218,7 @@ export const NeuralControlPanel: React.FC<NeuralControlPanelProps> = ({
     // Create download link
     const link = document.createElement('a');
     link.href = url;
-    link.download = `novamind-visualization-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+    link.download = `clarity-ai-visualization-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
     document.body.appendChild(link);
     link.click();
 

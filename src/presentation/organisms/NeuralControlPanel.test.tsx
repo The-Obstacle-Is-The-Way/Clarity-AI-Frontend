@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * NeuralControlPanel testing with quantum precision
  */
 import React from 'react';
