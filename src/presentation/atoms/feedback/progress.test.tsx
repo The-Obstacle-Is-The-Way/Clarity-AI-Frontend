@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified';
+import { renderWithProviders } from '../../../infrastructure/testing/utils/test-utils.unified';
 import { Progress } from './progress';
 
 // We don't need to mock Radix UI components since our Progress component doesn't use them

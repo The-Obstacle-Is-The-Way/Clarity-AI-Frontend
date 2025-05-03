@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified';
+import { renderWithProviders } from '../../../infrastructure/testing/utils/test-utils.unified';
 import { Alert, AlertTitle, AlertDescription } from './alert';
 
 describe('Alert Components', () => {
