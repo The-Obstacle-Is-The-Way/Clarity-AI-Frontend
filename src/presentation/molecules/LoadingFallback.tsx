@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural-Safe Common Component
+ * CLARITY-AI Neural-Safe Common Component
  * LoadingFallback - Quantum-level loading visualization
  * with neuropsychiatric precision and elegant transitions
  */
