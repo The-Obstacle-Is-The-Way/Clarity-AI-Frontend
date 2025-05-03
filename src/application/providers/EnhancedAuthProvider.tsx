@@ -16,7 +16,7 @@ import {
 import { useAuthService } from '@application/hooks/useAuthService';
 import type { User, Permission } from '@domain/types/auth/auth';
 import { AuditEventType } from '@domain/types/audit/AuditEventType';
-import SessionTimeoutModal from './SessionTimeoutModal';
+import { SessionTimeoutModal } from './SessionTimeoutModal';
 import { useAuditLog } from '@application/hooks/useAuditLog';
 
 interface EnhancedAuthProviderProps {
@@ -98,7 +98,7 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
       email: string,
       password: string,
       rememberMe: boolean | undefined = false
-    ): Promise<boolean> => {
+    ): Promise<void> => {
       setIsLoading(true);
       setError(null);
       try {
@@ -113,12 +113,10 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
             email,
           });
           toast.success('Login successful!');
-          return true;
         } else {
           setError(result.error || 'Login failed. Please check your credentials.');
           logAudit(AuditEventType.USER_LOGIN_FAILURE, { email, error: result.error });
           toast.error(result.error || 'Login failed.');
-          return false;
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
@@ -128,15 +126,14 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
         setSessionExpiresAt(null);
         logAudit(AuditEventType.USER_LOGIN_FAILURE, { email, error: errorMessage });
         toast.error(`Login failed: ${errorMessage}`);
-        return false;
       } finally {
         setIsLoading(false);
       }
     },
-    [serviceLogin, logAudit, navigate]
+    [serviceLogin, logAudit]
   );
 
-  const logout = useCallback(async () => {
+  const logout = useCallback(async (): Promise<void> => {
     const userId = user?.id;
     setIsLoading(true);
     setError(null);
