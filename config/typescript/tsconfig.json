@@ -91,6 +91,5 @@
     "src/infrastructure/testing",
     "config/*.ts",
     "vite.config.ts"
-  ],
-  "references": [{ "path": "./config/typescript/tsconfig.node.json" }]
+  ]
 } 

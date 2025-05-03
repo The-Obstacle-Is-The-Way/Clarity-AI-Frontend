@@ -10,23 +10,29 @@ import '@testing-library/jest-dom';
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Corrected path
 import { setupWebGLMocks, cleanupWebGLMocks } from '../../test/webgl/setup-test';
 import { TimelineEvent } from './TimelineEvent';
-import type { ClinicalEvent } from '@/domain/types/clinical/events'; // Corrected path
+import type { ClinicalEvent } from '@/domain/types/clinical/events';
 
-// Mock dependencies
-vi.mock('@/presentation/atoms', () => ({
-  Badge: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-    <span {...props}>{children}</span>
-  ),
-  // Add Tooltip mocks if necessary
-}));
-vi.mock('@presentation/atoms/Tooltip', () => ({
-  Tooltip: ({ children }: any) => <div>{children}</div>,
-  TooltipContent: ({ children }: any) => <div>{children}</div>,
-  TooltipProvider: ({ children }: any) => <div>{children}</div>,
-  TooltipTrigger: ({ children }: any) => <div>{children}</div>,
-}));
+// Mock dependencies - Combine and correct mocks for @/presentation/atoms
+vi.mock('@/presentation/atoms', async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, any>; // Keep any for now to focus on import
+  return {
+    ...actual, // Include actual implementations unless overridden
+    Badge: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
+      <span {...props}>{children}</span>
+    ),
+    // Add Tooltip mocks directly here, if they need custom behavior
+    // If not, they will be included via ...actual
+    // Ensure TooltipProvider is available (it should be from actual if exported correctly)
+    // Example explicit mocks if needed:
+    // Tooltip: ({ children }: any) => <div>{children}</div>,
+    // TooltipContent: ({ children }: any) => <div>{children}</div>,
+    // TooltipProvider: ({ children }: any) => <div>{children}</div>, // Mock Provider explicitly if needed
+    // TooltipTrigger: ({ children }: any) => <div>{children}</div>,
+  };
+});
+
 vi.mock('@presentation/atoms/Button', () => ({
-  Button: (props: any) => <button {...props}>{props.children}</button>,
+  Button: (props: any) => <button {...props}>{props.children}</button>, // Keep any for now
 }));
 vi.mock('lucide-react', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<
@@ -45,7 +51,7 @@ vi.mock('lucide-react', async (importOriginal) => {
 });
 // Mock framer-motion if used
 vi.mock('framer-motion', async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, any>; // Use any temporarily if structure is complex
+  const actual = (await importOriginal()) as Record<string, any>; // Keep any for now
   return {
     ...actual,
     motion: new Proxy(
@@ -180,7 +186,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockSymptomEvent as ClinicalEvent} // Use correct type assertion
+        event={mockSymptomEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={false}
         onClick={handleClick}
       />
@@ -196,7 +202,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockMedicationEvent as ClinicalEvent} // Use correct type assertion
+        event={mockMedicationEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={false}
         onClick={handleClick}
       />
@@ -211,7 +217,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockDiagnosisEvent as ClinicalEvent} // Use correct type assertion
+        event={mockDiagnosisEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={true}
         onClick={handleClick}
       />
@@ -235,7 +241,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockAssessmentEvent as ClinicalEvent} // Use correct type assertion
+        event={mockAssessmentEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={true}
         onClick={handleClick}
         showNeuralCorrelation={true}
@@ -258,7 +264,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockAssessmentEvent as ClinicalEvent} // Use correct type assertion
+        event={mockAssessmentEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={true}
         onClick={handleClick}
         showNeuralCorrelation={false}
@@ -274,7 +280,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockSymptomEvent as ClinicalEvent} // Use correct type assertion
+        event={mockSymptomEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={false}
         onClick={handleClick}
       />
@@ -289,7 +295,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockMedicationEvent as ClinicalEvent} // Use correct type assertion
+        event={mockMedicationEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={false}
         onClick={handleClick}
         colorClass="border-blue-400 bg-blue-50"
@@ -306,7 +312,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockSymptomEvent as ClinicalEvent} // Use correct type assertion
+        event={mockSymptomEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={false}
         onClick={handleClick}
       />
@@ -322,7 +328,7 @@ describe('TimelineEvent', () => {
 
     renderWithProviders(
       <TimelineEvent
-        event={mockSymptomEvent as ClinicalEvent} // Use correct type assertion
+        event={mockSymptomEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={false}
         onClick={handleClick}
         showTime={false}
@@ -338,7 +344,7 @@ describe('TimelineEvent', () => {
 
     const { rerender } = renderWithProviders(
       <TimelineEvent
-        event={mockSymptomEvent as SymptomEvent} // Use correct type assertion
+        event={mockSymptomEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={false}
         onClick={handleClick}
       />
@@ -351,7 +357,7 @@ describe('TimelineEvent', () => {
     // Selected state should have ring highlight
     rerender(
       <TimelineEvent
-        event={mockSymptomEvent as SymptomEvent} // Use correct type assertion
+        event={mockSymptomEvent as ClinicalEvent} // Ensure using the imported ClinicalEvent type
         isSelected={true}
         onClick={handleClick}
       />
