@@ -1,102 +1,44 @@
-import React, { type ReactNode } from 'react';
-import { useAuth } from '@application/context/AuthContext';
-import { ThemeToggle } from '@/presentation/molecules/ThemeToggle';
-import { Button } from '@/presentation/atoms'; // Corrected import
-import { User, LogOut, Settings } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState, Suspense } from 'react';
+import { Outlet } from 'react-router-dom';
+import { Header, Sidebar } from '@presentation/molecules';
+import { LoadingIndicator, Button } from '@presentation/atoms';
+import ErrorBoundary from './ErrorBoundary';
+import { cn } from '@/lib/utils';
+import { useTheme } from '@/application/hooks/useTheme';
 
 interface MainLayoutProps {
-  children: ReactNode;
+  children?: React.ReactNode;
+  className?: string;
 }
 
 /**
- * MainLayout Template Component
- *
- * Provides the basic structure for authenticated pages,
- * including a header with user info/logout and a content area.
+ * MainLayout - Provides the primary application structure with sidebar and header.
  */
-export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const { user, logout, isLoading: isAuthLoading } = useAuth();
+const MainLayout: React.FC<MainLayoutProps> = ({ children, className }) => {
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const { theme, toggleTheme, isDarkMode } = useTheme();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      // Navigation to /login will happen automatically via ProtectedRoute
-    } catch (error) {
-      console.error('Logout failed in layout:', error);
-      // Optionally show an error toast to the user
-    }
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background dark:bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 max-w-screen-2xl items-center">
-          <div className="mr-4 hidden md:flex">
-            {/* Placeholder for Logo/Brand */}
-            <a className="mr-6 flex items-center space-x-2" href="/">
-              <span className="hidden font-bold sm:inline-block">Clarity AI</span>
-            </a>
-            {/* Placeholder for Nav */}
-            <nav className="flex items-center gap-6 text-sm">
-              <Link
-                to="/dashboard"
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/patients"
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                Patients
-              </Link>
-              <Link
-                to="/profile"
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                Profile
-              </Link>
-              {/* Add more NavLinks here later */}
-            </nav>
-          </div>
-          <div className="flex flex-1 items-center justify-end space-x-4">
-            {isAuthLoading ? (
-              <div className="h-5 w-20 animate-pulse rounded-md bg-muted"></div>
-            ) : user ? (
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground" data-testid="user-email-display">
-                  {user.email} ({user.roles?.join(', ') || 'User'})
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleLogout}
-                  aria-label="Log out"
-                  data-testid="logout-button"
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              <span className="text-sm text-destructive">Not Authenticated</span>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content Area */}
-      <main className="flex-1 container max-w-screen-2xl py-6">
-        {children} {/* Render the nested route components */}
-      </main>
-
-      {/* Footer (Optional) */}
-      {/* <footer className="border-t border-border/40 py-4">
-        <div className="container text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Clarity AI
-        </div>
-      </footer> */}
+    <div className={cn('flex h-screen bg-background text-foreground', className)}>
+      <Sidebar isOpen={isSidebarOpen} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Header onToggleSidebar={toggleSidebar}>
+          <Button variant="ghost" size="sm" onClick={toggleTheme} className="ml-auto">
+            Toggle Theme ({isDarkMode ? 'Light' : 'Dark'})
+          </Button>
+        </Header>
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
+          <ErrorBoundary>
+            <Suspense fallback={<LoadingIndicator text="Loading page..." />}>
+              {children ?? <Outlet />}
+            </Suspense>
+          </ErrorBoundary>
+        </main>
+      </div>
     </div>
   );
 };
