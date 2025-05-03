@@ -4,7 +4,7 @@ import { OrbitControls, Environment, AdaptiveDpr, PerformanceMonitor } from '@re
 import { Button } from '@/presentation/atoms'; // Corrected import
 import BrainModelContainer from '@presentation/organisms/BrainModelContainer';
 import VisualizationErrorBoundary from '@/presentation/common/VisualizationErrorBoundary';
-import { LoadingIndicator } from '@/presentation/atoms'; // Corrected import
+import LoadingIndicator from '@/presentation/atoms/feedback/LoadingIndicator'; // Corrected to default import and full path
 import { useBrainModel } from '@application/context/BrainModelProvider'; // Corrected path
 import { useBrainVisualization } from '@hooks/useBrainVisualization';
 import type { BrainRegion } from '@domain/types/brain/models'; // Corrected import path

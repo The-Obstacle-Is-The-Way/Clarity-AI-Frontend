@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
+// import { predictTreatmentResponse } from '@application/services/predictionService'; // Removed - Does not exist
+// import type { TreatmentResponsePredictionRequest } from '@domain/analytics/predictionTypes'; // Removed - Not used
 import { Button } from '@/presentation/atoms';
+// import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms'; // Removed - Not used
+import { Card, CardContent } from '@/presentation/atoms/display/Card'; // Corrected path
 
 import { useTreatmentPrediction } from '@hooks/useTreatmentPrediction';
 import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
-import { Card, CardContent } from '@presentation/atoms/Card';
+// Removed duplicate/incorrect Card import
 
 interface TreatmentResponsePredictorProps {
   patientId: string;
