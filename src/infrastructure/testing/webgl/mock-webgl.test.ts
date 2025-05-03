@@ -92,14 +92,13 @@ describe('WebGL Mocking', () => {
     expect(called).toBe(true);
   });
 
-  it.skip('should create Three.js mock objects', () => {
+  it('should create Three.js mock objects', () => {
     // Test that we can create Three.js mock objects
     // Instantiate using standard names - alias provides mocks
     const renderer = new WebGLRenderer();
-    // Assuming MockWebGLTexture was intended to mock Texture
     const texture = new Texture();
-    const geometry = new BufferGeometry(); // Use standard name
-    const material = new MeshBasicMaterial(); // Use standard name
+    const geometry = new BufferGeometry();
+    const material = new MeshBasicMaterial();
 
     // Check that the renderer has expected properties
     expect(renderer.domElement).toBeInstanceOf(HTMLCanvasElement);
