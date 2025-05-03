@@ -89,12 +89,15 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-// Create context - Note: No token exposed
+// Create context - Add missing methods/properties for EnhancedAuthProvider
 interface AuthContextType extends Omit<AuthState, 'token'> {
-  // login takes username (email) and password
   login: (username: string, password: string, rememberMe?: boolean) => Promise<void>;
-  logout: () => Promise<void>; // Logout is now async
+  logout: () => Promise<void>;
   clearError: () => void;
+  // Add from EnhancedAuthProvider
+  hasPermission: (permission: Permission) => boolean; 
+  extendSession: () => Promise<void>; 
+  getSessionExpiration: () => number; // Match return type from EnhancedAuthProvider
 }
 
 // Export AuthContext so it can be used for testing providers

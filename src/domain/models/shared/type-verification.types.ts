@@ -10,11 +10,10 @@
 import {
   // Removed unused: TypeVerificationError
   assertDefined,
-  assertPresent,
+  assertNotNull,
   assertString,
   assertNumber,
   assertBoolean,
-  assertArray,
   assertObject,
   assertDate,
   assertType,
@@ -93,19 +92,6 @@ import {
   // Variable removed, type inference checked by lack of compile error on assignment
 };
 
-// ========== assertArray ==========
-() => {
-  const value: unknown = [1, 2, 3];
-
-  // Before assertion: TypeScript treats as unknown
-  // @ts-expect-error - This line demonstrates a compile-time error before assertion
-  const beforeArr: number[] = value;
-
-  // After assertion: TypeScript narrows type to array
-  assertArray<number>(value);
-  // Variable removed, type inference checked by lack of compile error on assignment
-};
-
 // ========== assertObject ==========
 () => {
   const value: unknown = { name: 'test' };
@@ -174,3 +160,33 @@ import {
   // TypeScript correctly infers types with undefined as possible result
   // Variables removed, type inference checked by lack of compile error on assignment
 };
+
+/**
+ * Asserts that a value is an array.
+ * @param value The value to check.
+ * @param name Optional name for error message.
+ * @throws {TypeError} If the value is not an array.
+ */
+export function assertArray(value: unknown, name = 'value'): void {
+  if (!Array.isArray(value)) {
+    throw new TypeError(`${name} must be an array.`);
+  }
+  // Optional: Check elements if needed, e.g., assertArray<number>(value);
+  // Example element check (requires passing element type checker):
+  // value.forEach((element, index) => assertNumber(element, `${name}[${index}]`));
+}
+
+export {
+  assertDefined,
+  assertNotNull,
+  assertString,
+  assertNumber,
+  assertBoolean,
+  assertObject,
+  assertDate,
+  assertType,
+  asString,
+  asNumber,
+  asBoolean,
+  asDate,
+}

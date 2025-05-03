@@ -9,7 +9,7 @@ import { Color, Vector3 } from 'three';
 import { Badge } from '@/presentation/atoms'; // Corrected import
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/presentation/atoms'; // Corrected import
 import { cn } from '@/lib/utils';
-import type { NeuralCorrelation } from '@domain/types/clinical/events';
+import type { NeuralCorrelation as NeuralCorrelationType } from '@domain/types/clinical/events';
 
 // Icons
 import { Brain, Activity, Zap } from 'lucide-react';
@@ -38,12 +38,13 @@ interface NeuralCorrelation {
  * Props with neural-safe typing
  */
 interface NeuralCorrelationBadgeProps {
-  correlation: NeuralCorrelation;
+  correlation: NeuralCorrelationType;
   showIcon?: boolean;
   showStrength?: boolean;
   showTooltip?: boolean;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  onClick?: (correlation: NeuralCorrelationType) => void;
 }
 
 /**
@@ -57,7 +58,10 @@ export const NeuralCorrelationBadge: React.FC<NeuralCorrelationBadgeProps> = ({
   showTooltip = true,
   size = 'md',
   className = '',
+  onClick,
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   // Calculate badge color based on correlation strength
   const badgeColor = useMemo(() => {
     if (correlation.strength >= 0.8) {
@@ -134,12 +138,27 @@ export const NeuralCorrelationBadge: React.FC<NeuralCorrelationBadgeProps> = ({
     );
   }, [correlation, formattedStrength]);
 
+  // Determine badge variant based on correlation strength/type
+  const badgeVariant = useMemo(() => {
+    if (correlation.significance > 0.8) return 'destructive';
+    if (correlation.strength > 0.6) return 'warning'; // Assuming warning variant exists
+    return 'default';
+  }, [correlation.strength, correlation.significance]); // Added significance dependency
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick(correlation);
+    }
+  };
+
   // Basic badge without tooltip
   if (!showTooltip) {
     return (
       <Badge
-        variant="outline"
+        variant={badgeVariant}
         className={`${badgeColor} ${sizeClasses} ${className} flex items-center`}
+        onClick={onClick ? handleClick : undefined}
+        style={{ cursor: onClick ? 'pointer' : 'default' }}
       >
         {showIcon && <span className="mr-1">{correlationIcon}</span>}
         {showStrength ? `Neural Match: ${formattedStrength}` : 'Neural Match'}
@@ -153,8 +172,10 @@ export const NeuralCorrelationBadge: React.FC<NeuralCorrelationBadgeProps> = ({
       <Tooltip>
         <TooltipTrigger asChild>
           <Badge
-            variant="outline"
+            variant={badgeVariant}
             className={`${badgeColor} ${sizeClasses} ${className} flex items-center cursor-help`}
+            onClick={onClick ? handleClick : undefined}
+            style={{ cursor: onClick ? 'pointer' : 'default' }}
           >
             {showIcon && <span className="mr-1">{correlationIcon}</span>}
             {showStrength ? `Neural Match: ${formattedStrength}` : 'Neural Match'}

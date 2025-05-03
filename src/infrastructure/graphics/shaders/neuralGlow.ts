@@ -9,6 +9,8 @@
 
 import { Vector3, Color, ShaderMaterial, AdditiveBlending, DoubleSide } from 'three';
 import type { IUniform } from 'three';
+import * as THREE from 'three';
+import type { ShaderMaterialParameters, Blending, Side } from 'three';
 
 export interface NeuralGlowUniforms {
   time: IUniform<number>;
@@ -240,15 +242,19 @@ export function createNeuralGlowMaterial(
 
   const uniforms = createNeuralGlowUniforms(options);
 
-  return new ShaderMaterial({
-    uniforms,
+  // Explicitly define ShaderMaterial parameters with correct types
+  const materialParameters: ShaderMaterialParameters = {
+    uniforms: uniforms as unknown as { [uniform: string]: IUniform<any> }, // Cast uniforms
     vertexShader: neuralGlowVertexShader,
     fragmentShader: neuralGlowFragmentShader,
     transparent,
     depthWrite,
-    blending,
-    side,
-  });
+    // Use THREE constants for blending and side
+    blending: THREE.AdditiveBlending as Blending,
+    side: THREE.DoubleSide as Side,
+  };
+
+  return new ShaderMaterial(materialParameters);
 }
 
 // Export a single update function to animate the glow effect

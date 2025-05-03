@@ -14,9 +14,7 @@ import { SessionTimeoutModal } from './SessionTimeoutModal';
 import type { User, Permission } from '@domain/types/auth/auth';
 import { authService } from '@application/services/authService';
 import type { AuthContextType, AuthProviderProps } from './authTypes'; // Keep this type import
-import { useAuth } from './useAuth'; // Adjust path as needed
-import { EncryptionService } from '@/infrastructure/services/EncryptionService';
-// Import AuthContext
+import { useAuth } from '@/application/hooks/useAuth'; // Adjust path as needed
 import { AuthContext } from '@/application/context/AuthContext';
 
 // Constants for session management
@@ -81,9 +79,81 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
     auditLogClient.log(AuditEventType.SUSPICIOUS_ACTIVITY, {
       action: 'suspicious_activity_detected',
       details: `${activity}: ${details}`,
-      result: 'warning',
+      result: 'failure',
     });
   }, []);
+
+  /**
+   * Check session expiration time
+   */
+  const checkSessionExpiration = useCallback((): number => {
+    if (!sessionExpiresAt) return Infinity;
+    return sessionExpiresAt - Date.now();
+  }, [sessionExpiresAt]);
+
+  /**
+   * Logout handler with audit logging
+   */
+  const logout = useCallback(async () => {
+    const userId = user?.id;
+    try {
+      await authClient.logout();
+      setUser(null);
+      setIsAuthenticated(false);
+      setSessionExpiresAt(0);
+
+      // Log successful logout
+      auditLogClient.log(AuditEventType.USER_LOGOUT, {
+        action: 'user_logout',
+        userId: userId,
+        details: 'User logged out successfully',
+        result: 'success',
+      });
+    } catch (err) {
+      // Log logout error
+      auditLogClient.log(AuditEventType.USER_LOGOUT, {
+        action: 'user_logout',
+        userId: userId,
+        details: `Logout failed: ${err instanceof Error ? err.message : 'Unknown error'}`,
+        result: 'failure',
+      });
+      console.error('Logout failed:', err);
+      setError('Failed to logout.');
+    }
+  }, [user]);
+
+  // Placeholder function to extend session
+  const extendSession = useCallback(async () => {
+    console.log("Extending session...");
+    try {
+      // Call renewSession which returns SessionVerification
+      const result = authClient.renewSession(); 
+      
+      // Check if renewal was considered valid by the client
+      if (result.valid && result.remainingTime) {
+        // Update local expiration time based on the renewed session\'s remaining time
+        setSessionExpiresAt(Date.now() + result.remainingTime);
+        setShowSessionWarning(false);
+        auditLogClient.log(AuditEventType.USER_SESSION_RENEWED, {
+          action: 'session_renew',
+          details: 'User session extended successfully',
+          result: 'success',
+        });
+      } else {
+        // Throw error if renewal was not valid
+        throw new Error('Session renewal failed or returned invalid result.');
+      }
+    } catch (err) {
+       auditLogClient.log(AuditEventType.USER_SESSION_RENEWED, {
+          action: 'session_renew',
+          details: `Session extension failed: ${err instanceof Error ? err.message : 'Unknown error'}`,
+          result: 'failure',
+        });
+      console.error("Failed to extend session:", err);
+      // Optionally logout user if extension fails critically
+      // logout(); 
+    }
+  }, [user]); // Keep user dependency for audit log, or remove if not needed
 
   /**
    * Initialize authentication state from storage with encryption
@@ -320,18 +390,6 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
   }, [isAuthenticated, checkSessionExpiration, logout]);
 
   /**
-   * Check session expiration time
-   */
-  const checkSessionExpiration = useCallback((): number => {
-    if (!isAuthenticated || sessionExpiresAt === 0) {
-      return 0;
-    }
-
-    const now = Date.now();
-    return Math.max(0, sessionExpiresAt - now);
-  }, [isAuthenticated, sessionExpiresAt]);
-
-  /**
    * Renew current session
    */
   const renewSession = useCallback((): void => {
@@ -362,37 +420,6 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
   }, [isAuthenticated, trackSuspiciousActivity]);
 
   /**
-   * Logout handler with audit logging
-   */
-  const logout = useCallback(async () => {
-    const userId = user?.id;
-    try {
-      await authClient.logout();
-      setUser(null);
-      setIsAuthenticated(false);
-      setSessionExpiresAt(0);
-
-      // Log successful logout
-      auditLogClient.log(AuditEventType.USER_LOGOUT, {
-        action: 'user_logout',
-        userId: userId,
-        details: 'User logged out successfully',
-        result: 'success',
-      });
-    } catch (err) {
-      // Log logout error
-      auditLogClient.log(AuditEventType.USER_LOGOUT, {
-        action: 'user_logout',
-        userId: userId,
-        details: `Logout failed: ${err instanceof Error ? err.message : 'Unknown error'}`,
-        result: 'failure',
-      });
-      console.error('Logout failed:', err);
-      setError('Failed to logout.');
-    }
-  }, [user]);
-
-  /**
    * Context value
    */
   const contextValue = useMemo<AuthContextType>(
@@ -406,6 +433,7 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
       checkSessionExpiration,
       renewSession,
       hasPermission,
+      extendSession,
       getSessionExpiration: checkSessionExpiration,
     }),
     [
@@ -418,15 +446,26 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
       checkSessionExpiration,
       renewSession,
       hasPermission,
+      extendSession,
       checkSessionExpiration,
     ]
   );
+
+  // Calculate props for SessionTimeoutModal
+  const sessionTimeoutInMinutes = 60; // Example: Assume 60 min session
+  const warningThresholdInMinutes = SESSION_WARNING_TIME / (60 * 1000);
 
   return (
     <AuthContext.Provider value={contextValue}>
       {children}
       {showSessionWarning && (
-        <SessionTimeoutModal warningThreshold={SESSION_WARNING_TIME} onLogout={logout} />
+        <SessionTimeoutModal 
+          warningThreshold={SESSION_WARNING_TIME} 
+          timeoutInMinutes={sessionTimeoutInMinutes} 
+          warningThresholdInMinutes={warningThresholdInMinutes} 
+          onLogout={logout} 
+          onExtendSession={extendSession}
+        />
       )}
     </AuthContext.Provider>
   );

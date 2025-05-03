@@ -50,7 +50,6 @@ import {
   Braces,
   Dna,
   Microscope,
-  PulseIcon,
   Clock,
   Maximize2,
   Monitor,

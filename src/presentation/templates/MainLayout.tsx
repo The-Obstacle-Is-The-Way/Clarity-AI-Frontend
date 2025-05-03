@@ -8,35 +8,31 @@ import ErrorBoundary from './ErrorBoundary';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/application/hooks/useTheme';
 
-interface MainLayoutProps {
-  children?: React.ReactNode;
-  className?: string;
-}
-
 /**
  * MainLayout - Provides the primary application structure with sidebar and header.
  */
-const MainLayout: React.FC<MainLayoutProps> = ({ children, className }) => {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+const MainLayout: React.FC = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { theme, toggleTheme, isDarkMode } = useTheme();
 
   const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   return (
-    <div className={cn('flex h-screen bg-background text-foreground', className)}>
+    <div className={cn("flex h-screen bg-background text-foreground", theme)}>
       <Sidebar isOpen={isSidebarOpen} />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header onToggleSidebar={toggleSidebar}>
-          <Button variant="ghost" size="sm" onClick={toggleTheme} className="ml-auto">
-            Toggle Theme ({isDarkMode ? 'Light' : 'Dark'})
-          </Button>
-        </Header>
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <Header 
+          onToggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+          toggleTheme={toggleTheme}
+          isDarkMode={isDarkMode}
+        />
+        <main className="flex-1 overflow-y-auto p-6 bg-muted/40">
           <ErrorBoundary>
-            <Suspense fallback={<LoadingIndicator text="Loading page..." />}>
-              {children ?? <Outlet />}
+            <Suspense fallback={<LoadingIndicator />}>
+              <Outlet />
             </Suspense>
           </ErrorBoundary>
         </main>

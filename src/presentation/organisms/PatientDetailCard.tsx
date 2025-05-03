@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/pre
 import { Badge } from '@/presentation/atoms';
 import { cn } from '@/lib/utils';
 import type { Patient } from '@domain/patients/patientTypes';
+import { User } from 'lucide-react';
 
 interface PatientDetailCardProps {
   patient: Patient;
@@ -13,6 +14,10 @@ interface PatientDetailCardProps {
  * Displays the details of a single patient in a card format.
  */
 const PatientDetailCard: React.FC<PatientDetailCardProps> = ({ patient }) => {
+  if (!patient) {
+    return <div>Loading patient details...</div>;
+  }
+
   const DetailItem: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
     <div className="flex flex-col space-y-1">
       <span className="text-sm font-medium text-muted-foreground">{label}</span>
@@ -21,28 +26,29 @@ const PatientDetailCard: React.FC<PatientDetailCardProps> = ({ patient }) => {
   );
 
   return (
-    <Card>
+    <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle className="text-2xl">
-          {patient.first_name} {patient.last_name}
+        <CardTitle className="text-xl flex items-center">
+          <User className="mr-2 h-5 w-5 text-primary" /> Patient Details
         </CardTitle>
-        <CardDescription>Patient ID: {patient.id}</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4 md:grid-cols-2">
+      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <DetailItem label="First Name" value={patient.first_name} />
         <DetailItem label="Last Name" value={patient.last_name} />
         <DetailItem label="Date of Birth" value={patient.date_of_birth} />
-        <DetailItem label="Status">
-          <Badge variant={patient.status === 'inactive' ? 'destructive' : 'default'}>
-            {patient.status}
-          </Badge>
-        </DetailItem>
+        <DetailItem 
+          label="Status" 
+          value={
+            <Badge variant={patient.is_active ? 'success' : 'destructive'}>
+              {patient.is_active ? 'Active' : 'Inactive'}
+            </Badge>
+          }
+        />
         <DetailItem
-          label="Registered On"
-          value={new Date(patient.created_at).toLocaleDateString()}
+          label="Assigned Clinician"
+          value={patient.assigned_clinician_id || 'N/A'}
         />
         <DetailItem label="Last Updated" value={new Date(patient.updated_at).toLocaleString()} />
-        {/* Add more fields as needed */}
         {/* Example: <DetailItem label="Primary Diagnosis" value={patient.primary_diagnosis_code} /> */}
       </CardContent>
     </Card>
