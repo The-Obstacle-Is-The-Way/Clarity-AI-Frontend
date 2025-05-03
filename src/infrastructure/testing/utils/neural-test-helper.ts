@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 /**
  * NOVAMIND Neural Test Helper
  * Provides neural-safe mocking utilities with quantum precision
