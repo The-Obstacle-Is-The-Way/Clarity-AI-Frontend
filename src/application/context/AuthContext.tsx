@@ -124,12 +124,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const user = await authService.getCurrentUser();
       if (user && user.id) {
-        // No cast needed if authService returns DomainUser compatible type
-        dispatch({ type: 'AUTH_CHECK_SUCCESS', payload: user }); 
+        dispatch({ type: 'AUTH_CHECK_SUCCESS', payload: user });
       } else {
-        throw new Error('Invalid user data received');
+        // Throw an error if user data is invalid or incomplete
+        throw new Error('Invalid user data received during auth check');
       }
-    } catch (error) {
+    } catch (authCheckError) { // Renamed error variable
+      // Log the specific error for debugging
+      console.error('Auth check failed:', authCheckError);
       dispatch({ type: 'AUTH_CHECK_FAILURE' });
     }
   }, []);
@@ -142,22 +144,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = useCallback(async (email: string, password: string, rememberMe = false) => {
     dispatch({ type: 'LOGIN_REQUEST' });
     try {
-      // Correct property name: rememberMe
-      await authService.login({ email, password, rememberMe: rememberMe });
-
+      await authService.login({ email, password, rememberMe });
       const user = await authService.getCurrentUser();
       if (!user || !user.id) {
         throw new Error('Failed to fetch user data after login.');
       }
-      // No cast needed if authService returns DomainUser compatible type
-      dispatch({ type: 'LOGIN_SUCCESS', payload: user }); 
-    } catch (error: any) { // Keep error handling
-      console.error('Login failed:', error);
-      const errorMessage =
-        error?.response?.data?.detail ||
-        (error instanceof Error ? error.message : 'An unknown error occurred during login');
+      dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+    } catch (loginError: unknown) { // Use unknown for error type
+      console.error('Login failed:', loginError);
+      const errorMessage = 
+        loginError instanceof Error ? loginError.message : 'An unknown error occurred during login';
       dispatch({ type: 'LOGIN_FAILURE', payload: errorMessage });
-      throw error;
+      throw loginError; // Re-throw to allow components to handle
     }
   }, []);
 
@@ -165,13 +163,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = useCallback(async () => {
     dispatch({ type: 'LOGOUT_REQUEST' });
     try {
-      await authService.logout(); // Use service
+      await authService.logout();
       dispatch({ type: 'LOGOUT_SUCCESS' });
-    } catch (error: any) {
-      console.error('Logout failed:', error);
-      const errorMessage =
-        error?.response?.data?.detail ||
-        (error instanceof Error ? error.message : 'An unknown error occurred during logout');
+    } catch (logoutError: unknown) { // Use unknown for error type
+      console.error('Logout failed:', logoutError);
+      const errorMessage = 
+        logoutError instanceof Error ? logoutError.message : 'An unknown error occurred during logout';
       dispatch({ type: 'LOGOUT_FAILURE', payload: errorMessage });
     }
   }, []);
