@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Controller Layer
  * BiometricStreamController - Quantum-level biometric processing

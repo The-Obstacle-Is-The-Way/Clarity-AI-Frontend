@@ -75,7 +75,7 @@ export class ApiProxyService {
    */
   static mapRequestData(
     path: string,
-    data: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    data: any  
   ): any {
     // Don't attempt to transform null/undefined data
     if (!data) return data;
@@ -112,7 +112,7 @@ export class ApiProxyService {
    */
   static mapResponseData(
     path: string,
-    data: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    data: any  
   ): any {
     // Don't attempt to transform null/undefined data
     if (!data) return data;
@@ -136,7 +136,7 @@ export class ApiProxyService {
         id: data.session_id,
         messages:
           data.messages?.map(
-            (m: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */) => ({
+            (m: any  ) => ({
               id: m.message_id,
               content: m.content,
               sender: m.sender_type,
@@ -158,7 +158,7 @@ export class ApiProxyService {
    * Wraps response data in the standard ApiResponse format if it's not already
    */
   static standardizeResponse<T>(
-    data: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    data: any  
   ): ApiResponse<T> {
     if (data && typeof data === 'object' && ('data' in data || 'error' in data || 'meta' in data)) {
       // Already in ApiResponse format

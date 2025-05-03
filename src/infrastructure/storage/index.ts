@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Storage service for persistent data
  */

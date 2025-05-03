@@ -4,11 +4,10 @@
  * with clinical precision and type-safe implementation
  */
 
-import { useState, useEffect, memo, useMemo } from 'react';
-import { Color, Vector3 } from 'three';
+import { useState, useMemo } from 'react';
 import { Badge } from '@/presentation/atoms'; // Corrected import
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/presentation/atoms'; // Corrected import
-import { cn } from '@/lib/utils';
+// import { cn } from '@/lib/utils';
 import type { NeuralCorrelation as NeuralCorrelationType } from '@domain/types/clinical/events';
 
 // Icons
@@ -40,7 +39,9 @@ export const NeuralCorrelationBadge: React.FC<NeuralCorrelationBadgeProps> = ({
   className = '',
   onClick,
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  // These state variables are currently unused but kept for future interactive features
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isHovered, _setIsHovered] = useState(false);
 
   // Calculate badge color based on correlation strength
   const badgeColor = useMemo(() => {

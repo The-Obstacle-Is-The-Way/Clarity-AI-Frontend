@@ -1,8 +1,8 @@
 // src/presentation/organisms/PatientTable.tsx
 import React from 'react';
 import type { Patient } from '@domain/patients/patientTypes';
-import { format } from 'date-fns';
-import { Button } from '@/presentation/atoms';
+// import { format } from 'date-fns';
+// import { Button } from '@/presentation/atoms';
 import {
   Table,
   TableBody,
@@ -15,10 +15,10 @@ import {
 import { Badge } from '@/presentation/atoms'; // Use index
 import { Skeleton } from '@/presentation/atoms'; // Use index
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
-import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
-import { Terminal, FileText } from 'lucide-react';
-import type { ClinicalRecord } from '@domain/clinical-records/clinicalRecordTypes';
+// import { cn } from '@/lib/utils';
+// import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
+// import { Terminal, FileText } from 'lucide-react';
+// import type { ClinicalRecord } from '@domain/clinical-records/clinicalRecordTypes';
 
 interface PatientTableProps {
   patients: Patient[];

@@ -28,7 +28,7 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
   warningThresholdInMinutes,
   warningThreshold,
   onLogout,
-  onExtendSession
+  onExtendSession,
 }) => {
   const [visible, setVisible] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(timeoutInMinutes * 60 * 1000);

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Molecules index file
  *

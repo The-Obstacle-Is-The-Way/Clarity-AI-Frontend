@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NeuralActivityController - Minimal Test
  * This is a minimal test to ensure the controller can be imported without hanging.

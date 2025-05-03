@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural Test Suite
  * Patient runtime validators testing with quantum precision

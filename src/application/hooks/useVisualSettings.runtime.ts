@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * @fileoverview Runtime validation functions for data related to the useVisualSettings hook.
  * Ensures that visual settings structures conform to expected types at runtime.

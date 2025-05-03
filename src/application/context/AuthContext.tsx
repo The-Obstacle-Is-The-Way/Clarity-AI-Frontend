@@ -102,8 +102,8 @@ export interface AppAuthContextType extends Omit<AuthState, 'token' | 'user'> {
   logout: () => Promise<void>;
   clearError: () => void;
   hasPermission: (permission: Permission) => boolean;
-  extendSession: () => Promise<void>; 
-  getSessionExpiration: () => number; 
+  extendSession: () => Promise<void>;
+  getSessionExpiration: () => number;
 }
 
 // Rename exported context
@@ -129,7 +129,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Throw an error if user data is invalid or incomplete
         throw new Error('Invalid user data received during auth check');
       }
-    } catch (authCheckError) { // Renamed error variable
+    } catch (authCheckError) {
+      // Renamed error variable
       // Log the specific error for debugging
       console.error('Auth check failed:', authCheckError);
       dispatch({ type: 'AUTH_CHECK_FAILURE' });
@@ -150,9 +151,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw new Error('Failed to fetch user data after login.');
       }
       dispatch({ type: 'LOGIN_SUCCESS', payload: user });
-    } catch (loginError: unknown) { // Use unknown for error type
+    } catch (loginError: unknown) {
+      // Use unknown for error type
       console.error('Login failed:', loginError);
-      const errorMessage = 
+      const errorMessage =
         loginError instanceof Error ? loginError.message : 'An unknown error occurred during login';
       dispatch({ type: 'LOGIN_FAILURE', payload: errorMessage });
       throw loginError; // Re-throw to allow components to handle
@@ -165,10 +167,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await authService.logout();
       dispatch({ type: 'LOGOUT_SUCCESS' });
-    } catch (logoutError: unknown) { // Use unknown for error type
+    } catch (logoutError: unknown) {
+      // Use unknown for error type
       console.error('Logout failed:', logoutError);
-      const errorMessage = 
-        logoutError instanceof Error ? logoutError.message : 'An unknown error occurred during logout';
+      const errorMessage =
+        logoutError instanceof Error
+          ? logoutError.message
+          : 'An unknown error occurred during logout';
       dispatch({ type: 'LOGOUT_FAILURE', payload: errorMessage });
     }
   }, []);
@@ -178,14 +183,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'CLEAR_ERROR' });
   }, []);
 
-  // --- Placeholder implementations for context methods --- 
+  // --- Placeholder implementations for context methods ---
 
-  const hasPermission = useCallback((permission: Permission): boolean => {
-    // Use state.user (which is DomainUser | null)
-    // Check domain user permissions array
-    console.warn('hasPermission check needs verification based on DomainUser structure');
-    return state.user?.permissions?.includes(permission) ?? false; 
-  }, [state.user]);
+  const hasPermission = useCallback(
+    (permission: Permission): boolean => {
+      // Use state.user (which is DomainUser | null)
+      // Check domain user permissions array
+      console.warn('hasPermission check needs verification based on DomainUser structure');
+      return state.user?.permissions?.includes(permission) ?? false;
+    },
+    [state.user]
+  );
 
   const extendSession = useCallback(async (): Promise<void> => {
     // Placeholder: Call backend renew/extend endpoint via authService if available
@@ -202,7 +210,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Use renamed type for value
   const contextValue: AppAuthContextType = {
-    ...state, 
+    ...state,
     login,
     logout,
     clearError,

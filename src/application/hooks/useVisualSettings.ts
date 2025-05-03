@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Application Hook
  * useVisualSettings - Quantum-level hook for visualization settings

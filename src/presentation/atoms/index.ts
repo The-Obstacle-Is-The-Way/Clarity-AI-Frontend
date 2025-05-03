@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Atoms index file
  *

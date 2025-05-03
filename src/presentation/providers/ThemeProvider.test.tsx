@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-/* eslint-disable */
+
 // Import the test setup first to ensure JSDOM environment is properly configured
 import '../../test/setup.ts';
 import { render, screen, act, cleanup, waitFor } from '@testing-library/react';

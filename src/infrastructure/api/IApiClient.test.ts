@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural Test Suite
  * IApiClient testing with quantum precision

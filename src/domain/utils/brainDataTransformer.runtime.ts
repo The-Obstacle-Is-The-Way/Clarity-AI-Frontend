@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * @fileoverview Runtime validation functions for brainDataTransformer utilities.
  * Ensures input data conforms to expected domain types.

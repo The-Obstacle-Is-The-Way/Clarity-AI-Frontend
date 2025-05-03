@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural Test Suite
  * visualization type testing with quantum precision

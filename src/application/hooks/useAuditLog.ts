@@ -5,7 +5,7 @@ import type { AuditEventType } from '@domain/types/audit/AuditEventType';
 // Placeholder for Audit Log API client or service
 // In a real implementation, this would likely interact with an API endpoint
 const auditLogService = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   logEvent: async (eventType: AuditEventType, details: any): Promise<void> => {
     console.log('[Audit Log - Mock]', eventType, details);
     // Replace with actual API call, e.g.:
@@ -39,4 +39,4 @@ export const useAuditLog = () => {
   );
 
   return { log };
-}; 
+};

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Utilities for progressive loading of large brain data
  * Implements chunked loading to avoid UI freezes with large datasets

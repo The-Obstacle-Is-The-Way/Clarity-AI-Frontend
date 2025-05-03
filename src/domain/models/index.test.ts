@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural Test Suite
  * Domain model exports validation with quantum precision

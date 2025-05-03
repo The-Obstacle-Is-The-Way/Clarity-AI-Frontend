@@ -34,7 +34,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, className = '' }) => {
       <nav className="flex flex-col h-full">
         {/* Logo/Branding (optional) */}
         <div className={cn('mb-6 flex items-center', isOpen ? 'justify-start' : 'justify-center')}>
-          <div className={cn('h-8 w-8 rounded-full bg-gradient-to-br from-primary to-secondary', isOpen ? 'mr-2' : '')}></div>
+          <div
+            className={cn(
+              'h-8 w-8 rounded-full bg-gradient-to-br from-primary to-secondary',
+              isOpen ? 'mr-2' : ''
+            )}
+          ></div>
           {isOpen && <span className="font-bold text-lg">ClarityAI</span>}
         </div>
 
@@ -64,7 +69,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, className = '' }) => {
 
         {/* Logout Button */}
         <div className="mt-auto">
-          <Button variant="ghost" className={cn('w-full flex items-center text-muted-foreground hover:bg-muted hover:text-foreground', !isOpen && 'justify-center')}>
+          <Button
+            variant="ghost"
+            className={cn(
+              'w-full flex items-center text-muted-foreground hover:bg-muted hover:text-foreground',
+              !isOpen && 'justify-center'
+            )}
+          >
             <LogOut className={cn('h-5 w-5', isOpen ? 'mr-3' : '')} />
             {isOpen && <span>Logout</span>}
           </Button>
@@ -74,4 +85,4 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, className = '' }) => {
   );
 };
 
-export default Sidebar; 
+export default Sidebar;

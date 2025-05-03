@@ -6,12 +6,12 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTheme } from '@/application/hooks/useTheme';
-import { cn } from '@/lib/utils';
+// import { useTheme } from '@/application/hooks/useTheme';
+// import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/presentation/atoms';
-import { Card, CardHeader, CardTitle, CardContent } from '@/presentation/atoms';
-import { ScrollArea, ScrollBar } from '@/presentation/atoms';
-import { Info, Settings, Brain, Zap, Heart } from 'lucide-react';
+import { Card } from '@/presentation/atoms';
+import { ScrollArea } from '@/presentation/atoms';
+import { Settings, Brain } from 'lucide-react';
 
 // Neural visualization coordinator provider (Module missing)
 // import { VisualizationCoordinatorProvider } from "@application/coordinators/NeuralVisualizationCoordinator";

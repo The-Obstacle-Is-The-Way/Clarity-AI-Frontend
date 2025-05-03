@@ -118,7 +118,7 @@ export class ApiClient implements IApiClient {
    */
   async post<T = any>(
     url: string,
-    data?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */,
+    data?: any  ,
     options: Omit<RequestOptions, 'method' | 'body'> = {}
   ): Promise<T> {
     // Map and transform request data
@@ -138,7 +138,7 @@ export class ApiClient implements IApiClient {
    */
   async put<T = any>(
     url: string,
-    data?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */,
+    data?: any  ,
     options: Omit<RequestOptions, 'method' | 'body'> = {}
   ): Promise<T> {
     const rawPath = url.startsWith('/') ? url.slice(1) : url;
@@ -184,7 +184,7 @@ export class ApiClient implements IApiClient {
       };
 
       // Extract custom fields not allowed in RequestInit
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { params: _params, _isRetry, ...restOptions } = options;
 
       // Create request options (exclude custom fields)

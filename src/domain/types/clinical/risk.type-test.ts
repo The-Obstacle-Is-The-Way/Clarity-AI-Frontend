@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Type Testing Framework
  * Risk Type Tests

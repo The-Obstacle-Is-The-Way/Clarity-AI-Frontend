@@ -377,7 +377,7 @@ export const ActivityTimeSeries = {
  * @param data - Raw brain model input (potentially untyped)
  * @returns Strictly typed and clinically safe BrainModelData structure
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export const BrainModel = (data: any = {}): BrainModelData => {
   // Generate a default processed model with clinical precision
   const defaultModel: BrainModelData = {
@@ -396,7 +396,7 @@ export const BrainModel = (data: any = {}): BrainModelData => {
   };
 
   // Process regions if provided
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const processedRegions = Array.isArray(data.regions)
     ? data.regions.map((r: any) => BrainRegion.create(r))
     : [];

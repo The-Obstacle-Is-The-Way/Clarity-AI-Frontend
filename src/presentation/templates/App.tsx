@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
 import ErrorBoundary from '@presentation/ErrorBoundary';
 import { ToastContainer } from 'react-toastify';
 
@@ -74,7 +74,13 @@ const App: React.FC = () => {
                 <Route path="/login" element={<LoginPage />} />
 
                 {/* Protected Routes */}
-                <Route element={<ProtectedRoute />}>
+                <Route
+                  element={
+                    <ProtectedRoute>
+                      <Outlet />
+                    </ProtectedRoute>
+                  }
+                >
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/profile" element={<ProfilePage />} />

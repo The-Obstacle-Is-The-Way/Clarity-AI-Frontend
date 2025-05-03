@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Service Layer
  * Clinical Service - Handles retrieval and processing of clinical data.

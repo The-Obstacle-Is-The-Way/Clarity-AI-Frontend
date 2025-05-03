@@ -42,7 +42,7 @@ const testData = {
         activity: 0.5,
         isActive: true,
         hemisphereLocation: 'right',
-        dataConfidence: 0.90,
+        dataConfidence: 0.9,
         volume: 30.2,
       },
       {

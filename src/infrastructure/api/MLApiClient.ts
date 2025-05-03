@@ -24,7 +24,7 @@ export class MLApiClient {
   async processText(
     text: string,
     modelType?: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    options?: any  
   ): Promise<any> {
     const url = '/ml/mentalllama/process';
     const params = {
@@ -41,7 +41,7 @@ export class MLApiClient {
    */
   async detectDepression(
     text: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    options?: any  
   ): Promise<any> {
     const url = '/ml/mentalllama/depression';
     const params = {
@@ -58,7 +58,7 @@ export class MLApiClient {
   async assessRisk(
     text: string,
     riskType?: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    options?: any  
   ): Promise<any> {
     const url = '/ml/mentalllama/risk';
     const params = {
@@ -75,7 +75,7 @@ export class MLApiClient {
    */
   async analyzeSentiment(
     text: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    options?: any  
   ): Promise<any> {
     const url = '/ml/mentalllama/sentiment';
     const params = {
@@ -92,7 +92,7 @@ export class MLApiClient {
   async analyzeWellnessDimensions(
     text: string,
     dimensions?: string[],
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    options?: any  
   ): Promise<any> {
     const url = '/ml/mentalllama/wellness-dimensions';
     const params = {
@@ -108,7 +108,7 @@ export class MLApiClient {
    * Generate a digital twin model based on patient data
    */
   async generateDigitalTwin(
-    patientData: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */,
+    patientData: any  ,
     options?: any
   ): Promise<any> {
     const url = '/ml/mentalllama/generate-twin';
@@ -127,7 +127,7 @@ export class MLApiClient {
     therapistId: string,
     patientId: string,
     sessionType?: string,
-    sessionParams?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    sessionParams?: any  
   ): Promise<any> {
     const url = '/ml/mentalllama/sessions';
     const params = {
@@ -157,7 +157,7 @@ export class MLApiClient {
     message: string,
     senderId?: string,
     senderType?: string,
-    messageParams?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    messageParams?: any  
   ): Promise<any> {
     const url = `/ml/mentalllama/sessions/${sessionId}/messages`;
     const params = {
@@ -176,7 +176,7 @@ export class MLApiClient {
    */
   async endDigitalTwinSession(
     sessionId: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    options?: any  
   ): Promise<any> {
     const url = `/ml/mentalllama/sessions/${sessionId}/end`;
     const params = {
@@ -192,7 +192,7 @@ export class MLApiClient {
    */
   async getSessionInsights(
     sessionId: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    options?: any  
   ): Promise<any> {
     const url = `/ml/mentalllama/sessions/${sessionId}/insights`;
     const params = {

@@ -32,13 +32,10 @@ const MainLayout: React.FC = () => {
   );
 
   return (
-    <div className={cn("flex h-screen bg-background text-foreground", theme)}>
+    <div className={cn('flex h-screen bg-background text-foreground', theme)}>
       <Sidebar isOpen={isSidebarOpen} />
       <div className="flex flex-col flex-1 overflow-hidden">
-        <Header 
-          title="Clarity AI Dashboard"
-          actions={headerActions}
-        />
+        <Header title="Clarity AI Dashboard" actions={headerActions} />
         <main className="flex-1 overflow-y-auto p-6 bg-muted/40">
           <ErrorBoundary>
             <Suspense fallback={<LoadingIndicator />}>

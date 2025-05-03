@@ -91,7 +91,7 @@ export class EnhancedApiProxyService {
    */
   static validateRequest(
     path: string,
-    data: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    data: any  
   ): ValidationResult {
     const errors: ValidationError[] = [];
     const normalizedPath = path.startsWith('/') ? path.substring(1) : path;
@@ -151,7 +151,7 @@ export class EnhancedApiProxyService {
    */
   static mapRequestData(
     path: string,
-    data: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */,
+    data: any  ,
     context?: TransformationContext
   ): any {
     // Don't attempt to transform null/undefined data
@@ -230,7 +230,7 @@ export class EnhancedApiProxyService {
    */
   static mapResponseData(
     path: string,
-    data: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */,
+    data: any  ,
     context?: TransformationContext
   ): any {
     // Don't attempt to transform null/undefined data
@@ -263,7 +263,7 @@ export class EnhancedApiProxyService {
           id: data.session_id,
           messages:
             data.messages?.map(
-              (m: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */) => ({
+              (m: any  ) => ({
                 id: m.message_id,
                 content: m.content,
                 sender: m.sender_type,
@@ -323,7 +323,7 @@ export class EnhancedApiProxyService {
    * Convert object keys between camelCase and snake_case recursively
    */
   static convertToCamelOrSnakeCase(
-    data: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */,
+    data: any  ,
     format: 'camelCase' | 'snake_case'
   ): any {
     // Handle null/undefined
@@ -365,7 +365,7 @@ export class EnhancedApiProxyService {
    * with error handling
    */
   static standardizeResponse<T>(
-    data: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */,
+    data: any  ,
     context?: TransformationContext
   ): ApiResponse<T> {
     try {
@@ -425,7 +425,7 @@ export class EnhancedApiProxyService {
    * Normalize error response to standard format
    */
   private static normalizeErrorResponse(
-    error: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    error: any  
   ): any {
     if (typeof error === 'string') {
       return {

@@ -1,6 +1,7 @@
 // src/presentation/organisms/XGBoostInputForm.tsx
 import React, { memo } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import type { SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod'; // Assuming zod is used
 import { z } from 'zod'; // Assuming zod is used
 import type { XGBoostInput } from '@domain/analytics/xgboostTypes';

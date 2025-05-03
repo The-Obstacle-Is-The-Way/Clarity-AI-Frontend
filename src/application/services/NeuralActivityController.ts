@@ -103,7 +103,7 @@ export function useNeuralActivityController(patientId: string) {
       if (Result.isSuccess(result)) {
         // Assuming result.value has regionActivations and connectionStrengths arrays
         if (result.value && Array.isArray(result.value.regionActivations)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           result.value.regionActivations.forEach((activation: any) => {
             // Add explicit any type, remove comment
             // Use 'any' for activation
@@ -131,9 +131,9 @@ export function useNeuralActivityController(patientId: string) {
 
         // Initialize connection strengths
         if (result.value && Array.isArray(result.value.connectionStrengths)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           result.value.connectionStrengths.forEach((connection: any) => {
-            // eslint-disable-line @typescript-eslint/no-explicit-any
+             
             // Use 'any' for connection
             neuralState.metrics.connectionStrengths.set(
               `${connection.sourceId}-${connection.targetId}`,
@@ -328,7 +328,7 @@ export function useNeuralActivityController(patientId: string) {
           return failure(new Error(errorMessage || 'Failed to load symptom mappings'));
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         const relevantMappings = mappingsResult.value.filter((mapping: any) =>
           symptomIds.includes(mapping.symptomId)
         );
@@ -336,9 +336,9 @@ export function useNeuralActivityController(patientId: string) {
         const transforms: NeuralTransform[] = [];
 
         relevantMappings.forEach((mapping: any) => {
-          // eslint-disable-line @typescript-eslint/no-explicit-any
+           
           if (Array.isArray(mapping.activationPatterns)) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             
             mapping.activationPatterns.forEach((pattern: any) => {
               // Use optional chaining and nullish coalescing for safety
               if (
@@ -395,10 +395,10 @@ export function useNeuralActivityController(patientId: string) {
         const transforms: NeuralTransform[] = [];
 
         if (Array.isArray(medicationEffectsResult.value)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           medicationEffectsResult.value.forEach((medication: any) => {
             if (Array.isArray(medication.regionalEffects)) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+               
               medication.regionalEffects.forEach((effect: any) => {
                 if (
                   effect &&

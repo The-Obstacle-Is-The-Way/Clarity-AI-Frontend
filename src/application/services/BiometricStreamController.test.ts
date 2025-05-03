@@ -89,7 +89,7 @@ class MockWebSocket {
     }
   });
   // Helper methods for tests
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   public simulateMessage(data: any): void {
     // Added public keyword
     if (this.onmessage) {
@@ -97,7 +97,7 @@ class MockWebSocket {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   public simulateError(errorData: any): void {
     // Added public keyword
     if (this.onerror) {

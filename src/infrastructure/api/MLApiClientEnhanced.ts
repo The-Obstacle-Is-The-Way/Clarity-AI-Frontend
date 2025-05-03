@@ -49,7 +49,7 @@ export class MLApiError extends Error {
   endpoint: string;
   requestId?: string;
   retryable: boolean;
-  details?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */;
+  details?: any  ;
 
   constructor(
     message: string,
@@ -59,7 +59,7 @@ export class MLApiError extends Error {
       statusCode?: number;
       requestId?: string;
       retryable?: boolean;
-      details?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */;
+      details?: any  ;
     }
   ) {
     super(message);
@@ -204,7 +204,7 @@ export class MLApiClientEnhanced implements IMLClient {
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         return await fn(); // Attempt the function call
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
       } catch (error: any) {
         lastError = this.processError(error, endpoint); // Process error
 
@@ -243,7 +243,7 @@ export class MLApiClientEnhanced implements IMLClient {
    * Process and normalize errors
    */
   private processError(
-    error: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */,
+    error: any  ,
     endpoint: string
   ): MLApiError {
     // If it's already our error type, return it
@@ -257,7 +257,7 @@ export class MLApiClientEnhanced implements IMLClient {
     let statusCode: number | undefined;
     let requestId: string | undefined;
     let retryable = false;
-    let details: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */;
+    let details: any  ;
 
     // Handle timeout errors specifically to match test expectations
     if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout')) {

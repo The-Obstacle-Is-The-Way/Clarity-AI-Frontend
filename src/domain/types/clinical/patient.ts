@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Clinical Type Definitions
  * Patient data types with quantum-level type safety and HIPAA compliance

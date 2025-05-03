@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 // Import reflect-metadata for inversifyJS
-import 'reflect-metadata'; 
+import 'reflect-metadata';
 import App from '@presentation/templates/App';
 import '@presentation/styles/index.css';
 import 'react-toastify/dist/ReactToastify.css';

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * @fileoverview Tests for runtime validation functions in brainDataTransformer.runtime.ts.
  */

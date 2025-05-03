@@ -4,11 +4,7 @@
  * Provides robust authentication state and methods to the application with
  * enhanced HIPAA compliance, 2FA, and client-side encryption.
  */
-import React, {
-  useState,
-  useCallback,
-  type FC,
-} from 'react';
+import React, { useState, useCallback, type FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import { useIdleTimer } from 'react-idle-timer'; // Comment out unused import
 import { toast } from 'sonner';

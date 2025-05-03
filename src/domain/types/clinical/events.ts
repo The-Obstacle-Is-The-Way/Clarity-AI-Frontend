@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Clinical Event Types
  * Defines structures for various clinical timeline events.

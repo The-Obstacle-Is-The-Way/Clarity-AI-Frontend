@@ -6,9 +6,9 @@
  * for region selection, highlighting, and data visualization.
  */
 
-import React, { createContext, useContext, useState, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
 // Core domain types
-import type { BrainRegion as BrainRegionData, NeuralConnection } from '@domain/types/brain/models';
+import type { BrainRegion as BrainRegionData } from '@domain/types/brain/models';
 
 // State types
 export interface BrainModelState {

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import type { IBrainService } from '@domain/services/brain.service';
 import type { BrainModel, BrainRegion, NeuralConnection } from '@domain/models/brain.model';
 import type { UUID, PaginationParams, PaginatedResponse } from '@domain/types/common';

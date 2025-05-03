@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Utilities
  * Domain utilities exports with quantum-level type safety

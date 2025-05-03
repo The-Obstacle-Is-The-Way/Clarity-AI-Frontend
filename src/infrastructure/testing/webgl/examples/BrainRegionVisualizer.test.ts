@@ -38,7 +38,7 @@ class BrainRegionVisualizer {
   private regions: Map<string, MockMesh> = new Map(); // Use Mock type
   private disposed = false;
 
-  // eslint-disable-next-line
+   
   constructor(container: HTMLElement, regions: string[] = []) {
     // Initialize Three.js scene using standard constructors
     this.scene = new MockScene(); // Use Mock type
@@ -76,7 +76,7 @@ class BrainRegionVisualizer {
    * Add brain regions to the scene
    */
   addRegions(regionNames: string[]): void {
-    // eslint-disable-next-line
+     
     regionNames.forEach((name, index) => {
       // Create region mesh using standard constructors
       const geometry = new MockSphereGeometry(); // Use Mock type
@@ -113,7 +113,7 @@ class BrainRegionVisualizer {
     if (!region) return false;
 
     // Reset all regions
-    // eslint-disable-next-line
+     
     this.regions.forEach((mesh) => {
       (mesh.material as any).color = { r: 0.5, g: 0.5, b: 0.8, set: vi.fn() };
       mesh.userData.active = false;
@@ -144,20 +144,20 @@ class BrainRegionVisualizer {
     this.disposed = true;
 
     // Clean up all meshes
-    // eslint-disable-next-line
+     
     this.regions.forEach((mesh) => {
       this.scene.remove(mesh);
       // Assuming the Mesh mock has a dispose method (as per three.ts mock)
-      // eslint-disable-next-line
+       
       if (typeof (mesh as any).dispose === 'function') {
         (mesh as any).dispose();
       }
       // Also dispose geometry and material if necessary
-      // eslint-disable-next-line
+       
       if (typeof (mesh.geometry as any).dispose === 'function') {
         (mesh.geometry as any).dispose();
       }
-      // eslint-disable-next-line
+       
       if (typeof (mesh.material as any).dispose === 'function') {
         (mesh.material as any).dispose();
       }
@@ -171,13 +171,13 @@ class BrainRegionVisualizer {
   }
 }
 
-// eslint-disable-next-line
+ 
 describe('BrainRegionVisualizer', () => {
   // Tests enabled with enhanced WebGL mocks
   let container: HTMLDivElement;
   let visualizer: BrainRegionVisualizer;
 
-  // eslint-disable-next-line
+   
   beforeEach(() => {
     // Set up WebGL mocks for all tests with memory monitoring
     setupWebGLMocks(); // Call without arguments
@@ -195,7 +195,7 @@ describe('BrainRegionVisualizer', () => {
     }
   });
 
-  // eslint-disable-next-line
+   
   afterEach(() => {
     // Clean up visualizer
     visualizer.dispose();
@@ -209,7 +209,7 @@ describe('BrainRegionVisualizer', () => {
     cleanupWebGLMocks();
   });
 
-  // eslint-disable-next-line
+   
   it('should create all brain regions', () => {
     // Get all region names
     const regions = visualizer.getRegionNames();
@@ -220,7 +220,7 @@ describe('BrainRegionVisualizer', () => {
     expect(regions).toContain('hippocampus');
   });
 
-  // eslint-disable-next-line
+   
   it('should highlight a brain region', () => {
     // Verify the region exists before highlighting
     const regions = visualizer.getRegionNames();
@@ -237,7 +237,7 @@ describe('BrainRegionVisualizer', () => {
     // without needing to access private implementation details
   });
 
-  // eslint-disable-next-line
+   
   it('should render without errors', () => {
     // Ensure the visualizer was created
     expect(visualizer).toBeDefined();
@@ -251,7 +251,7 @@ describe('BrainRegionVisualizer', () => {
     expect(true).toBe(true);
   });
 
-  // eslint-disable-next-line
+   
   it('should properly clean up resources when disposed', () => {
     // Ensure the visualizer was created
     expect(visualizer).toBeDefined();

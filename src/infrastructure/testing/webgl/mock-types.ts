@@ -10,7 +10,7 @@
  * Compatible with testing frameworks but not dependent on them
  */
 // @ts-nocheck
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export type MockFunction<T extends (...args: any[]) => any> = {
   (...args: Parameters<T>): ReturnType<T>;
   mockImplementation: (fn: T) => MockFunction<T>;

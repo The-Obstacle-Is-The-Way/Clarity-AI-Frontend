@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Application Service
  * TemporalService - Placeholder for temporal data operations

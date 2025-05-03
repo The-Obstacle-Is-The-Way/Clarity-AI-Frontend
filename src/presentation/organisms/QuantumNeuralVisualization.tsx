@@ -7,12 +7,7 @@ import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
 import { Vector3, Color } from 'three';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { NeuralControlPanel } from './NeuralControlPanel';
 import { VisualizationErrorBoundary } from './VisualizationErrorBoundary';
 import { RenderMode } from '@domain/types/brain/visualization';
@@ -21,7 +16,9 @@ import ConnectionLine from '@/presentation/atoms/data-visualization/ConnectionLi
 import type { VisualizationSettings } from '@domain/types/brain/visualization';
 
 // Neural connection component
-const NeuralConnection = React.memo(({ start, end, strength, isActive }: any) => {
+// This component is currently unused but kept for future reference
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const NeuralConnectionComponent = React.memo(({ start, end, strength, isActive }: { start: Vector3; end: Vector3; strength: number; isActive: boolean }) => {
   const ref = useRef<any>();
 
   useEffect(() => {
@@ -111,7 +108,12 @@ const NeuralRegion = React.memo(
 );
 
 // Brain model container
-const BrainModelContainer = ({ brainModel, selectedRegions, onSelectRegion, visualizationSettings }: any) => {
+const BrainModelContainer = ({
+  brainModel,
+  selectedRegions,
+  onSelectRegion,
+  visualizationSettings,
+}: any) => {
   const { camera } = useThree();
 
   useEffect(() => {
@@ -170,7 +172,15 @@ const BrainModelContainer = ({ brainModel, selectedRegions, onSelectRegion, visu
 
 // Main neural visualization component with quality presets
 const NeuralVisualization = React.memo(
-  ({ brainModel, renderMode, detailLevel, selectedRegions = [], onSelectRegion, visualizationSettings }: any) => {
+  ({
+    brainModel,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    renderMode,
+    detailLevel,
+    selectedRegions = [],
+    onSelectRegion,
+    visualizationSettings,
+  }: { brainModel: BrainModel; renderMode?: RenderMode; detailLevel: 'low' | 'medium' | 'high' | 'ultra'; selectedRegions: string[]; onSelectRegion: (id: string) => void; visualizationSettings: VisualizationSettings }) => {
     const dprSettings = useMemo(() => {
       // Adjust detail level based on settings
       switch (detailLevel) {
@@ -391,7 +401,7 @@ export const QuantumNeuralVisualization: React.FC<QuantumNeuralVisualizationProp
   brainModelId,
   initialModel,
   visualizationSettings,
-  onRegionSelect
+  onRegionSelect,
 }) => {
   // State
   const [brainModel, setBrainModel] = useState<BrainModel | null>(initialModel);
@@ -415,18 +425,21 @@ export const QuantumNeuralVisualization: React.FC<QuantumNeuralVisualizationProp
   }, [patientId, brainModelId]);
 
   // Handle region selection
-  const handleSelectRegion = useCallback((regionId: string) => {
-    setSelectedRegions((prev) => {
-      if (prev.includes(regionId)) {
-        return prev.filter((id) => id !== regionId);
-      } else {
-        return [...prev, regionId];
+  const handleSelectRegion = useCallback(
+    (regionId: string) => {
+      setSelectedRegions((prev) => {
+        if (prev.includes(regionId)) {
+          return prev.filter((id) => id !== regionId);
+        } else {
+          return [...prev, regionId];
+        }
+      });
+      if (onRegionSelect) {
+        onRegionSelect(regionId);
       }
-    });
-    if (onRegionSelect) {
-      onRegionSelect(regionId);
-    }
-  }, [onRegionSelect]);
+    },
+    [onRegionSelect]
+  );
 
   if (isLoading) {
     return (

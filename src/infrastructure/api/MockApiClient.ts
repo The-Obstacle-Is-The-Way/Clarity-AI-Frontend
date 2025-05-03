@@ -1,4 +1,3 @@
-/* eslint-disable */
 import type { BrainModel, NeuralConnection, BrainRegion } from '@domain/types/brain/models'; // Corrected path and type name
 // Removed import for ModelSource as it's not exported
 

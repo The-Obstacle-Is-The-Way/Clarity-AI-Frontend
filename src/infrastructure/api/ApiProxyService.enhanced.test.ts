@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * @vitest-environment jsdom
  */

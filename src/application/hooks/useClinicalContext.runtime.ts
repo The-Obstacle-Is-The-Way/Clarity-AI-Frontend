@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * @fileoverview Runtime validation functions for data related to the useClinicalContext hook.
  * Ensures that clinical context data structures conform to expected types at runtime.

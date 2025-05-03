@@ -1,5 +1,6 @@
 import { useThree, useFrame } from '@react-three/fiber';
-import { useEffect, useState, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
 export type DetailLevel = 'low' | 'medium' | 'high';
 
@@ -30,10 +31,13 @@ export const useDetailConfig = (): DetailConfig => {
 
 const AdaptiveLOD: React.FC<AdaptiveLODProps> = ({
   children,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   lowThreshold = 30,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   highThreshold = 55,
 }) => {
   const { gl } = useThree();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [fps, setFps] = useState<number>(60);
 
   // Simulate FPS monitoring

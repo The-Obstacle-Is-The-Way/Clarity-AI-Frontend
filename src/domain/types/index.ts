@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Core domain types for the Novamind Digital Twin system
  */

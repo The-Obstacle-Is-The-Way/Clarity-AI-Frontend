@@ -10,4 +10,4 @@ export * from './ClinicalTimelinePanel';
 export * from './BrainModelViewer';
 export * from './BiometricMonitorPanel';
 export * from './NeuralControlPanel';
-// Add other organism exports as needed 
+// Add other organism exports as needed

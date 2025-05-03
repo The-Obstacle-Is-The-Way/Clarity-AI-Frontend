@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * API response type definitions
  */

@@ -1,8 +1,8 @@
 // src/presentation/organisms/PatientDetailCard.tsx
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/presentation/atoms';
+import { Card, CardContent, CardHeader, CardTitle } from '@/presentation/atoms';
 import { Badge } from '@/presentation/atoms';
-import { cn } from '@/lib/utils';
+// import { cn } from '@/lib/utils';
 import type { Patient } from '@domain/patients/patientTypes';
 import { User } from 'lucide-react';
 
@@ -36,8 +36,8 @@ const PatientDetailCard: React.FC<PatientDetailCardProps> = ({ patient }) => {
         <DetailItem label="First Name" value={patient.first_name} />
         <DetailItem label="Last Name" value={patient.last_name} />
         <DetailItem label="Date of Birth" value={patient.date_of_birth} />
-        <DetailItem 
-          label="Status" 
+        <DetailItem
+          label="Status"
           value={
             <Badge variant={patient.status === 'active' ? 'secondary' : 'destructive'}>
               {patient.status.charAt(0).toUpperCase() + patient.status.slice(1).replace('_', ' ')}

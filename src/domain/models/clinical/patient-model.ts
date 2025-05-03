@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Type Definitions
  * Patient Model Domain Types with quantum-level type safety

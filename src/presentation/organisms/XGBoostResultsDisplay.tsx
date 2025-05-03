@@ -32,7 +32,12 @@ const XGBoostResultsDisplay: React.FC<XGBoostResultsDisplayProps> = ({ result })
   // Calculate percentage based on prediction_score
   const predictionPercentage = (result.prediction_score * 100).toFixed(1);
 
-  const predictionColor = result.prediction_score > 0.7 ? 'text-destructive' : result.prediction_score > 0.4 ? 'text-warning' : 'text-success';
+  const predictionColor =
+    result.prediction_score > 0.7
+      ? 'text-destructive'
+      : result.prediction_score > 0.4
+        ? 'text-warning'
+        : 'text-success';
 
   return (
     <div className="space-y-6" data-testid="prediction-result">
@@ -46,11 +51,14 @@ const XGBoostResultsDisplay: React.FC<XGBoostResultsDisplayProps> = ({ result })
               <div className="text-lg font-semibold">Prediction</div>
               <div className="text-3xl font-bold text-primary" data-testid="prediction-value">
                 <div className="text-sm text-muted-foreground">Prediction Score</div>
-                <div className={`text-3xl font-bold ${predictionColor}`}>{predictionPercentage}%</div>
+                <div className={`text-3xl font-bold ${predictionColor}`}>
+                  {predictionPercentage}%
+                </div>
                 {/* Display Confidence Interval if available and needed */}
                 {result.confidence_interval && (
                   <div className="text-xs text-muted-foreground mt-1">
-                    Confidence Interval: [{result.confidence_interval[0].toFixed(2)}, {result.confidence_interval[1].toFixed(2)}]
+                    Confidence Interval: [{result.confidence_interval[0].toFixed(2)},{' '}
+                    {result.confidence_interval[1].toFixed(2)}]
                   </div>
                 )}
               </div>

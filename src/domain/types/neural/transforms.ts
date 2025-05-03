@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Domain Types
  * Neural Transforms - Quantum-level transformation specifications

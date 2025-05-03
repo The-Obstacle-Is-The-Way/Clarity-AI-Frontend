@@ -13,12 +13,12 @@ import type { MockFunction } from './mock-types';
  * @param implementation Optional initial implementation of the mock function
  * @returns A mock function with tracking capabilities
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export function createMockFunction<T extends (...args: any[]) => any>(
   implementation?: T
 ): MockFunction<T> {
   const calls: Parameters<T>[][] = [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const results: { type: 'return' | 'throw'; value: any }[] = [];
 
   const mockFn = ((...args: Parameters<T>): ReturnType<T> => {
@@ -58,7 +58,7 @@ export function createMockFunction<T extends (...args: any[]) => any>(
 /**
  * Create a simple mock function for tests that don't need tracking
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export const fn = <T extends (...args: any[]) => any>(impl?: T) => createMockFunction<T>(impl);
 
 /**

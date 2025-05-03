@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Type Verification
  * Common type verification utilities tests with quantum-level precision

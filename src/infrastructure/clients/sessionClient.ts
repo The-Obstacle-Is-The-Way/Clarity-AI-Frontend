@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Session Management Service for HIPAA Compliance
  *

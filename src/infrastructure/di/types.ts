@@ -10,4 +10,4 @@ const TYPES = {
   // Add other service identifiers as needed
 };
 
-export { TYPES }; 
+export { TYPES };

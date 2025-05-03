@@ -16,13 +16,13 @@ declare global {
     interface IntrinsicElements {
       // Core Three.js Primitives - explicitly override DOM elements
       line: ReactThreeFiber.Object3DNode<THREE.Line, typeof THREE.Line> & {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         geometry?: any;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         onClick?: (event: any) => void;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         onPointerOver?: (event: any) => void;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         onPointerOut?: (event: any) => void;
       };
       mesh: ReactThreeFiber.Object3DNode<THREE.Mesh, typeof THREE.Mesh>;

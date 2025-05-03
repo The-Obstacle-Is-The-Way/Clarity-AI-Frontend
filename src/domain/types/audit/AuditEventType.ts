@@ -55,4 +55,4 @@ export enum AuditEventType {
 
   // Add other specific events as needed
   THEME_CHANGED = 'THEME_CHANGED', // Example for ThemeProvider
-} 
+}

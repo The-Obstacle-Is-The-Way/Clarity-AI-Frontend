@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Temporal Service Index
  * Re-exports the temporal service.

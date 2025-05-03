@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Analytics service for tracking user interactions
  */

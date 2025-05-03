@@ -191,7 +191,7 @@ export function useClinicalPredictionController(patientId: string) {
               let totalDataPoints = 0;
 
               // Add each treatment outcome to the maps
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+               
               outcomes.forEach((outcome: any) => {
                 // eslint-disable-line @typescript-eslint/no-explicit-any) => {
                 if (outcome && outcome.treatmentId) {
@@ -287,7 +287,7 @@ export function useClinicalPredictionController(patientId: string) {
               const newConfidenceIntervals = new Map(prevState.confidenceIntervals);
               let totalDataPoints = 0;
 
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+               
               predictions.forEach((prediction: any) => {
                 // eslint-disable-line @typescript-eslint/no-explicit-any) => {
                 if (prediction && prediction.disorderId) {
@@ -371,7 +371,7 @@ export function useClinicalPredictionController(patientId: string) {
               let totalDataPoints = 0;
 
               // Add each risk assessment to the maps
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+               
               assessments.forEach((assessment: any) => {
                 // eslint-disable-line @typescript-eslint/no-explicit-any) => {
                 if (assessment && assessment.riskFactorId) {

@@ -65,7 +65,7 @@ describe('ApiClient Runtime Validation', () => {
 
     it('should throw error for missing data payload', () => {
       const mockResponseNoData = createMockResponse<null>(null);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       (mockResponseNoData as any).data = undefined; // Force undefined data
       expect(() => validateApiResponse(mockResponseNoData)).toThrow(
         'API response missing data payload'

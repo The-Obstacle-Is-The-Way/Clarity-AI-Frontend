@@ -29,11 +29,11 @@ declare module '@react-three/drei' {
     panSpeed?: number;
     rotateSpeed?: number;
     dampingFactor?: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     onChange?: (e?: any) => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     onStart?: (e?: any) => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     onEnd?: (e?: any) => void;
   }
 
@@ -43,7 +43,7 @@ declare module '@react-three/drei' {
     nodes: Record<string, Mesh>;
     materials: Record<string, Material>;
     scene: Group;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     animations: any[];
   }
 
@@ -59,7 +59,7 @@ declare module '@react-three/drei' {
     path?: string;
     scene?: Object3D;
     files?: string | string[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     extensions?: any;
   }
 
@@ -79,28 +79,28 @@ declare module '@react-three/drei' {
     position?: [number, number, number];
     rotation?: [number, number, number];
     scale?: number | [number, number, number];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     onClick?: (e: any) => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     onPointerOver?: (e: any) => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     onPointerOut?: (e: any) => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     ref?: Ref<any>;
   }
 
   export const Instance: FC<InstanceProps>;
 
   export function useAnimations(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     animations: any[],
     ref?: MutableRefObject<Object3D | undefined>
   ): {
     ref: MutableRefObject<Object3D | undefined>;
     names: string[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     clips: any[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     actions: Record<string, any>;
   };
 }

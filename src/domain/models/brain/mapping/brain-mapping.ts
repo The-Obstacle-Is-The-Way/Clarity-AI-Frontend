@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Brain Mapping
  * Clinical mapping between symptoms, diagnoses, and neural regions

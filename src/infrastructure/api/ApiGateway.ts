@@ -91,22 +91,22 @@ export class ApiGateway implements IApiClient {
     return ApiGateway.getInstance().login(email, password);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   get<T>(url: string, config?: any): Promise<T> {
     return ApiGateway.getInstance().get(url, config);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   post<T>(url: string, data?: any, config?: any): Promise<T> {
     return ApiGateway.getInstance().post(url, data, config);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   put<T>(url: string, data?: any, config?: any): Promise<T> {
     return ApiGateway.getInstance().put(url, data, config);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   delete<T>(url: string, config?: any): Promise<T> {
     return ApiGateway.getInstance().delete(url, config);
   }
@@ -123,7 +123,7 @@ export class ApiGateway implements IApiClient {
     return ApiGateway.getInstance().getBrainModel(modelId);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   predictTreatmentResponse(patientId: string, treatmentData: any): Promise<any> {
     return ApiGateway.getInstance().predictTreatmentResponse(patientId, treatmentData);
   }

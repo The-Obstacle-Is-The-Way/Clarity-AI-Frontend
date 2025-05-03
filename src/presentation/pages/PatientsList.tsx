@@ -271,10 +271,7 @@ const PatientsList: React.FC = () => {
               View and manage patient digital twins
             </p>
           </div>
-          <Button
-            variant="default"
-            size="default"
-          >
+          <Button variant="default" size="default">
             <svg className="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -378,12 +375,7 @@ const PatientsList: React.FC = () => {
               </svg>
               <h3 className="mb-2 text-lg font-semibold">Error Loading Patients</h3>
               <p className="text-sm">{String(error)}</p>
-              <Button
-                variant="destructive"
-                size="sm"
-                className="mt-4"
-                onClick={() => refetch()}
-              >
+              <Button variant="destructive" size="sm" className="mt-4" onClick={() => refetch()}>
                 Retry
               </Button>
             </div>

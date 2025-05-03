@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural Type System
  * Comprehensive brain model type exports with quantum-level type safety

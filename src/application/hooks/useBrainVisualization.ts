@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Brain Visualization Hook
  * Provides state management and data fetching for 3D brain visualization

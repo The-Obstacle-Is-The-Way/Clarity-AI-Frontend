@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { createContext } from 'react';
 
 /**

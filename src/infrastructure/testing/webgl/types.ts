@@ -87,10 +87,10 @@ export interface MockGeometry extends Disposable {
  */
 export interface MockWebGLRenderer extends Disposable {
   domElement: HTMLCanvasElement;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   render: (scene: any, camera: any) => void;
   setSize: (width: number, height: number) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   setClearColor: (color: any, alpha?: number) => void;
   clear: () => void;
   info: {

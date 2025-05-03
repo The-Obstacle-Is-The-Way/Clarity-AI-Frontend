@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Application Hook
  * useClinicalContext - Quantum-level hook for clinical data integration

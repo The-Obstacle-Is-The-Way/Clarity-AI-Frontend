@@ -10,7 +10,7 @@ import { vi } from 'vitest';
 import { setupWebGLMocks as setupMocks, cleanupWebGLMocks as cleanupMocks } from './mock-webgl';
 
 // Re-export core WebGL mocking functionality with enhanced capabilities
-// eslint-disable-next-line
+ 
 export function setupWebGLMocks(options = { monitorMemory: false, debugMode: false }) {
   const mockContext = setupMocks();
 
@@ -36,7 +36,7 @@ export function setupWebGLMocks(options = { monitorMemory: false, debugMode: fal
 }
 
 // Enhanced cleanup with memory leak detection
-// eslint-disable-next-line
+ 
 export function cleanupWebGLMocks() {
   cleanupMocks();
 

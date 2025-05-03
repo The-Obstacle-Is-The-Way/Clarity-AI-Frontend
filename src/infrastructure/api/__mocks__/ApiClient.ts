@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { vi } from 'vitest';
 import type { BrainModel } from '@domain/types/brain/models';
 

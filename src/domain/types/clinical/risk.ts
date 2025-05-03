@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural-Safe Risk Assessment Types
  * Clinical risk assessment with quantum-level type safety

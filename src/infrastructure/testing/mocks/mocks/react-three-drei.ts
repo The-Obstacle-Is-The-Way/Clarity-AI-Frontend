@@ -30,11 +30,11 @@ export const Line = vi.fn(({ children, ...props }) =>
 );
 
 // Mock hooks to return basic values or functions
-// eslint-disable-next-line
+ 
 export const useTexture = vi.fn(() => ({
   /* mock texture object */
 }));
-// eslint-disable-next-line
+ 
 export const useGLTF = vi.fn(() => ({
   scene: {
     /* mock scene graph */
@@ -57,11 +57,11 @@ export const Environment = vi.fn(({ children, ...props }) =>
 
 // Ensure all necessary exports are mocked to avoid import errors in tests
 // Mock shaderMaterial - returns a simple div for testing purposes
-// eslint-disable-next-line
+ 
 export const shaderMaterial = vi.fn((_uniforms, _vertexShader, _fragmentShader, _onInit) => {
   // Return a simple component factory or a mock class instance
   // For simplicity, let's return a function component that renders a div
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const MockMaterial = (props: any) =>
     React.createElement('div', { 'data-testid': 'mock-drei-shadermaterial', ...props });
   return MockMaterial;

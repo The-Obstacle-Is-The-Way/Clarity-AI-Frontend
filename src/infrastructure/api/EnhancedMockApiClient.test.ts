@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Neural Test Suite - EnhancedMockApiClient
  * Testing mock API client behavior with quantum precision

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Shared services exports
  */

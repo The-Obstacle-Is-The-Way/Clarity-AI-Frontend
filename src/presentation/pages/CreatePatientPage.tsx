@@ -19,7 +19,7 @@ const CreatePatientPage: React.FC = () => {
   const handleFormSubmit = (data: CreatePatientInput) => {
     console.log('Submitting patient data:', data);
     createPatient(data, {
-      onSuccess: (createdPatient) => {
+      onSuccess: (_createdPatient) => {
         // Navigate back to the patient list after successful creation
         // Could also navigate to the new patient's detail page:
         // navigate(`/patients/${createdPatient.id}`);

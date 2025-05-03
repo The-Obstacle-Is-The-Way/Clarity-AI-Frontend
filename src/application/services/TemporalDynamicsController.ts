@@ -164,7 +164,7 @@ export function useTemporalDynamicsController(
             };
             const patternsDetected = patterns.length;
             const transitionsIdentified = transitions.length;
-            const anomaliesDetected = patterns.filter((p: any) => p.class === 'anomaly').length; // eslint-disable-line @typescript-eslint/no-explicit-any
+            const anomaliesDetected = patterns.filter((p: any) => p.class === 'anomaly').length;  
 
             return {
               ...prevState,
@@ -314,16 +314,16 @@ export function useTemporalDynamicsController(
 
         // Process regular transitions
         const regularTransitions = result.value.filter(
-          (t: any) => !t.isCritical // eslint-disable-line @typescript-eslint/no-explicit-any
+          (t: any) => !t.isCritical  
         );
 
         // Process critical transitions
         const criticalTransitions = result.value
           .filter(
-            (t: any) => t.isCritical // eslint-disable-line @typescript-eslint/no-explicit-any
+            (t: any) => t.isCritical  
           )
           .map((t: any) => ({
-            // eslint-disable-line @typescript-eslint/no-explicit-any
+             
             id: t.id,
             timestamp: t.timestamp,
             fromState: t.fromState,

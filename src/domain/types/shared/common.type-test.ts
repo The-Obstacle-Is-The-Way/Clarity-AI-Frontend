@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * NOVAMIND Type Testing Framework
  * Common Shared Types Test

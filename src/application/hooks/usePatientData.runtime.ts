@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * @fileoverview Runtime validation functions for data related to the usePatientData hook.
  * Ensures that patient data structures conform to expected types at runtime, crucial for HIPAA compliance.
