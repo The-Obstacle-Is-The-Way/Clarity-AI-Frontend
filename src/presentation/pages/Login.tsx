@@ -46,7 +46,7 @@ const Login: React.FC = () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // In a real implementation, this would call the auth API
-        if (email === 'demo@novamind.com' && password === 'demo123') {
+        if (email === 'demo@clarity-ai.com' && password === 'demo123') {
           // Log successful login attempt
           auditLogClient.log(AuditEventType.USER_LOGIN, {
             // Corrected usage
@@ -133,7 +133,7 @@ const Login: React.FC = () => {
       <div className="w-full max-w-md space-y-8">
         <div>
           <h1 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-            Novamind Digital Twin
+            Clarity-AI Digital Twin
           </h1>
           <h2 className="mt-2 text-center text-xl text-gray-600 dark:text-gray-400">
             Secure Provider Login

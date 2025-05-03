@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural-Safe Organism Component
+ * CLARITY-AI Neural-Safe Organism Component
  * BrainVisualizationContainer - Quantum-level container for brain visualization
  * with neuropsychiatric integration and clinical precision
  */
@@ -366,7 +366,7 @@ const BrainVisualizationContainerInternal: React.FC<BrainVisualizationContainerP
 
   const handleVisualizationError = useCallback((error: Error) => {
     setErrorState(error);
-    console.error('NOVAMIND Visualization Error:', error);
+    console.error('CLARITY-AI Visualization Error:', error);
   }, []);
 
   // Render

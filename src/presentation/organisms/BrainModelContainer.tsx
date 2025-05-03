@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Visualization
+ * CLARITY-AI Neural Visualization
  * BrainModelContainer - Clinical container with quantum-level integration
  * between domain logic and presentation components
  */

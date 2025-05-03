@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Singularity Demo
+ * CLARITY-AI Neural Singularity Demo
  * Showcase of advanced neural visualization capabilities
  */
 
@@ -85,7 +85,7 @@ export const NeuralSingularityDemo: React.FC<NeuralSingularityDemoProps> = () =>
       </main>
 
       <footer className="mt-12 text-center text-slate-500 text-sm">
-        <p>NOVAMIND Neural Digital Twin Platform • Psychiatry Quantum Visualization System</p>
+        <p>CLARITY-AI Neural Digital Twin Platform • Psychiatry Quantum Visualization System</p>
         <p className="mt-1">This demonstration showcases the latest in neural visualization technology and AI integration.</p>
       </footer>
     </div>

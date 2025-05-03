@@ -15,7 +15,7 @@ interface PatientCard {
 /**
  * Dashboard Page Component
  *
- * Main entry point for the Novamind Digital Twin platform.
+ * Main entry point for the Clarity-AI Digital Twin platform.
  * Provides access to patient brain visualizations and clinical data.
  */
 const Dashboard: React.FC = () => {
@@ -109,7 +109,7 @@ const Dashboard: React.FC = () => {
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Novamind Digital Twin Platform
+          Clarity-AI Digital Twin Platform
         </h1>
         <p className="mt-2 text-gray-600 dark:text-gray-300">
           Clinical neuroscience visualization and analysis
@@ -365,7 +365,7 @@ const Dashboard: React.FC = () => {
 
       {/* HIPAA Footer */}
       <div className="mt-8 text-xs text-center text-gray-500 dark:text-gray-400">
-        <p>Novamind Digital Twin Platform v1.0 | HIPAA Compliant</p>
+        <p>Clarity-AI Digital Twin Platform v1.0 | HIPAA Compliant</p>
         <p className="mt-1">
           All access to patient data is logged and monitored for compliance purposes.
         </p>
