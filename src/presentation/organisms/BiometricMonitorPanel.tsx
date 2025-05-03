@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural-Safe Organism Component
+ * CLARITY-AI Neural-Safe Organism Component
  * BiometricMonitorPanel - Quantum-level biometric data visualization
  * with clinical precision and HIPAA-compliant data handling
  */
