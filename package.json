@@ -94,6 +94,7 @@
   "devDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.23.4",
     "@babel/plugin-transform-react-jsx-source": "^7.23.3",
+    "@simonsmith/cypress-image-snapshot": "^9.1.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
