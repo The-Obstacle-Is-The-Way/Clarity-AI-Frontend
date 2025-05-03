@@ -6,7 +6,8 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest'; // Remove beforeEach, afterEach
 import { screen } from '@testing-library/react';
-import { BrainVisualizationControls } from './BrainVisualizationControls';
+import { fireEvent } from '@testing-library/react';
+import BrainVisualizationControls from './BrainVisualizationControls'; // Reverted to default import
 import { type BrainRegion } from '@/domain/types/brain/brainRegionTypes';
 import { render, screen } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 // Remove WebGL mock imports

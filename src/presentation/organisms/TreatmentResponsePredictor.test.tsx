@@ -6,7 +6,7 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest'; // Added vi
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { TreatmentResponsePredictor } from './TreatmentResponsePredictor';
+import TreatmentResponsePredictor from './TreatmentResponsePredictor'; // Reverted to default import
 import { useTreatmentPrediction } from '@/application/hooks/useTreatmentPrediction'; // Adjusted hook path
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 // import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile'; // Commented out unused/incorrect type
