@@ -6,8 +6,8 @@
 
 import React, { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import type { Mesh, ShaderMaterial } from 'three';
 import { Vector3, Color, DoubleSide } from 'three';
+import type { Mesh, ShaderMaterial } from 'three';
 import { useSpring, animated } from '@react-spring/three';
 
 // Import types
@@ -210,8 +210,12 @@ export const ActivityIndicator: React.FC<ActivityIndicatorProps> = ({
       position={position}
       scale={derivedScale.clone().multiplyScalar(1.1)} // Slightly larger than the region
     >
-      <sphereGeometry args={[1, 32, 32]} />
-      <shaderMaterial ref={materialRef} args={[shaderParameters]} attach="material" />
+      <sphereBufferGeometry args={[1, 32, 32]} />
+      <shaderMaterial
+        ref={materialRef}
+        args={[shaderParameters]}
+        attach="material"
+      />
     </animated.mesh>
   );
 };
