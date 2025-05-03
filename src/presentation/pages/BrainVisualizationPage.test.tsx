@@ -25,7 +25,7 @@ vi.mock('@organisms/BrainVisualizationContainer', () => ({
 // Assuming no specific props are required for this page component based on typical structure
 const mockProps = {};
 
-describe.skip('BrainVisualizationPage', () => {
+describe('BrainVisualizationPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
