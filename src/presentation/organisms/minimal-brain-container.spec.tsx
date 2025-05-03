@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Architecture
+ * CLARITY-AI Neural Architecture
  * Minimal Brain Container Test with Quantum Precision
  */
 
