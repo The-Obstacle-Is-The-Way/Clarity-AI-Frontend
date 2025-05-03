@@ -2,9 +2,9 @@
  * CLARITY-AI Neural Test Suite
  * TimelineEvent component testing with quantum precision
  */
-// Removed unused React import (new JSX transform)
+import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.unified';
 import { setupWebGLMocks, cleanupWebGLMocks } from '../../test/webgl/setup-test';
@@ -270,7 +270,7 @@ describe('TimelineEvent', () => {
       />
     );
 
-    fireEvent.click(screen.getByText('Increased Anxiety'));
+    screen.getByText('Increased Anxiety').click();
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
