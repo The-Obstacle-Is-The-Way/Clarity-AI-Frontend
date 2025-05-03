@@ -184,9 +184,13 @@ export class ApiClient implements IApiClient {
         ...((options.headers as Record<string, string>) || {}),
       };
 
-      // Create request options
+      // Extract custom fields not allowed in RequestInit
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { params: _params, _isRetry, ...restOptions } = options;
+
+      // Create request options (exclude custom fields)
       const requestOptions: RequestInit = {
-        ...options,
+        ...restOptions,
         credentials: 'include',
         headers,
       };
