@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * Dashboard testing with quantum precision
  */
 import { describe, it, expect, vi } from 'vitest';
@@ -40,7 +40,7 @@ describe('Dashboard', () => {
     renderWithProviders(<Dashboard {...mockProps} />);
 
     // Verify main title and subtitle
-    expect(screen.getByText('Novamind Digital Twin Platform')).toBeInTheDocument();
+    expect(screen.getByText('Clarity-AI Digital Twin Platform')).toBeInTheDocument();
     expect(
       screen.getByText('Clinical neuroscience visualization and analysis')
     ).toBeInTheDocument();
