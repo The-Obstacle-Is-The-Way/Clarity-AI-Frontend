@@ -308,6 +308,9 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
   onLoadComplete,
   onError,
 }) => {
+  // **DEBUG LOG:** Check the incoming visualization state status
+  console.log('[BrainModelViewer] Visualization State Status:', visualizationState.status);
+
   // Removed ThemeContext and useContextBridge usage
   const ContextBridge = ({ children }: { children: React.ReactNode }) => <>{children}</>; // Keep placeholder for now
 
@@ -397,6 +400,9 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
   );
 
   const renderVisualization = (model: BrainModel) => {
+    // **DEBUG LOG:** Confirm renderVisualization is called
+    console.log('[BrainModelViewer] renderVisualization called with model:', model);
+
     // Determine the detail level to pass to AdaptiveLOD
     // This could be based on props or internal logic
     const currentDetailLevel: DetailLevel = highPerformanceMode ? 'low' : 'high'; // Use correct type
