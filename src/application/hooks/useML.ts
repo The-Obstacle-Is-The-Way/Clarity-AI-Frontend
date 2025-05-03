@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MLApiClient } from '@infrastructure/api/MLApiClient';
+import { ApiClient } from '@/infrastructure/api/ApiClient'; // Import base ApiClient
 
 /**
  * useML - React hook for accessing ML capabilities
@@ -13,8 +14,10 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  // Instantiate the API client
-  const apiClientInstance = useMemo(() => new MLApiClient(), []);
+  // Instantiate the base API client
+  const baseApiClient = useMemo(() => new ApiClient({ baseURL: '/api' }), []); // Adjust baseURL if needed
+  // Instantiate the ML API client with the base client
+  const apiClientInstance = useMemo(() => new MLApiClient(baseApiClient), [baseApiClient]);
 
   const resetError = useCallback(() => {
     setError(null);
@@ -175,6 +178,20 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
     return withLoadingState(() => apiClientInstance.checkPHIHealth());
   }, [withLoadingState, apiClientInstance]);
 
+  const { data: models } = useQuery<
+    ModelMetadata[],
+    Error
+  >({
+    queryKey: ['mlModels'],
+    queryFn: () => apiClientInstance.getAvailableModels(),
+    enabled: !!apiClientInstance,
+    ...(config?.enablePolling
+      ? {
+          refetchInterval: config.pollInterval,
+        }
+      : {})
+  });
+
   return {
     // State
     isLoading,
@@ -203,5 +220,8 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
     // Health check methods
     checkMLHealth,
     checkPHIHealth,
+
+    // Additional data
+    models,
   };
 }
