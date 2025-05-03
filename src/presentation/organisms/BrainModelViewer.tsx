@@ -21,8 +21,7 @@ import { KernelSize } from 'postprocessing'; // Restored import
 // import { ThemeContext } from '../../application/contexts/ThemeProvider';
 
 // Import AdaptiveLOD and related types/hooks
-import type { DetailLevel } from '@presentation/common/AdaptiveLOD';
-import AdaptiveLOD from '@presentation/common/AdaptiveLOD'; // Added imports
+import AdaptiveLOD from '@presentation/common/AdaptiveLOD';
 
 // Import molecular components
 import BrainRegionGroup from '@presentation/molecules/BrainRegionGroup';
@@ -295,7 +294,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
   highlightedRegionIds = [],
   regionSearchQuery,
   enableBloom: enableBloomProp, // Rename
-  enableDepthOfField: enableDepthOfFieldProp, // Rename
+  enableDepthOfField: _enableDepthOfFieldProp, // Rename and prefix with underscore
   highPerformanceMode = false,
   activityThreshold = 0.2,
   showInactiveRegions = true,

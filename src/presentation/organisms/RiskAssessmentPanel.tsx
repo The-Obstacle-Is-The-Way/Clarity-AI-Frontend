@@ -1,23 +1,7 @@
 /* eslint-disable */
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query'; // Removed unused useQuery
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from '@/presentation/atoms';
 import { Button } from '@/presentation/atoms';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/presentation/atoms';
-import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
 
 import type { RiskAssessment } from '@domain/types/clinical/risk';
 import type { RiskPredictionRequest } from '@api/XGBoostService';
