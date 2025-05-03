@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural-Safe Organism Component
+ * CLARITY-AI Neural-Safe Organism Component
  * ClinicalMetricsPanel - Quantum-level clinical metrics display
  * with HIPAA-compliant data visualization and type-safe state management
  */

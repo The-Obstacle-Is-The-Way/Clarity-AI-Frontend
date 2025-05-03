@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Architecture
+ * CLARITY-AI Neural Architecture
  * Minimal BrainModelContainer Test with Quantum Precision
  *
  * This test provides a simplified approach to testing the BrainModelContainer
