@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * Login testing with quantum precision
  */
 import React from 'react';
@@ -68,7 +68,7 @@ describe('Login', () => {
 
     // Basic assertions that verify rendering without specific elements
     expect(screen).toBeDefined();
-    expect(screen.getByText('Novamind Digital Twin')).toBeInTheDocument();
+    expect(screen.getByText('Clarity-AI Digital Twin')).toBeInTheDocument();
     expect(screen.getByText('Secure Provider Login')).toBeInTheDocument();
   });
 

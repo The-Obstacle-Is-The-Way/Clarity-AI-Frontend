@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural-Safe Molecular Component
+ * CLARITY-AI Neural-Safe Molecular Component
  * BiometricAlertVisualizer - Quantum-level biometric alert visualization
  * with HIPAA-compliant clinical precision and priority management
  */
