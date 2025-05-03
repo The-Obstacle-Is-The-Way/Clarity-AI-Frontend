@@ -11,6 +11,7 @@ import '@testing-library/jest-dom';
 import { RiskAssessmentPanel } from './RiskAssessmentPanel';
 import { type RiskFactor } from '@domain/risk-factors/riskFactorTypes'; // Assuming type location
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { RiskLevel, type RiskAssessment } from '@domain/types/clinical/risk'; // Found and added correct import path
 // import { RiskLevel, type RiskAssessment } from '@domain/types/clinical/risk'; // Assume this type path is correct, comment out if unused
 
 // Mock dependencies
