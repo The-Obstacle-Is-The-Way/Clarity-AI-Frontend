@@ -13,7 +13,7 @@ import { RiskLevel, type RiskAssessment } from '@domain/types/clinical/risk';
 
 // Mock dependencies
 vi.mock('@presentation/atoms/button', () => ({
-  Button: (props: any) => <button {...props} />
+  Button: ({ isLoading, ...restProps }: any) => <button {...restProps} />
 }));
 vi.mock('@api/XGBoostService', () => ({
   xgboostService: {
