@@ -53,4 +53,4 @@ export const digitalTwinService = {
   getVisualization,
 };
 
-export default digitalTwinService; 
+export default digitalTwinService;
