@@ -242,65 +242,6 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
   );
 
   /**
-   * Complete MFA verification
-   */
-  const completeMfaVerification = useCallback(
-    async (email: string, mfaCode: string): Promise<boolean> => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        // Verify MFA code with auth client
-        const result = await authClient.verifyMFA(email, mfaCode);
-
-        if (result.success && result.user && result.token) {
-          // Apply encryption if enabled
-          let processedUser = result.user;
-          if (ENCRYPTION_ENABLED && processedUser.profile) {
-            processedUser = {
-              ...processedUser,
-              profile: encryptionService.encryptObject(processedUser.profile),
-            };
-          }
-
-          setUser(processedUser);
-          setIsAuthenticated(true);
-          setRequiresMFA(false);
-          setSessionExpiresAt(result.token.expiresAt);
-
-          // Log successful MFA verification
-          auditLogClient.log(AuditEventType.USER_MFA_VERIFY, {
-            action: 'mfa_verification',
-            details: 'Two-factor authentication completed successfully',
-            result: 'success',
-          });
-
-          setIsLoading(false);
-          return true;
-        } else {
-          setError(result.error || 'MFA verification failed.');
-
-          // Track failed MFA attempt
-          trackSuspiciousActivity(
-            'mfa_verification_failed',
-            `Failed MFA verification attempt for ${email}`
-          );
-
-          setIsLoading(false);
-          return false;
-        }
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-        setError(`MFA verification error: ${errorMessage}`);
-        trackSuspiciousActivity('mfa_error', errorMessage);
-        setIsLoading(false);
-        return false;
-      }
-    },
-    [trackSuspiciousActivity]
-  );
-
-  /**
    * Check permission with enhanced role-based access
    */
   const hasPermission = useCallback(
