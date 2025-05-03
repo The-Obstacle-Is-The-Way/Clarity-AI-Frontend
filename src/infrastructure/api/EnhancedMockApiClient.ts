@@ -8,19 +8,20 @@ import axios from 'axios';
 import { IApiClient } from './IApiClient';
 import type { ApiPatient } from './ApiClient.runtime';
 import { mockApi, getMockDb } from './mockApi';
-import type { User } from '@domain/types/auth/auth';
-import { ApiError, ApiResponse } from './types'; // Assuming types for existing mocks
+import { type User, UserRole, Permission } from '@domain/types/auth/auth';
+import { type ApiError, type ApiResponse } from './types'; // Import ApiError as type only
 import type { BrainModel, ScannerMachine, Vector3D } from '@domain/types';
 import type { BrainRegion, BrainScan, NeuralConnection } from '@domain/types/brain/models';
 
-// Define mock user data matching the User interface
+// Mock User Data (align with domain User type)
 const mockUser: User = {
   id: 'mock-user-123',
-  email: 'test@example.com',
-  first_name: 'Mock',
-  last_name: 'User',
-  roles: ['clinician'],
-  is_active: true,
+  email: 'mock@example.com',
+  name: 'Mock User', // Use name instead of first/last
+  role: UserRole.CLINICIAN, // Use UserRole enum
+  permissions: [Permission.VIEW_PATIENTS, Permission.EDIT_PATIENTS], // Use Permission enum
+  lastLogin: new Date(),
+  // profile: { /* mock profile data */ }, // Profile is optional
 };
 
 /**
@@ -82,28 +83,33 @@ export class EnhancedMockApiClient implements IApiClient {
   // Add a mock login method matching the interface signature if required,
   // even if not directly used by the primary cookie flow's AuthContext.
   // It might be used elsewhere or expected by tests.
-  async login(email: string, password: string): Promise<any> {
+  async login(email: string /*, password: string */): Promise<any> { // Password unused
     await this.delay();
     console.log(`[MockClient] login called for ${email} (Simulating cookie setting)`);
     this.logActivity('POST_Request', { endpoint: '/api/v1/auth/login', data: { email } });
 
-    // Return structure to match test expectations
-    return Promise.resolve({
-      token: 'mock-access-token-for-test',
-      id: mockUser.id,
-      name: `${mockUser.first_name} ${mockUser.last_name}`,
-      role: mockUser.roles[0],
-      // Additional fields from original implementation
-      access_token: 'mock-access-token-from-unused-login',
-      refresh_token: 'mock-refresh-token-from-unused-login',
-      token_type: 'bearer',
-      expires_in: 3600,
-      user: {
-        id: mockUser.id,
-        email: mockUser.email,
-        roles: mockUser.roles,
-      },
-    });
+    if (email === mockUser.email) {
+      // Return data matching AuthResult structure (success, user, token)
+      // Align returned user with domain User type
+      return {
+        success: true,
+        user: {
+          id: mockUser.id,
+          email: mockUser.email,
+          name: mockUser.name, 
+          role: mockUser.role, 
+          permissions: mockUser.permissions,
+          lastLogin: mockUser.lastLogin,
+        },
+        token: {
+          token: `mock-token-${Date.now()}`,
+          expiresAt: Date.now() + 60 * 60 * 1000, // 1 hour
+        },
+        requiresMFA: false, // Example
+      };
+    } else {
+      return { success: false, error: 'Invalid credentials' };
+    }
   }
 
   setAuthToken(token: string | null): void {
@@ -194,6 +200,15 @@ export class EnhancedMockApiClient implements IApiClient {
     console.warn(`[MockClient] Unhandled DELETE request for: ${endpoint}`);
     // Simulate generic success for DELETE
     return Promise.resolve({ message: `Mock DELETE success for ${endpoint}` } as unknown as T);
+  }
+
+  async getUser(userId: string): Promise<any> {
+    await this.delay();
+    if (userId === mockUser.id) {
+      return { ...mockUser }; 
+    } else {
+      throw new Error('User not found');
+    }
   }
 
   // --- Remove outdated/incorrect methods ---

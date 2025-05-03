@@ -12,10 +12,13 @@ import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLog
 import { encryptionService } from '@infrastructure/services/encryptionService';
 import { SessionTimeoutModal } from './SessionTimeoutModal';
 import type { User, Permission } from '@domain/types/auth/auth';
-import { authService } from '@application/services/authService';
-import type { AuthContextType, AuthProviderProps } from './authTypes'; // Keep this type import
-import { useAuth } from '@/application/hooks/useAuth'; // Adjust path as needed
-import { AuthContext } from '@/application/context/AuthContext';
+// Comment out unresolved imports
+// import { authService } from '@application/services/authService'; 
+// import type { AuthContextType, AuthProviderProps } from './authTypes'; 
+// Correct context import and type import
+import { AppAuthContext as AuthContext, type AppAuthContextType } from '@/application/context/AuthContext.tsx'; 
+// Correct hook import path
+// import { useAuth } from '@/application/hooks/useAuth'; 
 
 // Constants for session management
 const SESSION_WARNING_TIME = 5 * 60 * 1000; // 5 minutes warning before expiration
@@ -422,13 +425,15 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
   /**
    * Context value
    */
-  const contextValue = useMemo<AuthContextType>(
+  const contextValue = useMemo<AppAuthContextType>(
     () => ({
       isAuthenticated,
       isLoading,
       error,
       user,
-      login,
+      login: async (email, password, rememberMe) => {
+        await login(email, password, rememberMe);
+      },
       logout,
       checkSessionExpiration,
       renewSession,
@@ -447,7 +452,6 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
       renewSession,
       hasPermission,
       extendSession,
-      checkSessionExpiration,
     ]
   );
 

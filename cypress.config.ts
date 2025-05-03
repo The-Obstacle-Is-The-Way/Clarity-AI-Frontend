@@ -7,9 +7,16 @@ export default defineConfig({
     // baseUrl: 'http://localhost:5173',
     setupNodeEvents(on, config) {
       // implement node event listeners here
-      addMatchImageSnapshotPlugin(on, config);
-      // Return the config object
+      // Make sure to return the config object as it might have been modified by the plugin.
+      addMatchImageSnapshotPlugin(on); // Try passing only 'on'
       return config;
+    },
+  },
+
+  component: {
+    devServer: {
+      framework: 'react',
+      bundler: 'vite',
     },
   },
 });

@@ -95,19 +95,19 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-// Use DomainUser in AuthContextType if needed (e.g., if user was part of it)
-interface AuthContextType extends Omit<AuthState, 'token' | 'user'> { // Remove user from Omit if needed
-  user: DomainUser | null; // Explicitly add user with DomainUser type
+// Rename context type and EXPORT IT
+export interface AppAuthContextType extends Omit<AuthState, 'token' | 'user'> {
+  user: DomainUser | null;
   login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   logout: () => Promise<void>;
   clearError: () => void;
   hasPermission: (permission: Permission) => boolean;
-  extendSession: () => Promise<void>;
-  getSessionExpiration: () => number;
+  extendSession: () => Promise<void>; 
+  getSessionExpiration: () => number; 
 }
 
-// Export AuthContext so it can be used for testing providers
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// Rename exported context
+export const AppAuthContext = createContext<AppAuthContextType | undefined>(undefined);
 
 // Auth provider props
 interface AuthProviderProps {
@@ -203,8 +203,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return Date.now() + 60 * 60 * 1000; // Return placeholder (e.g., 1 hour from now)
   }, []);
 
-  // Context value (state already contains user as DomainUser | null)
-  const contextValue: AuthContextType = {
+  // Use renamed type for value
+  const contextValue: AppAuthContextType = {
     ...state, 
     login,
     logout,
@@ -214,12 +214,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     getSessionExpiration,
   };
 
-  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
+  // Provide renamed context
+  return <AppAuthContext.Provider value={contextValue}>{children}</AppAuthContext.Provider>;
 };
 
-// Custom hook for using auth context
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
+// Custom hook for using auth context - use renamed context
+export const useAuth = (): AppAuthContextType => {
+  const context = useContext(AppAuthContext);
 
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');

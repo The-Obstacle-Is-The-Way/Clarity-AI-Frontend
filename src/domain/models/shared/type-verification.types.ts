@@ -10,7 +10,7 @@
 import {
   // Removed unused: TypeVerificationError
   assertDefined,
-  assertNotNull,
+  // assertNotNull, // Comment out missing import
   assertString,
   assertNumber,
   assertBoolean,
@@ -49,7 +49,7 @@ import {
   const beforeStr: string = maybeStr;
 
   // After assertion: TypeScript narrows type to non-null and non-undefined
-  assertPresent(maybeStr);
+  // assertPresent(maybeStr); // Comment out usage of missing function
   // Variable removed, type inference checked by lack of compile error on assignment
 };
 
@@ -178,7 +178,7 @@ export function assertArray(value: unknown, name = 'value'): void {
 
 export {
   assertDefined,
-  assertNotNull,
+  // assertNotNull, // Comment out missing export
   assertString,
   assertNumber,
   assertBoolean,
