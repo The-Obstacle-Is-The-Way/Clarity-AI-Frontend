@@ -74,7 +74,7 @@ const App: React.FC = () => {
                 <Route path="/login" element={<LoginPage />} />
 
                 {/* Protected Routes */}
-                <Route element={<ProtectedRoute children={undefined} />}>
+                <Route element={<ProtectedRoute />}>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/profile" element={<ProfilePage />} />

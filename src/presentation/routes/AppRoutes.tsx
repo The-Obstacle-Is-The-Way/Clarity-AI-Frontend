@@ -33,16 +33,66 @@ const AppRoutes: React.FC = () => {
         {/* Public route for the singularity demo */}
         <Route path="/singularity" element={<NeuralSingularityDemo />} />
 
-        {/* Protected routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/patients" element={<PatientsList />} />
-          <Route path="/patients/new" element={<CreatePatientPage />} />
-          <Route path="/patients/:patientId" element={<PatientDetailPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/analytics/xgboost" element={<XGBoostAnalyticsPage />} />
-          <Route path="/analytics/sentiment" element={<SentimentAnalyticsPage />} />
-        </Route>
+        {/* Protected routes - Explicitly wrap each child */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/patients"
+          element={
+            <ProtectedRoute>
+              <PatientsList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/patients/new"
+          element={
+            <ProtectedRoute>
+              <CreatePatientPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/patients/:patientId"
+          element={
+            <ProtectedRoute>
+              <PatientDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics/xgboost"
+          element={
+            <ProtectedRoute>
+              <XGBoostAnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics/sentiment"
+          element={
+            <ProtectedRoute>
+              <SentimentAnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Need to handle 404 or other routes */}
+        {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
     </Suspense>
   );
