@@ -46,7 +46,7 @@ const XGBoostInputForm: React.FC<XGBoostInputFormProps> = ({ onSubmit, isLoading
     register,
     handleSubmit,
     formState: { errors },
-    control, // Needed for Select/Checkbox components from Shadcn
+    // control, // Needed for Select/Checkbox components from Shadcn
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     // defaultValues: { featureC: false } // Set defaults if needed
@@ -82,7 +82,7 @@ const XGBoostInputForm: React.FC<XGBoostInputFormProps> = ({ onSubmit, isLoading
         {/* Need to use Controller for Shadcn Select with RHF */}
         {/* Simplified example - requires Controller setup */}
         <Select
-          onValueChange={(value) => {
+          onValueChange={(_value) => {
             /* RHF field set logic */
           }}
           disabled={isLoading}

@@ -42,8 +42,6 @@ const getColorForValue = (value: number, min: number, max: number, colormap: str
 // Brain region sphere component
 interface BrainRegionProps {
   id: string;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  name: string;
   position: [number, number, number];
   size: number;
   color: string;
@@ -55,8 +53,6 @@ interface BrainRegionProps {
 
 const BrainRegion: React.FC<BrainRegionProps> = ({
   id,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  name,
   position,
   size,
   color,
@@ -192,8 +188,6 @@ const Connection: React.FC<ConnectionProps> = ({ startPosition, endPosition, str
 
 // Main brain visualization component props
 interface BrainModelVisualizationProps {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  modelId: string;
   regionData?: DomainBrainRegion[];
   viewMode?: 'anatomical' | 'functional' | 'connectivity';
   colormapType?: 'rainbow' | 'heatmap' | 'blueRed';
@@ -206,8 +200,6 @@ interface BrainModelVisualizationProps {
 }
 
 export const BrainModelVisualization: React.FC<BrainModelVisualizationProps> = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  modelId,
   regionData,
   viewMode = 'anatomical',
   colormapType = 'rainbow',
@@ -367,7 +359,6 @@ export const BrainModelVisualization: React.FC<BrainModelVisualizationProps> = (
                 <BrainRegion
                   key={region.id}
                   id={region.id}
-                  name={region.name}
                   position={[region.position.x, region.position.y, region.position.z]}
                   size={0.2}
                   color={regionColor}
