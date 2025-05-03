@@ -11,11 +11,10 @@
  * - HTTP verb convenience methods (get, post, put, delete)
  */
 
-import { ApiResponse } from './types';
-import { ApiProxyService } from './ApiProxyService';
-import { toast } from 'react-toastify'; // Import toast
-import NProgress from 'nprogress'; // Import NProgress
+import { toast } from 'react-toastify';
+import NProgress from 'nprogress';
 import type { IApiClient } from './IApiClient'; // Add this import
+import { ApiProxyService } from './ApiProxyService';
 
 // Request options type
 export interface RequestOptions extends RequestInit {
@@ -173,7 +172,7 @@ export class ApiClient implements IApiClient {
    */
   async fetch<T = any>(url: string, options: RequestOptions = {}): Promise<T> {
     let response: Response | null = null;
-    NProgress.start(); // Start progress bar
+    NProgress.start();
     try {
       // Construct full URL
       const fullUrl = this.createUrl(url, options.params);
@@ -249,59 +248,46 @@ export class ApiClient implements IApiClient {
     } catch (error: any) {
       console.error('[ApiClient] Fetch error:', error);
 
-      // Attempt silent refresh on 401 (unauthorized)
-      if (error instanceof HttpError && error.status === 401 && !options._isRetry) {
-        try {
-          // Attempt to refresh the token using HttpOnly cookies
-          await (await import('./authService')).authService.refreshToken();
-
-          // Retry the original request once with _isRetry flag to avoid loops
-          const retryOptions: RequestOptions = { ...options, _isRetry: true };
-          return await this.fetch<T>(url, retryOptions);
-        } catch (refreshErr) {
-          console.warn('[ApiClient] Silent refresh failed, performing logout');
-          // On refresh failure, propagate original 401 after optional logout actions
-          try {
-            const { authService } = await import('./authService');
-            await authService.logout();
-          } catch (logoutErr) {
-            console.error('[ApiClient] Logout after failed refresh threw error', logoutErr);
-          }
-        }
-      }
-
-      // Show user-friendly toast notification (skip if we attempted refresh)
+      // Enhanced error handling with toast notifications
+      let errorMessage = 'An unexpected error occurred.';
       if (error instanceof HttpError) {
-        if (error.status === 401) {
-          toast.error(error.message || 'Authentication failed. Please log in again.');
-        } else if (error.status === 403) {
-          toast.error(error.message || 'Permission denied.');
-        } else if (error.status === 404) {
-          toast.error(error.message || 'Resource not found.');
-        } else if (error.status >= 500) {
-          toast.error(error.message || 'Server error. Please try again later.');
-        } else {
-          // General client-side error (4xx)
-          toast.warning(error.message || `Client error (${error.status}).`);
+        errorMessage = `Error ${error.status}: ${error.message}`;
+        switch (error.status) {
+          case 401: // Unauthorized
+            toast.error('Authentication failed. Please log in again.');
+            // Attempt silent refresh or redirect to login (handled by interceptor usually)
+            break;
+          case 403: // Forbidden
+            toast.error('You do not have permission to perform this action.');
+            break;
+          case 404: // Not Found
+            toast.warn('The requested resource was not found.');
+            break;
+          case 429: // Too Many Requests
+            toast.warn('Rate limit exceeded. Please try again later.');
+            break;
+          case 500:
+          case 502:
+          case 503:
+          case 504: // Server errors
+            toast.error('Server error. Please try again or contact support.');
+            break;
+          default: // Other client errors (4xx)
+            toast.error(errorMessage);
         }
-      } else if (error instanceof TypeError) {
-        // Network error (fetch itself failed)
-        toast.error('Network error. Please check your connection and try again.');
+      } else if (error.name === 'AbortError') {
+        errorMessage = 'Request aborted.';
+        console.warn('[ApiClient]', errorMessage);
+        // Don't show toast for deliberate aborts
       } else {
-        // Other unexpected JavaScript errors during fetch/processing
-        toast.error('An unexpected error occurred. Please try again.');
-      }
-
-      // Add compatibility property if desired by error handling logic elsewhere
-      if (response) {
-        error.response = response; // Attach response if available
-        error.isAxiosError = true; // Mimic axios property if needed
+        // Network errors or other unexpected errors
+        toast.error('Network error or unexpected issue. Please check your connection.');
       }
 
       // Re-throw the error so calling code (e.g., React Query, AuthContext) can handle it
       throw error;
     } finally {
-      NProgress.done(); // Ensure progress bar finishes regardless of success/error
+      NProgress.done();
     }
   }
 

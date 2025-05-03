@@ -1,5 +1,4 @@
-import { apiClient } from './ApiGateway';
-import type { User } from '@application/context/AuthContext';
+import { authClient } from '@infrastructure/clients/authClient';
 
 // Define the expected structure for login credentials matching backend
 interface LoginCredentials {
@@ -24,7 +23,7 @@ export const authService = {
   login: async (credentials: LoginCredentials): Promise<void> => {
     // The actual token data is in the cookie, we just need the call to succeed.
     // No need to return the body of the /login response.
-    await apiClient.post<void>('/api/v1/auth/login', credentials);
+    await authClient.post<void>('/api/v1/auth/login', credentials);
   },
 
   /**
@@ -33,7 +32,7 @@ export const authService = {
    * @returns Promise<void> - Resolves on successful logout (status 2xx), rejects otherwise.
    */
   logout: async (): Promise<void> => {
-    await apiClient.post<void>('/api/v1/auth/logout');
+    await authClient.post<void>('/api/v1/auth/logout');
   },
 
   /**
@@ -42,7 +41,7 @@ export const authService = {
    * @returns Promise<User> - The user profile data.
    */
   getCurrentUser: async (): Promise<User> => {
-    return apiClient.get<User>('/api/v1/auth/me');
+    return authClient.get<User>('/api/v1/auth/me');
   },
 
   /**
@@ -54,7 +53,7 @@ export const authService = {
    * body – the presence of a 2xx response is sufficient.
    */
   refreshToken: async (): Promise<void> => {
-    await apiClient.post<void>('/api/v1/auth/refresh');
+    await authClient.post<void>('/api/v1/auth/refresh');
   },
 
   // Note: Refresh token logic is handled via HttpOnly cookie by the browser/

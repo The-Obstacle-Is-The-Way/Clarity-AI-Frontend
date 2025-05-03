@@ -10,16 +10,6 @@ import { Button } from '@presentation/atoms';
 import { Progress } from '@/presentation/atoms/feedback/progress';
 import { useSecureAuth } from '../hooks/useSecureAuth';
 import { auditLogClient, AuditEventType } from '../../infrastructure/clients/auditLogClient';
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogAction,
-  AlertDialogCancel,
-} from '../../components/ui/alert-dialog';
 
 interface SessionTimeoutModalProps {
   timeoutInMinutes: number;
@@ -83,7 +73,8 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
     auditLogClient.log(AuditEventType.USER_SESSION_RENEWED, {
       action: 'SESSION_EXTENDED',
       details: 'User extended their session',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
+      result: 'success',
     });
   }, [renewSession]);
 
@@ -93,7 +84,8 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
     auditLogClient.log(AuditEventType.USER_TIMEOUT, {
       action: 'SESSION_TIMEOUT_LOGOUT',
       details: 'User logged out due to session timeout',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
+      result: 'success',
     });
 
     logout();

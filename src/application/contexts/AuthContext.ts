@@ -27,6 +27,7 @@ export interface AuthContextType {
   // Session management
   checkSessionExpiration: () => number; // Returns milliseconds until expiration
   renewSession: () => void;
+  getSessionExpiration: () => Date | null; // Added function to get expiration date
 
   // Permission checks
   hasPermission: (permission: Permission) => boolean;
@@ -46,6 +47,7 @@ const defaultContext: AuthContextType = {
   logout: async () => {},
   checkSessionExpiration: () => 0,
   renewSession: () => {},
+  getSessionExpiration: () => null,
   hasPermission: () => false,
 };
 
