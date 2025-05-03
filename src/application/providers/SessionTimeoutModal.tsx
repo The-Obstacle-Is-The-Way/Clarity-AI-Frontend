@@ -9,7 +9,7 @@ import { Card, CardContent, CardFooter } from '@/presentation/atoms/display/Card
 import { Button } from '@presentation/atoms';
 import { Progress } from '@/presentation/atoms/feedback/progress';
 import { useSecureAuth } from '../hooks/useSecureAuth';
-import { auditLogClient } from '../../infrastructure/clients/auditLogClient';
+import { auditLogClient, AuditEventType } from '../../infrastructure/clients/auditLogClient';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -19,8 +19,7 @@ import {
   AlertDialogFooter,
   AlertDialogAction,
   AlertDialogCancel,
-} from '@radix-ui/react-alert-dialog';
-import { AuditEventType } from '../../infrastructure/clients/auditLogClient';
+} from '../../components/ui/alert-dialog';
 
 interface SessionTimeoutModalProps {
   timeoutInMinutes: number;
