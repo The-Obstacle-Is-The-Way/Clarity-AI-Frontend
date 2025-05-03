@@ -1,5 +1,5 @@
 /**
- * NOVAMIND QuantumNeuralVisualization Component
+ * CLARITY-AI QuantumNeuralVisualization Component
  * Advanced neural visualization with quantum-level precision and AI-driven insights
  */
 
