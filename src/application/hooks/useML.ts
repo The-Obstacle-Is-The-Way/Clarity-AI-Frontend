@@ -2,7 +2,8 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MLApiClient } from '@infrastructure/api/MLApiClient';
-import { ApiClient } from '@/infrastructure/api/ApiClient'; // Import base ApiClient
+import { ApiClient } from '@/infrastructure/api/ApiClient';
+import type { BrainModelMetadata } from '@domain/models/brain/BrainModel'; // Import BrainModelMetadata
 
 /**
  * useML - React hook for accessing ML capabilities
@@ -15,7 +16,7 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
   const [error, setError] = useState<Error | null>(null);
 
   // Instantiate the base API client
-  const baseApiClient = useMemo(() => new ApiClient({ baseURL: '/api' }), []); // Adjust baseURL if needed
+  const baseApiClient = useMemo(() => new ApiClient('/api'), []); // Correct constructor call
   // Instantiate the ML API client with the base client
   const apiClientInstance = useMemo(() => new MLApiClient(baseApiClient), [baseApiClient]);
 
@@ -33,8 +34,9 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
     try {
       const result = await apiCall();
       return result;
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error(String(err)));
+    } catch (err: any) {
+      console.error('[useML] API call failed:', err);
+      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
       throw err;
     } finally {
       setIsLoading(false);
@@ -87,7 +89,7 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
       options?: Record<string, unknown>
     ) => {
       return withLoadingState(() =>
-        apiClientInstance.generateDigitalTwin(patientId, patientData, options)
+        apiClientInstance.generateDigitalTwin(patientData, options)
       );
     },
     [withLoadingState, apiClientInstance]
@@ -178,24 +180,27 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
     return withLoadingState(() => apiClientInstance.checkPHIHealth());
   }, [withLoadingState, apiClientInstance]);
 
-  const { data: models } = useQuery<
-    ModelMetadata[],
+  // Query for ML health status instead of models
+  const { data: mlHealth, isLoading: isLoadingHealth } = useQuery<
+    any, // Assuming health check returns generic status object
     Error
   >({
-    queryKey: ['mlModels'],
-    queryFn: () => apiClientInstance.getAvailableModels(),
+    queryKey: ['mlHealth'], // Updated queryKey
+    queryFn: () => apiClientInstance.checkMLHealth(), // Use checkMLHealth
     enabled: !!apiClientInstance,
     ...(config?.enablePolling
       ? {
-          refetchInterval: config.pollInterval,
+          refetchInterval: config.pollInterval ?? 60000, // Default poll interval
         }
-      : {})
+      : {}),
   });
 
   return {
     // State
     isLoading,
     error,
+    mlHealth, // Return health status
+    isLoadingHealth, // Return health loading state
     resetError,
 
     // Text analysis methods
@@ -220,8 +225,5 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
     // Health check methods
     checkMLHealth,
     checkPHIHealth,
-
-    // Additional data
-    models,
   };
 }
