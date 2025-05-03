@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * MainLayout testing with quantum precision
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'; // Import hooks
