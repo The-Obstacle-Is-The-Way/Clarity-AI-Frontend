@@ -6,9 +6,9 @@
 
 import React from 'react'; // Re-added React import for mock implementation
 import { describe, it, expect, vi } from 'vitest'; // Remove beforeEach, afterEach
-import { render, screen } from '../../test/test-utils.unified'; // Use unified render
+import { render, screen } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 import { SymptomRegionMappingVisualizer } from './SymptomRegionMappingVisualizer';
-import type { BrainRegion } from '@domain/types/brain/models';
+import type { BrainRegion } from '@/domain/types/brain/brainRegionTypes';
 import type { Symptom } from '../../../domain/types/clinical/patient';
 import type { SymptomNeuralMapping } from '../../../domain/models/brain/mapping/brain-mapping'; // Corrected import path
 // Remove WebGL mock imports
