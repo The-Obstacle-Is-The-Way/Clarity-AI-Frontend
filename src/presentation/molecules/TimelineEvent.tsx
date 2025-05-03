@@ -16,7 +16,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/pres
 // Removed unused import: import Card from '@presentation/atoms/Card';
 
 // Icons
-import { ChevronDown, Clock, Brain, Edit, Trash } from 'lucide-react'; // Removed unused icons
+import { ChevronDown, Clock, Brain } from 'lucide-react'; // Removed unused icons
 
 // Domain types
 // Corrected path for clinical event types

@@ -27,7 +27,7 @@ import {
   CardContent,
   CardFooter,
 } from '@/presentation/atoms'; // Use index
-import { ScrollArea, ScrollBar } from '@/presentation/atoms'; // Use index
+import { ScrollArea } from '@/presentation/atoms'; // Use index
 import { Progress } from '@/presentation/atoms'; // Use index
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/presentation/atoms'; // Use index
 
@@ -51,12 +51,6 @@ import {
   Dna,
   Microscope,
   Clock,
-  Maximize2,
-  Monitor,
-  BarChart3,
-  RefreshCw,
-  Zap,
-  Info,
 } from 'lucide-react';
 
 // Domain types
@@ -81,7 +75,6 @@ interface BiometricMonitorPanelProps {
   className?: string;
   compact?: boolean;
   maxAlerts?: number;
-  patientId: string;
 }
 
 /**
@@ -135,7 +128,6 @@ export const BiometricMonitorPanel: React.FC<BiometricMonitorPanelProps> = ({
   className = '',
   compact = false,
   maxAlerts = 5,
-  patientId,
 }) => {
   // Access visualization coordinator
   // const { state, acknowledgeAlert } = useVisualizationCoordinator(); // Commented out usage

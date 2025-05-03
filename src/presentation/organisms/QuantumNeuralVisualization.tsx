@@ -180,7 +180,7 @@ const NeuralVisualization = React.memo(
     selectedRegions = [],
     onSelectRegion,
     visualizationSettings,
-  }: { brainModel: BrainModel; renderMode?: RenderMode; detailLevel: 'low' | 'medium' | 'high' | 'ultra'; selectedRegions: string[]; onSelectRegion: (id: string) => void; visualizationSettings: VisualizationSettings }) => {
+  }: { brainModel: BrainModel | null; renderMode?: RenderMode; detailLevel: 'low' | 'medium' | 'high' | 'ultra'; selectedRegions: string[]; onSelectRegion: (id: string) => void; visualizationSettings: VisualizationSettings }) => {
     const dprSettings = useMemo(() => {
       // Adjust detail level based on settings
       switch (detailLevel) {
@@ -196,6 +196,13 @@ const NeuralVisualization = React.memo(
           return [1, 1] as [number, number];
       }
     }, [detailLevel]);
+
+    // If no brain model data, show a loading fallback
+    if (!brainModel) {
+      return (
+        <LoadingFallback />
+      );
+    }
 
     return (
       <Canvas

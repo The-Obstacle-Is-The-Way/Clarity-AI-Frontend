@@ -166,14 +166,6 @@ const BrainVisualizationContainerInternal: React.FC<BrainVisualizationContainerP
   const [_isReady, setIsReady] = useState(false); // Prefixed unused state variable
 
   const isLoading = isModelLoading || isPatientLoading || isClinicalLoading;
-  const loadingProgress = useMemo(() => {
-    let progress = 0;
-    const total = 3;
-    if (!isModelLoading) progress++;
-    if (!isPatientLoading) progress++;
-    if (!isClinicalLoading) progress++;
-    return progress / total;
-  }, [isModelLoading, isPatientLoading, isClinicalLoading]);
 
   const combinedError = modelError || patientError || clinicalError || errorState;
 

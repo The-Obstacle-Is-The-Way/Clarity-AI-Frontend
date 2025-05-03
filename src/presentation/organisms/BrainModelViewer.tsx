@@ -22,7 +22,7 @@ import { KernelSize } from 'postprocessing'; // Restored import
 
 // Import AdaptiveLOD and related types/hooks
 import type { DetailLevel } from '@presentation/common/AdaptiveLOD';
-import AdaptiveLOD, { useDetailConfig } from '@presentation/common/AdaptiveLOD'; // Added imports
+import AdaptiveLOD from '@presentation/common/AdaptiveLOD'; // Added imports
 
 // Import molecular components
 import BrainRegionGroup from '@presentation/molecules/BrainRegionGroup';
@@ -170,7 +170,6 @@ const Brain3DScene: React.FC<{
 }) => {
   // Use the context hook to get detail config
   // const detailConfig = useDetailConfig(); // Removed unused variable
-  const { camera } = useThree(); // Get camera instance
 
   const safeRegions = brainModel.regions || [];
   const safeConnections = brainModel.connections || [];
@@ -405,13 +404,11 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
   );
 
   const renderVisualization = (model: BrainModel) => {
-    // **DEBUG LOG:** Confirm renderVisualization is called
     console.log('[BrainModelViewer] renderVisualization called with model:', model);
 
     // Determine the detail level to pass to AdaptiveLOD
     // This could be based on props or internal logic
-    const currentDetailLevel: DetailLevel = highPerformanceMode ? 'low' : 'high'; // Use correct type
-
+    
     return (
       <Canvas
         style={{
@@ -468,7 +465,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
         </AdaptiveLOD>{' '}
         {/* Correctly close AdaptiveLOD */}
         {/* Post-processing effects */}
-        {!highPerformanceMode && (settings.enableBloom || enableDepthOfFieldProp) ? (
+        {!highPerformanceMode && (settings.enableBloom || settings.enableDepthOfField) ? (
           <EffectComposer>
             <>
               {' '}
@@ -485,7 +482,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
             <>
               {' '}
               {/* Wrap conditional elements in Fragment */}
-              {/* {enableDepthOfFieldProp ? ( // Use direct prop - Temporarily commented out due to import issues
+              {/* {settings.enableDepthOfField ? ( // Use direct prop - Temporarily commented out due to import issues
                 <DepthOfField
                   focusDistance={0} // Example values, make configurable?
                   focalLength={0.02}
