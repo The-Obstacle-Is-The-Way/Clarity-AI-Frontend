@@ -17,7 +17,7 @@ const AuthRoute: React.FC = () => {
   useEffect(() => {
     // Set a demo token to localStorage for persistence
     if (!localStorage.getItem('auth_token')) {
-      localStorage.setItem('auth_token', 'demo-token-for-novamind-digital-twin');
+      localStorage.setItem('auth_token', 'demo-token-for-clarity-ai-digital-twin');
     }
   }, []);
 

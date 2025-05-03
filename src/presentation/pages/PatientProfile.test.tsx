@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * PatientProfile testing with quantum precision
  */
 import React from 'react'; // Import React

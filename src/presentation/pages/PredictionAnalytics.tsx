@@ -80,7 +80,7 @@ const PredictionAnalytics: React.FC = () => {
 
   return (
     <>
-      <DocumentTitle title="Prediction Analytics | Novamind Digital Twin" />
+      <DocumentTitle title="Prediction Analytics | Clarity-AI Digital Twin" />
       <MainLayout>
         <Header title="Prediction Analytics" subtitle="Model performance and prediction insights" />
 

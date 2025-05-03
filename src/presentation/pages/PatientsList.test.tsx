@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Test Suite
+ * CLARITY-AI Neural Test Suite
  * PatientsList testing with quantum precision
  */
 

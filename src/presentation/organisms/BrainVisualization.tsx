@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * NOVAMIND Neural Visualization Component
+ * CLARITY-AI Neural Visualization Component
  * Renders a 3D brain model with clinical-grade precision
  */
 import React, { useRef, useMemo, useEffect } from 'react'; // Restored useEffect

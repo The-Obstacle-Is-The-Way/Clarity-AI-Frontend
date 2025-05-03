@@ -6,7 +6,7 @@ import { useAuth } from '@application/context/AuthContext';
 /**
  * Login Page
  *
- * Provides a full-page login experience with the NovaMind
+ * Provides a full-page login experience with the Clarity-AI
  * digital twin platform branding
  */
 export const LoginPage: React.FC = () => {

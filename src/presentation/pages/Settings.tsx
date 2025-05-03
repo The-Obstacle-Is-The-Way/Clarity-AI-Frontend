@@ -90,7 +90,7 @@ const Settings: React.FC = () => {
 
   return (
     <>
-      <DocumentTitle title="Settings | Novamind Digital Twin" />
+      <DocumentTitle title="Settings | Clarity-AI Digital Twin" />
       <MainLayout>
         <Header title="Settings" subtitle="Configure your experience" />
 
