@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '../../test/test-utils.unified';
+import { render, screen } from '../../../infrastructure/testing/utils/test-utils.unified';
 import { ActivityIndicator } from './ActivityIndicator';
 import { ActivationLevel } from '@domain/types/brain/activity';
 

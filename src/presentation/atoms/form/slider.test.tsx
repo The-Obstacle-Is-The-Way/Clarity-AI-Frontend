@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { renderWithProviders } from '../../test/test-utils.unified';
+import { renderWithProviders } from '../../../infrastructure/testing/utils/test-utils.unified';
 import { Slider } from './slider';
 import { vi } from 'vitest';
 import userEvent from '@testing-library/user-event';

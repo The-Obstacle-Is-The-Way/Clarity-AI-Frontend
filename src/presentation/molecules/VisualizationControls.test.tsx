@@ -12,7 +12,7 @@ import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Removed unused render, fireEvent
 import userEvent from '@testing-library/user-event';
 import VisualizationControls from './VisualizationControls';
-import { renderWithProviders } from '../../test/test-utils.unified';
+import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified';
 import { RenderMode } from '@domain/types/brain/visualization'; // Import RenderMode
 
 // Mock data with clinical precision including required props

@@ -5,8 +5,9 @@
 
 // Removed unused React import (new JSX transform)
 import { describe, it, expect, vi } from 'vitest'; // Remove beforeEach, afterEach
-import { render, screen } from '../../test/test-utils.unified'; // Use unified render
-import BrainVisualizationControls from './BrainVisualizationControls'; // Use default import
+import { BrainVisualizationControls } from './BrainVisualizationControls';
+import { type BrainRegion } from '@/domain/types/brain/brainRegionTypes';
+import { render, screen } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 // Remove WebGL mock imports
 
 // Remove unnecessary R3F/Three mocks for this component test
