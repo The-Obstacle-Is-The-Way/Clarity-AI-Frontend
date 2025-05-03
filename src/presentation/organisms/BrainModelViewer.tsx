@@ -223,7 +223,7 @@ const Brain3DScene: React.FC<{
         highPerformanceMode={highPerformanceMode}
         selectedRegionIds={selectedRegionIds}
         highlightedRegionIds={highlightedRegionIds}
-        minimumStrength={detailConfig.minConnectionStrength ?? 0.1} // Uncommented: Use context value
+        // minimumStrength={detailConfig.minConnectionStrength ?? 0.1} // Property doesn't exist on detailConfig type, keep commented
         filterByActivity={renderMode === RenderMode.FUNCTIONAL}
         animated={renderMode !== RenderMode.ANATOMICAL}
         // useDashedLines={themeSettings.useDashedConnections} // Property missing
