@@ -4,9 +4,39 @@
  */
 
 import React from 'react';
-import { QuantumNeuralVisualization } from '@presentation/organisms/QuantumNeuralVisualization';
+import QuantumNeuralVisualization from '@presentation/organisms/QuantumNeuralVisualization';
+import type { BrainModel } from '@domain/types/brain/models';
+import type { VisualizationSettings } from '@domain/types/brain/visualization';
 
-interface NeuralSingularityDemoProps {}
+// Remove empty interface if no props are needed, or add expected props.
+// Assuming no props for now:
+// interface NeuralSingularityDemoProps {}
+
+const placeholderBrainModel: BrainModel = {
+  id: 'demo-model-1',
+  regions: [
+    { id: 'region-1', name: 'Prefrontal Cortex', position: [-2, 2, 1] },
+    { id: 'region-2', name: 'Amygdala', position: [1, -1, -1] },
+    { id: 'region-3', name: 'Hippocampus', position: [-1, -0.5, -1.5] },
+  ],
+  connections: [
+    { id: 'conn-1', source: 'region-1', target: 'region-2', strength: 0.8, activityLevel: 0.7 },
+    { id: 'conn-2', source: 'region-1', target: 'region-3', strength: 0.6, activityLevel: 0.4 },
+    { id: 'conn-3', source: 'region-2', target: 'region-3', strength: 0.9, activityLevel: 0.9 },
+  ],
+};
+
+const placeholderVisSettings: VisualizationSettings = {
+  connectionBaseColor: '#888888',
+  regionBaseColor: '#cccccc',
+  highlightColor: '#ffdd55',
+  activityColorMap: 'viridis',
+  showConnections: true,
+  showRegions: true,
+  connectionThicknessFactor: 1.0,
+  connectionOpacityFactor: 0.8,
+  regionSizeFactor: 1.0,
+};
 
 export const NeuralSingularityDemo: React.FC<NeuralSingularityDemoProps> = () => {
   return (
@@ -21,8 +51,11 @@ export const NeuralSingularityDemo: React.FC<NeuralSingularityDemoProps> = () =>
       </header>
 
       <main>
-        <div className="bg-slate-900 rounded-xl p-6 shadow-xl">
-          <QuantumNeuralVisualization patientId="demo-patient-1" brainModelId="demo-model-1" />
+        <div className="bg-slate-900 rounded-xl p-6 shadow-xl h-[70vh]">
+          <QuantumNeuralVisualization
+            initialModel={placeholderBrainModel}
+            visualizationSettings={placeholderVisSettings}
+          />
         </div>
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
