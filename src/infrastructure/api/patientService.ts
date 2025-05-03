@@ -28,6 +28,7 @@ export const getPatients = async (params: {
   try {
     // Adjust the endpoint based on the confirmed backend API structure
     // Assuming the backend returns data in the PaginatedPatientsResponse structure
+    const response = await apiClient.get<PaginatedPatientsResponse>('/api/v1/patients', {
     const response = await apiClient.get<PaginatedPatientsResponse>('/patients', {
       params: queryParams,
     });
