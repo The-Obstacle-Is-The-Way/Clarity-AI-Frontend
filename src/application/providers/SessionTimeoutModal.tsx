@@ -6,7 +6,7 @@
  */
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button } from '@presentation/atoms';
 import { Progress } from '@/components/ui/progress';
 import { useSecureAuth } from '../hooks/useSecureAuth';
 import { auditLogService } from '../../infrastructure/services/auditLogService';
