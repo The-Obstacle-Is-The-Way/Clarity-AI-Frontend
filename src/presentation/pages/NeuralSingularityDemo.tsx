@@ -15,14 +15,14 @@ import type { VisualizationSettings } from '@domain/types/brain/visualization';
 const placeholderBrainModel: BrainModel = {
   id: 'demo-model-1',
   regions: [
-    { id: 'region-1', name: 'Prefrontal Cortex', position: [-2, 2, 1] },
-    { id: 'region-2', name: 'Amygdala', position: [1, -1, -1] },
-    { id: 'region-3', name: 'Hippocampus', position: [-1, -0.5, -1.5] },
+    { id: 'region-1', name: 'Prefrontal Cortex', position: { x: -2, y: 2, z: 1 }, color: '#ff0000', connections: ['conn-1', 'conn-2'], activityLevel: 0.6, isActive: true },
+    { id: 'region-2', name: 'Amygdala', position: { x: 1, y: -1, z: -1 }, color: '#00ff00', connections: ['conn-1', 'conn-3'], activityLevel: 0.9, isActive: true },
+    { id: 'region-3', name: 'Hippocampus', position: { x: -1, y: -0.5, z: -1.5 }, color: '#0000ff', connections: ['conn-2', 'conn-3'], activityLevel: 0.4, isActive: false },
   ],
   connections: [
-    { id: 'conn-1', source: 'region-1', target: 'region-2', strength: 0.8, activityLevel: 0.7 },
-    { id: 'conn-2', source: 'region-1', target: 'region-3', strength: 0.6, activityLevel: 0.4 },
-    { id: 'conn-3', source: 'region-2', target: 'region-3', strength: 0.9, activityLevel: 0.9 },
+    { id: 'conn-1', sourceId: 'region-1', targetId: 'region-2', strength: 0.8, activityLevel: 0.7, type: 'excitatory', directionality: 'unidirectional', dataConfidence: 0.9 },
+    { id: 'conn-2', sourceId: 'region-1', targetId: 'region-3', strength: 0.6, activityLevel: 0.4, type: 'inhibitory', directionality: 'unidirectional', dataConfidence: 0.8 },
+    { id: 'conn-3', sourceId: 'region-2', targetId: 'region-3', strength: 0.9, activityLevel: 0.9, type: 'excitatory', directionality: 'bidirectional', dataConfidence: 0.95 },
   ],
 };
 
@@ -30,15 +30,14 @@ const placeholderVisSettings: VisualizationSettings = {
   connectionBaseColor: '#888888',
   regionBaseColor: '#cccccc',
   highlightColor: '#ffdd55',
-  activityColorMap: 'viridis',
+  activityColorScale: ['#0000ff', '#00ff00', '#ffff00', '#ff0000'],
   showConnections: true,
-  showRegions: true,
-  connectionThicknessFactor: 1.0,
+  connectionThickness: 1.0,
   connectionOpacityFactor: 0.8,
   regionSizeFactor: 1.0,
 };
 
-export const NeuralSingularityDemo: React.FC<NeuralSingularityDemoProps> = () => {
+export const NeuralSingularityDemo: React.FC = () => {
   return (
     <div className="container mx-auto p-6">
       <header className="mb-8">
