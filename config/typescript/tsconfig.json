@@ -88,7 +88,9 @@
     "src/mocks",
     "src/**/mocks",
     "src/setupTests.ts",
-    "src/infrastructure/testing"
+    "src/infrastructure/testing",
+    "config/*.ts",
+    "vite.config.ts"
   ],
   "references": [{ "path": "./config/typescript/tsconfig.node.json" }]
 } 
