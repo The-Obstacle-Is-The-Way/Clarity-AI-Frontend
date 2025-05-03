@@ -3,11 +3,14 @@ import React from 'react';
 import type { Patient } from '@domain/patients/patientTypes';
 import { format } from 'date-fns';
 import { Button } from "@/presentation/atoms";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/presentation/atoms"; // Use index
+import { Table, TableBody, TableCell, TableCaption, TableHead, TableHeader, TableRow } from "@/presentation/atoms/display/table";
 import { Badge } from "@/presentation/atoms"; // Use index
 import { Skeleton } from "@/presentation/atoms"; // Use index
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
+import { Terminal, FileText } from "lucide-react";
+import type { ClinicalRecord } from "@domain/clinical-records/clinicalRecordTypes";
 
 interface PatientTableProps {
   patients: Patient[];
