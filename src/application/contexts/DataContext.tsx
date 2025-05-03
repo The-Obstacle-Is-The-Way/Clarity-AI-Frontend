@@ -13,7 +13,7 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
-  type ReactNode
+  type ReactNode,
 } from 'react';
 
 // Brain model data structure with clinical precision

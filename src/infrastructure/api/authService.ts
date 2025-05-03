@@ -1,63 +1,52 @@
 import { authClient } from '@infrastructure/clients/authClient';
+import type { AuthResult, LoginCredentials, User } from '@domain/types/auth/auth';
 
 // Define the expected structure for login credentials matching backend
-interface LoginCredentials {
-  username: string;
-  password: string;
-  remember_me?: boolean;
-}
 
 /**
- * Authentication Service
- *
- * Provides methods for interacting with the backend authentication endpoints.
- * Uses the central apiClient configured for HttpOnly cookie handling.
+ * Service layer for authentication.
+ * Handles interactions with the authClient.
  */
 export const authService = {
   /**
-   * Attempts to log in the user.
-   * The backend handles setting HttpOnly cookies on success.
-   * @param credentials - The user's login credentials.
-   * @returns Promise<void> - Resolves on successful login (status 2xx), rejects otherwise.
+   * Logs in a user using the authClient.
    */
-  login: async (credentials: LoginCredentials): Promise<void> => {
-    // The actual token data is in the cookie, we just need the call to succeed.
-    // No need to return the body of the /login response.
-    await authClient.post<void>('/api/v1/auth/login', credentials);
+  login: async (credentials: LoginCredentials): Promise<AuthResult> => {
+    // Pass credentials directly to the authClient
+    return authClient.login(credentials);
   },
 
   /**
-   * Logs out the user.
-   * The backend handles clearing HttpOnly cookies.
-   * @returns Promise<void> - Resolves on successful logout (status 2xx), rejects otherwise.
+   * Logs out the current user via authClient.
    */
   logout: async (): Promise<void> => {
-    await authClient.post<void>('/api/v1/auth/logout');
+    return authClient.logout();
   },
 
   /**
-   * Fetches the profile of the currently authenticated user.
-   * Relies on the browser automatically sending the auth cookie.
-   * @returns Promise<User> - The user profile data.
+   * Retrieves the current user profile via authClient.
    */
-  getCurrentUser: async (): Promise<User> => {
-    return authClient.get<User>('/api/v1/auth/me');
+  getCurrentUser: async (): Promise<User | null> => {
+    // Assuming authClient.getCurrentUser returns User | null
+    return authClient.getCurrentUser();
   },
 
   /**
-   * Attempts to silently refresh the authentication tokens using the existing
-   * HttpOnly refresh cookie. If the refresh succeeds, the backend will set new
-   * cookies on the response.
-   *
-   * IMPORTANT: The frontend does not need to store or parse the returned JSON
-   * body – the presence of a 2xx response is sufficient.
+   * Checks if the user is authenticated via authClient.
    */
-  refreshToken: async (): Promise<void> => {
-    await authClient.post<void>('/api/v1/auth/refresh');
+  isAuthenticated: (): boolean => {
+    return authClient.isAuthenticated();
   },
 
-  // Note: Refresh token logic is handled via HttpOnly cookie by the browser/
-  // backend. No explicit frontend call needed in this service for basic flow.
+  /**
+   * Renews the session via authClient.
+   */
+  renewSession: () => {
+    // Assuming authClient.renewSession returns void or verification info
+    return authClient.renewSession();
+  },
+
+  // Removed refreshToken as it's not in authClient
 };
 
 export default authService;

@@ -88,9 +88,7 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
       patientData: Record<string, unknown>,
       options?: Record<string, unknown>
     ) => {
-      return withLoadingState(() =>
-        apiClientInstance.generateDigitalTwin(patientData, options)
-      );
+      return withLoadingState(() => apiClientInstance.generateDigitalTwin(patientData, options));
     },
     [withLoadingState, apiClientInstance]
   );
@@ -226,4 +224,4 @@ export const useML = (config?: { enablePolling?: boolean; pollInterval?: number 
     checkMLHealth,
     checkPHIHealth,
   };
-}
+};

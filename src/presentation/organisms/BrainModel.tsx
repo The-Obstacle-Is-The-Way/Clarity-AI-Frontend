@@ -7,7 +7,10 @@ import type { Group } from 'three';
 import { Color, ShaderMaterial, AdditiveBlending, Clock } from 'three'; // Import specific members, removed unused Vector3, Quaternion, Matrix4
 import * as THREE from 'three'; // Add THREE namespace import
 // Corrected import path using relative path
-import { createNeuralGlowUniforms, updateNeuralGlow } from '../../infrastructure/graphics/shaders/neuralGlow';
+import {
+  createNeuralGlowUniforms,
+  updateNeuralGlow,
+} from '../../infrastructure/graphics/shaders/neuralGlow';
 
 /**
  * Neural node data structure with 3D location and clinical metadata
