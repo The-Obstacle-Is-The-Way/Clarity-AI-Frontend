@@ -5,10 +5,10 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, useGLTF } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient'; // Corrected import name
-import type { NeuralNode } from '@organisms/BrainModel';
+import type { NeuralNode } from '@presentation/organisms/BrainModel'; // Corrected path alias
 
 // Lazy-loaded brain model for code splitting
-const BrainModel = React.lazy(() => import('@organisms/BrainModel'));
+const BrainModel = React.lazy(() => import('@presentation/organisms/BrainModel')); // Corrected path alias
 
 interface BrainModelContainerProps {
   /**
