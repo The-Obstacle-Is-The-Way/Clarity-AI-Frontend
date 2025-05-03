@@ -47,7 +47,7 @@ const registry = new FinalizationRegistry<{ type: string }>((details) => {
     if (typeSet) {
       // Object was garbage collected, remove it from our count
       // This is approximate as we can't directly reference the original object
-// eslint-disable-next-line
+      // eslint-disable-next-line
       typeSet.forEach((ref) => {
         const obj = ref.deref();
         if (!obj) {
@@ -93,7 +93,7 @@ export function stopMemoryMonitoring(): MemoryReport {
   };
 
   // Calculate totals from each object type
-// eslint-disable-next-line
+  // eslint-disable-next-line
   currentSnapshot.objects.forEach((objects, type) => {
     const livingCount = countLivingObjects(objects);
     report.leakedObjectCount += livingCount;
@@ -112,7 +112,7 @@ export function stopMemoryMonitoring(): MemoryReport {
 // eslint-disable-next-line
 function countLivingObjects(refs: Set<WeakRef<any>>): number {
   let count = 0;
-// eslint-disable-next-line
+  // eslint-disable-next-line
   refs.forEach((ref) => {
     if (ref.deref()) {
       count++;
@@ -151,7 +151,7 @@ export function markDisposed(obj: any, type: string): void {
   if (typeSet) {
     // We can't directly remove the specific WeakRef since we don't have the reference
     // Instead, we'll check all refs for this type and remove any that match
-// eslint-disable-next-line
+    // eslint-disable-next-line
     typeSet.forEach((ref) => {
       if (ref.deref() === obj) {
         typeSet.delete(ref);
@@ -170,7 +170,7 @@ export function getMemorySnapshot(): Record<string, number> {
   }
 
   const snapshot: Record<string, number> = {};
-// eslint-disable-next-line
+  // eslint-disable-next-line
   currentSnapshot.objects.forEach((objects, type) => {
     snapshot[type] = countLivingObjects(objects);
   });

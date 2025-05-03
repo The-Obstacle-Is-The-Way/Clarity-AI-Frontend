@@ -181,9 +181,9 @@ function generateHTMLReport(coverageGroups: CoverageGroup[]): string {
   let totalFunctions = 0;
   let totalLines = 0;
 
-// eslint-disable-next-line
+  // eslint-disable-next-line
   coverageGroups.forEach((group) => {
-// eslint-disable-next-line
+    // eslint-disable-next-line
     group.components.forEach((comp) => {
       totalStatements += comp.coverage.statements;
       totalBranches += comp.coverage.branches;
@@ -231,7 +231,7 @@ function generateHTMLReport(coverageGroups: CoverageGroup[]): string {
 
   // Generate component groups with clinical precision
   const groupsHTML = coverageGroups
-// eslint-disable-next-line
+    // eslint-disable-next-line
     .map((group) => {
       if (group.components.length === 0) {
         return '';
@@ -239,7 +239,7 @@ function generateHTMLReport(coverageGroups: CoverageGroup[]): string {
 
       const componentsHTML = group.components
         .sort((a, b) => b.coverage.lines - a.coverage.lines)
-// eslint-disable-next-line
+        // eslint-disable-next-line
         .map((comp) => {
           const linesCoverageClass =
             comp.coverage.lines >= COVERAGE_THRESHOLDS.high

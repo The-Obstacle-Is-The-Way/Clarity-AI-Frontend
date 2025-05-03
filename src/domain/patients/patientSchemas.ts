@@ -15,12 +15,12 @@ export const createPatientSchema = z.object({
     if (val.length === 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Date of Birth is required",
+        message: 'Date of Birth is required',
       });
     } else if (!/^\d{4}-\d{2}-\d{2}$/.test(val)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom, // Or use invalid_string
-        message: "Date of Birth must be in YYYY-MM-DD format",
+        message: 'Date of Birth must be in YYYY-MM-DD format',
       });
     }
   }),

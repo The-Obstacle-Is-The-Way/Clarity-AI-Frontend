@@ -11,27 +11,21 @@ export const Select = React.forwardRef<
   };
 
   return (
-    <select
-      ref={ref}
-      className={className}
-      onChange={handleChange}
-      {...props}
-    >
+    <select ref={ref} className={className} onChange={handleChange} {...props}>
       {children}
     </select>
   );
 });
 
-export const SelectContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ children, className, ...props }, ref) => {
-  return (
-    <div ref={ref} className={className} {...props}>
-      {children}
-    </div>
-  );
-});
+export const SelectContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <div ref={ref} className={className} {...props}>
+        {children}
+      </div>
+    );
+  }
+);
 
 export const SelectItem = React.forwardRef<
   HTMLOptionElement,
@@ -44,16 +38,15 @@ export const SelectItem = React.forwardRef<
   );
 });
 
-export const SelectTrigger = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ children, className, ...props }, ref) => {
-  return (
-    <div ref={ref} className={className} {...props}>
-      {children}
-    </div>
-  );
-});
+export const SelectTrigger = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <div ref={ref} className={className} {...props}>
+        {children}
+      </div>
+    );
+  }
+);
 
 export const SelectValue = React.forwardRef<
   HTMLSpanElement,

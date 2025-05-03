@@ -171,7 +171,7 @@ describe('PatientDetailPage', () => {
       first_name: 'Initial',
       last_name: 'Name',
       date_of_birth: '1990-01-01', // Add fields expected in stringify
-      status: 'active',             // Add fields expected in stringify
+      status: 'active', // Add fields expected in stringify
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
@@ -197,7 +197,9 @@ describe('PatientDetailPage', () => {
         status: mockPatient.status,
         // Add other fields if the form expects them as defaultValues
       };
-      expect(screen.getByTestId('form-default-values')).toHaveTextContent(JSON.stringify(expectedDefaultValues));
+      expect(screen.getByTestId('form-default-values')).toHaveTextContent(
+        JSON.stringify(expectedDefaultValues)
+      );
       expect(screen.queryByTestId('patient-detail-card')).not.toBeInTheDocument();
       expect(screen.getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
     });
@@ -205,12 +207,21 @@ describe('PatientDetailPage', () => {
 
   it('should call update mutation when form is submitted in edit mode', async () => {
     const patientId = 'test-update-id';
-    const mockPatient: Patient = { id: patientId, first_name: 'Before', last_name: 'Update' } as Patient;
-    mockUsePatientDetail.mockReturnValue({ isLoading: false, data: mockPatient, error: null, isError: false });
+    const mockPatient: Patient = {
+      id: patientId,
+      first_name: 'Before',
+      last_name: 'Update',
+    } as Patient;
+    mockUsePatientDetail.mockReturnValue({
+      isLoading: false,
+      data: mockPatient,
+      error: null,
+      isError: false,
+    });
     renderWithProvidersAndRoutes([`/patients/${patientId}`]);
 
     // Enter edit mode
-    fireEvent.click(screen.getByRole('button', {name: /Edit Patient/i}));
+    fireEvent.click(screen.getByRole('button', { name: /Edit Patient/i }));
     await waitFor(() => expect(screen.getByTestId('mock-patient-form')).toBeInTheDocument());
 
     // Submit the mocked form
@@ -218,50 +229,72 @@ describe('PatientDetailPage', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-        expect(mockMutate).toHaveBeenCalledTimes(1);
-        expect(mockMutate).toHaveBeenCalledWith(
-            {
-                patientId: patientId,
-                patientData: expect.objectContaining({ first_name: 'Updated Name' }) // Data from mocked form submit
-            },
-            expect.any(Object) // Options object
-        );
+      expect(mockMutate).toHaveBeenCalledTimes(1);
+      expect(mockMutate).toHaveBeenCalledWith(
+        {
+          patientId: patientId,
+          patientData: expect.objectContaining({ first_name: 'Updated Name' }), // Data from mocked form submit
+        },
+        expect.any(Object) // Options object
+      );
     });
   });
 
   it('should switch back to view mode when Cancel button is clicked', async () => {
-    const mockPatient: Patient = { id: 'test-cancel-1', first_name: 'Cancel', last_name: 'Me' } as Patient;
-    mockUsePatientDetail.mockReturnValue({ isLoading: false, data: mockPatient, error: null, isError: false });
+    const mockPatient: Patient = {
+      id: 'test-cancel-1',
+      first_name: 'Cancel',
+      last_name: 'Me',
+    } as Patient;
+    mockUsePatientDetail.mockReturnValue({
+      isLoading: false,
+      data: mockPatient,
+      error: null,
+      isError: false,
+    });
     renderWithProvidersAndRoutes(['/patients/test-cancel-1']);
 
     // Enter edit mode
-    fireEvent.click(screen.getByRole('button', {name: /Edit Patient/i}));
+    fireEvent.click(screen.getByRole('button', { name: /Edit Patient/i }));
     await waitFor(() => expect(screen.getByTestId('mock-patient-form')).toBeInTheDocument());
 
     // Click Cancel
-    const cancelButton = screen.getByRole('button', {name: /Cancel/i});
+    const cancelButton = screen.getByRole('button', { name: /Cancel/i });
     fireEvent.click(cancelButton);
 
-     await waitFor(() => {
-        expect(screen.getByTestId('patient-detail-card')).toBeInTheDocument();
-        expect(screen.queryByTestId('mock-patient-form')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('patient-detail-card')).toBeInTheDocument();
+      expect(screen.queryByTestId('mock-patient-form')).not.toBeInTheDocument();
     });
   });
 
-   it('should display update error message in edit mode', async () => {
+  it('should display update error message in edit mode', async () => {
     const updateError = new Error('Update conflict');
-    mockUseUpdatePatient.mockReturnValue({ mutate: mockMutate, isLoading: false, error: updateError, isError: true });
-    const mockPatient: Patient = { id: 'test-error-update', first_name: 'Error', last_name: 'Case' } as Patient;
-    mockUsePatientDetail.mockReturnValue({ isLoading: false, data: mockPatient, error: null, isError: false });
+    mockUseUpdatePatient.mockReturnValue({
+      mutate: mockMutate,
+      isLoading: false,
+      error: updateError,
+      isError: true,
+    });
+    const mockPatient: Patient = {
+      id: 'test-error-update',
+      first_name: 'Error',
+      last_name: 'Case',
+    } as Patient;
+    mockUsePatientDetail.mockReturnValue({
+      isLoading: false,
+      data: mockPatient,
+      error: null,
+      isError: false,
+    });
     renderWithProvidersAndRoutes(['/patients/test-error-update']);
 
     // Enter edit mode
-    fireEvent.click(screen.getByRole('button', {name: /Edit Patient/i}));
+    fireEvent.click(screen.getByRole('button', { name: /Edit Patient/i }));
     await waitFor(() => expect(screen.getByTestId('mock-patient-form')).toBeInTheDocument());
 
     // Check if error message is displayed (doesn't require submitting as the hook is mocked)
     expect(screen.getByText(/Update Failed/i)).toBeInTheDocument();
     expect(screen.getByText(/Update conflict/i)).toBeInTheDocument();
   });
-
 });

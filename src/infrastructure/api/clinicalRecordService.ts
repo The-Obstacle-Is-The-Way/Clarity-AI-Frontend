@@ -24,7 +24,7 @@ export const getClinicalRecords = async (
     sort_by?: string;
     sort_order?: 'asc' | 'desc';
     // Add other potential filter params like record_type, date_range etc.
-  } = {},
+  } = {}
 ): Promise<PaginatedClinicalRecordsResponse> => {
   if (!patientId) {
     throw new Error('Patient ID is required to fetch clinical records');
@@ -66,8 +66,8 @@ export const getClinicalRecordById = async (recordId: string): Promise<ClinicalR
   if (!recordId) {
     throw new Error('Record ID is required');
   }
-  // --- VERIFY THIS ENDPOINT --- 
-  const endpoint = `/records/${recordId}`; 
+  // --- VERIFY THIS ENDPOINT ---
+  const endpoint = `/records/${recordId}`;
   // const endpoint = `/patients/${patientId}/records/${recordId}`; // Alternative?
 
   try {

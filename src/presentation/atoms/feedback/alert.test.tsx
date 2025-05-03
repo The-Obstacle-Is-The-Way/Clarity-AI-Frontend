@@ -130,4 +130,4 @@ describe('Alert Components', () => {
       expect(alert).toHaveTextContent('This is the alert description.');
     });
   });
-}); 
+});

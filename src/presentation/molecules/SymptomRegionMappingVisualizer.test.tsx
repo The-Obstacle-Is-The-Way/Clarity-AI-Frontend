@@ -102,7 +102,6 @@ vi.mock('@react-spring/three', () => ({
         // Prefixed unused target parameter
         const MockAnimatedComponent = React.forwardRef(
           ({ children, ...props }: React.PropsWithChildren<any>, ref: any) => {
-             
             return React.createElement(
               'div',
               { 'data-testid': `mock-animated-${String(prop)}`, ref, ...props },

@@ -138,9 +138,9 @@ describe('PatientListPage', () => {
   it('should update search term and trigger search', async () => {
     // Simplified test approach - don't test the actual debounce timing
     // but instead test that typing in the search box updates the state and triggers search
-    
+
     const user = userEvent.setup();
-    
+
     // Mock initial data
     const mockData = {
       items: [{ id: '1', first_name: 'John', last_name: 'Doe' }],
@@ -149,7 +149,7 @@ describe('PatientListPage', () => {
       size: 10,
       pages: 1,
     };
-    
+
     // Set up the mock
     mockUsePatients.mockReturnValue({
       isLoading: false,
@@ -157,23 +157,21 @@ describe('PatientListPage', () => {
       error: null,
       isPlaceholderData: false,
     });
-    
+
     renderWithProviders(<PatientListPage />);
-    
+
     // Find the search input
     const searchInput = screen.getByPlaceholderText(/search patients/i);
-    
+
     // Enter search term
     await user.type(searchInput, 'Smith');
-    
+
     // Simulate form submission directly instead of waiting for debounce
     await user.keyboard('{Enter}');
-    
+
     // Verify the search param was updated
     await waitFor(() => {
-      expect(mockUsePatients).toHaveBeenCalledWith(
-        expect.objectContaining({ search: 'Smith' })
-      );
+      expect(mockUsePatients).toHaveBeenCalledWith(expect.objectContaining({ search: 'Smith' }));
     });
   });
 });

@@ -11,7 +11,7 @@ const Progress = React.forwardRef<
 >(({ className, value, ...props }, ref) => {
   // Ensure value is never negative
   const safeValue = value !== undefined && value !== null ? Math.max(0, value) : 0;
-  
+
   return (
     <ProgressPrimitive.Root
       ref={ref}

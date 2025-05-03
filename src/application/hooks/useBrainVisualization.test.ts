@@ -111,14 +111,10 @@ describe('useBrainVisualization Hook', () => {
         },
       },
     });
-    
+
     return ({ children }: { children: React.ReactNode }) => {
       // Use React.createElement to avoid JSX transform issues in .ts file
-      return React.createElement(
-        QueryClientProvider,
-        { client: testQueryClient },
-        children
-      );
+      return React.createElement(QueryClientProvider, { client: testQueryClient }, children);
     };
   };
 
@@ -128,23 +124,24 @@ describe('useBrainVisualization Hook', () => {
 
     // Act - Render the hook with test parameters
     const { result } = renderHook(
-      () => useBrainVisualization({
-        patientId: 'test-patient',
-        disabled: false,
-        autoRotate: false,
-        highlightActiveRegions: false,
-      }),
+      () =>
+        useBrainVisualization({
+          patientId: 'test-patient',
+          disabled: false,
+          autoRotate: false,
+          highlightActiveRegions: false,
+        }),
       { wrapper }
     );
 
     // Assert - Check initial loading state (Removed - mock is synchronous)
     // expect(result.current.isLoading).toBe(true);
-    
+
     // Wait for the query to complete (Removed - mock is synchronous)
     // await waitFor(() => {
     //   expect(result.current.isLoading).toBe(false);
     // }, { timeout: 1000 });
-    
+
     // Assert final state (should be available immediately)
     expect(result.current.isLoading).toBe(false); // Check isLoading from mock
     expect(result.current.brainModel).toBeDefined();

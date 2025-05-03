@@ -25,4 +25,4 @@ if (rootElement) {
   );
 } else {
   console.warn('Root element with ID "root" not found. React app not rendered.');
-} 
+}

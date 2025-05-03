@@ -2,15 +2,23 @@
 import React from 'react';
 import type { Patient } from '@domain/patients/patientTypes';
 import { format } from 'date-fns';
-import { Button } from "@/presentation/atoms";
-import { Table, TableBody, TableCell, TableCaption, TableHead, TableHeader, TableRow } from "@/presentation/atoms/display/table";
-import { Badge } from "@/presentation/atoms"; // Use index
-import { Skeleton } from "@/presentation/atoms"; // Use index
+import { Button } from '@/presentation/atoms';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableCaption,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/presentation/atoms/display/table';
+import { Badge } from '@/presentation/atoms'; // Use index
+import { Skeleton } from '@/presentation/atoms'; // Use index
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
-import { Terminal, FileText } from "lucide-react";
-import type { ClinicalRecord } from "@domain/clinical-records/clinicalRecordTypes";
+import { Terminal, FileText } from 'lucide-react';
+import type { ClinicalRecord } from '@domain/clinical-records/clinicalRecordTypes';
 
 interface PatientTableProps {
   patients: Patient[];
@@ -32,11 +40,21 @@ const PatientTable: React.FC<PatientTableProps> = ({ patients, isLoading = false
   const renderSkeletonRows = (count: number) => {
     return Array.from({ length: count }).map((_, index) => (
       <TableRow key={`skeleton-${index}`}>
-        <TableCell><Skeleton className="h-4 w-24" data-testid="skeleton" /></TableCell>
-        <TableCell><Skeleton className="h-4 w-24" data-testid="skeleton" /></TableCell>
-        <TableCell><Skeleton className="h-4 w-20" data-testid="skeleton" /></TableCell>
-        <TableCell><Skeleton className="h-4 w-16" data-testid="skeleton" /></TableCell>
-        <TableCell><Skeleton className="h-4 w-28" data-testid="skeleton" /></TableCell>
+        <TableCell>
+          <Skeleton className="h-4 w-24" data-testid="skeleton" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-4 w-24" data-testid="skeleton" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-4 w-20" data-testid="skeleton" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-4 w-16" data-testid="skeleton" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-4 w-28" data-testid="skeleton" />
+        </TableCell>
       </TableRow>
     ));
   };
@@ -54,7 +72,7 @@ const PatientTable: React.FC<PatientTableProps> = ({ patients, isLoading = false
         </TableRow>
       </TableHeader>
       <TableBody>
-        {isLoading && renderSkeletonRows(5)} 
+        {isLoading && renderSkeletonRows(5)}
         {!isLoading && patients.length === 0 && (
           <TableRow>
             <TableCell colSpan={5} className="text-center text-muted-foreground">
@@ -62,23 +80,24 @@ const PatientTable: React.FC<PatientTableProps> = ({ patients, isLoading = false
             </TableCell>
           </TableRow>
         )}
-        {!isLoading && patients.map((patient) => (
-          <TableRow
-            key={patient.id}
-            onClick={() => handleRowClick(patient.id)}
-            className="cursor-pointer hover:bg-muted/50"
-          >
-            <TableCell className="font-medium">{patient.first_name}</TableCell>
-            <TableCell>{patient.last_name}</TableCell>
-            <TableCell>{patient.date_of_birth}</TableCell>
-            <TableCell>
-              <Badge variant={patient.status === 'active' ? 'default' : 'secondary'}>
-                {patient.status}
-              </Badge>
-            </TableCell>
-            <TableCell>{new Date(patient.created_at).toLocaleDateString()}</TableCell>
-          </TableRow>
-        ))}
+        {!isLoading &&
+          patients.map((patient) => (
+            <TableRow
+              key={patient.id}
+              onClick={() => handleRowClick(patient.id)}
+              className="cursor-pointer hover:bg-muted/50"
+            >
+              <TableCell className="font-medium">{patient.first_name}</TableCell>
+              <TableCell>{patient.last_name}</TableCell>
+              <TableCell>{patient.date_of_birth}</TableCell>
+              <TableCell>
+                <Badge variant={patient.status === 'active' ? 'default' : 'secondary'}>
+                  {patient.status}
+                </Badge>
+              </TableCell>
+              <TableCell>{new Date(patient.created_at).toLocaleDateString()}</TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );

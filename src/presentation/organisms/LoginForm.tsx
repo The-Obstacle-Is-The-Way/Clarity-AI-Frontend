@@ -52,7 +52,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, className = '' 
   const onSubmit = async (data: LoginFormValues) => {
     try {
       await login(data.email, data.password);
-      
+
       // If we get here, login was successful
       if (onSuccess) {
         onSuccess();

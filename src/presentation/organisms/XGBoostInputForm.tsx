@@ -8,13 +8,21 @@ import { Button } from '@/components/ui/button'; // Assuming Shadcn path
 import { Input } from '@/components/ui/input'; // Assuming Shadcn path
 import { Label } from '@/components/ui/label'; // Assuming Shadcn path
 import { Checkbox } from '@/components/ui/checkbox'; // Assuming Shadcn path
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Assuming Shadcn path
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'; // Assuming Shadcn path
 
-// --- VERIFY THIS SCHEMA --- 
+// --- VERIFY THIS SCHEMA ---
 // Define a Zod schema matching the verified XGBoostInput structure
 const formSchema = z.object({
-  featureA: z.number({ required_error: "Feature A is required" }).positive("Must be positive"),
-  featureB: z.enum(['Category1', 'Category2', 'Category3'], { required_error: "Feature B is required" }),
+  featureA: z.number({ required_error: 'Feature A is required' }).positive('Must be positive'),
+  featureB: z.enum(['Category1', 'Category2', 'Category3'], {
+    required_error: 'Feature B is required',
+  }),
   featureC: z.boolean().optional(),
   patientId: z.string().optional(),
   // Add validation for all other fields based on XGBoostInput type
@@ -49,7 +57,11 @@ const XGBoostInputForm: React.FC<XGBoostInputFormProps> = ({ onSubmit, isLoading
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4" data-testid="xgboost-form">
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      className="space-y-4"
+      data-testid="xgboost-form"
+    >
       {/* Example Field: Feature A (Number) */}
       <div>
         <Label htmlFor="featureA">Feature A (Number)</Label>
@@ -68,15 +80,20 @@ const XGBoostInputForm: React.FC<XGBoostInputFormProps> = ({ onSubmit, isLoading
         <Label htmlFor="featureB">Feature B (Category)</Label>
         {/* Need to use Controller for Shadcn Select with RHF */}
         {/* Simplified example - requires Controller setup */}
-        <Select onValueChange={(value) => { /* RHF field set logic */ }} disabled={isLoading}>
-            <SelectTrigger className={errors.featureB ? 'border-red-500' : ''}>
-                <SelectValue placeholder="Select category..." />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="Category1">Category 1</SelectItem>
-                <SelectItem value="Category2">Category 2</SelectItem>
-                <SelectItem value="Category3">Category 3</SelectItem>
-            </SelectContent>
+        <Select
+          onValueChange={(value) => {
+            /* RHF field set logic */
+          }}
+          disabled={isLoading}
+        >
+          <SelectTrigger className={errors.featureB ? 'border-red-500' : ''}>
+            <SelectValue placeholder="Select category..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Category1">Category 1</SelectItem>
+            <SelectItem value="Category2">Category 2</SelectItem>
+            <SelectItem value="Category3">Category 3</SelectItem>
+          </SelectContent>
         </Select>
         {errors.featureB && <p className="text-red-500 text-sm mt-1">{errors.featureB.message}</p>}
       </div>
@@ -89,7 +106,7 @@ const XGBoostInputForm: React.FC<XGBoostInputFormProps> = ({ onSubmit, isLoading
         <Label htmlFor="featureC">Feature C (Boolean)</Label>
         {errors.featureC && <p className="text-red-500 text-sm mt-1">{errors.featureC.message}</p>}
       </div>
-      
+
       {/* Example Field: Patient ID (Optional String) */}
       <div>
         <Label htmlFor="patientId">Patient ID (Optional)</Label>
@@ -99,15 +116,13 @@ const XGBoostInputForm: React.FC<XGBoostInputFormProps> = ({ onSubmit, isLoading
           disabled={isLoading}
           className={errors.patientId ? 'border-red-500' : ''}
         />
-        {errors.patientId && <p className="text-red-500 text-sm mt-1">{errors.patientId.message}</p>}
+        {errors.patientId && (
+          <p className="text-red-500 text-sm mt-1">{errors.patientId.message}</p>
+        )}
       </div>
 
       {/* Submit Button */}
-      <Button 
-        type="submit" 
-        disabled={isLoading}
-        data-testid="xgboost-submit-button"
-      >
+      <Button type="submit" disabled={isLoading} data-testid="xgboost-submit-button">
         {isLoading ? 'Running Prediction...' : 'Run XGBoost Prediction'}
       </Button>
     </form>

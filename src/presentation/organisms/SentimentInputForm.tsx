@@ -5,12 +5,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { SentimentInput } from '@domain/analytics/sentimentTypes';
 import { Button } from '@/components/ui/button';
-import { Textarea } from "@/components/ui/textarea"; // Assuming Shadcn path
+import { Textarea } from '@/components/ui/textarea'; // Assuming Shadcn path
 import { Label } from '@/components/ui/label';
 
-// --- VERIFY THIS SCHEMA --- 
+// --- VERIFY THIS SCHEMA ---
 const formSchema = z.object({
-  text_content: z.string().min(10, "Please enter at least 10 characters.").max(5000, "Text cannot exceed 5000 characters."),
+  text_content: z
+    .string()
+    .min(10, 'Please enter at least 10 characters.')
+    .max(5000, 'Text cannot exceed 5000 characters.'),
   // Add validation for context, language if used
 });
 
@@ -50,7 +53,9 @@ const SentimentInputForm: React.FC<SentimentInputFormProps> = ({ onSubmit, isLoa
           placeholder="Enter text here..."
           className={errors.text_content ? 'border-red-500' : ''}
         />
-        {errors.text_content && <p className="text-red-500 text-sm mt-1">{errors.text_content.message}</p>}
+        {errors.text_content && (
+          <p className="text-red-500 text-sm mt-1">{errors.text_content.message}</p>
+        )}
       </div>
 
       <Button type="submit" disabled={isLoading}>

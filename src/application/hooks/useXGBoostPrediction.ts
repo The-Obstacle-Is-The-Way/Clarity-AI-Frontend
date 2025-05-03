@@ -2,13 +2,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast'; // Assuming react-hot-toast
 
-import {
-  runXGBoostPrediction as runXGBoostPredictionApi,
-} from '@infrastructure/api/analyticsService';
-import type {
-  XGBoostInput,
-  XGBoostPrediction,
-} from '@domain/analytics/xgboostTypes';
+import { runXGBoostPrediction as runXGBoostPredictionApi } from '@infrastructure/api/analyticsService';
+import type { XGBoostInput, XGBoostPrediction } from '@domain/analytics/xgboostTypes';
 // import { ANALYTICS_QUERY_KEY_PREFIX } from '@application/queries/queryKeys'; // Define if needed for invalidation
 
 /**
@@ -30,8 +25,7 @@ export const useXGBoostPrediction = () => {
     },
     onError: (error) => {
       console.error('XGBoost prediction mutation failed:', error);
-      const message =
-        error instanceof Error ? error.message : 'An unknown error occurred.';
+      const message = error instanceof Error ? error.message : 'An unknown error occurred.';
       toast.error(`Prediction failed: ${message}`);
     },
   });

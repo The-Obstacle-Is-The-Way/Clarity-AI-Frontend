@@ -60,38 +60,38 @@ describe('PatientForm', () => {
   it('should validate date format correctly', async () => {
     // Use a simplified approach that directly tests the validation logic
     const mockOnSubmit = vi.fn();
-    
+
     // Render form
     renderWithProviders(<PatientForm onSubmit={mockOnSubmit} />);
-    
+
     // Get form elements
     const firstNameInput = screen.getByLabelText(/First Name/i);
     const lastNameInput = screen.getByLabelText(/Last Name/i);
     const dobInput = screen.getByLabelText(/Date of Birth/i);
     const submitButton = screen.getByRole('button', { name: /Create Patient/i });
-    
+
     // Fill in invalid date directly without userEvent
     fireEvent.change(firstNameInput, { target: { value: 'Test' } });
     fireEvent.change(lastNameInput, { target: { value: 'Patient' } });
     fireEvent.change(dobInput, { target: { value: '01-01-2000' } }); // Invalid format
-    
+
     // Submit form
     fireEvent.click(submitButton);
-    
+
     // Check for validation error (without using fake timers)
     await waitFor(() => {
       const errorMessage = screen.queryByText(/Date of Birth must be in YYYY-MM-DD format/i);
       expect(errorMessage).toBeInTheDocument();
     });
-    
+
     // Confirm submission didn't happen
     expect(mockOnSubmit).not.toHaveBeenCalled();
-    
+
     // Now fix the date and resubmit to verify validation clears
     fireEvent.change(dobInput, { target: { value: '2000-01-01' } }); // Valid format
-    
+
     fireEvent.click(submitButton);
-    
+
     // Check validation error is gone
     await waitFor(() => {
       const errorMessage = screen.queryByText(/Date of Birth must be in YYYY-MM-DD format/i);

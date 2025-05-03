@@ -246,7 +246,6 @@ export class ApiClient implements IApiClient {
       console.warn(`[ApiClient] Unhandled successful response type for ${url}`);
       const standardized = ApiProxyService.standardizeResponse(processedResponse as any);
       return standardized.data as unknown as T;
-
     } catch (error: any) {
       console.error('[ApiClient] Fetch error:', error);
 
@@ -356,12 +355,12 @@ export class ApiClient implements IApiClient {
     return url.toString();
   }
 
-  // --- IApiClient Implementation --- 
+  // --- IApiClient Implementation ---
 
   clearAuthToken(): void {
     this.setAuthToken(null);
     // Optionally remove from localStorage if stored there
-    localStorage.removeItem('authToken'); 
+    localStorage.removeItem('authToken');
   }
 
   isAuthenticated(): boolean {
@@ -372,11 +371,12 @@ export class ApiClient implements IApiClient {
   async login(email: string, password: string): Promise<any> {
     // Assuming a /auth/login endpoint
     const response = await this.post<any>('/auth/login', { email, password });
-    if (response && response.token) { // Adjust based on actual response structure
+    if (response && response.token) {
+      // Adjust based on actual response structure
       this.setAuthToken(response.token);
       localStorage.setItem('authToken', response.token); // Store token
     }
-    return response; 
+    return response;
   }
 
   getPatients(): Promise<any[]> {

@@ -9,7 +9,7 @@ import React, { useMemo, useCallback } from 'react';
 // @ts-ignore: TS2305 - Module '"@react-three/drei"' has no exported member 'Line'. (Likely type/config issue)
 import { Line } from '@react-three/drei';
 // Removed unused THREE import
-import ConnectionLine from "@/presentation/atoms/data-visualization/ConnectionLine";
+import ConnectionLine from '@/presentation/atoms/data-visualization/ConnectionLine';
 import type { BrainRegion, NeuralConnection } from '@domain/types/brain/models';
 // import type { ThemeSettings } from '@domain/types/brain/visualization'; // Removed
 import type { VisualizationSettings } from '@domain/types/brain/visualization'; // Added

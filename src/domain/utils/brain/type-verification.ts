@@ -243,7 +243,7 @@ export class BrainTypeVerifier {
         ),
       };
     }
-    
+
     // Optional properties from BrainRegion type (verify using helpers)
     const volumeMlResult = verifyOptionalNumber(
       object.volumeMl,
@@ -545,7 +545,8 @@ export class BrainTypeVerifier {
       dataQualityScore: dataQualityScoreResult.value,
     } as BrainScan;
 
-    if (scannerModelResult.value !== undefined) verifiedScan.scannerModel = scannerModelResult.value;
+    if (scannerModelResult.value !== undefined)
+      verifiedScan.scannerModel = scannerModelResult.value;
     if (contrastAgentResult.value !== undefined)
       verifiedScan.contrastAgent = contrastAgentResult.value;
     if (notesResult.value !== undefined) verifiedScan.notes = notesResult.value;
@@ -608,10 +609,7 @@ export class BrainTypeVerifier {
       return patientIdResult as Result<BrainModel, TypeVerificationError>;
 
     // Verify scan object (required)
-    const scanResult = this.verifyBrainScan(
-      object.scan,
-      field ? `${field}.scan` : 'scan'
-    );
+    const scanResult = this.verifyBrainScan(object.scan, field ? `${field}.scan` : 'scan');
     if (!scanResult.success) return scanResult as Result<BrainModel, TypeVerificationError>;
 
     const timestampResult = typeVerifier.verifyString(

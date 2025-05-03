@@ -26,10 +26,9 @@ export const getPatients = async (
 
   try {
     // NOTE: Backend currently lacks list endpoint; this call will 404 until fixed.
-    const response = await apiClient.get<PaginatedPatientsResponse>(
-      '/api/v1/patients',
-      { params: queryParams }
-    );
+    const response = await apiClient.get<PaginatedPatientsResponse>('/api/v1/patients', {
+      params: queryParams,
+    });
 
     return response; // apiClient should ideally return the parsed data directly
   } catch (error) {
@@ -46,16 +45,16 @@ export const getPatients = async (
  * @param {Partial<Omit<Patient, 'id' | 'created_at' | 'updated_at'>>} patientData - The partial data to update.
  * @returns {Promise<Patient>} A promise resolving to the updated patient data.
  */
-export const updatePatient = async (patientId: string, patientData: Partial<Omit<Patient, 'id' | 'created_at' | 'updated_at'>>): Promise<Patient> => {
+export const updatePatient = async (
+  patientId: string,
+  patientData: Partial<Omit<Patient, 'id' | 'created_at' | 'updated_at'>>
+): Promise<Patient> => {
   if (!patientId) {
     throw new Error('Patient ID is required for update');
   }
   try {
     // Adjust endpoint and HTTP method (PUT or PATCH) as needed
-    const response = await apiClient.put<Patient>(
-      `/api/v1/patients/${patientId}`,
-      patientData
-    );
+    const response = await apiClient.put<Patient>(`/api/v1/patients/${patientId}`, patientData);
     return response;
   } catch (error) {
     console.error(`Failed to update patient with ID ${patientId}:`, error);
@@ -68,7 +67,9 @@ export const updatePatient = async (patientId: string, patientData: Partial<Omit
  * @param patientData - The data for the new patient.
  * @returns A promise resolving to the newly created patient data.
  */
-export const createPatient = async (patientData: Omit<Patient, 'id' | 'created_at' | 'updated_at'>): Promise<Patient> => {
+export const createPatient = async (
+  patientData: Omit<Patient, 'id' | 'created_at' | 'updated_at'>
+): Promise<Patient> => {
   try {
     // Adjust endpoint as needed
     const response = await apiClient.post<Patient>('/api/v1/patients', patientData);

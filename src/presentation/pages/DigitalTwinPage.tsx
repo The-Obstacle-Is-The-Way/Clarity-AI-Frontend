@@ -8,9 +8,9 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTheme } from '@application/context/ThemeContext';
 import { cn } from '@/lib/utils';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/presentation/atoms";
-import { Card, CardHeader, CardTitle, CardContent } from "@/presentation/atoms";
-import { ScrollArea, ScrollBar } from "@/presentation/atoms";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/presentation/atoms';
+import { Card, CardHeader, CardTitle, CardContent } from '@/presentation/atoms';
+import { ScrollArea, ScrollBar } from '@/presentation/atoms';
 import { Info, Settings, Brain, Zap, Heart } from 'lucide-react';
 
 // Neural visualization coordinator provider (Module missing)

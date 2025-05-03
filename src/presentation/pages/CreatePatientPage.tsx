@@ -4,10 +4,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import PatientForm from '@/presentation/organisms/PatientForm';
 import { useCreatePatient } from '@/application/hooks/useCreatePatient';
 import type { CreatePatientInput } from '@domain/patients/patientSchemas';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/presentation/atoms";
-import { Button } from "@/presentation/atoms";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/presentation/atoms';
+import { Button } from '@/presentation/atoms';
 import { ArrowLeft, Terminal } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from "@/presentation/atoms";
+import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
 
 /**
  * Renders the page for creating a new patient.
@@ -31,31 +31,29 @@ const CreatePatientPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-8 max-w-4xl">
-        <Button variant="outline" size="sm" asChild className="mb-4">
-             <Link to="/patients">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Patients
-            </Link>
-        </Button>
+      <Button variant="outline" size="sm" asChild className="mb-4">
+        <Link to="/patients">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Patients
+        </Link>
+      </Button>
 
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Create New Patient</CardTitle>
-          <CardDescription>
-            Enter the details for the new patient.
-          </CardDescription>
+          <CardDescription>Enter the details for the new patient.</CardDescription>
         </CardHeader>
         <CardContent>
           {/* Display general mutation error above the form */}
           {isError && (
-             <Alert variant="destructive" className="mb-4">
-                <Terminal className="h-4 w-4" />
-                <AlertTitle>Creation Failed</AlertTitle>
-                <AlertDescription>
-                  {error instanceof Error ? error.message : "An unexpected error occurred."}
-                  {' '}Please check the form fields or try again later.
-                </AlertDescription>
-              </Alert>
+            <Alert variant="destructive" className="mb-4">
+              <Terminal className="h-4 w-4" />
+              <AlertTitle>Creation Failed</AlertTitle>
+              <AlertDescription>
+                {error instanceof Error ? error.message : 'An unexpected error occurred.'} Please
+                check the form fields or try again later.
+              </AlertDescription>
+            </Alert>
           )}
 
           <PatientForm onSubmit={handleFormSubmit} isLoading={isLoading} />

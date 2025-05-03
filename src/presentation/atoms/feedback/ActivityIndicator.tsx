@@ -211,11 +211,7 @@ export const ActivityIndicator: React.FC<ActivityIndicatorProps> = ({
       scale={derivedScale.clone().multiplyScalar(1.1)} // Slightly larger than the region
     >
       <sphereBufferGeometry args={[1, 32, 32]} />
-      <shaderMaterial
-        ref={materialRef}
-        args={[shaderParameters]}
-        attach="material"
-      />
+      <shaderMaterial ref={materialRef} args={[shaderParameters]} attach="material" />
     </animated.mesh>
   );
 };

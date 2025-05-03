@@ -27,7 +27,7 @@ vi.mock('@presentation/templates/BrainModelContainer', () => ({
       {
         'data-testid': 'mock-brain-model-container',
         // Pass patientId as a data attribute if needed for testing, otherwise omit
-        'data-patient-id': patientId, 
+        'data-patient-id': patientId,
         ...restProps, // Spread only the remaining props
       },
       'Mocked Container'

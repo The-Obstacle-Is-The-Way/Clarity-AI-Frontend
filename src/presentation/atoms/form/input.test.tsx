@@ -55,4 +55,4 @@ describe('Input Component', () => {
     const input = screen.getByTestId('test-input');
     expect(input).toHaveAttribute('placeholder', placeholder);
   });
-}); 
+});

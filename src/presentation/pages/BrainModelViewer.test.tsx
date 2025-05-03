@@ -63,14 +63,10 @@ vi.mock('@application/hooks/useBrainVisualization', () => ({
 
 // Mock presentation components used by BrainModelViewer
 vi.mock('@presentation/atoms/Button', () => ({
-  Button: (props: React.ComponentProps<'button'>) => (
-    <button {...props}>{props.children}</button>
-  ),
+  Button: (props: React.ComponentProps<'button'>) => <button {...props}>{props.children}</button>,
 }));
 vi.mock('@presentation/atoms/Slider', () => ({
-  Slider: (props: React.ComponentProps<'input'>) => (
-    <input type="range" {...props} />
-  ),
+  Slider: (props: React.ComponentProps<'input'>) => <input type="range" {...props} />,
 }));
 vi.mock('@presentation/atoms/Popover', () => ({
   Popover: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
@@ -81,10 +77,14 @@ vi.mock('@presentation/atoms/Checkbox', () => ({
   Checkbox: (props: React.ComponentProps<'input'>) => <input type="checkbox" {...props} />,
 }));
 vi.mock('@presentation/atoms/Label', () => ({
-  Label: ({ children, ...props }: React.ComponentProps<'label'>) => <label {...props}>{children}</label>,
+  Label: ({ children, ...props }: React.ComponentProps<'label'>) => (
+    <label {...props}>{children}</label>
+  ),
 }));
 vi.mock('@presentation/organisms/BrainVisualization', () => ({
-  default: (props: React.PropsWithChildren<Record<string, unknown>>) => <div data-testid="brain-visualization-mock" {...props} />,
+  default: (props: React.PropsWithChildren<Record<string, unknown>>) => (
+    <div data-testid="brain-visualization-mock" {...props} />
+  ),
 }));
 
 // Mock R3F and Drei components
@@ -97,12 +97,22 @@ vi.mock('@react-three/drei', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...(actual as object),
-    OrbitControls: (props: React.PropsWithChildren<Record<string, unknown>>) => <div data-testid="mock-orbit-controls" {...props} />,
-    Environment: (props: React.PropsWithChildren<Record<string, unknown>>) => <div data-testid="mock-environment" {...props} />,
-    AdaptiveDpr: (props: React.PropsWithChildren<Record<string, unknown>>) => <div data-testid="mock-adaptive-dpr" {...props} />,
-    PerformanceMonitor: ({ onDecline: _onDecline, children }: { onDecline?: () => void; children: React.ReactNode }) => (
-      <div data-testid="mock-perf-monitor">{children}</div>
-    ), // Mock PerformanceMonitor
+    OrbitControls: (props: React.PropsWithChildren<Record<string, unknown>>) => (
+      <div data-testid="mock-orbit-controls" {...props} />
+    ),
+    Environment: (props: React.PropsWithChildren<Record<string, unknown>>) => (
+      <div data-testid="mock-environment" {...props} />
+    ),
+    AdaptiveDpr: (props: React.PropsWithChildren<Record<string, unknown>>) => (
+      <div data-testid="mock-adaptive-dpr" {...props} />
+    ),
+    PerformanceMonitor: ({
+      onDecline: _onDecline,
+      children,
+    }: {
+      onDecline?: () => void;
+      children: React.ReactNode;
+    }) => <div data-testid="mock-perf-monitor">{children}</div>, // Mock PerformanceMonitor
   };
 });
 

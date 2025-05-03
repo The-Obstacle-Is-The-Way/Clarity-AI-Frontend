@@ -40,9 +40,24 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </a>
             {/* Placeholder for Nav */}
             <nav className="flex items-center gap-6 text-sm">
-              <Link to="/dashboard" className="transition-colors hover:text-foreground/80 text-foreground/60">Dashboard</Link>
-              <Link to="/patients" className="transition-colors hover:text-foreground/80 text-foreground/60">Patients</Link>
-              <Link to="/profile" className="transition-colors hover:text-foreground/80 text-foreground/60">Profile</Link>
+              <Link
+                to="/dashboard"
+                className="transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/patients"
+                className="transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                Patients
+              </Link>
+              <Link
+                to="/profile"
+                className="transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                Profile
+              </Link>
               {/* Add more NavLinks here later */}
             </nav>
           </div>
@@ -73,7 +88,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
       {/* Main Content Area */}
       <main className="flex-1 container max-w-screen-2xl py-6">
-        {children} { /* Render the nested route components */}
+        {children} {/* Render the nested route components */}
       </main>
 
       {/* Footer (Optional) */}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '@application/context/AuthContext';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/presentation/atoms"; // Use index
-import { Badge } from "@/presentation/atoms"; // Use index
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/presentation/atoms'; // Use index
+import { Badge } from '@/presentation/atoms'; // Use index
 
 /**
  * @description Renders the user profile page, displaying details of the logged-in user.

@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (user && user.id) {
         dispatch({ type: 'AUTH_CHECK_SUCCESS', payload: user });
       } else {
-         throw new Error('Invalid user data received');
+        throw new Error('Invalid user data received');
       }
     } catch (error) {
       dispatch({ type: 'AUTH_CHECK_FAILURE' });
@@ -137,15 +137,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Step 2: If login successful, fetch user data via service
       const user = await authService.getCurrentUser();
-       if (!user || !user.id) {
-         throw new Error('Failed to fetch user data after login.');
-       }
+      if (!user || !user.id) {
+        throw new Error('Failed to fetch user data after login.');
+      }
 
       // Step 3: Update state with user data
       dispatch({ type: 'LOGIN_SUCCESS', payload: user });
-
     } catch (error: any) {
-      console.error("Login failed:", error);
+      console.error('Login failed:', error);
       const errorMessage =
         error?.response?.data?.detail ||
         (error instanceof Error ? error.message : 'An unknown error occurred during login');
@@ -161,10 +160,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await authService.logout(); // Use service
       dispatch({ type: 'LOGOUT_SUCCESS' });
     } catch (error: any) {
-       console.error("Logout failed:", error);
-       const errorMessage =
-         error?.response?.data?.detail ||
-         (error instanceof Error ? error.message : 'An unknown error occurred during logout');
+      console.error('Logout failed:', error);
+      const errorMessage =
+        error?.response?.data?.detail ||
+        (error instanceof Error ? error.message : 'An unknown error occurred during logout');
       dispatch({ type: 'LOGOUT_FAILURE', payload: errorMessage });
     }
   }, []);

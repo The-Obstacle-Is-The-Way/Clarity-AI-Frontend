@@ -34,4 +34,4 @@ const LoadingFallback: React.FC<LoadingFallbackProps> = ({
   );
 };
 
-export default LoadingFallback; 
+export default LoadingFallback;

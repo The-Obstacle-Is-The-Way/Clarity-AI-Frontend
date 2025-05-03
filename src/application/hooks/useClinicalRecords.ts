@@ -1,9 +1,7 @@
 // src/application/hooks/useClinicalRecords.ts
 import { useQuery } from '@tanstack/react-query';
 import { getClinicalRecords as getClinicalRecordsApi } from '@infrastructure/api/clinicalRecordService';
-import {
-  CLINICAL_RECORDS_QUERY_KEY_PREFIX,
-} from '@application/constants/queryKeys'; // Corrected import path
+import { CLINICAL_RECORDS_QUERY_KEY_PREFIX } from '@application/constants/queryKeys'; // Corrected import path
 import type { PaginatedClinicalRecordsResponse } from '@domain/clinical-records/clinicalRecordTypes';
 
 interface UseClinicalRecordsParams {

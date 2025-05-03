@@ -18,12 +18,15 @@ vi.mock('react-router-dom', async () => {
 
 // Mock atoms used by the table if necessary (optional, depends on complexity)
 vi.mock('@presentation/atoms/badge', () => ({
-  Badge: ({ children }: { children: React.ReactNode }) => <span data-testid="badge">{children}</span>,
+  Badge: ({ children }: { children: React.ReactNode }) => (
+    <span data-testid="badge">{children}</span>
+  ),
 }));
 vi.mock('@presentation/atoms/skeleton', () => ({
-    Skeleton: ({className}: {className: string}) => <div data-testid="skeleton" className={className}></div>,
+  Skeleton: ({ className }: { className: string }) => (
+    <div data-testid="skeleton" className={className}></div>
+  ),
 }));
-
 
 // Helper to wrap component in necessary providers
 const renderWithRouter = (ui: React.ReactElement) => {
@@ -67,7 +70,9 @@ describe('PatientTable', () => {
     expect(screen.getByRole('cell', { name: 'Doe' })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: '1985-06-15' })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: 'active' })).toBeInTheDocument(); // Check status text
-    expect(screen.getByText(new Date(mockPatients[0].created_at).toLocaleDateString())).toBeInTheDocument();
+    expect(
+      screen.getByText(new Date(mockPatients[0].created_at).toLocaleDateString())
+    ).toBeInTheDocument();
 
     expect(screen.getByRole('cell', { name: 'Jane' })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: 'Smith' })).toBeInTheDocument();
@@ -84,8 +89,8 @@ describe('PatientTable', () => {
     const johnDoeRow = screen.getByRole('cell', { name: 'John' }).closest('tr');
     expect(johnDoeRow).not.toBeNull();
     if (johnDoeRow) {
-        fireEvent.click(johnDoeRow);
-        expect(mockedNavigate).toHaveBeenCalledWith('/patients/1');
+      fireEvent.click(johnDoeRow);
+      expect(mockedNavigate).toHaveBeenCalledWith('/patients/1');
     }
   });
 

@@ -14,7 +14,7 @@ describe('apiClient', () => {
     // Clear any potential spies or other mocks if necessary
     // vi.clearAllMocks(); // fetch mock is cleared in afterEach
     // Reset auth token if needed between tests, depends on ApiClient implementation
-    apiClient.setAuthToken(null); 
+    apiClient.setAuthToken(null);
   });
 
   afterEach(() => {
@@ -67,11 +67,14 @@ describe('apiClient', () => {
 
     // Verify fetch was called correctly
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith('http://localhost/api/auth/login', expect.objectContaining({
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
-    }));
+    expect(fetch).toHaveBeenCalledWith(
+      'http://localhost/api/auth/login',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
+      })
+    );
 
     // Assert with clinical verification based on mock response
     expect(result).toEqual(mockResponseData);

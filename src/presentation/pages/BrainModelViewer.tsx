@@ -1,7 +1,7 @@
 import React, { Suspense, useRef, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, AdaptiveDpr, PerformanceMonitor } from '@react-three/drei';
-import { Button } from "@/presentation/atoms"; // Corrected import
+import { Button } from '@/presentation/atoms'; // Corrected import
 import BrainModelContainer from '@presentation/organisms/BrainModelContainer';
 import VisualizationErrorBoundary from '@/presentation/common/VisualizationErrorBoundary';
 import { LoadingIndicator } from '@/presentation/atoms'; // Corrected import
@@ -316,12 +316,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
 
               {/* Removed Functions section as it does not exist on BrainRegion type */}
 
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleResetView}
-                className="mt-6 w-full"
-              >
+              <Button size="sm" variant="outline" onClick={handleResetView} className="mt-6 w-full">
                 Close Details
               </Button>
             </div>

@@ -9,7 +9,9 @@ import type { Patient } from '@domain/patients/patientTypes';
 // Note: The Badge component mock doesn't seem to be properly applied in the test environment
 vi.mock('@presentation/atoms/badge', () => ({
   Badge: ({ children, variant }: { children: React.ReactNode; variant?: string }) => (
-    <span data-testid="badge" data-variant={variant}>{children}</span>
+    <span data-testid="badge" data-variant={variant}>
+      {children}
+    </span>
   ),
 }));
 
@@ -45,8 +47,12 @@ describe('PatientDetailCard', () => {
     expect(screen.getByText('First Name').nextSibling).toHaveTextContent('Alice');
     expect(screen.getByText('Last Name').nextSibling).toHaveTextContent('Wonderland');
     expect(screen.getByText('Date of Birth').nextSibling).toHaveTextContent('1988-04-01');
-    expect(screen.getByText('Registered On').nextSibling).toHaveTextContent(new Date(mockPatient.created_at).toLocaleDateString());
-    expect(screen.getByText('Last Updated').nextSibling).toHaveTextContent(new Date(mockPatient.updated_at).toLocaleString());
+    expect(screen.getByText('Registered On').nextSibling).toHaveTextContent(
+      new Date(mockPatient.created_at).toLocaleDateString()
+    );
+    expect(screen.getByText('Last Updated').nextSibling).toHaveTextContent(
+      new Date(mockPatient.updated_at).toLocaleString()
+    );
 
     // SKIPPED: Badge component tests as mocking is not working properly
     // const statusBadge = screen.getByTestId('badge');

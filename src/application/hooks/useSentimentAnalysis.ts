@@ -2,13 +2,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 
-import {
-  runSentimentAnalysis as runSentimentAnalysisApi,
-} from '@infrastructure/api/analyticsService';
-import type {
-  SentimentInput,
-  SentimentResult,
-} from '@domain/analytics/sentimentTypes';
+import { runSentimentAnalysis as runSentimentAnalysisApi } from '@infrastructure/api/analyticsService';
+import type { SentimentInput, SentimentResult } from '@domain/analytics/sentimentTypes';
 
 /**
  * Hook for running Sentiment Analysis.
@@ -25,8 +20,7 @@ export const useSentimentAnalysis = () => {
     },
     onError: (error) => {
       console.error('Sentiment analysis mutation failed:', error);
-      const message =
-        error instanceof Error ? error.message : 'An unknown error occurred.';
+      const message = error instanceof Error ? error.message : 'An unknown error occurred.';
       toast.error(`Analysis failed: ${message}`);
     },
   });

@@ -61,4 +61,4 @@ export const authService = {
   // backend. No explicit frontend call needed in this service for basic flow.
 };
 
-export default authService; 
+export default authService;

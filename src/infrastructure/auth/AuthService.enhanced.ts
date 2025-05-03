@@ -121,7 +121,10 @@ export class EnhancedAuthService {
 
     console.log('[refreshTokenSilently] Starting new token refresh...');
     // Create and store the promise reference first before execution
-    console.log('[refreshTokenSilently DEBUG] Calling this.client.refreshToken with:', tokens.refreshToken);
+    console.log(
+      '[refreshTokenSilently DEBUG] Calling this.client.refreshToken with:',
+      tokens.refreshToken
+    );
     const refreshTokenCall = this.client?.refreshToken(tokens.refreshToken);
 
     // Check if the call returned a promise-like object before chaining
@@ -231,7 +234,10 @@ export class EnhancedAuthService {
       console.log('[initializeAuth DEBUG] Token strictly expired. Attempting refresh...');
       try {
         const newTokens = await this.refreshTokenSilently();
-        console.log('[initializeAuth DEBUG] Refresh attempt result:', newTokens ? 'Success' : 'Failed');
+        console.log(
+          '[initializeAuth DEBUG] Refresh attempt result:',
+          newTokens ? 'Success' : 'Failed'
+        );
         if (!newTokens) {
           return {
             user: null,
@@ -289,11 +295,19 @@ export class EnhancedAuthService {
         // Try token refresh once
         try {
           const newTokens = await this.refreshTokenSilently();
-          console.log('[initializeAuth DEBUG] Refresh attempt after 401 result:', newTokens ? 'Success' : 'Failed');
+          console.log(
+            '[initializeAuth DEBUG] Refresh attempt after 401 result:',
+            newTokens ? 'Success' : 'Failed'
+          );
           if (newTokens) {
-            console.log('[initializeAuth DEBUG] Refresh after 401 successful. Getting user again...');
+            console.log(
+              '[initializeAuth DEBUG] Refresh after 401 successful. Getting user again...'
+            );
             const user = await this.client?.getCurrentUser();
-            console.log('[initializeAuth DEBUG] Got user after 401-refresh:', user ? user.id : 'null');
+            console.log(
+              '[initializeAuth DEBUG] Got user after 401-refresh:',
+              user ? user.id : 'null'
+            );
             return {
               user,
               tokens: newTokens,

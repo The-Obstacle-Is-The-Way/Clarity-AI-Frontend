@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
-import { Button } from "@/presentation/atoms";
+import { Button } from '@/presentation/atoms';
 
 import { useTreatmentPrediction } from '@hooks/useTreatmentPrediction';
 import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
-import {
-  Card,
-  CardContent,
-} from '@presentation/atoms/Card';
+import { Card, CardContent } from '@presentation/atoms/Card';
 
 interface TreatmentResponsePredictorProps {
   patientId: string;
@@ -326,8 +323,8 @@ const TreatmentResponsePredictor: React.FC<TreatmentResponsePredictorProps> = ({
           {!predictionResult && !isPredicting && !predictionError && (
             <div className="text-center text-neutral-500 dark:text-neutral-400">
               <p className="mb-2">
-                Select treatment type and provide clinical data to predict patient response. 
-                The model leverages clinical history, assessments, and potentially biomarker data for
+                Select treatment type and provide clinical data to predict patient response. The
+                model leverages clinical history, assessments, and potentially biomarker data for
                 patient-specific factors.
               </p>
               <Button variant="default" onClick={handlePredict}>

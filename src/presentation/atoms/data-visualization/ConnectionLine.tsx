@@ -169,15 +169,7 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
       thickness: lineThickness,
       opacity: lineOpacity,
     };
-  }, [
-    color,
-    thickness,
-    opacity,
-    strength,
-    isActive,
-    isHighlighted,
-    visualizationSettings,
-  ]);
+  }, [color, thickness, opacity, strength, isActive, isHighlighted, visualizationSettings]);
 
   // Update material when visual parameters change
   useEffect(() => {

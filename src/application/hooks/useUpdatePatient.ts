@@ -3,7 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updatePatient } from '@infrastructure/api/patientService';
 import type { Patient } from '@domain/patients/patientTypes';
 import type { UpdatePatientInput } from '@domain/patients/patientSchemas';
-import { PATIENTS_QUERY_KEY, PATIENT_DETAIL_QUERY_KEY_PREFIX } from '@application/constants/queryKeys';
+import {
+  PATIENTS_QUERY_KEY,
+  PATIENT_DETAIL_QUERY_KEY_PREFIX,
+} from '@application/constants/queryKeys';
 import { toast } from 'react-toastify';
 
 interface UpdatePatientVariables {
@@ -31,7 +34,9 @@ export const useUpdatePatient = () => {
       // Optionally, update the cache directly for a faster UI update
       queryClient.setQueryData([PATIENT_DETAIL_QUERY_KEY_PREFIX, patientId], updatedPatientData);
 
-      toast.success(`Patient "${updatedPatientData.first_name} ${updatedPatientData.last_name}" updated successfully!`);
+      toast.success(
+        `Patient "${updatedPatientData.first_name} ${updatedPatientData.last_name}" updated successfully!`
+      );
     },
     onError: (error, variables) => {
       console.error(`Error updating patient ${variables.patientId}:`, error);

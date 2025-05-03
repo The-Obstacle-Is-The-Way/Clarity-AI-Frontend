@@ -16,12 +16,23 @@ import { RiskLevel, type RiskAssessment } from '@domain/types/clinical/risk'; //
 
 // Mock dependencies
 vi.mock('@presentation/atoms/button', () => ({
-  Button: ({ isLoading, ...restProps }: any) => <button {...restProps} />
+  Button: ({ isLoading, ...restProps }: any) => <button {...restProps} />,
 }));
 vi.mock('@api/XGBoostService', () => ({
   xgboostService: {
-    predictRisk: vi.fn(() => Promise.resolve({ ok: true, val: { risk_level: 'low', risk_score: 0.1, confidence: 0.9, factors: [], recommendations: [] } }))
-  }
+    predictRisk: vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        val: {
+          risk_level: 'low',
+          risk_score: 0.1,
+          confidence: 0.9,
+          factors: [],
+          recommendations: [],
+        },
+      })
+    ),
+  },
 }));
 
 // Mock data with clinical precision

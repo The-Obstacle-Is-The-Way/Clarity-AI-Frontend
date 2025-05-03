@@ -5,7 +5,11 @@
 import { describe, it, expect, vi } from 'vitest';
 
 // Removed unused React import
-import { renderWithProviders as render, screen, waitFor } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import {
+  renderWithProviders as render,
+  screen,
+  waitFor,
+} from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
 // Removed unused userEvent import
 import BrainVisualizationPage from '@presentation/pages/BrainVisualizationPage'; // Corrected import path
 import { renderWithProviders } from '../../test/test-utils.unified';

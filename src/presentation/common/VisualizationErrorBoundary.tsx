@@ -33,7 +33,7 @@ class VisualizationErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoun
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     console.error('Visualization error:', error, errorInfo);
-    
+
     // Call the optional onError callback
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
@@ -83,4 +83,4 @@ class VisualizationErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoun
   }
 }
 
-export default VisualizationErrorBoundary; 
+export default VisualizationErrorBoundary;

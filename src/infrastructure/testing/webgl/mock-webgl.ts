@@ -103,7 +103,7 @@ export const WebGLConstants = {
   COLOR_BUFFER_BIT: 16384,
   DEPTH_BUFFER_BIT: 256,
   TRIANGLES: 4,
-  VERSION: 0x1F02,
+  VERSION: 0x1f02,
 };
 
 // Mock WebGL context implementation
@@ -154,7 +154,7 @@ export class MockWebGLRenderingContext {
       premultipliedAlpha: true,
       preserveDrawingBuffer: false,
       stencil: true,
-      desynchronized: false
+      desynchronized: false,
     };
   }
 
@@ -175,22 +175,28 @@ export class MockWebGLRenderingContext {
   // Core WebGL methods with consistent return values
   getParameter(paramName: number): unknown {
     // Handle specific parameters needed by Three.js or tests
-    if (paramName === 37445) { // MAX_TEXTURE_SIZE
-        return 16384;
+    if (paramName === 37445) {
+      // MAX_TEXTURE_SIZE
+      return 16384;
     }
-    if (paramName === 34930) { // MAX_CUBE_MAP_TEXTURE_SIZE
-        return 16384;
+    if (paramName === 34930) {
+      // MAX_CUBE_MAP_TEXTURE_SIZE
+      return 16384;
     }
-    if (paramName === 3379) { // MAX_RENDERBUFFER_SIZE
-        return 16384;
+    if (paramName === 3379) {
+      // MAX_RENDERBUFFER_SIZE
+      return 16384;
     }
-    if (paramName === 34076) { // TEXTURE_BINDING_2D
-        return null; // Or return a mock texture if needed
+    if (paramName === 34076) {
+      // TEXTURE_BINDING_2D
+      return null; // Or return a mock texture if needed
     }
-    if (paramName === 32873) { // TEXTURE_BINDING_CUBE_MAP
-        return null;
+    if (paramName === 32873) {
+      // TEXTURE_BINDING_CUBE_MAP
+      return null;
     }
-    if (paramName === this.VERSION) { // Handle VERSION request
+    if (paramName === this.VERSION) {
+      // Handle VERSION request
       return 'WebGL 2.0'; // Return a valid version string
     }
     // Default return for unhandled parameters
@@ -318,16 +324,12 @@ const originalGetContext = HTMLCanvasElement.prototype.getContext;
 // eslint-disable-next-line
 export function setupWebGLMocks(): void {
   // Define the mock implementation function
-  const mockGetContextImplementation = function(
+  const mockGetContextImplementation = function (
     this: HTMLCanvasElement,
     contextId: string,
     options?: any // Keep options generic for simplicity
   ): RenderingContext | null {
-    if (
-      contextId === 'webgl' ||
-      contextId === 'webgl2' ||
-      contextId === 'experimental-webgl'
-    ) {
+    if (contextId === 'webgl' || contextId === 'webgl2' || contextId === 'experimental-webgl') {
       // Return our mock WebGL context
       return new MockWebGLRenderingContext(this) as unknown as WebGLRenderingContext;
     }

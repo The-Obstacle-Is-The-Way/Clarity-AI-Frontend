@@ -24,14 +24,14 @@ export const useDetailConfig = (): DetailConfig => {
   return {
     level: 'medium',
     pointSize: 0.05,
-    maxParticles: 50000
+    maxParticles: 50000,
   };
 };
 
-const AdaptiveLOD: React.FC<AdaptiveLODProps> = ({ 
-  children, 
-  lowThreshold = 30, 
-  highThreshold = 55 
+const AdaptiveLOD: React.FC<AdaptiveLODProps> = ({
+  children,
+  lowThreshold = 30,
+  highThreshold = 55,
 }) => {
   const { gl } = useThree();
   const [fps, setFps] = useState<number>(60);
@@ -50,4 +50,4 @@ const AdaptiveLOD: React.FC<AdaptiveLODProps> = ({
   return <>{children}</>;
 };
 
-export default AdaptiveLOD; 
+export default AdaptiveLOD;

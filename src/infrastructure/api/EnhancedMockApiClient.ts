@@ -9,16 +9,8 @@ import { IApiClient } from './IApiClient';
 import type { ApiPatient } from './ApiClient.runtime';
 import type { User } from '@application/context/AuthContext'; // Import User type
 import { ApiError, ApiResponse } from './types'; // Assuming types for existing mocks
-import type {
-  BrainModel,
-  ScannerMachine,
-  Vector3D,
-} from '@domain/types';
-import type {
-  BrainRegion,
-  BrainScan,
-  NeuralConnection,
-} from '@domain/types/brain/models';
+import type { BrainModel, ScannerMachine, Vector3D } from '@domain/types';
+import type { BrainRegion, BrainScan, NeuralConnection } from '@domain/types/brain/models';
 
 // Define mock user data matching the User interface
 const mockUser: User = {
@@ -52,10 +44,7 @@ export class EnhancedMockApiClient implements IApiClient {
   /**
    * Log audit activity
    */
-  private logActivity(
-    action: string,
-    details: any
-  ): void {
+  private logActivity(action: string, details: any): void {
     if (typeof window !== 'undefined' && this.auditEnabled) {
       // Directly log to console for mock audit, avoid network call
       console.debug('[Mock Audit]', action, {
@@ -65,7 +54,8 @@ export class EnhancedMockApiClient implements IApiClient {
       });
       try {
         // Use a relative path for the audit log endpoint if base URL is /api
-        axios.post('/api/audit-logs', {
+        axios
+          .post('/api/audit-logs', {
             action,
             timestamp: new Date().toISOString(),
             details,
@@ -95,7 +85,7 @@ export class EnhancedMockApiClient implements IApiClient {
     await this.delay();
     console.log(`[MockClient] login called for ${email} (Simulating cookie setting)`);
     this.logActivity('POST_Request', { endpoint: '/api/v1/auth/login', data: { email } });
-    
+
     // Return structure to match test expectations
     return Promise.resolve({
       token: 'mock-access-token-for-test',
@@ -110,8 +100,8 @@ export class EnhancedMockApiClient implements IApiClient {
       user: {
         id: mockUser.id,
         email: mockUser.email,
-        roles: mockUser.roles
-      }
+        roles: mockUser.roles,
+      },
     });
   }
 
@@ -225,7 +215,11 @@ export class EnhancedMockApiClient implements IApiClient {
       dateOfBirth: '1980-01-01',
       gender: 'male',
       demographicData: { age: 43, ethnicity: 'caucasian', weight: '180lbs', height: '5\'10"' },
-      medicalHistory: { conditions: ['depression', 'anxiety'], medications: ['fluoxetine', 'alprazolam'], allergies: [] },
+      medicalHistory: {
+        conditions: ['depression', 'anxiety'],
+        medications: ['fluoxetine', 'alprazolam'],
+        allergies: [],
+      },
     };
   }
 
@@ -237,8 +231,22 @@ export class EnhancedMockApiClient implements IApiClient {
     this.logActivity('getPatients', {});
     // Keep existing mock patients data
     return [
-      { id: 'patient-1', firstName: 'John', lastName: 'Doe', dateOfBirth: '1980-01-01', gender: 'male', demographicData: { age: 43, ethnicity: 'caucasian' } },
-      { id: 'patient-2', firstName: 'Jane', lastName: 'Smith', dateOfBirth: '1990-05-15', gender: 'female', demographicData: { age: 33, ethnicity: 'asian' } },
+      {
+        id: 'patient-1',
+        firstName: 'John',
+        lastName: 'Doe',
+        dateOfBirth: '1980-01-01',
+        gender: 'male',
+        demographicData: { age: 43, ethnicity: 'caucasian' },
+      },
+      {
+        id: 'patient-2',
+        firstName: 'Jane',
+        lastName: 'Smith',
+        dateOfBirth: '1990-05-15',
+        gender: 'female',
+        demographicData: { age: 33, ethnicity: 'asian' },
+      },
     ];
   }
 
@@ -247,7 +255,7 @@ export class EnhancedMockApiClient implements IApiClient {
     this.logActivity('getPatientById', { patientId });
     // Simple mock: return a generic patient or find from the list above
     const patients = await this.getPatients();
-    const patient = patients.find(p => p.id === patientId);
+    const patient = patients.find((p) => p.id === patientId);
     if (patient) return patient;
     // Return a default mock if ID not found
     return {
@@ -271,7 +279,7 @@ export class EnhancedMockApiClient implements IApiClient {
       treatment: treatmentData?.treatmentName || 'mock_treatment',
       predictedEfficacy: Math.random() * 0.6 + 0.2, // Random efficacy between 0.2 and 0.8
       confidence: Math.random() * 0.5 + 0.5, // Random confidence between 0.5 and 1.0
-      details: 'Mock prediction based on simulated data.'
+      details: 'Mock prediction based on simulated data.',
     });
   }
 

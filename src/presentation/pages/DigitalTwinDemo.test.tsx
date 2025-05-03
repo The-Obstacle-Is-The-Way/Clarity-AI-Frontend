@@ -54,7 +54,7 @@ vi.mock('@hooks/useBrainVisualization', () => ({
 // Mock child components if they cause issues (start without them)
 // Mock child components
 vi.mock('@presentation/atoms/Card', () => ({
-  default: ({ children }: any) => <div data-testid="mock-card">{children}</div>,  
+  default: ({ children }: any) => <div data-testid="mock-card">{children}</div>,
 }));
 vi.mock('@presentation/molecules/BrainVisualizationControls', () => ({
   default: () => <div data-testid="mock-controls"></div>,

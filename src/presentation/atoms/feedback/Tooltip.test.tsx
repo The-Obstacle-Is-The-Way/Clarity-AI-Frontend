@@ -11,23 +11,50 @@ vi.mock('@radix-ui/react-tooltip', () => ({
   Provider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="tooltip-provider">{children}</div>
   ),
-  Root: ({ children, open }: { children: React.ReactNode, open?: boolean }) => (
-    <div data-testid="tooltip-root" data-state={open ? 'open' : 'closed'}>{children}</div>
+  Root: ({ children, open }: { children: React.ReactNode; open?: boolean }) => (
+    <div data-testid="tooltip-root" data-state={open ? 'open' : 'closed'}>
+      {children}
+    </div>
   ),
-  Trigger: React.forwardRef<HTMLButtonElement, { children: React.ReactNode, asChild?: boolean }>(({ children, asChild, ...props }, ref) => {
-    if (asChild) {
-      return React.isValidElement(children) ? React.cloneElement(children, { ref, ...props }) : <>{children}</>;
+  Trigger: React.forwardRef<HTMLButtonElement, { children: React.ReactNode; asChild?: boolean }>(
+    ({ children, asChild, ...props }, ref) => {
+      if (asChild) {
+        return React.isValidElement(children) ? (
+          React.cloneElement(children, { ref, ...props })
+        ) : (
+          <>{children}</>
+        );
+      }
+      return (
+        <button ref={ref} data-testid="trigger" {...props}>
+          {children}
+        </button>
+      );
     }
-    return <button ref={ref} data-testid="trigger" {...props}>{children}</button>;
-  }),
+  ),
   Portal: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="tooltip-portal">{children}</div>
   ),
-  Content: React.forwardRef<HTMLDivElement, { children: React.ReactNode, sideOffset?: number, className?: string, side?: string }>(({ children, sideOffset, className, side, ...props }, ref) => (
-  <div data-testid="tooltip-content" ref={ref} className={className} data-side={side} {...props}>
-    {children} (Offset: {sideOffset})
-  </div>
-) as React.ForwardRefRenderFunction<HTMLDivElement, { children: React.ReactNode, sideOffset?: number, className?: string, side?: string }>),
+  Content: React.forwardRef<
+    HTMLDivElement,
+    { children: React.ReactNode; sideOffset?: number; className?: string; side?: string }
+  >(
+    ({ children, sideOffset, className, side, ...props }, ref) =>
+      (
+        <div
+          data-testid="tooltip-content"
+          ref={ref}
+          className={className}
+          data-side={side}
+          {...props}
+        >
+          {children} (Offset: {sideOffset})
+        </div>
+      ) as React.ForwardRefRenderFunction<
+        HTMLDivElement,
+        { children: React.ReactNode; sideOffset?: number; className?: string; side?: string }
+      >
+  ),
 }));
 
 describe('Tooltip Component', () => {

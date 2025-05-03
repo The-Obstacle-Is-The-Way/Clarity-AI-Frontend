@@ -40,7 +40,7 @@ function setupMatchMedia(prefersDark = false) {
     }),
     removeListener: vi.fn((listener) => {
       // Remove the listener from the array
-      mediaQueryList._listeners = (mediaQueryList._listeners || []).filter(l => l !== listener);
+      mediaQueryList._listeners = (mediaQueryList._listeners || []).filter((l) => l !== listener);
     }),
     addEventListener: vi.fn((event, listener) => {
       if (event === 'change') {
@@ -50,14 +50,14 @@ function setupMatchMedia(prefersDark = false) {
     }),
     removeEventListener: vi.fn((event, listener) => {
       if (event === 'change') {
-        mediaQueryList._listeners = (mediaQueryList._listeners || []).filter(l => l !== listener);
+        mediaQueryList._listeners = (mediaQueryList._listeners || []).filter((l) => l !== listener);
       }
     }),
     // Method to simulate a media query change
     _triggerChange: (prefersDarkValue) => {
       mediaQueryList.matches = prefersDarkValue;
       // Notify all registered listeners
-      (mediaQueryList._listeners || []).forEach(listener => {
+      (mediaQueryList._listeners || []).forEach((listener) => {
         if (typeof listener === 'function') {
           listener({ matches: prefersDarkValue });
         } else if (listener && typeof listener.handleEvent === 'function') {
@@ -77,11 +77,11 @@ function setupMatchMedia(prefersDark = false) {
 
 describe('ThemeProvider', () => {
   let mediaQueryList;
-  
+
   beforeEach(() => {
     // Set up enhanced matchMedia mock before each test
     mediaQueryList = setupMatchMedia(false); // Default to light mode
-    
+
     // Also ensure localStorage is properly mocked
     globalThis.mockLocalStorage.getItem.mockReset();
     globalThis.mockLocalStorage.setItem.mockReset();
@@ -108,7 +108,7 @@ describe('ThemeProvider', () => {
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('system');
     });
-    
+
     await waitFor(() => {
       expect(document.documentElement.classList.contains('light')).toBe(true);
       expect(document.documentElement.classList.contains('dark')).toBe(false);
@@ -130,7 +130,7 @@ describe('ThemeProvider', () => {
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('system');
     });
-    
+
     await waitFor(() => {
       expect(document.documentElement.classList.contains('dark')).toBe(true);
       expect(document.documentElement.classList.contains('light')).toBe(false);
@@ -154,7 +154,7 @@ describe('ThemeProvider', () => {
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('dark');
     });
-    
+
     await waitFor(() => {
       expect(document.documentElement.classList.contains('dark')).toBe(true);
       expect(document.documentElement.classList.contains('light')).toBe(false);
@@ -167,7 +167,7 @@ describe('ThemeProvider', () => {
     globalThis.mockLocalStorage.getItem.mockReturnValue(null);
 
     const user = userEvent.setup();
-    
+
     render(
       <ThemeProvider>
         <TestComponent />
@@ -182,44 +182,44 @@ describe('ThemeProvider', () => {
 
     // Change to dark theme
     await user.click(screen.getByText('Dark'));
-    
+
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('dark');
     });
-    
+
     await waitFor(() => {
       expect(document.documentElement.classList.contains('dark')).toBe(true);
       expect(document.documentElement.classList.contains('light')).toBe(false);
     });
-    
+
     expect(globalThis.mockLocalStorage.setItem).toHaveBeenCalledWith('ui-theme', 'dark');
 
     // Change to light theme
     await user.click(screen.getByText('Light'));
-    
+
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('light');
     });
-    
+
     await waitFor(() => {
       expect(document.documentElement.classList.contains('light')).toBe(true);
       expect(document.documentElement.classList.contains('dark')).toBe(false);
     });
-    
+
     expect(globalThis.mockLocalStorage.setItem).toHaveBeenCalledWith('ui-theme', 'light');
 
     // Change back to system theme
     await user.click(screen.getByText('System'));
-    
+
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('system');
     });
-    
+
     await waitFor(() => {
       expect(document.documentElement.classList.contains('light')).toBe(true);
       expect(document.documentElement.classList.contains('dark')).toBe(false);
     });
-    
+
     expect(globalThis.mockLocalStorage.setItem).toHaveBeenCalledWith('ui-theme', 'system');
   });
 
@@ -238,7 +238,7 @@ describe('ThemeProvider', () => {
     await waitFor(() => {
       expect(screen.getByTestId('theme').textContent).toBe('system');
     });
-    
+
     await waitFor(() => {
       expect(document.documentElement.classList.contains('dark')).toBe(true);
       expect(document.documentElement.classList.contains('light')).toBe(false);

@@ -1,13 +1,7 @@
 // src/infrastructure/api/analyticsService.ts
 import { apiClient } from './ApiGateway';
-import type {
-  XGBoostInput,
-  XGBoostPrediction,
-} from '@domain/analytics/xgboostTypes';
-import type {
-  SentimentInput,
-  SentimentResult,
-} from '@domain/analytics/sentimentTypes';
+import type { XGBoostInput, XGBoostPrediction } from '@domain/analytics/xgboostTypes';
+import type { SentimentInput, SentimentResult } from '@domain/analytics/sentimentTypes';
 
 /**
  * Runs an XGBoost prediction via the API.
@@ -16,12 +10,12 @@ import type {
  * @param {XGBoostInput} inputData - The input data for the prediction.
  * @returns {Promise<XGBoostPrediction>} A promise resolving to the prediction result.
  */
-export const runXGBoostPrediction = async (
-  inputData: XGBoostInput,
-): Promise<XGBoostPrediction> => {
-  // --- VERIFY THIS ENDPOINT --- 
+export const runXGBoostPrediction = async (inputData: XGBoostInput): Promise<XGBoostPrediction> => {
+  // --- VERIFY THIS ENDPOINT ---
   const endpoint = '/analytics/xgboost/predict';
-  console.warn(`Running XGBoost prediction using assumed endpoint: ${endpoint}. Verify endpoint and schemas.`);
+  console.warn(
+    `Running XGBoost prediction using assumed endpoint: ${endpoint}. Verify endpoint and schemas.`
+  );
 
   try {
     // Use POST method, sending inputData as the request body
@@ -41,12 +35,12 @@ export const runXGBoostPrediction = async (
  * @param {SentimentInput} inputData - The input data (e.g., text) for analysis.
  * @returns {Promise<SentimentResult>} A promise resolving to the sentiment analysis result.
  */
-export const runSentimentAnalysis = async (
-  inputData: SentimentInput,
-): Promise<SentimentResult> => {
-  // --- VERIFY THIS ENDPOINT --- 
+export const runSentimentAnalysis = async (inputData: SentimentInput): Promise<SentimentResult> => {
+  // --- VERIFY THIS ENDPOINT ---
   const endpoint = '/analytics/sentiment';
-  console.warn(`Running Sentiment Analysis using assumed endpoint: ${endpoint}. Verify endpoint and schemas.`);
+  console.warn(
+    `Running Sentiment Analysis using assumed endpoint: ${endpoint}. Verify endpoint and schemas.`
+  );
 
   try {
     const response = await apiClient.post<SentimentResult>(endpoint, inputData);

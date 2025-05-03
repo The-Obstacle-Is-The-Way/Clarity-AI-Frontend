@@ -101,7 +101,9 @@ const App: React.FC = () => {
                         <NeuralControlPanel
                           patientId="DEMO_PATIENT_001"
                           brainModelId="DEMO_SCAN_001"
-                          onSettingsChange={(settings) => console.log('Settings changed:', settings)}
+                          onSettingsChange={(settings) =>
+                            console.log('Settings changed:', settings)
+                          }
                         />
                       </div>
                     }

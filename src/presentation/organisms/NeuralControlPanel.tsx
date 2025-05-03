@@ -12,10 +12,10 @@ import { motion } from 'framer-motion'; // Removed unused AnimatePresence
 // import { useVisualizationCoordinator } from "@application/coordinators/NeuralVisualizationCoordinator"; // Module missing
 
 // UI components from atoms index
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
   TabsTrigger,
   Button,
   Select,
@@ -36,7 +36,7 @@ import {
   CardHeader,
   CardTitle,
   ScrollArea,
-  Progress
+  Progress,
 } from '@presentation/atoms';
 
 // Icons
@@ -65,7 +65,12 @@ import {
 type PlaceholderTimeScale = 'momentary' | 'hourly' | 'daily' | 'weekly' | 'monthly';
 // import { NeuralTransform } from "@domain/types/neural/transforms"; // Assuming this might be missing too, comment out for now
 // Import types needed for placeholder state
-import type { BrainModel, BrainRegion, NeuralConnection, BrainScan } from '@domain/types/brain/models';
+import type {
+  BrainModel,
+  BrainRegion,
+  NeuralConnection,
+  BrainScan,
+} from '@domain/types/brain/models';
 import type { ActivationLevel } from '@domain/types/brain/activity';
 import { RenderMode } from '@domain/types/brain/visualization'; // Import RenderMode
 
@@ -132,7 +137,7 @@ export const NeuralControlPanel: React.FC<NeuralControlPanelProps> = ({
         scanType: 'MRI',
         dataQualityScore: 0,
         resolution: { x: 0, y: 0, z: 0 },
-        metadata: {}
+        metadata: {},
       } as BrainScan,
       timestamp: '',
       version: '',

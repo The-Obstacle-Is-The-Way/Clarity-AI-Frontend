@@ -13,7 +13,9 @@ vi.mock('recharts', () => ({
   YAxis: () => <div data-testid="y-axis" />,
   CartesianGrid: () => <div data-testid="cartesian-grid" />,
   Tooltip: () => <div data-testid="tooltip" />,
-  ResponsiveContainer: ({ children }: any) => <div data-testid="responsive-container">{children}</div>,
+  ResponsiveContainer: ({ children }: any) => (
+    <div data-testid="responsive-container">{children}</div>
+  ),
   Cell: () => <div data-testid="cell" />,
 }));
 
@@ -32,7 +34,7 @@ describe('XGBoostResultsDisplay', () => {
     featureImportance: {
       'Feature 1': 0.35,
       'Feature 2': 0.25,
-      'Feature 3': 0.20,
+      'Feature 3': 0.2,
       'Feature 4': 0.15,
       'Feature 5': 0.05,
     },
@@ -40,13 +42,13 @@ describe('XGBoostResultsDisplay', () => {
       precision: 0.8,
       recall: 0.7,
       'f1-score': 0.75,
-      support: 100
-    }
+      support: 100,
+    },
   };
 
   it('renders prediction and confidence values', () => {
     render(<XGBoostResultsDisplay result={mockResult} />);
-    
+
     // Check for prediction and confidence values
     expect(screen.getByTestId('prediction-result')).toBeInTheDocument();
     expect(screen.getByTestId('prediction-value')).toHaveTextContent('75.0%');
@@ -55,7 +57,7 @@ describe('XGBoostResultsDisplay', () => {
 
   it('renders feature importance chart', () => {
     render(<XGBoostResultsDisplay result={mockResult} />);
-    
+
     // Check for feature importance visualization
     expect(screen.getByTestId('feature-importance-chart')).toBeInTheDocument();
     expect(screen.getByTestId('responsive-container')).toBeInTheDocument();

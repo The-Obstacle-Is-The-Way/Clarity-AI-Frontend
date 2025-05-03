@@ -232,4 +232,4 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   );
 };
 
-export default PerformanceMonitor; 
+export default PerformanceMonitor;

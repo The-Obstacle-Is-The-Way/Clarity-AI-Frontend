@@ -11,11 +11,18 @@ import { Terminal } from 'lucide-react';
  * Page for interacting with the XGBoost prediction model.
  */
 const XGBoostAnalyticsPage: React.FC = () => {
-  const { mutate: runPrediction, isPending, isError, error, data: predictionResult, reset } = useXGBoostPrediction();
+  const {
+    mutate: runPrediction,
+    isPending,
+    isError,
+    error,
+    data: predictionResult,
+    reset,
+  } = useXGBoostPrediction();
 
   const handlePredict = (inputData: XGBoostInput) => {
     // Clear previous results/errors before new prediction
-    reset(); 
+    reset();
     runPrediction(inputData);
   };
 
@@ -43,7 +50,7 @@ const XGBoostAnalyticsPage: React.FC = () => {
               </AlertDescription>
             </Alert>
           )}
-          {predictionResult && <XGBoostResultsDisplay result={predictionResult} />} 
+          {predictionResult && <XGBoostResultsDisplay result={predictionResult} />}
           {!isPending && !isError && !predictionResult && (
             <p className="text-gray-500">Submit input features to see prediction results.</p>
           )}

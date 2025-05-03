@@ -1,6 +1,6 @@
 /**
  * WebGL Test Environment Setup
- * 
+ *
  * This file provides WebGL mocking and testing utilities for components that use Three.js
  */
 
@@ -55,9 +55,9 @@ class MockWebGLRenderingContext {
 // Mock all required THREE elements for testing
 vi.mock('three', async () => {
   const originalModule = await vi.importActual('three');
-  
+
   return {
-    ...originalModule as any,
+    ...(originalModule as any),
     WebGLRenderer: vi.fn().mockImplementation(() => ({
       domElement: document.createElement('canvas'),
       render: vi.fn(),
@@ -90,7 +90,11 @@ vi.mock('three', async () => {
     })),
     Vector3: vi.fn().mockImplementation((x = 0, y = 0, z = 0) => ({ x, y, z, set: vi.fn() })),
     Color: vi.fn().mockImplementation(() => ({
-      r: 1, g: 1, b: 1, set: vi.fn(), copy: vi.fn(),
+      r: 1,
+      g: 1,
+      b: 1,
+      set: vi.fn(),
+      copy: vi.fn(),
     })),
     Box3: vi.fn().mockImplementation(() => ({
       min: { x: -1, y: -1, z: -1 },
@@ -152,7 +156,11 @@ vi.mock('three', async () => {
 beforeAll(() => {
   // Mock canvas methods
   HTMLCanvasElement.prototype.getContext = function (contextType: string) {
-    if (contextType === 'webgl' || contextType === 'webgl2' || contextType === 'experimental-webgl') {
+    if (
+      contextType === 'webgl' ||
+      contextType === 'webgl2' ||
+      contextType === 'experimental-webgl'
+    ) {
       return new MockWebGLRenderingContext(this);
     }
     return null;
@@ -170,7 +178,7 @@ beforeAll(() => {
 
 /**
  * Setup WebGL Mocks with memory tracking capabilities
- * 
+ *
  * @param options Configuration options for WebGL mocks
  * @returns The mock WebGL context
  */
@@ -205,7 +213,7 @@ export function setupWebGLMocks(options = { monitorMemory: false, debugMode: fal
 
 /**
  * Cleanup WebGL mocks and return memory tracking report
- * 
+ *
  * @returns Memory tracking report if monitoring was enabled
  */
 export function cleanupWebGLMocks() {
@@ -242,4 +250,4 @@ export const createMockCanvas = () => {
 
 export const resetMocks = () => {
   vi.clearAllMocks();
-}; 
+};

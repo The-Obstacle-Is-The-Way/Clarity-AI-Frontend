@@ -27,9 +27,7 @@ const RECORDS_PER_PAGE = 10;
  * Displays a list of clinical records for a given patient.
  * Handles fetching data, pagination, loading, and error states.
  */
-const ClinicalRecordList: React.FC<ClinicalRecordListProps> = ({
-  patientId,
-}) => {
+const ClinicalRecordList: React.FC<ClinicalRecordListProps> = ({ patientId }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -123,7 +121,8 @@ const ClinicalRecordList: React.FC<ClinicalRecordListProps> = ({
       {recordsData && recordsData.total_pages > 1 && (
         <div className="flex items-center justify-between mt-4">
           <span className="text-sm text-gray-700">
-            Page {recordsData.page} of {recordsData.total_pages} (Total: {recordsData.total_count} records)
+            Page {recordsData.page} of {recordsData.total_pages} (Total: {recordsData.total_count}{' '}
+            records)
           </span>
           <div className="space-x-2">
             <Button

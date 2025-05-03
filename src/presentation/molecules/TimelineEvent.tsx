@@ -9,14 +9,9 @@ import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 // UI components
-import { Badge } from "@/presentation/atoms";
-import { Button } from "@/presentation/atoms";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/presentation/atoms";
+import { Badge } from '@/presentation/atoms';
+import { Button } from '@/presentation/atoms';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/presentation/atoms';
 // Collapsible import removed as component doesn't exist at this path
 // Removed unused import: import Card from '@presentation/atoms/Card';
 

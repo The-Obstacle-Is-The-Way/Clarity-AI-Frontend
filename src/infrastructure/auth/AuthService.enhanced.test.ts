@@ -4,15 +4,7 @@
  */
 // Ensure global test setup is applied
 import '../../test/setup';
-import {
-  describe,
-  it,
-  expect,
-  vi,
-  beforeEach,
-  afterEach,
-  MockInstance,
-} from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, MockInstance } from 'vitest';
 import { act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Import waitFor
 // Use relative paths since aliases might not resolve in test runner context
@@ -30,7 +22,7 @@ function createInitialAuthState(): AuthState {
     tokens: null,
     isAuthenticated: false,
     isLoading: false,
-    error: null
+    error: null,
   };
 }
 
@@ -39,7 +31,7 @@ class ApiError extends Error {
   status: number;
   method: string;
   url: string;
-  
+
   constructor(message: string, status: number, method: string, url: string) {
     super(message);
     this.name = 'ApiError';
@@ -59,7 +51,7 @@ vi.mock('./index', async () => {
     refreshToken: vi.fn(),
     getCurrentUser: vi.fn(),
   }));
-  
+
   return {
     AuthTokens: {},
     AuthUser: {},
@@ -112,7 +104,7 @@ class TestableAuthService extends EnhancedAuthService {
   public resetTestFlags(): void {
     this.refreshTimeoutWasScheduled = false;
   }
-  
+
   // Add getCurrentState method for test access
   public getCurrentState(): AuthState {
     // Simplified implementation that doesn't rely on private properties
@@ -122,10 +114,10 @@ class TestableAuthService extends EnhancedAuthService {
       tokens,
       isAuthenticated: !!tokens,
       isLoading: false,
-      error: null
+      error: null,
     };
   }
-  
+
   // Expose getStoredTokens for testing
   public exposedGetStoredTokens(): AuthTokens | null {
     try {
@@ -268,9 +260,7 @@ describe.skip('EnhancedAuthService', () => {
       };
 
       // Define Mocks *before* creating the service
-      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(expiredTokens),
-      );
+      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(expiredTokens));
       const mockRefreshTokenClient = vi
         .spyOn(AuthApiClient.prototype, 'refreshToken')
         .mockResolvedValueOnce(expectedNewTokens);
@@ -290,18 +280,14 @@ describe.skip('EnhancedAuthService', () => {
       // --- Assert ---
       expect(window.localStorage.getItem).toHaveBeenCalledWith('auth_tokens');
       expect(mockRefreshTokenClient).toHaveBeenCalledTimes(1);
-      expect(mockRefreshTokenClient).toHaveBeenCalledWith(
-        expiredTokens.refreshToken,
-      );
+      expect(mockRefreshTokenClient).toHaveBeenCalledWith(expiredTokens.refreshToken);
       expect(mockGetCurrentUserClient).toHaveBeenCalledTimes(1); // Called after successful refresh
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         'auth_tokens',
-        JSON.stringify(expectedNewTokens),
+        JSON.stringify(expectedNewTokens)
       );
       expect(initialState.isAuthenticated).toBe(true);
-      expect(initialState.tokens?.accessToken).toBe(
-        expectedNewTokens.accessToken,
-      );
+      expect(initialState.tokens?.accessToken).toBe(expectedNewTokens.accessToken);
       expect(initialState.user).toEqual(mockUser);
     }, 10000);
 
@@ -311,16 +297,11 @@ describe.skip('EnhancedAuthService', () => {
       const refreshError = new Error('Refresh failed');
 
       // Define Mocks *before* creating the service
-      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(expiredTokens),
-      );
+      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(expiredTokens));
       const mockRefreshTokenClient = vi
         .spyOn(AuthApiClient.prototype, 'refreshToken')
         .mockRejectedValueOnce(refreshError);
-      const mockGetCurrentUserClient = vi.spyOn(
-        AuthApiClient.prototype,
-        'getCurrentUser',
-      ); // Should not be called
+      const mockGetCurrentUserClient = vi.spyOn(AuthApiClient.prototype, 'getCurrentUser'); // Should not be called
 
       // Create service instance *after* mocks are defined
       const authService = new EnhancedAuthService('https://api.test.com');
@@ -354,16 +335,11 @@ describe.skip('EnhancedAuthService', () => {
         accessToken: 'new-token-after-401-refresh',
         expiresAt: Date.now() + 3600000, // New expiry
       };
-      const error401 = new ApiError(
-        'Unauthorized',
-        401,
-        'GET',
-        '/users/me',
-      );
+      const error401 = new ApiError('Unauthorized', 401, 'GET', '/users/me');
 
       // Define Mocks *before* creating the service
       vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(validButApiRejectedTokens),
+        JSON.stringify(validButApiRejectedTokens)
       );
       const mockGetCurrentUserClient = vi
         .spyOn(AuthApiClient.prototype, 'getCurrentUser')
@@ -386,17 +362,13 @@ describe.skip('EnhancedAuthService', () => {
       expect(window.localStorage.getItem).toHaveBeenCalledWith('auth_tokens');
       expect(mockGetCurrentUserClient).toHaveBeenCalledTimes(2); // Called before and after refresh
       expect(mockRefreshTokenClient).toHaveBeenCalledTimes(1);
-      expect(mockRefreshTokenClient).toHaveBeenCalledWith(
-        validButApiRejectedTokens.refreshToken,
-      );
+      expect(mockRefreshTokenClient).toHaveBeenCalledWith(validButApiRejectedTokens.refreshToken);
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         'auth_tokens',
-        JSON.stringify(expectedNewTokens),
+        JSON.stringify(expectedNewTokens)
       );
       expect(initialState.isAuthenticated).toBe(true);
-      expect(initialState.tokens?.accessToken).toBe(
-        expectedNewTokens.accessToken,
-      );
+      expect(initialState.tokens?.accessToken).toBe(expectedNewTokens.accessToken);
       expect(initialState.user).toEqual(mockUser);
     }, 10000);
   });
@@ -411,8 +383,7 @@ describe.skip('EnhancedAuthService', () => {
         .spyOn(AuthApiClient.prototype, 'getCurrentUser')
         .mockResolvedValueOnce(mockUser);
       // Mock localStorage *before* service creation/initialization
-      vi.spyOn(window.localStorage, 'getItem')
-        .mockReturnValueOnce(JSON.stringify(validTokens)); // Mock finding tokens
+      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(validTokens)); // Mock finding tokens
 
       // Create service instance *after* mocks are defined
       const authService = new EnhancedAuthService('https://api.test.com');
@@ -450,7 +421,7 @@ describe.skip('EnhancedAuthService', () => {
 
       // Define Mocks *before* creating the service
       vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(nearExpiryTokens),
+        JSON.stringify(nearExpiryTokens)
       );
       const mockGetCurrentUserClient = vi
         .spyOn(AuthApiClient.prototype, 'getCurrentUser')
@@ -480,20 +451,16 @@ describe.skip('EnhancedAuthService', () => {
       // --- Assert ---
       expect(token).toBe(expectedNewTokens.accessToken);
       expect(mockRefreshTokenClient).toHaveBeenCalledTimes(1);
-      expect(mockRefreshTokenClient).toHaveBeenCalledWith(
-        nearExpiryTokens.refreshToken,
-      );
+      expect(mockRefreshTokenClient).toHaveBeenCalledWith(nearExpiryTokens.refreshToken);
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         'auth_tokens',
-        JSON.stringify(expectedNewTokens),
+        JSON.stringify(expectedNewTokens)
       );
       expect(window.dispatchEvent).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'tokens-refreshed' }),
+        expect.objectContaining({ type: 'tokens-refreshed' })
       );
       // Check internal state reflects the refresh
-      expect(authService.getCurrentState().tokens?.accessToken).toBe(
-        expectedNewTokens.accessToken,
-      );
+      expect(authService.getCurrentState().tokens?.accessToken).toBe(expectedNewTokens.accessToken);
     }, 10000);
 
     it('should return null when refresh fails', async () => {
@@ -506,7 +473,7 @@ describe.skip('EnhancedAuthService', () => {
 
       // Define Mocks *before* creating the service
       vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(nearExpiryTokens),
+        JSON.stringify(nearExpiryTokens)
       );
       const mockGetCurrentUserClient = vi
         .spyOn(AuthApiClient.prototype, 'getCurrentUser')
@@ -538,7 +505,7 @@ describe.skip('EnhancedAuthService', () => {
       expect(mockRefreshTokenClient).toHaveBeenCalledTimes(1);
       expect(window.localStorage.removeItem).toHaveBeenCalledWith('auth_tokens'); // Cleared on failure
       expect(window.dispatchEvent).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'session-expired' }),
+        expect.objectContaining({ type: 'session-expired' })
       );
       expect(authService.getCurrentState().isAuthenticated).toBe(false); // Check internal state
     }, 10000);
@@ -559,9 +526,7 @@ describe.skip('EnhancedAuthService', () => {
       const validTokens = { ...mockTokens, expiresAt: Date.now() + 3600000 };
 
       // Define Mocks *before* creating the service
-      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(validTokens),
-      );
+      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(validTokens));
       const mockGetCurrentUserClient = vi
         .spyOn(AuthApiClient.prototype, 'getCurrentUser')
         .mockResolvedValueOnce(userWithPerms); // User has 'admin'
@@ -586,9 +551,7 @@ describe.skip('EnhancedAuthService', () => {
       const validTokens = { ...mockTokens, expiresAt: Date.now() + 3600000 };
 
       // Define Mocks *before* creating the service
-      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(validTokens),
-      );
+      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(validTokens));
       const mockGetCurrentUserClient = vi
         .spyOn(AuthApiClient.prototype, 'getCurrentUser')
         .mockResolvedValueOnce(userWithoutAdmin); // User lacks 'admin'
@@ -626,7 +589,7 @@ describe.skip('EnhancedAuthService', () => {
 
       // Define Mocks *before* creating the service
       vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(nearExpiryTokens),
+        JSON.stringify(nearExpiryTokens)
       );
       const mockGetCurrentUserClient = vi
         .spyOn(AuthApiClient.prototype, 'getCurrentUser')
@@ -657,16 +620,12 @@ describe.skip('EnhancedAuthService', () => {
       });
 
       // Verify refresh details and state update
-      expect(mockRefreshTokenClient).toHaveBeenCalledWith(
-        nearExpiryTokens.refreshToken,
-      );
+      expect(mockRefreshTokenClient).toHaveBeenCalledWith(nearExpiryTokens.refreshToken);
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         'auth_tokens',
-        JSON.stringify(expectedNewTokens),
+        JSON.stringify(expectedNewTokens)
       );
-      expect(authService.getCurrentState().tokens?.accessToken).toBe(
-        expectedNewTokens.accessToken,
-      );
+      expect(authService.getCurrentState().tokens?.accessToken).toBe(expectedNewTokens.accessToken);
     });
   });
 
@@ -677,11 +636,8 @@ describe.skip('EnhancedAuthService', () => {
       const logoutError = new Error('Logout API failed');
 
       // Define Mocks *before* creating the service
-      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(validTokens),
-      );
-      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser')
-        .mockResolvedValueOnce(mockUser); // For initialization
+      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(validTokens));
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser); // For initialization
       const mockLogoutClient = vi
         .spyOn(AuthApiClient.prototype, 'logout')
         .mockRejectedValueOnce(logoutError);
@@ -709,7 +665,7 @@ describe.skip('EnhancedAuthService', () => {
       expect(authService.getCurrentState().user).toBeNull();
       expect(authService.getCurrentState().tokens).toBeNull();
       expect(window.dispatchEvent).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'logout-complete' }),
+        expect.objectContaining({ type: 'logout-complete' })
       );
     });
 
@@ -718,11 +674,8 @@ describe.skip('EnhancedAuthService', () => {
       const validTokens = { ...mockTokens, expiresAt: Date.now() + 3600000 };
 
       // Define Mocks *before* creating the service
-      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(validTokens),
-      );
-       vi.spyOn(AuthApiClient.prototype, 'getCurrentUser')
-        .mockResolvedValueOnce(mockUser); // For initialization
+      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(validTokens));
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser); // For initialization
       const mockLogoutClient = vi
         .spyOn(AuthApiClient.prototype, 'logout')
         .mockResolvedValueOnce(undefined); // Logout succeeds
@@ -749,7 +702,7 @@ describe.skip('EnhancedAuthService', () => {
       expect(authService.getCurrentState().user).toBeNull();
       expect(authService.getCurrentState().tokens).toBeNull();
       expect(window.dispatchEvent).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'logout-complete' }),
+        expect.objectContaining({ type: 'logout-complete' })
       );
     });
   });
@@ -757,29 +710,26 @@ describe.skip('EnhancedAuthService', () => {
   describe('silent token refresh', () => {
     it('should dispatch session-expired event when refresh fails', async () => {
       // --- Setup ---
-       const validTokens = { ...mockTokens, expiresAt: Date.now() + 3600000 };
-       const refreshError = new Error('Silent refresh failed');
+      const validTokens = { ...mockTokens, expiresAt: Date.now() + 3600000 };
+      const refreshError = new Error('Silent refresh failed');
 
       // Define Mocks *before* creating the service
-       vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(validTokens),
-      );
-       vi.spyOn(AuthApiClient.prototype, 'getCurrentUser')
-        .mockResolvedValueOnce(mockUser); // For initialization
-       const mockRefreshTokenClient = vi
+      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(validTokens));
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser); // For initialization
+      const mockRefreshTokenClient = vi
         .spyOn(AuthApiClient.prototype, 'refreshToken')
         .mockRejectedValueOnce(refreshError);
 
       // Create service instance *after* mocks are defined
       const authService = new EnhancedAuthService('https://api.test.com');
 
-       // Initialize first
-       let initialState: AuthState = createInitialAuthState();
-       await act(async () => {
-         initialState = await authService.initializeAuth();
-       });
-       mockRefreshTokenClient.mockClear(); // Clear post-initialization
-       vi.spyOn(window.dispatchEvent); // Spy for events
+      // Initialize first
+      let initialState: AuthState = createInitialAuthState();
+      await act(async () => {
+        initialState = await authService.initializeAuth();
+      });
+      mockRefreshTokenClient.mockClear(); // Clear post-initialization
+      vi.spyOn(window.dispatchEvent); // Spy for events
 
       // --- Execute ---
       // Trigger the silent refresh manually (or via expiring token logic)
@@ -793,25 +743,22 @@ describe.skip('EnhancedAuthService', () => {
       expect(window.localStorage.removeItem).toHaveBeenCalledWith('auth_tokens');
       expect(authService.getCurrentState().isAuthenticated).toBe(false);
       expect(window.dispatchEvent).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'session-expired' }),
+        expect.objectContaining({ type: 'session-expired' })
       );
     });
 
     it('should reuse in-progress refresh promise', async () => {
       // --- Setup ---
-       const validTokens = { ...mockTokens, expiresAt: Date.now() + 3600000 };
-       const expectedNewTokens = {
+      const validTokens = { ...mockTokens, expiresAt: Date.now() + 3600000 };
+      const expectedNewTokens = {
         ...mockTokens,
         accessToken: 'refreshed-concurrently',
         expiresAt: Date.now() + 3600000,
       };
 
       // Define Mocks *before* creating the service
-      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(
-        JSON.stringify(validTokens),
-      );
-      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser')
-        .mockResolvedValueOnce(mockUser); // For initialization
+      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(validTokens));
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser); // For initialization
       const mockRefreshTokenClient = vi
         .spyOn(AuthApiClient.prototype, 'refreshToken')
         .mockImplementation(async () => {
@@ -823,12 +770,12 @@ describe.skip('EnhancedAuthService', () => {
       // Create service instance *after* mocks are defined
       const authService = new EnhancedAuthService('https://api.test.com');
 
-       // Initialize first
-       let initialState: AuthState = createInitialAuthState();
-       await act(async () => {
-         initialState = await authService.initializeAuth();
-       });
-       mockRefreshTokenClient.mockClear(); // Clear post-initialization
+      // Initialize first
+      let initialState: AuthState = createInitialAuthState();
+      await act(async () => {
+        initialState = await authService.initializeAuth();
+      });
+      mockRefreshTokenClient.mockClear(); // Clear post-initialization
 
       // --- Execute ---
       // Trigger two refresh calls concurrently
@@ -841,22 +788,19 @@ describe.skip('EnhancedAuthService', () => {
         await Promise.all([refreshPromise1, refreshPromise2]);
       });
 
-
       // --- Assert ---
       // The API client's refreshToken should only have been called ONCE
       expect(mockRefreshTokenClient).toHaveBeenCalledTimes(1);
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         'auth_tokens',
-        JSON.stringify(expectedNewTokens),
+        JSON.stringify(expectedNewTokens)
       );
       // Both promises should resolve with the same new tokens
-       const tokens1 = await refreshPromise1;
-       const tokens2 = await refreshPromise2;
+      const tokens1 = await refreshPromise1;
+      const tokens2 = await refreshPromise2;
       expect(tokens1?.accessToken).toBe(expectedNewTokens.accessToken);
       expect(tokens2?.accessToken).toBe(expectedNewTokens.accessToken);
-      expect(authService.getCurrentState().tokens?.accessToken).toBe(
-        expectedNewTokens.accessToken,
-      );
+      expect(authService.getCurrentState().tokens?.accessToken).toBe(expectedNewTokens.accessToken);
     });
   });
 });

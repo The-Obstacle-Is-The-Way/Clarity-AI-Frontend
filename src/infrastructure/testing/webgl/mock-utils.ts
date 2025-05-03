@@ -14,9 +14,7 @@ import type { MockFunction } from './mock-types';
  * @returns A mock function with tracking capabilities
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function createMockFunction<
-  T extends (...args: any[]) => any
->(
+export function createMockFunction<T extends (...args: any[]) => any>(
   implementation?: T
 ): MockFunction<T> {
   const calls: Parameters<T>[][] = [];

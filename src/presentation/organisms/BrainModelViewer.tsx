@@ -197,14 +197,16 @@ const Brain3DScene: React.FC<{
       else if (Math.abs(z) < 2) groups.subcortical.push(region);
       else groups.other.push(region);
     });
-    return Object.entries(groups)
-      .map(([name, regions]) => ({
-        groupId: `group-${name}`,
-        groupName: name.charAt(0).toUpperCase() + name.slice(1),
-        regions,
-      }))
-      // Filter out empty groups
-      .filter(group => group.regions.length > 0);
+    return (
+      Object.entries(groups)
+        .map(([name, regions]) => ({
+          groupId: `group-${name}`,
+          groupName: name.charAt(0).toUpperCase() + name.slice(1),
+          regions,
+        }))
+        // Filter out empty groups
+        .filter((group) => group.regions.length > 0)
+    );
   }, [safeRegions]);
 
   const filteredConnections = useMemo(() => {
@@ -415,8 +417,8 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
         style={{
           background: backgroundColor || settings.backgroundColor, // <<< REMOVED DEBUG BACKGROUND
           width: '100%', // Ensure width/height are applied if passed via style
-          height: '100%'
-         }}
+          height: '100%',
+        }}
         camera={{ position: cameraPosition, fov: cameraFov }}
         dpr={[1, highPerformanceMode ? 1.5 : 2]} // Use direct prop
         gl={{
@@ -439,11 +441,10 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
           initialPosition={cameraPosition}
         />
         {/* <<< REMOVED SIMPLE TEST MESH >>> */}
-
         {/* Wrap scene content in AdaptiveLOD */}
         <AdaptiveLOD
-          // forceDetailLevel prop removed as it doesn't exist
-          // Pass other AdaptiveLOD props if needed
+        // forceDetailLevel prop removed as it doesn't exist
+        // Pass other AdaptiveLOD props if needed
         >
           {/* Brain model visualization - Now inside AdaptiveLOD */}
           <Brain3DScene

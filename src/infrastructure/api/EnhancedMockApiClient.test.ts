@@ -20,7 +20,7 @@ describe('EnhancedMockApiClient', () => {
   beforeEach(() => {
     mockApiClient = new EnhancedMockApiClient({ mockDelay: 0 }); // Use the client directly
     // Reset mocks before each test
-    vi.clearAllMocks(); 
+    vi.clearAllMocks();
   });
 
   // Keep afterEach if needed for other potential global mocks, otherwise remove
@@ -37,15 +37,18 @@ describe('EnhancedMockApiClient', () => {
 
     expect(patient).toBeDefined();
     expect(patient.id).toBe(patientId);
-    expect(patient.firstName).toBe('John'); 
+    expect(patient.firstName).toBe('John');
     // Add more assertions for structure if needed
 
     // Verify logActivity called axios.post correctly
     expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
-      action: 'getPatient',
-      details: { patientId },
-    }));
+    expect(axios.post).toHaveBeenCalledWith(
+      '/api/audit-logs',
+      expect.objectContaining({
+        action: 'getPatient',
+        details: { patientId },
+      })
+    );
   });
 
   it('getPatients returns an array of patients', async () => {
@@ -56,9 +59,12 @@ describe('EnhancedMockApiClient', () => {
     // Add structure checks for patient objects within the array
 
     expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
-      action: 'getPatients',
-    }));
+    expect(axios.post).toHaveBeenCalledWith(
+      '/api/audit-logs',
+      expect.objectContaining({
+        action: 'getPatients',
+      })
+    );
   });
 
   // Test the specific getBrainModel method directly
@@ -87,10 +93,13 @@ describe('EnhancedMockApiClient', () => {
     expect(model.analysisResults).toBeDefined();
 
     expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
-      action: 'getBrainModel',
-      details: { modelId },
-    }));
+    expect(axios.post).toHaveBeenCalledWith(
+      '/api/audit-logs',
+      expect.objectContaining({
+        action: 'getBrainModel',
+        details: { modelId },
+      })
+    );
   });
 
   // Test the generic GET method handling the /brain-models/:modelId route
@@ -116,14 +125,20 @@ describe('EnhancedMockApiClient', () => {
 
     // Check logActivity calls - one for GET, one for internal getBrainModel
     expect(axios.post).toHaveBeenCalledTimes(2);
-    expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
-      action: 'GET_Request',
-      details: { endpoint, params: undefined }, // Assuming no params passed
-    }));
-     expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
-      action: 'getBrainModel',
-      details: { modelId },
-    }));
+    expect(axios.post).toHaveBeenCalledWith(
+      '/api/audit-logs',
+      expect.objectContaining({
+        action: 'GET_Request',
+        details: { endpoint, params: undefined }, // Assuming no params passed
+      })
+    );
+    expect(axios.post).toHaveBeenCalledWith(
+      '/api/audit-logs',
+      expect.objectContaining({
+        action: 'getBrainModel',
+        details: { modelId },
+      })
+    );
   });
 
   it('login returns valid user credentials and logs activity', async () => {
@@ -134,12 +149,15 @@ describe('EnhancedMockApiClient', () => {
 
     expect(result).toBeDefined();
     expect(result.token).toBeDefined(); // Check structure based on mock impl
-    expect(result.user.id).toBeDefined(); 
+    expect(result.user.id).toBeDefined();
 
     expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.post).toHaveBeenCalledWith('/api/audit-logs', expect.objectContaining({
-      action: 'POST_Request',
-      details: { endpoint: '/api/v1/auth/login', data: { email } },
-    }));
+    expect(axios.post).toHaveBeenCalledWith(
+      '/api/audit-logs',
+      expect.objectContaining({
+        action: 'POST_Request',
+        details: { endpoint: '/api/v1/auth/login', data: { email } },
+      })
+    );
   });
 });

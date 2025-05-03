@@ -157,7 +157,7 @@ vi.mock('@react-three/fiber', async () => {
 
 // Mock react-three/drei
 vi.mock('@react-three/drei', async (importOriginal) => {
-  const dreiOriginal = await importOriginal() as Record<string, unknown>; // Type assertion
+  const dreiOriginal = (await importOriginal()) as Record<string, unknown>; // Type assertion
   return {
     // ...(dreiOriginal), // Temporarily comment out spread due to potential type issue
     OrbitControls: ({ children }: { children?: React.ReactNode }) => (
@@ -167,7 +167,9 @@ vi.mock('@react-three/drei', async (importOriginal) => {
       <div data-testid="drei-html">{children}</div>
     ),
     useHelper: vi.fn(),
-    PerspectiveCamera: (_props: Record<string, unknown>) => <div data-testid="perspective-camera"></div>, // Use Record<string, unknown>
+    PerspectiveCamera: (_props: Record<string, unknown>) => (
+      <div data-testid="perspective-camera"></div>
+    ), // Use Record<string, unknown>
   };
 });
 
@@ -279,7 +281,7 @@ describe('User Interactions', () => {
     // Arrange
     // const mockModel = mockBrainRegionData; // Commented out
     renderWithProviders(<BrainModelVisualization modelId="test-model-interaction" />);
-    
+
     // Act: Simulate click (needs specific target)
     // Assuming a region mesh with test id or identifiable property
     // fireEvent.click(screen.getByTestId('brain-region-someId'));
@@ -326,7 +328,9 @@ describe('User Interactions', () => {
   });
 
   it('cleans up resources when unmounted', () => {
-    const { unmount } = renderWithProviders(<BrainModelVisualization modelId="test-model-unmount" />); // Use modelId
+    const { unmount } = renderWithProviders(
+      <BrainModelVisualization modelId="test-model-unmount" />
+    ); // Use modelId
     unmount();
     // Verification would ideally check mock dispose calls
   });
@@ -389,5 +393,4 @@ describe('User Interactions', () => {
     expect(screen.getByTestId('brain-model-container')).not.toBeNull();
   });
   */
-
 });

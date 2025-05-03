@@ -189,9 +189,7 @@ const PatientDetailPage: React.FC = () => {
       </h1>
       {renderContent()}
 
-      {!isEditing && patientId && (
-        <ClinicalRecordList patientId={patientId} />
-      )}
+      {!isEditing && patientId && <ClinicalRecordList patientId={patientId} />}
 
       <ConfirmDialog
         open={isConfirmDeleteDialogOpen}

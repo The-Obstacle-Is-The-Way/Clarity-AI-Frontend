@@ -31,7 +31,9 @@ export class ApiGateway implements IApiClient {
           ? envFlag === 'true'
           : localStorage.getItem('use_mock_api') === 'true' || this.mockMode;
 
-      console.info(`🧠 Novamind API Gateway: Using ${useMockApi ? 'MOCK' : 'REAL'} API client (NODE_ENV: ${process.env.NODE_ENV})`);
+      console.info(
+        `🧠 Novamind API Gateway: Using ${useMockApi ? 'MOCK' : 'REAL'} API client (NODE_ENV: ${process.env.NODE_ENV})`
+      );
       console.log(`[ApiGateway] Checking NODE_ENV: ${process.env.NODE_ENV}`);
 
       // Determine base URL based on environment

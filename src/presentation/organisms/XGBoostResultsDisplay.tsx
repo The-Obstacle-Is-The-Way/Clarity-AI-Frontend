@@ -1,16 +1,16 @@
 // src/presentation/organisms/XGBoostResultsDisplay.tsx
 import React, { memo } from 'react';
 import type { XGBoostPrediction } from '@domain/analytics/xgboostTypes';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Assuming Shadcn path
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // Assuming Shadcn path
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
-  Cell
+  Cell,
 } from 'recharts';
 
 interface XGBoostResultsDisplayProps {
@@ -25,10 +25,12 @@ const XGBoostResultsDisplay: React.FC<XGBoostResultsDisplayProps> = ({ result })
   if (!result) return null;
 
   // Format feature importance data for chart
-  const featureImportanceData = Object.entries(result.featureImportance || {}).map(([name, value]) => ({
-    name,
-    value: typeof value === 'number' ? value : 0,
-  })).sort((a, b) => b.value - a.value);
+  const featureImportanceData = Object.entries(result.featureImportance || {})
+    .map(([name, value]) => ({
+      name,
+      value: typeof value === 'number' ? value : 0,
+    }))
+    .sort((a, b) => b.value - a.value);
 
   // Calculate prediction percentage for display (0-100%)
   const predictionPercentage = (result.prediction * 100).toFixed(1);
@@ -76,7 +78,10 @@ const XGBoostResultsDisplay: React.FC<XGBoostResultsDisplayProps> = ({ result })
                 <Tooltip />
                 <Bar dataKey="value" fill="#8884d8">
                   {featureImportanceData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={`#${Math.floor(index * 30 + 100).toString(16)}84d8`} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={`#${Math.floor(index * 30 + 100).toString(16)}84d8`}
+                    />
                   ))}
                 </Bar>
               </BarChart>

@@ -4,7 +4,7 @@ import { Brain, Monitor, BarChart3, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
-import { Button } from "@/presentation/atoms";
+import { Button } from '@/presentation/atoms';
 import ClinicalMetricsGroup from '@presentation/molecules/ClinicalMetricsCard';
 
 import BrainVisualization from '@presentation/organisms/BrainVisualization';
@@ -181,24 +181,18 @@ const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({
                         Current Treatments
                       </h4>
                       <div className="space-y-2">
-                        {profile.treatmentPlan.treatments.map(
-                          (
-                             
-                            treatment: any,
-                            index: number
-                          ) => (
-                            <div
-                              key={index}
-                              className="flex items-center justify-between rounded bg-background-lighter p-2 dark:bg-background-card"
-                            >
-                              <div>
-                                <span className="font-medium capitalize">{treatment.type}</span>
-                                <p className="text-xs text-neutral-500">{treatment.details}</p>
-                              </div>
-                              <div className="text-xs text-neutral-500">{treatment.timeframe}</div>
+                        {profile.treatmentPlan.treatments.map((treatment: any, index: number) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between rounded bg-background-lighter p-2 dark:bg-background-card"
+                          >
+                            <div>
+                              <span className="font-medium capitalize">{treatment.type}</span>
+                              <p className="text-xs text-neutral-500">{treatment.details}</p>
                             </div>
-                          )
-                        )}
+                            <div className="text-xs text-neutral-500">{treatment.timeframe}</div>
+                          </div>
+                        ))}
                       </div>
                     </div>
 

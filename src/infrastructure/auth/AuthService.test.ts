@@ -60,16 +60,16 @@ describe('AuthService', () => {
   beforeEach(() => {
     // Mock localStorage for this test suite
     Object.defineProperty(window, 'localStorage', { value: mockLocalStorage });
-    
+
     // Reset all mocks
     vi.clearAllMocks();
     mockLocalStorage.getItem.mockClear();
     mockLocalStorage.setItem.mockClear();
     mockLocalStorage.removeItem.mockClear();
     mockLocalStorage.clear.mockClear();
-    
+
     // Use fake timers for consistent Date.now()
-    vi.useFakeTimers(); 
+    vi.useFakeTimers();
 
     // Spy on AuthApiClient prototype methods
     vi.spyOn(AuthApiClient.prototype, 'login').mockImplementation(mockLogin);
@@ -199,7 +199,7 @@ describe('AuthService', () => {
       // Setup - localStorage.getItem returns null (default)
       mockLocalStorage.getItem.mockReturnValue(null);
       vi.setSystemTime(new Date()); // Set time for consistency
-      
+
       // Execute
       const result = await authService.initializeAuth();
 

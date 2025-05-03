@@ -8,7 +8,7 @@
 import React, { useMemo, useCallback, memo } from 'react';
 // Removed unused Instance, Instances imports
 // Removed unused THREE import
-import RegionMesh from "@/presentation/atoms/data-visualization/RegionMesh"; // Use default import
+import RegionMesh from '@/presentation/atoms/data-visualization/RegionMesh'; // Use default import
 import type { BrainRegion } from '@domain/types/brain/models';
 // import type { ThemeSettings } from '@domain/types/brain/visualization'; // Removed
 import type { VisualizationSettings } from '@domain/types/brain/visualization'; // Added

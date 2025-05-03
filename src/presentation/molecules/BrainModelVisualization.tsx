@@ -352,29 +352,26 @@ export const BrainModelVisualization: React.FC<BrainModelVisualizationProps> = (
 
         {/* Brain regions */}
         <group>
-          {data && Array.isArray(data) && data.map((region: DomainBrainRegion) => {
-            const colorValue = mode === 'functional' ? region.activityLevel : 50;
-            const regionColor = getColorForValue(
-              colorValue,
-              range[0],
-              range[1],
-              colormap
-            );
-            return (
-              <BrainRegion
-                key={region.id}
-                id={region.id}
-                name={region.name}
-                position={[region.position.x, region.position.y, region.position.z]}
-                size={0.2}
-                color={regionColor}
-                isSelected={region.id === selectedRegion}
-                isHighlighted={region.id === highlightedRegion}
-                onClick={handleRegionClick}
-                onHover={handleRegionHover}
-              />
-            );
-          })}
+          {data &&
+            Array.isArray(data) &&
+            data.map((region: DomainBrainRegion) => {
+              const colorValue = mode === 'functional' ? region.activityLevel : 50;
+              const regionColor = getColorForValue(colorValue, range[0], range[1], colormap);
+              return (
+                <BrainRegion
+                  key={region.id}
+                  id={region.id}
+                  name={region.name}
+                  position={[region.position.x, region.position.y, region.position.z]}
+                  size={0.2}
+                  color={regionColor}
+                  isSelected={region.id === selectedRegion}
+                  isHighlighted={region.id === highlightedRegion}
+                  onClick={handleRegionClick}
+                  onHover={handleRegionHover}
+                />
+              );
+            })}
 
           {/* Connections between regions (in connectivity mode) */}
           {mode === 'connectivity' &&

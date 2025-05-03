@@ -24,7 +24,7 @@ export const useCreatePatient = () => {
       // queryClient.setQueryData([PATIENT_DETAIL_QUERY_KEY_PREFIX, data.id], data);
     },
     onError: (error) => {
-      console.error("Error creating patient:", error);
+      console.error('Error creating patient:', error);
       toast.error(`Failed to create patient: ${error.message || 'Unknown error'}`);
       // More sophisticated error handling can be added here
     },

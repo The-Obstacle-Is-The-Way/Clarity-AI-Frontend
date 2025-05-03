@@ -30,11 +30,11 @@ export interface BadgeProps
 // Badge component implementation
 function Badge({ className, variant, ...props }: BadgeProps) {
   return (
-    <div 
+    <div
       data-testid="badge"
       data-variant={variant || 'default'}
-      className={cn(badgeVariants({ variant }), className)} 
-      {...props} 
+      className={cn(badgeVariants({ variant }), className)}
+      {...props}
     />
   );
 }

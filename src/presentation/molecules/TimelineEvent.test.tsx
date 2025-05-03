@@ -26,10 +26,13 @@ vi.mock('@presentation/atoms/Tooltip', () => ({
   TooltipTrigger: ({ children }: any) => <div>{children}</div>,
 }));
 vi.mock('@presentation/atoms/Button', () => ({
-  Button: (props: any) => <button {...props}>{props.children}</button>
+  Button: (props: any) => <button {...props}>{props.children}</button>,
 }));
 vi.mock('lucide-react', async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, React.FC<React.SVGProps<SVGSVGElement>>>;
+  const actual = (await importOriginal()) as Record<
+    string,
+    React.FC<React.SVGProps<SVGSVGElement>>
+  >;
   const IconMock = (props: React.SVGProps<SVGSVGElement>) => <svg {...props} />;
   return {
     ...actual,
@@ -42,18 +45,27 @@ vi.mock('lucide-react', async (importOriginal) => {
 });
 // Mock framer-motion if used
 vi.mock('framer-motion', async (importOriginal) => {
-    const actual = (await importOriginal()) as Record<string, any>; // Use any temporarily if structure is complex
-    return {
-        ...actual,
-        motion: new Proxy({}, {
-            get: (_target, key) => {
-                const MockMotion = ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => <div {...props}>{children}</div>;
-                MockMotion.displayName = `MockMotion.${String(key)}`;
-                return MockMotion;
-            }
-        }),
-        AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>, // Mock AnimatePresence
-    };
+  const actual = (await importOriginal()) as Record<string, any>; // Use any temporarily if structure is complex
+  return {
+    ...actual,
+    motion: new Proxy(
+      {},
+      {
+        get: (_target, key) => {
+          const MockMotion = ({
+            children,
+            ...props
+          }: {
+            children?: React.ReactNode;
+            [key: string]: unknown;
+          }) => <div {...props}>{children}</div>;
+          MockMotion.displayName = `MockMotion.${String(key)}`;
+          return MockMotion;
+        },
+      }
+    ),
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>, // Mock AnimatePresence
+  };
 });
 
 // Setup WebGL mocks with memory monitoring - Moved outside describe block

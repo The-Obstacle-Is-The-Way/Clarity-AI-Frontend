@@ -9,13 +9,21 @@ import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.un
 // Mock presentation components if they interfere with basic rendering tests
 vi.mock('@presentation/atoms/card', () => ({
   Card: ({ children }: { children: React.ReactNode }) => <div data-testid="card">{children}</div>,
-  CardHeader: ({ children }: { children: React.ReactNode }) => <div data-testid="card-header">{children}</div>,
-  CardTitle: ({ children }: { children: React.ReactNode }) => <h2 data-testid="card-title">{children}</h2>,
-  CardContent: ({ children }: { children: React.ReactNode }) => <div data-testid="card-content">{children}</div>,
+  CardHeader: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="card-header">{children}</div>
+  ),
+  CardTitle: ({ children }: { children: React.ReactNode }) => (
+    <h2 data-testid="card-title">{children}</h2>
+  ),
+  CardContent: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="card-content">{children}</div>
+  ),
 }));
 vi.mock('@presentation/atoms/badge', () => ({
   Badge: ({ children, variant }: { children: React.ReactNode; variant?: string }) => (
-    <span data-testid="badge" data-variant={variant}>{children}</span>
+    <span data-testid="badge" data-variant={variant}>
+      {children}
+    </span>
   ),
 }));
 
@@ -39,7 +47,9 @@ describe('ProfilePage', () => {
 
   it('should render error state if loading is finished but user is null', async () => {
     renderWithAuth({ user: null, isLoading: false });
-    expect(screen.getByText(/Error: User data not found. Please log in again./i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Error: User data not found. Please log in again./i)
+    ).toBeInTheDocument();
   });
 
   it('should render user profile information when data is loaded', async () => {

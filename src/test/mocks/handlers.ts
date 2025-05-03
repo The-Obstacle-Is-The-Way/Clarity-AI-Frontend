@@ -40,10 +40,10 @@ export const handlers = [
           totalItems: 2,
         },
       },
-      { status: 200 },
+      { status: 200 }
     );
   }),
-  
+
   http.get('/api/v1/patients/:patientId', ({ params }) => {
     const { patientId } = params;
     return HttpResponse.json(
@@ -58,10 +58,10 @@ export const handlers = [
         phone: '555-123-4567',
         email: 'john.doe@example.com',
       },
-      { status: 200 },
+      { status: 200 }
     );
   }),
-  
+
   // Clinical Records endpoints
   http.get('/api/v1/patients/:patientId/records', ({ params }) => {
     return HttpResponse.json(
@@ -101,10 +101,10 @@ export const handlers = [
           totalItems: 2,
         },
       },
-      { status: 200 },
+      { status: 200 }
     );
   }),
-  
+
   // Analytics endpoints
   http.post('/api/v1/analytics/xgboost/predict', () => {
     return HttpResponse.json(
@@ -125,10 +125,10 @@ export const handlers = [
           support: 100,
         },
       },
-      { status: 200 },
+      { status: 200 }
     );
   }),
-  
+
   http.post('/api/v1/analytics/sentiment', () => {
     return HttpResponse.json(
       {
@@ -136,16 +136,12 @@ export const handlers = [
         score: 0.75,
         confidenceScores: {
           positive: 0.75,
-          neutral: 0.20,
+          neutral: 0.2,
           negative: 0.05,
         },
-        keyPhrases: [
-          'good experience',
-          'helpful staff',
-          'comfortable environment',
-        ],
+        keyPhrases: ['good experience', 'helpful staff', 'comfortable environment'],
       },
-      { status: 200 },
+      { status: 200 }
     );
-  })
+  }),
 ];

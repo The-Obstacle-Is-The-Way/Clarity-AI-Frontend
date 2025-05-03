@@ -15,12 +15,7 @@ import { motion } from 'framer-motion'; // Removed unused AnimatePresence
 // Correct import paths for Shadcn components
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button'; // Correct path and named import
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/presentation/atoms'; // Use index
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/presentation/atoms'; // Use index
 import { Badge } from '@/presentation/atoms'; // Use index
 import {
   Card,
@@ -29,9 +24,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/presentation/atoms"; // Use index
+} from '@/presentation/atoms'; // Use index
 // Removed unused ScrollArea import
-import { Progress } from "@/presentation/atoms"; // Use index
+import { Progress } from '@/presentation/atoms'; // Use index
 
 // Icons
 import {
