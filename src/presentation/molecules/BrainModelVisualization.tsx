@@ -390,8 +390,8 @@ export const BrainModelVisualization: React.FC<BrainModelVisualizationProps> = (
                 return (
                   <Connection
                     key={`${region.id}-${targetId}`}
-                    startPosition={region.position}
-                    endPosition={targetRegion.position}
+                    startPosition={[region.position.x, region.position.y, region.position.z]}
+                    endPosition={[targetRegion.position.x, targetRegion.position.y, targetRegion.position.z]}
                     strength={0.7} // This could be dynamic based on connection strength
                   />
                 );
