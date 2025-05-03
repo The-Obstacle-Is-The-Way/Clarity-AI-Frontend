@@ -10,7 +10,7 @@ import '@testing-library/jest-dom';
 import { renderWithProviders } from '../../../infrastructure/testing/utils/test-utils.unified';
 import { ActivityIndicator } from './ActivityIndicator';
 import { Vector3 } from 'three';
-import { ActivationLevel } from '@/domain/types/brain/activity';
+import { ActivationLevel } from '../../../domain/types/brain/activity';
 
 // Mock dependencies
 vi.mock('@react-three/drei', () => ({
@@ -107,8 +107,8 @@ vi.mock('@react-spring/three', () => {
       {},
       {
         get: function (_target, prop) {
-          // Define props type explicitly
-          type MockProps = { children?: React.ReactNode; [key: string]: any };
+          // Define props type explicitly using unknown for extra props
+          type MockProps = { children?: React.ReactNode; [key: string]: unknown };
 
           // Return a simple component that renders children within a div with test ID
           const MockAnimatedComponent = React.forwardRef<unknown, MockProps>(
@@ -162,8 +162,8 @@ describe('ActivityIndicator', () => {
     renderWithProviders(
       <ActivityIndicator {...commonProps} activationLevel={ActivationLevel.LOW} rawActivity={0.3} />
     );
-    const motionElement = screen.queryByTestId('mock-motion-div');
-    expect(motionElement).toBeInTheDocument();
+    const animatedMesh = screen.queryByTestId('mock-animated-mesh');
+    expect(animatedMesh).toBeInTheDocument();
   });
 
   it('does not render when activity is NONE', () => {

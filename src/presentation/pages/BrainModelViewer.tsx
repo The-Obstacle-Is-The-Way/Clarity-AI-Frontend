@@ -5,7 +5,7 @@ import { Button } from '@/presentation/atoms'; // Corrected import
 import BrainModelContainer from '@presentation/organisms/BrainModelContainer';
 import VisualizationErrorBoundary from '@/presentation/common/VisualizationErrorBoundary';
 import { LoadingIndicator } from '@/presentation/atoms'; // Corrected import
-import { useBrainModel } from '@application/context/BrainModelContext';
+import { useBrainModel } from '@application/context/BrainModelProvider'; // Corrected path
 import { useBrainVisualization } from '@hooks/useBrainVisualization';
 import type { BrainRegion } from '@domain/types/brain/models'; // Corrected import path
 import type { RenderMode } from '@domain/types/brain/visualization'; // Keep this correct import

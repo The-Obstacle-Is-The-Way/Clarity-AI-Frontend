@@ -5,7 +5,9 @@ import { useFrame } from '@react-three/fiber';
 import { Instance, Instances } from '@react-three/drei';
 import type { Group } from 'three';
 import { Color, ShaderMaterial, AdditiveBlending, Clock } from 'three'; // Import specific members, removed unused Vector3, Quaternion, Matrix4
-import { createNeuralGlowUniforms, updateTimeUniform } from '@shaders/neuralGlow'; // Removed unused setActiveState
+import * as THREE from 'three'; // Add THREE namespace import
+// Corrected import path using relative path
+import { createNeuralGlowUniforms, updateNeuralGlow } from '../../infrastructure/graphics/shaders/neuralGlow';
 
 /**
  * Neural node data structure with 3D location and clinical metadata
@@ -174,17 +176,20 @@ const BrainModel: React.FC<BrainModelProps> = ({
       }
     `;
 
-    // Create default uniforms
-    const uniforms = createNeuralGlowUniforms(
-      [0.4, 0.6, 1.0], // Default blue color
-      0.8, // Default intensity
-      false // Not active by default
-    );
+    // Create default uniforms using the options object
+    const uniforms = createNeuralGlowUniforms({
+      baseColor: new Color(0.4, 0.6, 1.0), // Default blue color as THREE.Color
+      intensity: 0.8, // Default intensity
+      // pulseRate: 0.8 // Default pulseRate if needed
+    });
+
+    // Ensure the returned object matches the expected index signature
+    const uniformsForMaterial: { [uniform: string]: THREE.IUniform<any> } = { ...uniforms };
 
     return new ShaderMaterial({
       vertexShader,
       fragmentShader,
-      uniforms,
+      uniforms: uniformsForMaterial, // Use the correctly typed object
       transparent: true,
       blending: AdditiveBlending,
       depthWrite: false,
@@ -200,7 +205,7 @@ const BrainModel: React.FC<BrainModelProps> = ({
 
     // Update shader uniforms
     if (shaderMaterialRef.current) {
-      updateTimeUniform(shaderMaterialRef.current.uniforms, clockRef.current.getElapsedTime());
+      updateNeuralGlow(shaderMaterialRef.current, clockRef.current.getElapsedTime());
     }
 
     // Progressive loading of nodes

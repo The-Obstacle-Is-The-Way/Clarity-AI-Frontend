@@ -6,7 +6,7 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTheme } from '@application/context/ThemeContext';
+import { useTheme } from '@/application/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/presentation/atoms';
 import { Card, CardHeader, CardTitle, CardContent } from '@/presentation/atoms';

@@ -8,7 +8,6 @@ import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
 import { Terminal, PlusCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import type { PaginatedPatientsResponse } from '@domain/patients/patientTypes';
-import { usePatientStore } from '@/application/stores/patientStore';
 
 /**
  * Renders the page displaying a list of patients.
