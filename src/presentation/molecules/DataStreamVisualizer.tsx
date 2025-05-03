@@ -6,7 +6,7 @@
  */
 
 import React, { useRef, useMemo, useState, useCallback } from 'react'; // Removed unused useEffect
-// Removed unused useFrame import
+import { useFrame, type ThreeEvent } from '@react-three/fiber';
 // @ts-ignore: TS2305 - Module '"@react-three/drei"' has no exported member 'Line'/'Html'/'Billboard'/'Text'. (Likely type/config issue)
 import { Line, Html, Billboard, Text } from '@react-three/drei'; // Re-added Text, suppressed errors
 import type { Group } from 'three';
@@ -559,8 +559,9 @@ export const DataStreamVisualizer: React.FC<DataStreamVisualizerProps> = ({
 
   // Handle interaction
   const handleWheel = useCallback(
-    (event: React.WheelEvent) => {
+    (event: ThreeEvent<WheelEvent>) => {
       if (!interactable) return;
+      event.stopPropagation(); // Prevent default scrolling behavior
 
       // Update zoom level
       const newZoom = Math.max(0.5, Math.min(5, zoomLevel + event.deltaY * -0.001));
@@ -583,9 +584,10 @@ export const DataStreamVisualizer: React.FC<DataStreamVisualizerProps> = ({
   );
 
   const handlePointerDown = useCallback(
-    (event: React.PointerEvent) => {
+    (event: ThreeEvent<PointerEvent>) => {
       if (!interactable) return;
-
+      event.stopPropagation();
+      event.target.setPointerCapture(event.pointerId);
       setIsDragging(true);
       setDragStart({ x: event.clientX, y: event.clientY });
     },
@@ -593,8 +595,9 @@ export const DataStreamVisualizer: React.FC<DataStreamVisualizerProps> = ({
   );
 
   const handlePointerMove = useCallback(
-    (event: React.PointerEvent) => {
-      if (!interactable || !isDragging) return;
+    (event: ThreeEvent<PointerEvent>) => {
+      if (!interactable || !isDragging || !dragStart) return;
+      event.stopPropagation();
 
       const dx = event.clientX - dragStart.x;
       const dy = event.clientY - dragStart.y;
