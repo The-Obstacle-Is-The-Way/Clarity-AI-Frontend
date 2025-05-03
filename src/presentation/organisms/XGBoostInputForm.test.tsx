@@ -12,7 +12,9 @@ vi.mock('@/components/ui/button', () => ({
 }));
 
 vi.mock('@/components/ui/input', () => ({
-  Input: (props: React.InputHTMLAttributes<HTMLInputElement>) => <input {...props} />,
+  Input: React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+    (props, ref) => <input {...props} ref={ref} />
+  ),
 }));
 
 vi.mock('@/components/ui/label', () => ({
@@ -28,7 +30,11 @@ vi.mock('@/components/ui/checkbox', () => ({
 }));
 
 vi.mock('@/components/ui/select', () => ({
-  Select: ({ children, ...props }: React.ComponentProps<'select'>) => (
+  Select: ({
+    children,
+    _onValueChange,
+    ...props
+  }: React.ComponentProps<'select'> & { onValueChange?: (value: string) => void }) => (
     <select {...props}>{children}</select>
   ),
   SelectContent: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
