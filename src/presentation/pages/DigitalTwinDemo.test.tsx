@@ -10,7 +10,7 @@ import '@testing-library/jest-dom'; // render is imported from unified utils
 // Removed unused React import
 // Removed unused userEvent import
 // Adjust import path based on actual file location if needed
-import { DigitalTwinDemo } from './DigitalTwinDemo';
+import DigitalTwinDemo from './DigitalTwinDemo'; // Reverted to default import
 import { render } from '../../infrastructure/testing/utils/test-utils.unified';
 import { RenderMode } from '@domain/types/brain/visualization'; // Import for mock
 import { ErrorBoundary } from 'react-error-boundary';
