@@ -11,7 +11,7 @@ import { screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Removed unused render, fireEvent
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
-// import * as ReactQuery from '@tanstack/react-query'; // Query mocking handled by test-utils
+import * as ReactQuery from '@tanstack/react-query'; // Re-added for direct mock usage
 import * as ReactRouterDom from 'react-router-dom'; // Import for mocking
 import { usePatientList } from '@/application/hooks/usePatientList';
 // import { Skeleton } from '@/presentation/atoms'; // Skeleton not used in mocks
