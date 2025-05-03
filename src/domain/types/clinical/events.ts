@@ -56,11 +56,14 @@ export interface AssessmentEvent extends ClinicalEventBase {
 }
 
 // Neural correlation details (can be shared across event types)
-interface NeuralCorrelation {
+export interface NeuralCorrelation {
   strength: number; // 0-1
   description: string;
   regions: string[];
   confidence?: number; // Optional confidence score
+  regionId: string; // ID of the brain region
+  patternId: string; // ID of the correlated activation pattern
+  targetRegionId: string; // ID of the target region
 }
 
 // Union type representing any possible clinical event

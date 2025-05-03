@@ -5,12 +5,11 @@
  */
 
 import { useState, useEffect, memo, useMemo } from 'react';
-import { Box, Tooltip as DreiTooltip } from '@react-three/drei'; // Renamed Tooltip to avoid conflict
 import { Color, Vector3 } from 'three';
 import { Badge } from '@/presentation/atoms'; // Corrected import
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/presentation/atoms'; // Corrected import
 import { cn } from '@/lib/utils';
-import type { NeuralCorrelation } from '@domain/types/neural';
+import type { NeuralCorrelation } from '@domain/types/clinical/events';
 
 // Icons
 import { Brain, Activity, Zap } from 'lucide-react';

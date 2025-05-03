@@ -210,15 +210,15 @@ const NeuralVisualization = React.memo(
       // Adjust detail level based on settings
       switch (detailLevel) {
         case 'ultra':
-          return [1, 2];
+          return [1, 2] as [number, number];
         case 'high':
-          return [1, 1.5];
+          return [1, 1.5] as [number, number];
         case 'medium':
-          return [1, 1];
+          return [1, 1] as [number, number];
         case 'low':
-          return [0.5, 1];
+          return [0.5, 1] as [number, number];
         default:
-          return [1, 1];
+          return [1, 1] as [number, number];
       }
     }, [detailLevel]);
 
@@ -226,7 +226,7 @@ const NeuralVisualization = React.memo(
       <Canvas
         camera={{ position: [0, 0, 5], fov: 50 }}
         dpr={dprSettings}
-        gl={{ antialias: detailLevel !== 'low', alpha: true, physicallyCorrectLights: true }}
+        gl={{ antialias: detailLevel !== 'low', alpha: true }}
       >
         <color attach="background" args={[0.01, 0.01, 0.03]} />
 
@@ -242,7 +242,7 @@ const NeuralVisualization = React.memo(
             onSelectRegion={onSelectRegion}
           />
         </VisualizationErrorBoundary>
-        <OrbitControls enableDamping dampingFactor={0.05} rotateSpeed={0.5} zoomSpeed={0.8} />
+        <OrbitControls dampingFactor={0.05} rotateSpeed={0.5} zoomSpeed={0.8} />
         <Environment preset="city" />
       </Canvas>
     );
