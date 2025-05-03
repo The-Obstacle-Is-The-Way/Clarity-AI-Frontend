@@ -2,9 +2,10 @@
 import React from 'react';
 import XGBoostInputForm from '@presentation/organisms/XGBoostInputForm';
 import XGBoostResultsDisplay from '@presentation/organisms/XGBoostResultsDisplay';
-import { useXGBoostPrediction } from '@application/hooks/useXGBoostPrediction';
+import { useXGBoostPrediction } from '@/application/hooks/useXGBoostPrediction';
 import type { XGBoostInput } from '@domain/analytics/xgboostTypes';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'; // Assuming Shadcn path
+import { Slider } from '@/components/ui/slider';
+import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms/feedback/alert';
 import { Terminal } from 'lucide-react';
 
 /**
