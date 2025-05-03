@@ -84,7 +84,7 @@ const XGBoostResultsDisplay: React.FC<XGBoostResultsDisplayProps> = ({ result })
                 <YAxis type="category" dataKey="name" width={100} />
                 <Tooltip />
                 <Bar dataKey="value" fill="#8884d8">
-                  {featureImportanceData.map((entry, index) => (
+                  {featureImportanceData.map((_entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={`#${Math.floor(index * 30 + 100).toString(16)}84d8`}

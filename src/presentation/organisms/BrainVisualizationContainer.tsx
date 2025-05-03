@@ -27,8 +27,6 @@ import type { TreatmentResponsePrediction } from '@domain/types/clinical/treatme
 // Removed unused NeuralImpactRating, TreatmentType imports
 import type { RiskAssessment } from '@domain/types/clinical/risk';
 
-// Import DetailLevel from AdaptiveLOD
-import type { DetailLevel } from '@presentation/common/AdaptiveLOD';
 
 // Domain models
 import type {
@@ -158,7 +156,6 @@ const BrainVisualizationContainerInternal: React.FC<BrainVisualizationContainerP
   );
   const [showDetails, setShowDetails] = useState<boolean>(!!initialSelectedRegionId);
   // Removed detailMode state variable
-  // Removed forceDetailLevel state variable
   const [showPerformanceStats, _setShowPerformanceStats] = useState(false); // Reverted prefix on state variable, kept on setter
   const [_performanceMetrics] = useState<any>(null); // Removed unused setPerformanceMetrics
   const [_showRegionLabels] = useState(true); // Removed unused state setter setShowRegionLabels

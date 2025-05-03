@@ -6,7 +6,7 @@
  * and providing resilient interaction with 3D visualizations.
  */
 
-import { Browser, Page, ElementHandle } from 'puppeteer';
+import { Page, ElementHandle } from 'puppeteer';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
@@ -51,7 +51,6 @@ export class WebGLTester {
   private page: Page;
   private options: WebGLTestOptions;
   private errors: string[] = [];
-  private warnings: string[] = [];
   private webglErrors: string[] = [];
   private performanceMetrics: Record<string, number[]> = {};
 
@@ -385,7 +384,6 @@ export class WebGLTester {
    */
   clearErrors(): void {
     this.errors = [];
-    this.warnings = [];
     this.webglErrors = [];
   }
   

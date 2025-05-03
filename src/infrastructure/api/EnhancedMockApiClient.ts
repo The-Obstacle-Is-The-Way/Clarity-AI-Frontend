@@ -10,7 +10,7 @@ import type { ApiPatient } from './ApiClient.runtime';
 // import { mockApi, getMockDb } from './mockApi';
 import { type User, UserRole, Permission } from '@domain/types/auth/auth';
 // import { type ApiError, type ApiResponse } from './types'; // Import ApiError as type only
-import type { BrainModel, ScannerMachine, Vector3D } from '@domain/types';
+import type { BrainModel, Vector3D } from '@domain/types';
 import type { BrainRegion, BrainScan, NeuralConnection } from '@domain/types/brain/models';
 
 // Mock User Data (align with domain User type)

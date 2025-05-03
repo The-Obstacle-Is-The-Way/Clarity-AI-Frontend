@@ -6,7 +6,7 @@ import { Button } from '@/presentation/atoms';
 import { Input } from '@/presentation/atoms';
 import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
 import { Terminal, PlusCircle } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import type { PaginatedPatientsResponse } from '@domain/patients/patientTypes';
 
 /**

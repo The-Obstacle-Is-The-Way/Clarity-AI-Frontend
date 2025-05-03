@@ -6,7 +6,7 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
-import { Vector3, Color } from 'three';
+import { Color } from 'three';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { NeuralControlPanel } from './NeuralControlPanel';
 import { VisualizationErrorBoundary } from './VisualizationErrorBoundary';
@@ -18,7 +18,8 @@ import type { VisualizationSettings } from '@domain/types/brain/visualization';
 // Neural connection component
 // This component is currently unused but kept for future reference
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const NeuralConnectionComponent = React.memo(({ start, end, strength, isActive }: { start: Vector3; end: Vector3; strength: number; isActive: boolean }) => {
+/*
+const _NeuralConnectionComponent = React.memo(({ start, end, strength, isActive }: { start: Vector3; end: Vector3; strength: number; isActive: boolean }) => {
   const ref = useRef<any>();
 
   useEffect(() => {
@@ -50,6 +51,7 @@ const NeuralConnectionComponent = React.memo(({ start, end, strength, isActive }
     </mesh>
   );
 });
+*/
 
 // Neural region component
 const NeuralRegion = React.memo(
@@ -174,8 +176,6 @@ const BrainModelContainer = ({
 const NeuralVisualization = React.memo(
   ({
     brainModel,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    renderMode,
     detailLevel,
     selectedRegions = [],
     onSelectRegion,
@@ -412,7 +412,7 @@ export const QuantumNeuralVisualization: React.FC<QuantumNeuralVisualizationProp
 }) => {
   // State
   const [brainModel, setBrainModel] = useState<BrainModel | null>(initialModel);
-  const [renderMode, setRenderMode] = useState(RenderMode.ANATOMICAL);
+  const [_renderMode, setRenderMode] = useState(RenderMode.ANATOMICAL);
   const [detailLevel, setDetailLevel] = useState<'low' | 'medium' | 'high' | 'ultra'>('high');
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -483,7 +483,6 @@ export const QuantumNeuralVisualization: React.FC<QuantumNeuralVisualizationProp
       <div className="h-[600px] bg-gradient-to-b from-slate-900 to-slate-800 rounded-lg overflow-hidden">
         <NeuralVisualization
           brainModel={brainModel}
-          renderMode={renderMode}
           detailLevel={detailLevel}
           selectedRegions={selectedRegions}
           onSelectRegion={handleSelectRegion}

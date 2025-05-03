@@ -14,7 +14,6 @@ import {
 } from '@/presentation/atoms/display/table';
 import { Terminal, FileText } from 'lucide-react';
 import type { ClinicalRecord } from '@domain/clinical-records/clinicalRecordTypes';
-import { ConfirmDialog } from '@/presentation/molecules/ConfirmDialog';
 
 interface ClinicalRecordListProps {
   /** The ID of the patient whose records are being displayed */
