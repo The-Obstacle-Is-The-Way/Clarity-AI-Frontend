@@ -220,6 +220,28 @@ class AuthClient {
       remainingTime: 30 * 60 * 1000, // 30 minutes in milliseconds
     };
   }
+
+  /**
+   * Verify Multi-Factor Authentication code.
+   */
+  async verifyMFA(email: string, mfaCode: string): Promise<AuthResult> {
+    // In a real implementation, this would call the backend MFA verification endpoint
+    console.log('Verifying MFA for:', email, 'with code:', mfaCode); 
+    // Simulate success for now, assuming code is valid and returns user/token
+    await this.apiClient.delay(300); // Simulate network delay
+    const user = this.mockUsers.find((u) => u.email === email);
+    if (user) {
+      const token: AuthToken = {
+        token: `mfa-verified-token-${Date.now()}`,
+        expiresAt: Date.now() + 60 * 60 * 1000, // 1 hour expiry
+      };
+      this.storage.setItem('authToken', JSON.stringify(token));
+      this.storage.setItem('user', JSON.stringify(user));
+      return { success: true, user, token, requiresMFA: false };
+    } else {
+      return { success: false, error: 'MFA verification failed: User not found after MFA.' };
+    }
+  }
 }
 
 // Export as singleton
