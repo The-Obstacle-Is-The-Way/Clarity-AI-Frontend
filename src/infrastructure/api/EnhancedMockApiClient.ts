@@ -7,7 +7,8 @@
 import axios from 'axios';
 import { IApiClient } from './IApiClient';
 import type { ApiPatient } from './ApiClient.runtime';
-import type { User } from '@application/context/AuthContext'; // Import User type
+import { mockApi, getMockDb } from './mockApi';
+import type { User } from '@domain/types/auth/auth';
 import { ApiError, ApiResponse } from './types'; // Assuming types for existing mocks
 import type { BrainModel, ScannerMachine, Vector3D } from '@domain/types';
 import type { BrainRegion, BrainScan, NeuralConnection } from '@domain/types/brain/models';

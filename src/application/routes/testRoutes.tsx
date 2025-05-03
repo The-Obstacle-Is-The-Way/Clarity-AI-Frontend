@@ -11,6 +11,7 @@ import { Route } from 'react-router-dom';
 import BrainVisualization from '@presentation/organisms/BrainVisualization';
 import NeuralControlPanel from '@presentation/organisms/NeuralControlPanel';
 import BrainModelContainer from '@presentation/organisms/BrainModelContainer';
+import type { BrainModel } from '@domain/types/brain/models';
 
 // Sample test data
 const testData = {
@@ -67,6 +68,7 @@ const testData = {
         type: 'excitatory',
         directionality: 'unidirectional',
         dataConfidence: 0.85,
+        activityLevel: Math.random(),
       },
       {
         id: 'pfc-hip',
@@ -76,6 +78,7 @@ const testData = {
         type: 'excitatory',
         directionality: 'unidirectional',
         dataConfidence: 0.85,
+        activityLevel: Math.random(),
       },
       {
         id: 'amy-hip',
@@ -85,6 +88,7 @@ const testData = {
         type: 'inhibitory',
         directionality: 'bidirectional',
         dataConfidence: 0.85,
+        activityLevel: Math.random(),
       },
     ],
     timestamp: new Date().toISOString(),
@@ -110,7 +114,7 @@ const BrainVisualizationTestPage = () => (
   <div className="min-h-screen bg-black flex flex-col justify-center items-center">
     <h1 className="text-white text-2xl mb-4">Brain Visualization Test</h1>
     <div className="w-full max-w-5xl aspect-[16/9] bg-gray-900 rounded-lg overflow-hidden">
-      <BrainVisualization brainModel={testData.brainModel} />
+      <BrainVisualization brainModel={testData.brainModel as BrainModel} />
     </div>
   </div>
 );

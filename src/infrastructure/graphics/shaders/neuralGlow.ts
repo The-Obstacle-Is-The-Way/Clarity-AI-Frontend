@@ -229,15 +229,11 @@ export function createNeuralGlowMaterial(
     pulseRate?: number;
     transparent?: boolean;
     depthWrite?: boolean;
-    blending?: number;
-    side?: number;
   } = {}
 ): ShaderMaterial {
   const {
     transparent = true,
     depthWrite = false,
-    blending = AdditiveBlending,
-    side = DoubleSide,
   } = options;
 
   const uniforms = createNeuralGlowUniforms(options);
@@ -249,7 +245,7 @@ export function createNeuralGlowMaterial(
     fragmentShader: neuralGlowFragmentShader,
     transparent,
     depthWrite,
-    // Use THREE constants for blending and side
+    // Use THREE constants for blending and side directly
     blending: THREE.AdditiveBlending as Blending,
     side: THREE.DoubleSide as Side,
   };

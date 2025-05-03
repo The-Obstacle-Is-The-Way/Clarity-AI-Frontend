@@ -15,26 +15,6 @@ import type { NeuralCorrelation as NeuralCorrelationType } from '@domain/types/c
 import { Brain, Activity, Zap } from 'lucide-react';
 
 /**
- * Neural correlation data with mathematical precision
- */
-interface NeuralCorrelation {
-  // Correlation strength (0.0 to 1.0)
-  strength: number;
-
-  // Description of the correlation
-  description?: string;
-
-  // Brain regions involved in the correlation
-  regions?: string[];
-
-  // Activity patterns observed
-  activityPatterns?: string[];
-
-  // Confidence level of the correlation (0.0 to 1.0)
-  confidence?: number;
-}
-
-/**
  * Props with neural-safe typing
  */
 interface NeuralCorrelationBadgeProps {
@@ -138,12 +118,12 @@ export const NeuralCorrelationBadge: React.FC<NeuralCorrelationBadgeProps> = ({
     );
   }, [correlation, formattedStrength]);
 
-  // Determine badge variant based on correlation strength/type
+  // Determine badge variant based on correlation strength
   const badgeVariant = useMemo(() => {
-    if (correlation.significance > 0.8) return 'destructive';
-    if (correlation.strength > 0.6) return 'warning'; // Assuming warning variant exists
+    if (correlation.strength >= 0.8) return 'destructive';
+    if (correlation.strength >= 0.5) return 'secondary';
     return 'default';
-  }, [correlation.strength, correlation.significance]); // Added significance dependency
+  }, [correlation.strength]);
 
   const handleClick = () => {
     if (onClick) {

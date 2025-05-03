@@ -294,8 +294,8 @@ export const mockApi = {
       throw new Error(`Brain model not found: ${modelId}`);
     }
 
-    // Generate activation data for each brain region
-    return (model.regions || []).map((region: { id: string }) => ({
+    // Generate activation data - Add 'name' to region type
+    return (model.regions || []).map((region: { id: string; name: string }) => ({
       regionId: region.id,
       regionName: region.name,
       activation: Math.random() * 0.9 + 0.1, // 0.1 - 1.0
@@ -337,13 +337,11 @@ export const mockApi = {
       throw new Error(`Brain model not found: ${modelId}`);
     }
 
-    // Generate visualization data based on the brain model
-    // In a real API, this would return complex data for 3D rendering
     return {
       regions: model.regions,
       connections:
-        model.regions?.flatMap((region: { id: string; connections?: { targetId: string }[] }) =>
-          (region.connections || []).map((conn: { targetId: string }) => ({
+        model.regions?.flatMap((region: { id: string; connections?: { targetId: string; strength: number }[] }) => // Add strength to region.connections type
+          (region.connections || []).map((conn: { targetId: string; strength: number }) => ({ // Add strength to conn type
             sourceId: region.id,
             targetId: conn.targetId,
             strength: conn.strength,

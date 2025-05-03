@@ -2,36 +2,42 @@ import type { ReactNode } from 'react';
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 // import { apiClient } from '@infrastructure/api/ApiGateway'; // No longer needed directly
 import { authService } from '@infrastructure/api/authService'; // Import the service
+// Import Permission enum and other types from domain
+import type { LoginCredentials, AuthResult, SessionVerification, Permission } from '@domain/types/auth/auth';
+// Import DomainUser and use it directly
+import type { User as DomainUser } from '@domain/types/auth/auth';
 
-// Define authentication types based on backend UserResponse
+// Remove local User definition
+/*
 export interface User {
   id: string;
   email: string;
   first_name: string | null;
   last_name: string | null;
-  roles: string[];
+  roles: string[]; 
   is_active: boolean;
-  // Removed permissions, align with backend /me response
 }
+*/
 
+// Use DomainUser in AuthState
 export interface AuthState {
   isAuthenticated: boolean;
-  user: User | null;
-  isLoading: boolean; // Tracks initial loading and login/logout process
+  user: DomainUser | null; // Use DomainUser
+  isLoading: boolean;
   error: string | null;
 }
 
-// Action types - Simplified, no token management
+// Use DomainUser in AuthAction payload
 type AuthAction =
-  | { type: 'AUTH_CHECK_START' } // For initial load
-  | { type: 'AUTH_CHECK_SUCCESS'; payload: User }
-  | { type: 'AUTH_CHECK_FAILURE' } // User not authenticated initially
+  | { type: 'AUTH_CHECK_START' }
+  | { type: 'AUTH_CHECK_SUCCESS'; payload: DomainUser } // Use DomainUser
+  | { type: 'AUTH_CHECK_FAILURE' }
   | { type: 'LOGIN_REQUEST' }
-  | { type: 'LOGIN_SUCCESS'; payload: User }
+  | { type: 'LOGIN_SUCCESS'; payload: DomainUser } // Use DomainUser
   | { type: 'LOGIN_FAILURE'; payload: string }
-  | { type: 'LOGOUT_REQUEST' } // Added for logout process
+  | { type: 'LOGOUT_REQUEST' }
   | { type: 'LOGOUT_SUCCESS' }
-  | { type: 'LOGOUT_FAILURE'; payload: string } // Added for logout errors
+  | { type: 'LOGOUT_FAILURE'; payload: string }
   | { type: 'CLEAR_ERROR' };
 
 // Initial auth state - isLoading is true initially to check auth status
@@ -89,15 +95,15 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-// Create context - Add missing methods/properties for EnhancedAuthProvider
-interface AuthContextType extends Omit<AuthState, 'token'> {
-  login: (username: string, password: string, rememberMe?: boolean) => Promise<void>;
+// Use DomainUser in AuthContextType if needed (e.g., if user was part of it)
+interface AuthContextType extends Omit<AuthState, 'token' | 'user'> { // Remove user from Omit if needed
+  user: DomainUser | null; // Explicitly add user with DomainUser type
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   logout: () => Promise<void>;
   clearError: () => void;
-  // Add from EnhancedAuthProvider
-  hasPermission: (permission: Permission) => boolean; 
-  extendSession: () => Promise<void>; 
-  getSessionExpiration: () => number; // Match return type from EnhancedAuthProvider
+  hasPermission: (permission: Permission) => boolean;
+  extendSession: () => Promise<void>;
+  getSessionExpiration: () => number;
 }
 
 // Export AuthContext so it can be used for testing providers
@@ -112,13 +118,14 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
-  // Check authentication status on mount by calling /auth/me via authService
+  // Check authentication status
   const checkAuthStatus = useCallback(async () => {
     dispatch({ type: 'AUTH_CHECK_START' });
     try {
-      const user = await authService.getCurrentUser(); // Use service
+      const user = await authService.getCurrentUser();
       if (user && user.id) {
-        dispatch({ type: 'AUTH_CHECK_SUCCESS', payload: user });
+        // No cast needed if authService returns DomainUser compatible type
+        dispatch({ type: 'AUTH_CHECK_SUCCESS', payload: user }); 
       } else {
         throw new Error('Invalid user data received');
       }
@@ -131,22 +138,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  // Login function - Calls login endpoint via authService, then fetches user profile
-  const login = useCallback(async (username: string, password: string, rememberMe = false) => {
+  // Login function - pass email instead of username
+  const login = useCallback(async (email: string, password: string, rememberMe = false) => {
     dispatch({ type: 'LOGIN_REQUEST' });
     try {
-      // Step 1: Call the login endpoint via service.
-      await authService.login({ username, password, remember_me: rememberMe });
+      // Correct property name: rememberMe
+      await authService.login({ email, password, rememberMe: rememberMe });
 
-      // Step 2: If login successful, fetch user data via service
       const user = await authService.getCurrentUser();
       if (!user || !user.id) {
         throw new Error('Failed to fetch user data after login.');
       }
-
-      // Step 3: Update state with user data
-      dispatch({ type: 'LOGIN_SUCCESS', payload: user });
-    } catch (error: any) {
+      // No cast needed if authService returns DomainUser compatible type
+      dispatch({ type: 'LOGIN_SUCCESS', payload: user }); 
+    } catch (error: any) { // Keep error handling
       console.error('Login failed:', error);
       const errorMessage =
         error?.response?.data?.detail ||
@@ -176,12 +181,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'CLEAR_ERROR' });
   }, []);
 
-  // Context value
+  // --- Placeholder implementations for context methods --- 
+
+  const hasPermission = useCallback((permission: Permission): boolean => {
+    // Use state.user (which is DomainUser | null)
+    // Check domain user permissions array
+    console.warn('hasPermission check needs verification based on DomainUser structure');
+    return state.user?.permissions?.includes(permission) ?? false; 
+  }, [state.user]);
+
+  const extendSession = useCallback(async (): Promise<void> => {
+    // Placeholder: Call backend renew/extend endpoint via authService if available
+    console.warn('extendSession not implemented in AuthContext');
+    // Example: await authService.renewSession();
+    return Promise.resolve();
+  }, []);
+
+  const getSessionExpiration = useCallback((): number => {
+    // Placeholder: Needs logic to get actual expiration from cookie/storage/state
+    console.warn('getSessionExpiration not fully implemented in AuthContext');
+    return Date.now() + 60 * 60 * 1000; // Return placeholder (e.g., 1 hour from now)
+  }, []);
+
+  // Context value (state already contains user as DomainUser | null)
   const contextValue: AuthContextType = {
-    ...state,
+    ...state, 
     login,
     logout,
     clearError,
+    hasPermission,
+    extendSession,
+    getSessionExpiration,
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

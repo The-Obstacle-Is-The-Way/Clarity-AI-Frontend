@@ -39,14 +39,10 @@ const PatientDetailCard: React.FC<PatientDetailCardProps> = ({ patient }) => {
         <DetailItem 
           label="Status" 
           value={
-            <Badge variant={patient.is_active ? 'success' : 'destructive'}>
-              {patient.is_active ? 'Active' : 'Inactive'}
+            <Badge variant={patient.status === 'active' ? 'secondary' : 'destructive'}>
+              {patient.status.charAt(0).toUpperCase() + patient.status.slice(1).replace('_', ' ')}
             </Badge>
           }
-        />
-        <DetailItem
-          label="Assigned Clinician"
-          value={patient.assigned_clinician_id || 'N/A'}
         />
         <DetailItem label="Last Updated" value={new Date(patient.updated_at).toLocaleString()} />
         {/* Example: <DetailItem label="Primary Diagnosis" value={patient.primary_diagnosis_code} /> */}
