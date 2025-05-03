@@ -17,6 +17,21 @@ export const handlers = [
     }, { status: 200 });
   }),
   
+  // Add the new handler for /auth/me
+  http.get('/api/v1/auth/me', () => {
+    return HttpResponse.json(
+      {
+        id: 'mock-user-id',
+        email: 'mockuser@novamind.ai',
+        name: 'Mock User',
+        role: 'doctor', // Assuming a default role for tests
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      { status: 200 }
+    );
+  }),
+  
   // Patient endpoints
   http.get('/api/v1/patients', () => {
     return HttpResponse.json({
