@@ -1,11 +1,13 @@
-import React, { useState } from 'react'; // Removed unused useEffect
+import React from 'react'; // Removed unused useState
 
 // Import components from index files for better organization following clean architecture
-import { useTheme } from '@hooks/useTheme'; // Correct hook path
+import { useTheme } from '@/application/hooks/useTheme'; // Corrected alias
 import type { ThemeMode } from '@domain/types/theme'; // Changed from type-only import
-import { DocumentTitle, Card, Button } from '@presentation/atoms';
-import { Header } from '@presentation/molecules';
-import { Tabs, TabsContent } from '@presentation/atoms/Tabs';
+// Remove unused imports
+// import { DocumentTitle, Card, Button } from '@presentation/atoms';
+// import { Header } from '@presentation/molecules';
+// Correct Tabs import path
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'; // Use correct path
 
 /**
  * Settings page component
@@ -13,85 +15,21 @@ import { Tabs, TabsContent } from '@presentation/atoms/Tabs';
  * This page allows users to configure application settings, preferences, and account details
  */
 const Settings: React.FC = () => {
-  // Removed unused isDarkMode, toggleDarkMode
   const { theme, setTheme } = useTheme();
-  // Add state to track if settings have changed
-  const [isDirty, setIsDirty] = useState(false);
-  // Removed unused selectedTheme state
-  const [notificationSettings, setNotificationSettings] = useState({
-    emailAlerts: true,
-    smsAlerts: false,
-    riskAlerts: true,
-    treatmentAlerts: true,
-    outcomeAlerts: true,
-  });
-  const [dataPrivacySettings, setDataPrivacySettings] = useState({
-    anonymizeData: true,
-    shareForResearch: false,
-    dataRetentionPeriod: '1-year',
-  });
-  const [visualizationSettings, setVisualizationSettings] = useState({
-    showConfidenceIntervals: true,
-    defaultModelView: '3d',
-    colorMode: 'clinical',
-  });
+  // Remove unused state and handlers
+  // const [isDirty, setIsDirty] = useState(false);
+  // const [notificationSettings, setNotificationSettings] = useState({ ... });
+  // const [dataPrivacySettings, setDataPrivacySettings] = useState({ ... });
+  // const [visualizationSettings, setVisualizationSettings] = useState({ ... });
+  // const handleThemeChange = (...) => { ... };
+  // const handleNotificationChange = (...) => { ... };
+  // const handleDataPrivacyChange = (...) => { ... };
+  // const handleVisualizationChange = (...) => { ... };
+  // const handleSaveSettings = () => { ... };
 
-  // Theme toggle handler
-  const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const themeValue = e.target.value as ThemeMode; // Use ThemeMode type
-    setTheme(themeValue);
-    setIsDirty(true); // Mark as dirty
-  };
-
-  // Notification settings handler
-  const handleNotificationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setNotificationSettings((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
-    setIsDirty(true); // Mark as dirty
-  };
-
-  // Data privacy settings handler
-  const handleDataPrivacyChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
-
-    setDataPrivacySettings((prev) => ({
-      ...prev,
-      [name]: newValue,
-    }));
-    setIsDirty(true); // Mark as dirty
-  };
-
-  // Visualization settings handler
-  const handleVisualizationChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type } = e.target;
-    const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
-
-    setVisualizationSettings((prev) => ({
-      ...prev,
-      [name]: newValue,
-    }));
-    setIsDirty(true); // Mark as dirty
-  };
-
-  // Save all settings
-  const handleSaveSettings = () => {
-    // In a real app, we would call the API to save user settings
-    console.log('Saving settings...');
-    console.log({
-      theme,
-      notificationSettings,
-      dataPrivacySettings,
-      visualizationSettings,
-    });
-
-    setIsDirty(false); // Reset dirty state after saving
-    alert('Settings saved successfully!');
+  // Simplified theme change for example content
+  const exampleThemeChange = (value: string) => {
+    setTheme(value as ThemeMode);
   };
 
   return (
@@ -99,26 +37,53 @@ const Settings: React.FC = () => {
       <h1 className="text-3xl font-bold">Settings</h1>
 
       {/* Tabs for different settings sections */}
-      <Tabs defaultValue="profile" className="w-full">
-        {/* ... TabsList ... */}
+      <Tabs defaultValue="appearance" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="appearance">Appearance</TabsTrigger>
+          <TabsTrigger value="data">Data & Privacy</TabsTrigger>
+        </TabsList>
 
-        {/* Profile Settings Tab */}
+        {/* Profile Settings Tab Example */}
         <TabsContent value="profile">
-          {/* ... Profile content ... */}
+          <div className="p-4 border rounded-md">
+            <h3 className="text-lg font-medium mb-2">Profile Settings</h3>
+            <p>User profile configuration options would go here (e.g., change password, name).</p>
+            {/* Placeholder for actual form/components */}
+          </div>
         </TabsContent>
 
-        {/* Appearance Settings Tab */}
+        {/* Appearance Settings Tab Example */}
         <TabsContent value="appearance">
-          {/* ... Appearance content ... */}
+          <div className="p-4 border rounded-md space-y-4">
+            <h3 className="text-lg font-medium">Appearance Settings</h3>
+            <div>
+              <label htmlFor="theme-select" className="block text-sm font-medium mb-1">
+                Theme
+              </label>
+              <select
+                id="theme-select"
+                value={theme}
+                onChange={(e) => exampleThemeChange(e.target.value)}
+                className="w-full p-2 border rounded-md bg-background"
+              >
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                {/* Add other theme options if available */}
+              </select>
+            </div>
+            {/* Add other appearance settings here */}
+          </div>
         </TabsContent>
 
-        {/* Data Settings Tab */}
+        {/* Data Settings Tab Example */}
         <TabsContent value="data">
-          {/* ... Data content ... */}
+          <div className="p-4 border rounded-md">
+            <h3 className="text-lg font-medium mb-2">Data & Privacy Settings</h3>
+            <p>Data management, export, and privacy controls would go here.</p>
+            {/* Placeholder for actual form/components */}
+          </div>
         </TabsContent>
-
-        {/* Add more TabsContent for other settings sections */}
-
       </Tabs>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { ProtectedRoute } from './ProtectedRoute';
+import ProtectedRoute from './ProtectedRoute';
 
 // Non-lazy loaded page (Login is often needed immediately)
 import LoginPage from '@presentation/pages/LoginPage';

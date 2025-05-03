@@ -3,59 +3,22 @@
  * Advanced neural visualization with quantum-level precision and AI-driven insights
  */
 
-import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Environment, useGLTF } from '@react-three/drei';
-import { Physics, usePlane, useBox } from '@react-three/cannon';
-import { Vector3, Color, MathUtils } from 'three';
-import { motion } from 'framer-motion';
-import Stats from 'stats.js';
+import { OrbitControls, Environment } from '@react-three/drei';
+import { Vector3, Color } from 'three';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from '@presentation/atoms';
+} from '@/components/ui/card';
 import { NeuralControlPanel } from './NeuralControlPanel';
 import { VisualizationErrorBoundary } from './VisualizationErrorBoundary';
 import { RenderMode } from '@domain/types/brain/visualization';
 import type { BrainModel, BrainRegion, NeuralConnection } from '@domain/types/brain/models';
-import type { ActivationLevel } from '@domain/types/brain/activity';
-
-// Custom hook for performance monitoring
-const usePerformanceMonitor = () => {
-  const statsRef = useRef<Stats | null>(null);
-
-  useEffect(() => {
-    // Initialize stats.js
-    const stats = new Stats();
-    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    document.body.appendChild(stats.dom);
-    statsRef.current = stats;
-
-    // Position the stats panel in the lower right corner
-    stats.dom.style.position = 'absolute';
-    stats.dom.style.bottom = '0px';
-    stats.dom.style.right = '0px';
-    stats.dom.style.left = 'auto';
-    stats.dom.style.top = 'auto';
-
-    return () => {
-      document.body.removeChild(stats.dom);
-    };
-  }, []);
-
-  useFrame(() => {
-    statsRef.current?.begin();
-    return () => {
-      statsRef.current?.end();
-    };
-  });
-
-  return null;
-};
+import ConnectionLine from '@/presentation/atoms/data-visualization/ConnectionLine';
+import type { VisualizationSettings } from '@domain/types/brain/visualization';
 
 // Neural connection component
 const NeuralConnection = React.memo(({ start, end, strength, isActive }: any) => {
@@ -63,7 +26,6 @@ const NeuralConnection = React.memo(({ start, end, strength, isActive }: any) =>
 
   useEffect(() => {
     if (ref.current) {
-      const direction = new Vector3().subVectors(end, start).normalize();
       ref.current.position.copy(start);
       ref.current.lookAt(end);
       ref.current.scale.z = new Vector3().subVectors(end, start).length();
@@ -149,7 +111,7 @@ const NeuralRegion = React.memo(
 );
 
 // Brain model container
-const BrainModelContainer = ({ brainModel, selectedRegions, onSelectRegion, renderMode }: any) => {
+const BrainModelContainer = ({ brainModel, selectedRegions, onSelectRegion, visualizationSettings }: any) => {
   const { camera } = useThree();
 
   useEffect(() => {
@@ -190,12 +152,15 @@ const BrainModelContainer = ({ brainModel, selectedRegions, onSelectRegion, rend
         }
 
         return (
-          <NeuralConnection
+          <ConnectionLine
             key={connection.id}
-            start={sourceRegion.position}
-            end={targetRegion.position}
+            id={connection.id}
+            startPosition={sourceRegion.position}
+            endPosition={targetRegion.position}
             strength={connection.strength}
-            isActive={connection.activityLevel > 0.5}
+            activityLevel={connection.activityLevel || 0}
+            connectingRegions={[connection.sourceId, connection.targetId]}
+            visualizationSettings={visualizationSettings}
           />
         );
       })}
@@ -205,7 +170,7 @@ const BrainModelContainer = ({ brainModel, selectedRegions, onSelectRegion, rend
 
 // Main neural visualization component with quality presets
 const NeuralVisualization = React.memo(
-  ({ brainModel, renderMode, detailLevel, selectedRegions = [], onSelectRegion }: any) => {
+  ({ brainModel, renderMode, detailLevel, selectedRegions = [], onSelectRegion, visualizationSettings }: any) => {
     const dprSettings = useMemo(() => {
       // Adjust detail level based on settings
       switch (detailLevel) {
@@ -237,9 +202,9 @@ const NeuralVisualization = React.memo(
         <VisualizationErrorBoundary fallback={<LoadingFallback />}>
           <BrainModelContainer
             brainModel={brainModel}
-            renderMode={renderMode}
             selectedRegions={selectedRegions}
             onSelectRegion={onSelectRegion}
+            visualizationSettings={visualizationSettings}
           />
         </VisualizationErrorBoundary>
         <OrbitControls dampingFactor={0.05} rotateSpeed={0.5} zoomSpeed={0.8} />
@@ -384,9 +349,6 @@ const AIInsightPanel = ({ brainModel, selectedRegions }: any) => {
           </svg>
           Quantum AI Insights
         </CardTitle>
-        <CardDescription className="text-slate-400">
-          Neural pattern analysis with {insights[0].confidence * 100}% confidence
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
@@ -418,15 +380,21 @@ interface QuantumNeuralVisualizationProps {
   className?: string;
   patientId?: string;
   brainModelId?: string;
+  initialModel: BrainModel | null;
+  visualizationSettings: VisualizationSettings;
+  onRegionSelect?: (regionId: string) => void;
 }
 
 export const QuantumNeuralVisualization: React.FC<QuantumNeuralVisualizationProps> = ({
   className = '',
   patientId,
   brainModelId,
+  initialModel,
+  visualizationSettings,
+  onRegionSelect
 }) => {
   // State
-  const [brainModel, setBrainModel] = useState<BrainModel | null>(null);
+  const [brainModel, setBrainModel] = useState<BrainModel | null>(initialModel);
   const [renderMode, setRenderMode] = useState(RenderMode.ANATOMICAL);
   const [detailLevel, setDetailLevel] = useState<'low' | 'medium' | 'high' | 'ultra'>('high');
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
@@ -455,7 +423,10 @@ export const QuantumNeuralVisualization: React.FC<QuantumNeuralVisualizationProp
         return [...prev, regionId];
       }
     });
-  }, []);
+    if (onRegionSelect) {
+      onRegionSelect(regionId);
+    }
+  }, [onRegionSelect]);
 
   if (isLoading) {
     return (
@@ -496,6 +467,7 @@ export const QuantumNeuralVisualization: React.FC<QuantumNeuralVisualizationProp
           detailLevel={detailLevel}
           selectedRegions={selectedRegions}
           onSelectRegion={handleSelectRegion}
+          visualizationSettings={visualizationSettings}
         />
       </div>
 

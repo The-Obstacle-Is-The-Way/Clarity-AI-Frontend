@@ -1,42 +1,57 @@
 import React from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '@application/context/AuthContext';
-import MainLayout from '@presentation/templates/MainLayout';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/application/context/AuthContext';
+// Use import type as Permission is only used as a type
+import type { Permission } from '@domain/types/auth/auth';
+import LoadingIndicator from '@/presentation/atoms/feedback/LoadingIndicator';
+
+interface ProtectedRouteProps {
+  children: React.ReactElement;
+  requiredPermission?: Permission; // Optional permission requirement
+}
 
 /**
- * Protected Route Component
+ * ProtectedRoute Component
  *
- * Ensures routes are only accessible to authenticated users.
- * Redirects unauthenticated users to the login page.
- * Wraps authenticated routes with the MainLayout.
+ * Handles authentication and optional permission checks before rendering
+ * its children. Redirects to login if not authenticated or lacks permissions.
  */
-export const ProtectedRoute: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredPermission }) => {
+  const { isAuthenticated, isLoading, user, hasPermission } = useAuth();
   const location = useLocation();
 
-  // Show loading state while checking authentication
   if (isLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-background dark:bg-background">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary-600"></div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Verifying authentication...</p>
-        </div>
-      </div>
-    );
+    // Show loading indicator while checking auth status
+    return <LoadingIndicator />;
   }
 
-  // If not authenticated, redirect to login
   if (!isAuthenticated) {
+    // Redirect to login page if not authenticated
+    // Pass the original location to redirect back after login
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If authenticated, render the child routes within the MainLayout
-  return (
-    <MainLayout>
-      <Outlet />
-    </MainLayout>
-  );
+  // Check for required permission if provided
+  if (requiredPermission && !hasPermission(requiredPermission)) {
+    // Redirect to an unauthorized page or show an error message
+    console.warn(
+      `User ${user?.id} lacks permission ${requiredPermission} for ${location.pathname}`
+    );
+    // You might want a dedicated "Unauthorized" page component here
+    return <Navigate to="/unauthorized" replace />;
+    // Alternatively, display an inline error:
+    // return (
+    //   <div>
+    //     <h1>Access Denied</h1>
+    //     <p>You do not have the required permissions to view this page.</p>
+    //   </div>
+    // );
+  }
+
+  // If authenticated and has necessary permissions (or none required),
+  // render the children components.
+  // The actual layout (like MainLayout) should wrap the <Outlet /> in the main App or router setup.
+  return children;
 };
 
 export default ProtectedRoute;
