@@ -145,6 +145,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return Math.max(0, sessionExpiresAt - now);
   }, [isAuthenticated, sessionExpiresAt]);
 
+  // Add getSessionExpiration function that returns Date | null
+  const getSessionExpiration = useCallback((): Date | null => {
+    if (!isAuthenticated || sessionExpiresAt === 0) {
+      return null;
+    }
+    return new Date(sessionExpiresAt);
+  }, [isAuthenticated, sessionExpiresAt]);
+
   /**
    * Renew current session
    */
@@ -233,6 +241,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       checkSessionExpiration,
       renewSession,
       hasPermission,
+      getSessionExpiration,
     }),
     [
       isAuthenticated,
@@ -244,6 +253,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       checkSessionExpiration,
       renewSession,
       hasPermission,
+      getSessionExpiration,
     ]
   );
 
