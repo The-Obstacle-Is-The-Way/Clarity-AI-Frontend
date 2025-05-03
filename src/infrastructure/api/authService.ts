@@ -45,6 +45,18 @@ export const authService = {
     return apiClient.get<User>('/api/v1/auth/me');
   },
 
+  /**
+   * Attempts to silently refresh the authentication tokens using the existing
+   * HttpOnly refresh cookie. If the refresh succeeds, the backend will set new
+   * cookies on the response.
+   *
+   * IMPORTANT: The frontend does not need to store or parse the returned JSON
+   * body – the presence of a 2xx response is sufficient.
+   */
+  refreshToken: async (): Promise<void> => {
+    await apiClient.post<void>('/api/v1/auth/refresh');
+  },
+
   // Note: Refresh token logic is handled via HttpOnly cookie by the browser/
   // backend. No explicit frontend call needed in this service for basic flow.
 };

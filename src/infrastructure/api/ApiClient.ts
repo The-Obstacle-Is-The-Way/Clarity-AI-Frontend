@@ -20,6 +20,11 @@ import type { IApiClient } from './IApiClient'; // Add this import
 // Request options type
 export interface RequestOptions extends RequestInit {
   params?: Record<string, any>;
+  /**
+   * Internal flag to indicate that this request is a retry after a silent token
+   * refresh. This prevents infinite refresh→retry loops.
+   */
+  _isRetry?: boolean;
 }
 
 // Response interceptor type
@@ -241,11 +246,30 @@ export class ApiClient implements IApiClient {
     } catch (error: any) {
       console.error('[ApiClient] Fetch error:', error);
 
-      // Show user-friendly toast notification
+      // Attempt silent refresh on 401 (unauthorized)
+      if (error instanceof HttpError && error.status === 401 && !options._isRetry) {
+        try {
+          // Attempt to refresh the token using HttpOnly cookies
+          await (await import('./authService')).authService.refreshToken();
+
+          // Retry the original request once with _isRetry flag to avoid loops
+          const retryOptions: RequestOptions = { ...options, _isRetry: true };
+          return await this.fetch<T>(url, retryOptions);
+        } catch (refreshErr) {
+          console.warn('[ApiClient] Silent refresh failed, performing logout');
+          // On refresh failure, propagate original 401 after optional logout actions
+          try {
+            const { authService } = await import('./authService');
+            await authService.logout();
+          } catch (logoutErr) {
+            console.error('[ApiClient] Logout after failed refresh threw error', logoutErr);
+          }
+        }
+      }
+
+      // Show user-friendly toast notification (skip if we attempted refresh)
       if (error instanceof HttpError) {
-        // Handle specific HTTP errors
         if (error.status === 401) {
-          // Special handling for unauthorized? AuthContext usually handles redirects.
           toast.error(error.message || 'Authentication failed. Please log in again.');
         } else if (error.status === 403) {
           toast.error(error.message || 'Permission denied.');
