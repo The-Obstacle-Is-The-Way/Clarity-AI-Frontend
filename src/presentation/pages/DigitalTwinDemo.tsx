@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/presentation/atoms";
 import { useBrainVisualization } from '@hooks/useBrainVisualization';
 import { RenderMode } from '@domain/types/brain/visualization';
 import BrainVisualization from '@presentation/organisms/BrainVisualization';
 import BiometricMonitorPanel from "@presentation/organisms/BiometricMonitorPanel";
 import ClinicalTimelinePanel from "@presentation/organisms/ClinicalTimelinePanel";
+import { useParams, useSearchParams } from 'react-router-dom';
+import { Canvas } from '@react-three/fiber';
 
 /**
  * DigitalTwin Demo Page
