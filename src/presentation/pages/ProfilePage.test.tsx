@@ -1,12 +1,12 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProfilePage from './ProfilePage';
-import { useAuth } from '@application/hooks/useAuth'; // Adjust mock path as needed
-import { BrowserRouter } from 'react-router-dom'; // Needed if <Link> is used inside
+import { useAuth } from '@application/hooks/useAuth'; // Corrected path to hooks
+import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.unified'; // Import unified render
 
 // Mock the useAuth hook
-vi.mock('@application/hooks/useAuth');
+vi.mock('@application/hooks/useAuth'); // Mock the hook implementation
 
 // Mock presentation components if they interfere with basic rendering tests
 vi.mock('@presentation/atoms/card', () => ({
@@ -24,27 +24,30 @@ vi.mock('@presentation/atoms/badge', () => ({
 describe('ProfilePage', () => {
   const mockUseAuth = useAuth as jest.Mock;
 
-  it('should render loading state initially', () => {
+  // Use beforeEach to reset and apply mocks before each test
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // Default mock state (loading)
     mockUseAuth.mockReturnValue({ user: null, isLoading: true });
-    render(
-        <BrowserRouter>
-            <ProfilePage />
-        </BrowserRouter>
-    );
+  });
+
+  it('should render loading state initially', () => {
+    // Mock is already set in beforeEach
+    renderWithProviders(<ProfilePage />); // Use renderWithProviders
     expect(screen.getByText(/Loading profile.../i)).toBeInTheDocument();
   });
 
-  it('should render error state if loading is finished but user is null', () => {
+  it('should render error state if loading is finished but user is null', async () => { // Make test async
+    // Set mock for this specific test
     mockUseAuth.mockReturnValue({ user: null, isLoading: false });
-    render(
-        <BrowserRouter>
-            <ProfilePage />
-        </BrowserRouter>
-    );
-    expect(screen.getByText(/Error: User data not found/i)).toBeInTheDocument();
+    renderWithProviders(<ProfilePage />); // Use renderWithProviders
+    // Wait for the component to potentially update after loading finishes
+    await waitFor(() => {
+      expect(screen.getByText(/Error: User data not found/i)).toBeInTheDocument();
+    });
   });
 
-  it('should render user profile information when data is loaded', async () => {
+  it('should render user profile information when data is loaded', async () => { // Make test async
     const mockUser = {
       id: '1',
       email: 'test@example.com',
@@ -55,20 +58,17 @@ describe('ProfilePage', () => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
+    // Set mock for this specific test
     mockUseAuth.mockReturnValue({ user: mockUser, isLoading: false });
 
-    render(
-        <BrowserRouter>
-            <ProfilePage />
-        </BrowserRouter>
-    );
+    renderWithProviders(<ProfilePage />); // Use renderWithProviders
 
-    // Wait for potential async updates if any (though not strictly needed here)
-    // await waitFor(() => {
+    // Wait for the component to update and render the user data
+    await waitFor(() => {
         expect(screen.getByText('User Profile')).toBeInTheDocument();
-    // });
+    });
 
-    // Check for key user details
+    // Check for key user details (now within waitFor)
     expect(screen.getByText(mockUser.email)).toBeInTheDocument();
     expect(screen.getByText(mockUser.first_name)).toBeInTheDocument();
     expect(screen.getByText(mockUser.last_name)).toBeInTheDocument();
@@ -83,7 +83,7 @@ describe('ProfilePage', () => {
     expect(statusBadge).toHaveAttribute('data-variant', 'default');
   });
 
-    it('should handle missing optional fields gracefully', () => {
+    it('should handle missing optional fields gracefully', async () => { // Make test async
     const mockUserMinimal = {
       id: '2',
       email: 'minimal@example.com',
@@ -94,15 +94,15 @@ describe('ProfilePage', () => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
+    // Set mock for this specific test
     mockUseAuth.mockReturnValue({ user: mockUserMinimal, isLoading: false });
 
-    render(
-        <BrowserRouter>
-            <ProfilePage />
-        </BrowserRouter>
-    );
+    renderWithProviders(<ProfilePage />); // Use renderWithProviders
 
-    expect(screen.getByText(mockUserMinimal.email)).toBeInTheDocument();
+    // Wait for the component to update
+    await waitFor(() => {
+        expect(screen.getByText(mockUserMinimal.email)).toBeInTheDocument();
+    });
     // Check that placeholders or lack of crash occurs
     expect(screen.getAllByText('N/A').length).toBe(2); // For first and last name
     expect(screen.getByText('Inactive')).toBeInTheDocument();

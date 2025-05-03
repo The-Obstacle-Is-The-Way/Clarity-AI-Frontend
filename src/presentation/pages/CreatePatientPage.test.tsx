@@ -10,13 +10,16 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 // Mock dependencies
 vi.mock('@application/hooks/useCreatePatient');
 vi.mock('@presentation/organisms/PatientForm', () => ({
-  // Mock form that captures onSubmit prop
+  // Mock form that captures onSubmit prop and respects isLoading
   default: ({ onSubmit, isLoading }: { onSubmit: (data: any) => void; isLoading?: boolean }) => (
     <form data-testid="mock-patient-form" onSubmit={(e) => {
         e.preventDefault();
-        // Simulate submitting some data
-        onSubmit({ first_name: 'Mocked', last_name: 'Submit', date_of_birth: '2024-01-01', status: 'active' });
+        // Simulate submitting some data only if not loading
+        if (!isLoading) {
+          onSubmit({ first_name: 'Mocked', last_name: 'Submit', date_of_birth: '2024-01-01', status: 'active' });
+        }
     }}>
+      {/* Ensure button is disabled based on isLoading prop */}
       <button type="submit" disabled={isLoading ?? false}>Submit Mock Form</button>
     </form>
   ),
@@ -58,7 +61,7 @@ describe('CreatePatientPage', () => {
     // Reset mock return value for each test
     mockUseCreatePatient.mockReturnValue({
       mutate: mockMutate,
-      isLoading: false,
+      isPending: false,
       error: null,
       isError: false,
     });
@@ -94,7 +97,7 @@ describe('CreatePatientPage', () => {
             options.onSuccess({ id: 'new-id', first_name: 'New', last_name: 'Patient' /* ...other fields */ });
         }
     });
-    mockUseCreatePatient.mockReturnValue({ mutate: mockMutate, isLoading: false, error: null, isError: false });
+    mockUseCreatePatient.mockReturnValue({ mutate: mockMutate, isPending: false, error: null, isError: false });
 
     renderWithProviders();
     const submitButton = screen.getByRole('button', { name: /Submit Mock Form/i });
@@ -106,14 +109,14 @@ describe('CreatePatientPage', () => {
   });
 
     it('should display loading state on the form button during mutation', () => {
-        mockUseCreatePatient.mockReturnValue({ mutate: mockMutate, isLoading: true, error: null, isError: false });
+        mockUseCreatePatient.mockReturnValue({ mutate: mockMutate, isPending: true, error: null, isError: false });
         renderWithProviders();
         expect(screen.getByRole('button', { name: /Submit Mock Form/i })).toBeDisabled();
     });
 
     it('should display error message if mutation fails', () => {
         const error = new Error('Network Error');
-        mockUseCreatePatient.mockReturnValue({ mutate: mockMutate, isLoading: false, error: error, isError: true });
+        mockUseCreatePatient.mockReturnValue({ mutate: mockMutate, isPending: false, error: error, isError: true });
         renderWithProviders();
         expect(screen.getByText(/Creation Failed/i)).toBeInTheDocument();
         expect(screen.getByText(/Network Error/i)).toBeInTheDocument();

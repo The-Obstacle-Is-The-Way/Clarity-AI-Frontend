@@ -27,7 +27,7 @@ vi.mock('@presentation/atoms/Tooltip', () => ({
   TooltipTrigger: ({ children }: any) => <div>{children}</div>,
 }));
 vi.mock('@presentation/atoms/Button', () => ({
-  default: (props: any) => <button {...props} />
+  Button: (props: any) => <button {...props}>{props.children}</button>
 }));
 vi.mock('framer-motion', async (importOriginal) => {
     const actual = await importOriginal() as any;

@@ -2,6 +2,7 @@
  * NOVAMIND Neural Test Suite
  * BrainModelViewer testing with quantum precision
  */
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 
 import { screen } from '@testing-library/react';
@@ -10,7 +11,7 @@ import '@testing-library/jest-dom'; // Removed unused render, fireEvent
 // Removed unused userEvent import
 import BrainModelViewer from './BrainModelViewer'; // Corrected to default import based on file export
 import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified';
-import { RenderMode } from '@domain/types/brain/visualization'; // Import for mock
+import { RenderMode } from '@/domain/types/brain/visualization';
 // Removed unused BrainRegion import
 
 // Mock hooks used by the component
@@ -62,24 +63,58 @@ vi.mock('@application/hooks/useBrainVisualization', () => ({
 
 // Mock presentation components used by BrainModelViewer
 vi.mock('@presentation/atoms/Button', () => ({
-  default: (props: any) => <button {...props}>{props.children}</button>,
+  default: (props: React.ComponentProps<'button'>) => <button {...props}>{props.children}</button>,
 }));
 vi.mock('@presentation/atoms/Slider', () => ({
-  Slider: (props: any) => <input type="range" {...props} />,
+  Slider: (props: React.ComponentProps<'input'>) => <input type="range" {...props} />,
 }));
 vi.mock('@presentation/atoms/Popover', () => ({
-  Popover: ({ children }: any) => <div>{children}</div>,
-  PopoverContent: ({ children }: any) => <div>{children}</div>,
-  PopoverTrigger: ({ children }: any) => <button>{children}</button>,
+  Popover: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
+  PopoverContent: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
+  PopoverTrigger: ({ children }: React.PropsWithChildren) => <button>{children}</button>,
 }));
 vi.mock('@presentation/atoms/Checkbox', () => ({
-  Checkbox: (props: any) => <input type="checkbox" {...props} />,
+  Checkbox: (props: React.ComponentProps<'input'>) => <input type="checkbox" {...props} />,
 }));
 vi.mock('@presentation/atoms/Label', () => ({
-  Label: ({ children, ...props }: any) => <label {...props}>{children}</label>,
+  Label: ({ children, ...props }: React.ComponentProps<'label'>) => <label {...props}>{children}</label>,
 }));
 vi.mock('@presentation/organisms/BrainVisualization', () => ({
-  default: (props: any) => <div data-testid="brain-visualization-mock" {...props} />,
+  default: (props: React.PropsWithChildren<Record<string, unknown>>) => <div data-testid="brain-visualization-mock" {...props} />,
+}));
+
+// Mock R3F and Drei components
+vi.mock('@react-three/fiber', () => ({
+  Canvas: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="mock-canvas">{children}</div>
+  ),
+}));
+vi.mock('@react-three/drei', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...(actual as object),
+    OrbitControls: (props: React.PropsWithChildren<Record<string, unknown>>) => <div data-testid="mock-orbit-controls" {...props} />,
+    Environment: (props: React.PropsWithChildren<Record<string, unknown>>) => <div data-testid="mock-environment" {...props} />,
+    AdaptiveDpr: (props: React.PropsWithChildren<Record<string, unknown>>) => <div data-testid="mock-adaptive-dpr" {...props} />,
+    PerformanceMonitor: ({ onDecline: _onDecline, children }: { onDecline?: () => void; children: React.ReactNode }) => (
+      <div data-testid="mock-perf-monitor">{children}</div>
+    ), // Mock PerformanceMonitor
+  };
+});
+
+// Mock potentially problematic dependencies
+vi.mock('@presentation/organisms/BrainModelContainer', () => ({
+  default: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="mock-brain-model-container">{children}</div>
+  ),
+}));
+vi.mock('@presentation/common/VisualizationErrorBoundary', () => ({
+  default: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="mock-error-boundary">{children}</div>
+  ),
+}));
+vi.mock('@/presentation/atoms/LoadingIndicator', () => ({
+  default: () => <div data-testid="mock-loading-indicator">Loading...</div>,
 }));
 
 // Mock data with clinical precision
