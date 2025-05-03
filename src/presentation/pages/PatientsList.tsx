@@ -272,19 +272,17 @@ const PatientsList: React.FC = () => {
             </p>
           </div>
           <Button
-            variant="primary"
-            size="md"
-            icon={
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-            }
+            variant="default"
+            size="default"
           >
+            <svg className="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
             Add Patient
           </Button>
         </div>

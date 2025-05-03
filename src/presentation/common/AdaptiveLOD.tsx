@@ -1,4 +1,4 @@
-import { useThree } from '@react-three/fiber';
+import { useThree, useFrame } from '@react-three/fiber';
 import { useEffect, useState, ReactNode } from 'react';
 
 export type DetailLevel = 'low' | 'medium' | 'high';
@@ -41,11 +41,18 @@ const AdaptiveLOD: React.FC<AdaptiveLODProps> = ({
     // This would normally use a real FPS counter
     const interval = setInterval(() => {
       // For now, just use a placeholder value
-      setFps(gl.info.render?.fps || 60);
+      // setFps(gl.info.render?.fps || 60);
     }, 2000);
 
     return () => clearInterval(interval);
   }, [gl]);
+
+  useFrame(({ gl }) => {
+    if (gl.info.render) {
+      // Removed potentially incorrect fps calculation
+      // setFps(gl.info.render?.fps || 60);
+    }
+  });
 
   return <>{children}</>;
 };
