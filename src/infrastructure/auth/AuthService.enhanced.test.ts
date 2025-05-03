@@ -24,15 +24,21 @@ import { AuthTokens as AuthTokensDomain } from '../../domain/auth/AuthTokens';
 // Mock the API client module entirely BEFORE imports in the describe block
 vi.mock('./index', async (importOriginal) => {
   const actual = await importOriginal<typeof import('./index')>();
+  
+  // Create a mock for AuthApiClient
+  const mockAuthApiClient = vi.fn().mockImplementation(() => ({
+    login: vi.fn(),
+    logout: vi.fn(),
+    refreshToken: vi.fn(),
+    getCurrentUser: vi.fn(),
+  }));
+  
   return {
     ...actual,
-    // Keep original EnhancedAuthService, mock the client it uses
-    AuthApiClient: vi.fn().mockImplementation(() => ({
-      login: vi.fn(),
-      logout: vi.fn(),
-      refreshToken: vi.fn(),
-      getCurrentUser: vi.fn(),
-    })),
+    // Add EnhancedAuthService directly from the actual import
+    EnhancedAuthService: actual.EnhancedAuthService,
+    // Mock the auth client
+    AuthApiClient: mockAuthApiClient,
   };
 });
 
