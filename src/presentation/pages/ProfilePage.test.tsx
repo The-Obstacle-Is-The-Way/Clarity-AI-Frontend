@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import '@testing-library/jest-dom';
 import ProfilePage from './ProfilePage';
 import { AuthContext, type AuthContextType } from '@application/context/AuthContext';
 import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.unified';
