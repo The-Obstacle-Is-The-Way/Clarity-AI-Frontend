@@ -3,7 +3,7 @@ import React, { createContext, useContext, useReducer, useEffect, useCallback } 
 // import { apiClient } from '@infrastructure/api/ApiGateway'; // No longer needed directly
 import { authService } from '@infrastructure/api/authService'; // Import the service
 // Import Permission enum and other types from domain
-import type { LoginCredentials, AuthResult, SessionVerification, Permission } from '@domain/types/auth/auth';
+import type { Permission } from '@domain/types/auth/auth';
 // Import DomainUser and use it directly
 import type { User as DomainUser } from '@domain/types/auth/auth';
 
