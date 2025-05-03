@@ -16,6 +16,7 @@ export interface User {
   role: UserRole;
   permissions: Permission[];
   lastLogin?: Date;
+  profile?: any;
 }
 
 /**
@@ -64,6 +65,7 @@ export interface AuthResult {
   user?: User;
   token?: AuthToken;
   error?: string;
+  requiresMFA?: boolean;
 }
 
 /**
