@@ -1,5 +1,5 @@
 // src/application/hooks/useXGBoostPrediction.ts
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast'; // Assuming react-hot-toast
 
 import { runXGBoostPrediction as runXGBoostPredictionApi } from '@infrastructure/api/analyticsService';

@@ -4,14 +4,16 @@
  * Provides robust authentication state and methods to the application with
  * enhanced HIPAA compliance, 2FA, and client-side encryption.
  */
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext, type AuthContextType } from '@application/contexts/AuthContext';
+import { ApiClient } from '@infrastructure/api/ApiClient';
 import { authClient } from '@infrastructure/clients/authClient';
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient';
 import { encryptionService } from '@infrastructure/services/encryptionService';
 import { SessionTimeoutModal } from './SessionTimeoutModal';
 import type { User, Permission } from '@domain/types/auth/auth';
+import { authService } from '@application/services/authService';
+import type { AuthContextType, AuthProviderProps } from './authTypes'; // Keep this type import
 
 // Constants for session management
 const SESSION_WARNING_TIME = 5 * 60 * 1000; // 5 minutes warning before expiration
