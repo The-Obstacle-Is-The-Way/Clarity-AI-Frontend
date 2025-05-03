@@ -125,12 +125,6 @@ describe('EnhancedAuthService', () => {
     // The global setup's afterEach handles vi.clearAllMocks().
     vi.useFakeTimers(); // Use fake timers for consistent Date.now()
 
-    // Spy on AuthApiClient prototype methods
-    vi.spyOn(AuthApiClient.prototype, 'login').mockImplementation(mockLogin);
-    vi.spyOn(AuthApiClient.prototype, 'logout').mockImplementation(mockLogout);
-    vi.spyOn(AuthApiClient.prototype, 'refreshToken').mockImplementation(mockRefreshToken);
-    vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockImplementation(mockGetCurrentUser);
-    
     // Spy on JSDOM localStorage methods
     vi.spyOn(window.localStorage, 'getItem');
     vi.spyOn(window.localStorage, 'setItem');
@@ -296,8 +290,14 @@ describe('EnhancedAuthService', () => {
       // --- Setup ---
       const validTokens = { ...mockTokens, expiresAt: Date.now() + 3600000 }; // Expires in 1 hour
       window.localStorage.setItem('auth_tokens', JSON.stringify(validTokens));
+      // Ensure getCurrentUser resolves for initialization
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser);
+
       // Ensure initial state is correct
-      const initialState = await authService.initializeAuth();
+      let initialState;
+      await act(async () => {
+        initialState = await authService.initializeAuth();
+      });
       expect(initialState.isAuthenticated).toBe(true);
       expect(initialState.tokens?.accessToken).toBe(validTokens.accessToken);
 
@@ -318,8 +318,12 @@ describe('EnhancedAuthService', () => {
       const nearExpiryTokens = { ...soonToExpireTokens, expiresAt: nearExpiryTime };
       window.localStorage.setItem('auth_tokens', JSON.stringify(nearExpiryTokens));
       vi.setSystemTime(new Date()); // Ensure current time is used for comparison
-      // Initialize state
-      const initialState = await authService.initializeAuth();
+      // Initialize state - requires successful getCurrentUser mock
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser);
+      let initialState;
+      await act(async () => {
+        initialState = await authService.initializeAuth();
+      });
       expect(initialState.isAuthenticated).toBe(true);
       expect(initialState.tokens?.accessToken).toBe(nearExpiryTokens.accessToken);
 
@@ -348,8 +352,12 @@ describe('EnhancedAuthService', () => {
       const nearExpiryTokens = { ...soonToExpireTokens, expiresAt: nearExpiryTime };
       window.localStorage.setItem('auth_tokens', JSON.stringify(nearExpiryTokens));
       vi.setSystemTime(new Date());
-      // Initialize state
-      const initialState = await authService.initializeAuth();
+      // Initialize state - requires successful getCurrentUser mock
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser);
+      let initialState;
+      await act(async () => {
+        initialState = await authService.initializeAuth();
+      });
       expect(initialState.isAuthenticated).toBe(true);
 
       const mockRefreshTokenClient = vi
@@ -435,6 +443,8 @@ describe('EnhancedAuthService', () => {
         .mockResolvedValueOnce(expectedNewTokens);
 
       // Initialize the service - this should set the timeout internally
+      // Requires successful getCurrentUser mock
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser);
       let initState;
       await act(async () => {
         initState = await authService.initializeAuth();
@@ -469,7 +479,11 @@ describe('EnhancedAuthService', () => {
       // --- Setup ---
       window.localStorage.setItem('auth_tokens', JSON.stringify(mockTokens));
       // Initialize and verify logged-in state
-      const initialState = await authService.initializeAuth();
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser);
+      let initialState;
+      await act(async () => {
+        initialState = await authService.initializeAuth();
+      });
       expect(initialState.isAuthenticated).toBe(true);
 
       const mockLogoutClient = vi
@@ -498,7 +512,11 @@ describe('EnhancedAuthService', () => {
       // --- Setup ---
       window.localStorage.setItem('auth_tokens', JSON.stringify(mockTokens));
       // Initialize and verify logged-in state
-      const initialState = await authService.initializeAuth();
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser);
+      let initialState;
+      await act(async () => {
+        initialState = await authService.initializeAuth();
+      });
       expect(initialState.isAuthenticated).toBe(true);
 
       const mockLogoutClient = vi.spyOn(AuthApiClient.prototype, 'logout').mockResolvedValueOnce(undefined);
@@ -531,7 +549,11 @@ describe('EnhancedAuthService', () => {
       window.localStorage.setItem('auth_tokens', JSON.stringify(nearExpiryTokens));
       vi.setSystemTime(new Date());
       // Initialize state
-      const initialState = await authService.initializeAuth();
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser);
+      let initialState;
+      await act(async () => {
+        initialState = await authService.initializeAuth();
+      });
       expect(initialState.isAuthenticated).toBe(true);
 
       const mockRefreshTokenClient = vi
@@ -563,7 +585,11 @@ describe('EnhancedAuthService', () => {
       window.localStorage.setItem('auth_tokens', JSON.stringify(nearExpiryTokens));
       vi.setSystemTime(new Date());
       // Initialize state
-      const initialState = await authService.initializeAuth();
+      vi.spyOn(AuthApiClient.prototype, 'getCurrentUser').mockResolvedValueOnce(mockUser);
+      let initialState;
+      await act(async () => {
+        initialState = await authService.initializeAuth();
+      });
       expect(initialState.isAuthenticated).toBe(true);
 
       const expectedNewTokens = { ...mockTokens, accessToken: 'refreshed-concurrently' };
