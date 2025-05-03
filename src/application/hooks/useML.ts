@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { useState, useCallback } from 'react';
-import { mlApiClient } from '../../infrastructure/api/MLApiClient';
+import { useQuery } from '@tanstack/react-query';
+import { MLApiClient } from '@infrastructure/api/MLApiClient';
 
 /**
  * useML - React hook for accessing ML capabilities
@@ -37,28 +38,28 @@ export function useML() {
   // Text analysis methods
   const processText = useCallback(
     (text: string, modelType?: string, options?: Record<string, unknown>) => {
-      return withLoadingState(() => mlApiClient.processText(text, modelType, options));
+      return withLoadingState(() => MLApiClient.processText(text, modelType, options));
     },
     [withLoadingState]
   );
 
   const detectDepression = useCallback(
     (text: string, options?: Record<string, unknown>) => {
-      return withLoadingState(() => mlApiClient.detectDepression(text, options));
+      return withLoadingState(() => MLApiClient.detectDepression(text, options));
     },
     [withLoadingState]
   );
 
   const assessRisk = useCallback(
     (text: string, riskType?: string, options?: Record<string, unknown>) => {
-      return withLoadingState(() => mlApiClient.assessRisk(text, riskType, options));
+      return withLoadingState(() => MLApiClient.assessRisk(text, riskType, options));
     },
     [withLoadingState]
   );
 
   const analyzeSentiment = useCallback(
     (text: string, options?: Record<string, unknown>) => {
-      return withLoadingState(() => mlApiClient.analyzeSentiment(text, options));
+      return withLoadingState(() => MLApiClient.analyzeSentiment(text, options));
     },
     [withLoadingState]
   );
@@ -66,7 +67,7 @@ export function useML() {
   const analyzeWellnessDimensions = useCallback(
     (text: string, dimensions?: string[], options?: Record<string, unknown>) => {
       return withLoadingState(() =>
-        mlApiClient.analyzeWellnessDimensions(text, dimensions, options)
+        MLApiClient.analyzeWellnessDimensions(text, dimensions, options)
       );
     },
     [withLoadingState]
@@ -80,7 +81,7 @@ export function useML() {
       options?: Record<string, unknown>
     ) => {
       return withLoadingState(() =>
-        mlApiClient.generateDigitalTwin(patientId, patientData, options)
+        MLApiClient.generateDigitalTwin(patientId, patientData, options)
       );
     },
     [withLoadingState]
@@ -94,7 +95,7 @@ export function useML() {
       sessionParams?: Record<string, unknown>
     ) => {
       return withLoadingState(() =>
-        mlApiClient.createDigitalTwinSession(therapistId, patientId, sessionType, sessionParams)
+        MLApiClient.createDigitalTwinSession(therapistId, patientId, sessionType, sessionParams)
       );
     },
     [withLoadingState]
@@ -102,7 +103,7 @@ export function useML() {
 
   const getDigitalTwinSession = useCallback(
     (sessionId: string) => {
-      return withLoadingState(() => mlApiClient.getDigitalTwinSession(sessionId));
+      return withLoadingState(() => MLApiClient.getDigitalTwinSession(sessionId));
     },
     [withLoadingState]
   );
@@ -116,7 +117,7 @@ export function useML() {
       messageParams?: Record<string, unknown>
     ) => {
       return withLoadingState(() =>
-        mlApiClient.sendMessageToSession(sessionId, message, senderId, senderType, messageParams)
+        MLApiClient.sendMessageToSession(sessionId, message, senderId, senderType, messageParams)
       );
     },
     [withLoadingState]
@@ -124,14 +125,14 @@ export function useML() {
 
   const endDigitalTwinSession = useCallback(
     (sessionId: string, endReason?: string) => {
-      return withLoadingState(() => mlApiClient.endDigitalTwinSession(sessionId, endReason));
+      return withLoadingState(() => MLApiClient.endDigitalTwinSession(sessionId, endReason));
     },
     [withLoadingState]
   );
 
   const getSessionInsights = useCallback(
     (sessionId: string, insightType?: string) => {
-      return withLoadingState(() => mlApiClient.getSessionInsights(sessionId, insightType));
+      return withLoadingState(() => MLApiClient.getSessionInsights(sessionId, insightType));
     },
     [withLoadingState]
   );
@@ -139,25 +140,25 @@ export function useML() {
   // PHI protection methods
   const detectPHI = useCallback(
     (text: string, detectionLevel?: string) => {
-      return withLoadingState(() => mlApiClient.detectPHI(text, detectionLevel));
+      return withLoadingState(() => MLApiClient.detectPHI(text, detectionLevel));
     },
     [withLoadingState]
   );
 
   const redactPHI = useCallback(
     (text: string, replacement?: string, detectionLevel?: string) => {
-      return withLoadingState(() => mlApiClient.redactPHI(text, replacement, detectionLevel));
+      return withLoadingState(() => MLApiClient.redactPHI(text, replacement, detectionLevel));
     },
     [withLoadingState]
   );
 
   // Health check methods
   const checkMLHealth = useCallback(() => {
-    return withLoadingState(() => mlApiClient.checkMLHealth());
+    return withLoadingState(() => MLApiClient.checkMLHealth());
   }, [withLoadingState]);
 
   const checkPHIHealth = useCallback(() => {
-    return withLoadingState(() => mlApiClient.checkPHIHealth());
+    return withLoadingState(() => MLApiClient.checkPHIHealth());
   }, [withLoadingState]);
 
   return {
