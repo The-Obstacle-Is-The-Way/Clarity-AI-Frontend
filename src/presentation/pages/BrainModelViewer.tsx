@@ -141,7 +141,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
                   {error ? String(error) : 'An error occurred while loading the brain model'}
                 </p>
                 <Button
-                  variant="danger"
+                  variant="destructive"
                   size="sm"
                   className="mt-4"
                   onClick={() =>
@@ -195,7 +195,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
               <div className="absolute right-4 top-4 flex flex-col space-y-2">
                 <Button
                   size="sm"
-                  variant={viewMode === 'anatomical' ? 'primary' : 'ghost'}
+                  variant={viewMode === 'anatomical' ? 'default' : 'ghost'}
                   onClick={() => handleViewModeChange('anatomical' as RenderMode)}
                   className="justify-start"
                 >
@@ -216,7 +216,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
                 </Button>
                 <Button
                   size="sm"
-                  variant={viewMode === 'functional' ? 'primary' : 'ghost'}
+                  variant={viewMode === 'functional' ? 'default' : 'ghost'}
                   onClick={() => handleViewModeChange('functional' as RenderMode)}
                   className="justify-start"
                 >
@@ -237,7 +237,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
                 </Button>
                 <Button
                   size="sm"
-                  variant={viewMode === 'connectivity' ? 'primary' : 'ghost'}
+                  variant={viewMode === 'connectivity' ? 'default' : 'ghost'}
                   onClick={() => handleViewModeChange('connectivity' as RenderMode)}
                   className="justify-start"
                 >

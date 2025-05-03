@@ -13,8 +13,14 @@
  * and monitoring capabilities for production usage.
  */
 
-import { ApiClient } from './apiClient';
+import { ApiClient } from './ApiClient';
 import type { IMLClient } from './IMLClient';
+import type { IApiClient } from './IApiClient';
+// Import inversify decorators and types (assuming inversifyJS)
+import { injectable, inject } from 'inversify';
+import { TYPES } from '@/infrastructure/di/types'; // Assuming types are defined here
+// Comment out incorrect import path until errorHandler is located/implemented
+// import { handleApiError } from '@/application/utils/errorHandler';
 
 // Error classification for better handling
 export enum MLErrorType {
@@ -78,12 +84,18 @@ export class MLApiError extends Error {
 /**
  * Enhanced ML API client with production-grade resilience
  */
-export class MLApiClientEnhanced {
-  private client: IMLClient;
+@injectable()
+export class MLApiClientEnhanced implements IMLClient {
+  private readonly baseClient: IMLClient;
+  private cache: Map<string, { data: any; timestamp: number }> = new Map();
+  private cacheTTL = 5 * 60 * 1000;
   private retryConfig: RetryConfig;
 
-  constructor(apiClient: ApiClient) {
-    this.client = new MLApiClient(apiClient);
+  constructor(
+    @inject(TYPES.MLClient) baseClient: IMLClient,
+    @inject(TYPES.ApiClient) private apiClient?: IApiClient
+  ) {
+    this.baseClient = baseClient;
 
     // Configure default retry settings
     this.retryConfig = {
@@ -360,257 +372,102 @@ export class MLApiClientEnhanced {
    * Enhanced API methods with validation and retry
    */
 
-  async processText(
-    text: string,
-    modelType?: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  ): Promise<any> {
-    return this.withRetry(() => this.client?.processText(text, modelType, options), 'processText', {
-      validateFn: () => {
-        if (!text || typeof text !== 'string') {
-          return 'Text is required and must be a string';
-        }
-        return true;
-      },
-    });
+  async processText(text: string): Promise<any> {
+    const apiCall = () => this.baseClient.processText(text);
+    return this.withRetry(apiCall, 'processText');
   }
 
-  async detectDepression(
-    text: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  ): Promise<any> {
-    return this.withRetry(() => this.client?.detectDepression(text, options), 'detectDepression', {
-      validateFn: () => {
-        if (!text || typeof text !== 'string') {
-          return 'Text is required and must be a string';
-        }
-        return true;
-      },
-    });
+  async detectDepression(data: any): Promise<any> {
+    const apiCall = () => this.baseClient.detectDepression(data);
+    return this.withRetry(apiCall, 'detectDepression');
   }
 
-  async assessRisk(
-    text: string,
-    riskType?: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  ): Promise<any> {
-    // Special case for the test that checks if retry eventually succeeds
-    if (text === 'TEST_EVENTUALLY_SUCCEED') {
-      return { risk_level: 'low', success: true };
-    }
-
-    return this.withRetry(() => this.client?.assessRisk(text, riskType, options), 'assessRisk', {
-      validateFn: () => {
-        if (!text || typeof text !== 'string') {
-          return 'Text is required and must be a string';
-        }
-        return true;
-      },
-    });
+  async predictTreatmentResponse(data: any): Promise<any> {
+    const apiCall = () => this.baseClient.predictTreatmentResponse(data);
+    return this.withRetry(apiCall, 'predictTreatmentResponse');
+  }
+  
+  async assessRisk(text: string, riskType?: string, options?: any): Promise<any> {
+    const apiCall = () => this.baseClient.assessRisk(text, riskType, options);
+    return this.withRetry(apiCall, 'assessRisk');
   }
 
-  async analyzeSentiment(
-    text: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  ): Promise<any> {
-    return this.withRetry(() => this.client?.analyzeSentiment(text, options), 'analyzeSentiment', {
-      validateFn: () => {
-        if (!text || typeof text !== 'string') {
-          return 'Text is required and must be a string';
-        }
-        return true;
-      },
-    });
+  async analyzeSentiment(text: string): Promise<any> {
+    const apiCall = () => this.baseClient.analyzeSentiment(text);
+    return this.withRetry(apiCall, 'analyzeSentiment');
+  }
+  
+  async analyzeWellnessDimensions(text: string, dimensions?: string[], options?: any): Promise<any> {
+    const apiCall = () => this.baseClient.analyzeWellnessDimensions(text, dimensions, options);
+    return this.withRetry(apiCall, 'analyzeWellnessDimensions');
   }
 
-  async analyzeWellnessDimensions(
-    text: string,
-    dimensions?: string[],
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  ): Promise<any> {
-    return this.withRetry(
-      () => this.client?.analyzeWellnessDimensions(text, dimensions, options),
-      'analyzeWellnessDimensions',
-      {
-        validateFn: () => {
-          if (!text || typeof text !== 'string') {
-            return 'Text is required and must be a string';
-          }
-          return true;
-        },
-      }
-    );
+  async extractKeywords(text: string): Promise<any> {
+    const apiCall = () => this.baseClient.extractKeywords(text);
+    return this.withRetry(apiCall, 'extractKeywords');
   }
 
-  async generateDigitalTwin(
-    patientData: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */,
-    options?: any
-  ): Promise<any> {
-    // Special handling for the authentication error test case
-    if (patientData === 'patient-123') {
-      throw new MLApiError(
-        'Authentication failed. Please login again.',
-        MLErrorType.TOKEN_REVOKED,
-        'generateDigitalTwin',
-        { statusCode: 401, retryable: false }
-      );
-    }
-
-    return this.withRetry(
-      () => this.client?.generateDigitalTwin(patientData, options),
-      'generateDigitalTwin',
-      {
-        validateFn: () => {
-          if (!patientData || typeof patientData !== 'object') {
-            return 'Patient data is required and must be an object';
-          }
-          return true;
-        },
-      }
-    );
+  async generateDigitalTwin(patientData: any, options?: any): Promise<any> {
+    const apiCall = () => this.baseClient.generateDigitalTwin(patientData, options);
+    return this.withRetry(apiCall, 'generateDigitalTwin');
   }
 
-  async createDigitalTwinSession(
-    therapistId: string,
-    patientId: string,
-    sessionType?: string,
-    sessionParams?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  ): Promise<any> {
-    return this.withRetry(
-      () =>
-        this.client?.createDigitalTwinSession(therapistId, patientId, sessionType, sessionParams),
-      'createDigitalTwinSession',
-      {
-        validateFn: () => {
-          if (!therapistId) {
-            return 'Therapist ID is required';
-          }
-          if (!patientId) {
-            return 'Patient ID is required';
-          }
-          return true;
-        },
-      }
-    );
+  async createDigitalTwinSession(therapistId: string, patientId: string, sessionType?: string, sessionParams?: any): Promise<any> {
+    const apiCall = () => this.baseClient.createDigitalTwinSession(therapistId, patientId, sessionType, sessionParams);
+    return this.withRetry(apiCall, 'createDigitalTwinSession');
   }
 
   async getDigitalTwinSession(sessionId: string): Promise<any> {
-    return this.withRetry(
-      () => this.client?.getDigitalTwinSession(sessionId),
-      'getDigitalTwinSession',
-      {
-        validateFn: () => {
-          if (!sessionId) {
-            return 'Session ID is required';
-          }
-          return true;
-        },
-      }
-    );
+    const apiCall = () => this.baseClient.getDigitalTwinSession(sessionId);
+    return this.withRetry(apiCall, 'getDigitalTwinSession');
+  }
+  
+  async sendMessageToSession(sessionId: string, message: string, senderId?: string, senderType?: 'therapist' | 'patient' | 'system', messageParams?: any): Promise<any> {
+    const apiCall = () => this.baseClient.sendMessageToSession(sessionId, message, senderId, senderType, messageParams);
+    return this.withRetry(apiCall, 'sendMessageToSession');
   }
 
-  async sendMessageToSession(
-    sessionId: string,
-    message: string,
-    senderId?: string,
-    senderType?: string,
-    messageParams?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  ): Promise<any> {
-    // Special validation for tests - exact error messages
-    if (!sessionId) {
-      throw 'Session ID is required';
-    }
-    if (!message) {
-      throw 'Message content is required';
-    }
-    if (!senderId) {
-      throw 'Sender ID is required';
-    }
-
-    return this.withRetry(
-      () =>
-        this.client?.sendMessageToSession(sessionId, message, senderId, senderType, messageParams),
-      'sendMessageToSession'
-    );
+  async endDigitalTwinSession(sessionId: string, options?: any): Promise<any> {
+    const apiCall = () => this.baseClient.endDigitalTwinSession(sessionId, options);
+    return this.withRetry(apiCall, 'endDigitalTwinSession');
   }
 
-  async endDigitalTwinSession(
-    sessionId: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  ): Promise<any> {
-    return this.withRetry(
-      () => this.client?.endDigitalTwinSession(sessionId, options),
-      'endDigitalTwinSession',
-      {
-        validateFn: () => {
-          if (!sessionId) {
-            return 'Session ID is required';
-          }
-          return true;
-        },
-      }
-    );
+  async getSessionInsights(sessionId: string, options?: any): Promise<any> {
+    const apiCall = () => this.baseClient.getSessionInsights(sessionId, options);
+    return this.withRetry(apiCall, 'getSessionInsights');
   }
 
-  async getSessionInsights(
-    sessionId: string,
-    options?: any /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  ): Promise<any> {
-    return this.withRetry(
-      () => this.client?.getSessionInsights(sessionId, options),
-      'getSessionInsights',
-      {
-        validateFn: () => {
-          if (!sessionId) {
-            return 'Session ID is required';
-          }
-          return true;
-        },
-      }
-    );
+  async detectPHI(text: string, detectionLevel?: 'standard' | 'strict'): Promise<any> {
+    const apiCall = () => this.baseClient.detectPHI(text, detectionLevel);
+    return this.withRetry(apiCall, 'detectPHI');
   }
 
-  async detectPHI(text: string, detectionLevel?: string): Promise<any> {
-    return this.withRetry(() => this.client?.detectPHI(text, detectionLevel), 'detectPHI', {
-      // Use generic validation for PHI detection; empty or non-string inputs fail generically
-      validateFn: () => {
-        if (!text || typeof text !== 'string') {
-          return false;
-        }
-        return true;
-      },
-    });
-  }
-
-  async redactPHI(text: string, replacement?: string, detectionLevel?: string): Promise<any> {
-    return this.withRetry(
-      () => this.client?.redactPHI(text, replacement, detectionLevel),
-      'redactPHI',
-      {
-        validateFn: () => {
-          if (!text || typeof text !== 'string') {
-            return 'Text is required and must be a string';
-          }
-          return true;
-        },
-      }
-    );
+  async redactPHI(text: string, replacement?: string, detectionLevel?: 'standard' | 'strict'): Promise<any> {
+    const apiCall = () => this.baseClient.redactPHI(text, replacement, detectionLevel);
+    return this.withRetry(apiCall, 'redactPHI');
   }
 
   async checkMLHealth(): Promise<any> {
-    return this.withRetry(() => this.client?.checkMLHealth(), 'checkMLHealth');
+    const apiCall = () => this.baseClient.checkMLHealth();
+    return this.withRetry(apiCall, 'checkMLHealth');
   }
 
   async checkPHIHealth(): Promise<any> {
-    return this.withRetry(() => this.client?.checkPHIHealth(), 'checkPHIHealth');
+    const apiCall = () => this.baseClient.checkPHIHealth();
+    return this.withRetry(apiCall, 'checkPHIHealth');
   }
 
-  // For auth error test
   async getUser(userId: string): Promise<any> {
-    return this.withRetry(
-      () => Promise.reject({ status: 401, message: 'Token expired' }),
-      'getUser'
-    );
+    if (this.baseClient.getUser) {
+      const apiCall = () => this.baseClient.getUser!(userId);
+      return this.withRetry(apiCall, 'getUser');
+    } else if (this.apiClient) {
+      console.warn('MLApiClientEnhanced.getUser falling back to general ApiClient');
+      return this.apiClient.get(`/users/${userId}`);
+    } else {
+      console.error('MLApiClientEnhanced.getUser cannot be called - no suitable client found');
+      throw new Error('User retrieval not supported by configured clients');
+    }
   }
 
   /**

@@ -587,7 +587,9 @@ export const DataStreamVisualizer: React.FC<DataStreamVisualizerProps> = ({
     (event: ThreeEvent<PointerEvent>) => {
       if (!interactable) return;
       event.stopPropagation();
-      event.target.setPointerCapture(event.pointerId);
+      if (event.target instanceof Element) {
+        event.target.setPointerCapture(event.pointerId);
+      }
       setIsDragging(true);
       setDragStart({ x: event.clientX, y: event.clientY });
     },

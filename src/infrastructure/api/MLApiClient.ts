@@ -9,7 +9,7 @@
  * For production use, prefer MLApiClientEnhanced.
  */
 
-import { ApiClient } from './apiClient';
+import { ApiClient } from './ApiClient';
 
 export class MLApiClient {
   private apiClient: ApiClient;

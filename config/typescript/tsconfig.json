@@ -63,7 +63,10 @@
       "@graphics/*": ["src/infrastructure/graphics/*"],
       "@testing/*": ["src/infrastructure/testing/*"],
       "@config/*": ["config/*"]
-    }
+    },
+    /* Add Decorator Metadata Options */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "src",

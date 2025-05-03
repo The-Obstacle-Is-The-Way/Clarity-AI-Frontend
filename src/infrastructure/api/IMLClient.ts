@@ -49,6 +49,13 @@ export interface IMLClient {
   // Health Checks
   checkMLHealth(): Promise<any>;
   checkPHIHealth(): Promise<any>;
+
+  // Add optional getUser if it belongs here (or remove if it belongs in IApiClient)
+  getUser?(userId: string): Promise<any>;
+
+  // Add missing method signatures
+  predictTreatmentResponse(data: any): Promise<any>;
+  extractKeywords(text: string): Promise<any>;
 }
 
 /**

@@ -380,7 +380,12 @@ const PatientsList: React.FC = () => {
               </svg>
               <h3 className="mb-2 text-lg font-semibold">Error Loading Patients</h3>
               <p className="text-sm">{String(error)}</p>
-              <Button variant="danger" size="sm" className="mt-4" onClick={() => refetch()}>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="mt-4"
+                onClick={() => refetch()}
+              >
                 Retry
               </Button>
             </div>

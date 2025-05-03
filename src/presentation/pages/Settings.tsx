@@ -290,7 +290,11 @@ const Settings: React.FC = () => {
           </Card>
 
           <div className="flex justify-end">
-            <Button onClick={handleSaveSettings} variant="primary">
+            <Button
+              onClick={handleSaveSettings}
+              variant="default"
+              disabled={!isDirty}
+            >
               Save Settings
             </Button>
           </div>
