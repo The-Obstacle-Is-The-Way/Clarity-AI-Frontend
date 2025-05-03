@@ -467,6 +467,7 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
       checkSessionExpiration,
       renewSession,
       hasPermission,
+      getSessionExpiration: checkSessionExpiration,
     }),
     [
       isAuthenticated,
@@ -478,6 +479,7 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
       checkSessionExpiration,
       renewSession,
       hasPermission,
+      checkSessionExpiration,
     ]
   );
 
