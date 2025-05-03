@@ -10,6 +10,16 @@ import { Button } from '@presentation/atoms';
 import { Progress } from '@/components/ui/progress';
 import { useSecureAuth } from '../hooks/useSecureAuth';
 import { auditLogService } from '../../infrastructure/services/auditLogService';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from '@radix-ui/react-alert-dialog';
 
 interface SessionTimeoutModalProps {
   timeoutInMinutes: number;
