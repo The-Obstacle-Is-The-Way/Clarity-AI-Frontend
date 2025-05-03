@@ -4,13 +4,22 @@
  * Provides robust authentication state and methods to the application with
  * enhanced HIPAA compliance, 2FA, and client-side encryption.
  */
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  type ReactNode,
+  type FC,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 import { toast } from 'sonner';
-
 import {
-  AppAuthContext as AuthContext,
+  AuthContext,
+  type AuthContextType,
   type AppAuthContextType,
 } from '@/application/context/AuthContext.tsx';
 import { useSecureAuth } from '@application/hooks/useSecureAuth';
