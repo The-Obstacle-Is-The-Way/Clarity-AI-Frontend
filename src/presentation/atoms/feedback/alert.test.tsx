@@ -122,11 +122,9 @@ describe('Alert Components', () => {
 
       const alert = screen.getByTestId('full-alert');
       expect(alert).toBeInTheDocument();
-      
       // Check content is rendered correctly
       expect(screen.getByText('Alert Title')).toBeInTheDocument();
       expect(screen.getByText('This is the alert description.')).toBeInTheDocument();
-      
       // Verify parent-child relationships
       expect(alert).toHaveTextContent('Alert Title');
       expect(alert).toHaveTextContent('This is the alert description.');

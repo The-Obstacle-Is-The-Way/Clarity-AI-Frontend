@@ -13,7 +13,9 @@
 
 // Type for mock functions - compatible with test frameworks but not dependent on them
 // Define the generic mock function type with proper typing
-type MockFunction<T extends Function> = {
+// Use a more specific function type constraint
+type AnyFunction = (...args: any[]) => any;
+type MockFunction<T extends AnyFunction> = {
   (...args: Parameters<T>): ReturnType<T>;
   mockImplementation: (fn: T) => MockFunction<T>;
   mockReturnValue: (value: ReturnType<T>) => MockFunction<T>;
@@ -26,7 +28,7 @@ type MockFunction<T extends Function> = {
 
 // Create a minimal mock function implementation
 // eslint-disable-next-line
-function createMockFunction<T extends Function>(implementation?: T): MockFunction<T> {
+function createMockFunction<T extends AnyFunction>(implementation?: T): MockFunction<T> {
   const mockCalls: Parameters<T>[][] = [];
   const mockResults: { type: 'return' | 'throw'; value: unknown }[] = [];
 
@@ -101,6 +103,7 @@ export const WebGLConstants = {
   COLOR_BUFFER_BIT: 16384,
   DEPTH_BUFFER_BIT: 256,
   TRIANGLES: 4,
+  VERSION: 0x1F02,
 };
 
 // Mock WebGL context implementation
@@ -127,6 +130,7 @@ export class MockWebGLRenderingContext {
   COLOR_BUFFER_BIT = WebGLConstants.COLOR_BUFFER_BIT;
   DEPTH_BUFFER_BIT = WebGLConstants.DEPTH_BUFFER_BIT;
   TRIANGLES = WebGLConstants.TRIANGLES;
+  VERSION = WebGLConstants.VERSION;
 
   // Mock resources - allow tracking for memory tests
   private buffers: Record<string, unknown>[] = [];
@@ -272,21 +276,27 @@ const originalGetContext = HTMLCanvasElement.prototype.getContext;
 // Install mock globally
 // eslint-disable-next-line
 export function setupWebGLMocks(): void {
-  // Override HTMLCanvasElement.prototype.getContext
-  HTMLCanvasElement.prototype.getContext = function (
-    contextType: string,
-    contextAttributes?: Record<string, unknown>
-  ): unknown {
+  // Define the mock implementation function
+  const mockGetContextImplementation = function(
+    this: HTMLCanvasElement,
+    contextId: string,
+    options?: any // Keep options generic for simplicity
+  ): RenderingContext | null {
     if (
-      contextType === 'webgl' ||
-      contextType === 'webgl2' ||
-      contextType === 'experimental-webgl'
+      contextId === 'webgl' ||
+      contextId === 'webgl2' ||
+      contextId === 'experimental-webgl'
     ) {
-      return new MockWebGLRenderingContext(this);
+      // Return our mock WebGL context
+      return new MockWebGLRenderingContext(this) as unknown as WebGLRenderingContext;
     }
-    // Call original for other context types (e.g., '2d')
-    return originalGetContext.call(this, contextType, contextAttributes);
+    // Call the original method for other contexts like '2d'
+    // Use Reflect.apply to correctly handle `this` and arguments
+    return Reflect.apply(originalGetContext, this, [contextId, options]);
   };
+
+  // Assign the mock implementation using 'as any' to bypass complex overload typing
+  HTMLCanvasElement.prototype.getContext = mockGetContextImplementation as any;
 
   // Mock requestAnimationFrame for deterministic testing
   let frameId = 0;
