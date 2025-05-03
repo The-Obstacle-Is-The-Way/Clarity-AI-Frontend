@@ -18,15 +18,40 @@ import '@testing-library/jest-dom'; // Import waitFor
 // Use relative paths since aliases might not resolve in test runner context
 import { AuthApiClient, AuthTokens, AuthUser, AuthState } from './index';
 import { EnhancedAuthService } from './AuthService.enhanced';
-import { ApiError } from '../api/ApiClient';
-import { createInitialAuthState } from '../../application/contexts/AuthContext';
-import { UserProfile } from '../../domain/user/UserProfile';
-import { AuthTokens as AuthTokensDomain } from '../../domain/auth/AuthTokens';
+// import { ApiError } from '../api/ApiClient';
+// import { createInitialAuthState } from '../../application/contexts/AuthContext';
+// import { UserProfile } from '../../domain/user/UserProfile';
+// import { AuthTokens as AuthTokensDomain } from '../../domain/auth/AuthTokens';
+
+// Create a helper function for initial auth state
+function createInitialAuthState(): AuthState {
+  return {
+    user: null,
+    tokens: null,
+    isAuthenticated: false,
+    isLoading: false,
+    error: null
+  };
+}
+
+// Create our own ApiError class for testing purposes
+class ApiError extends Error {
+  status: number;
+  method: string;
+  url: string;
+  
+  constructor(message: string, status: number, method: string, url: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.method = method;
+    this.url = url;
+    Object.setPrototypeOf(this, ApiError.prototype);
+  }
+}
 
 // Mock the API client module entirely BEFORE imports in the describe block
-vi.mock('./index', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('./index')>();
-  
+vi.mock('./index', async () => {
   // Create a mock for AuthApiClient
   const mockAuthApiClient = vi.fn().mockImplementation(() => ({
     login: vi.fn(),
@@ -36,7 +61,9 @@ vi.mock('./index', async (importOriginal) => {
   }));
   
   return {
-    ...actual,
+    AuthTokens: {},
+    AuthUser: {},
+    AuthState: {},
     // Mock the auth client
     AuthApiClient: mockAuthApiClient,
   };
@@ -115,8 +142,8 @@ class TestableAuthService extends EnhancedAuthService {
 const mockUser: AuthUser = {
   id: 'user-123',
   email: 'test@example.com',
-  name: 'Test User',
-  roles: ['clinician'],
+  username: 'testuser',
+  role: 'clinician',
   permissions: ['read:patient', 'write:session'],
 };
 
@@ -252,7 +279,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockResolvedValueOnce(mockUser); // getCurrentUser succeeds after refresh
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // --- Execute ---
       let initialState: AuthState = createInitialAuthState();
@@ -296,7 +323,7 @@ describe.skip('EnhancedAuthService', () => {
       ); // Should not be called
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // --- Execute ---
       let initialState: AuthState = createInitialAuthState();
@@ -347,7 +374,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockResolvedValueOnce(expectedNewTokens);
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // --- Execute ---
       let initialState: AuthState = createInitialAuthState();
@@ -388,7 +415,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockReturnValueOnce(JSON.stringify(validTokens)); // Mock finding tokens
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // --- Execute ---
       let initialState: AuthState = createInitialAuthState();
@@ -433,7 +460,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockResolvedValueOnce(expectedNewTokens);
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // Initialize first
       let initialState: AuthState = createInitialAuthState();
@@ -489,7 +516,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockRejectedValueOnce(refreshError);
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // Initialize first
       let initialState: AuthState = createInitialAuthState();
@@ -540,7 +567,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockResolvedValueOnce(userWithPerms); // User has 'admin'
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // Initialize first
       let initState: AuthState = createInitialAuthState();
@@ -567,7 +594,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockResolvedValueOnce(userWithoutAdmin); // User lacks 'admin'
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // Initialize first
       let initState: AuthState = createInitialAuthState();
@@ -609,7 +636,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockResolvedValueOnce(expectedNewTokens);
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // Initialize first
       let initState: AuthState = createInitialAuthState();
@@ -660,7 +687,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockRejectedValueOnce(logoutError);
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // Initialize first
       let initialState: AuthState = createInitialAuthState();
@@ -701,7 +728,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockResolvedValueOnce(undefined); // Logout succeeds
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
       // Initialize first
       let initialState: AuthState = createInitialAuthState();
@@ -744,7 +771,7 @@ describe.skip('EnhancedAuthService', () => {
         .mockRejectedValueOnce(refreshError);
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
        // Initialize first
        let initialState: AuthState = createInitialAuthState();
@@ -794,7 +821,7 @@ describe.skip('EnhancedAuthService', () => {
         });
 
       // Create service instance *after* mocks are defined
-      const authService = new EnhancedAuthService();
+      const authService = new EnhancedAuthService('https://api.test.com');
 
        // Initialize first
        let initialState: AuthState = createInitialAuthState();
