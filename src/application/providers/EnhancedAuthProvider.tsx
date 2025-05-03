@@ -18,8 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 import { toast } from 'sonner';
 import {
-  AuthContext,
-  type AuthContextType,
+  AppAuthContext as AuthContext,
   type AppAuthContextType,
 } from '@/application/context/AuthContext.tsx';
 import { useSecureAuth } from '@application/hooks/useSecureAuth';
@@ -43,12 +42,13 @@ const DEFAULT_SESSION_WARNING_MINUTES = 5;
  * Provides authentication context with enhanced features like session management,
  * idle timeout, and audit logging.
  */
-export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
+export const EnhancedAuthProvider: FC<EnhancedAuthProviderProps> = ({
   children,
   sessionTimeoutMinutes = DEFAULT_SESSION_TIMEOUT_MINUTES,
   sessionWarningMinutes = DEFAULT_SESSION_WARNING_MINUTES,
 }) => {
   const navigate = useNavigate();
+  const existingAuthContext = useContext(AuthContext);
   const {
     login: serviceLogin,
     logout: serviceLogout,
@@ -108,7 +108,7 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
       email: string,
       password: string,
       rememberMe: boolean | undefined = false
-    ): Promise<void> => {
+    ): Promise<boolean> => {
       setIsLoading(true);
       setError(null);
       try {
@@ -123,10 +123,12 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
             email,
           });
           toast.success('Login successful!');
+          return true;
         } else {
           setError(result.error || 'Login failed. Please check your credentials.');
           logAudit(AuditEventType.USER_LOGIN_FAILURE, { email, error: result.error });
           toast.error(result.error || 'Login failed.');
+          return false;
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
@@ -134,13 +136,17 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
         setIsAuthenticated(false);
         setUser(null);
         setSessionExpiresAt(null);
-        logAudit(AuditEventType.USER_LOGIN_FAILURE, { email, error: errorMessage });
+        logAudit(AuditEventType.USER_LOGIN_FAILURE, {
+          email,
+          error: errorMessage,
+        });
         toast.error(`Login failed: ${errorMessage}`);
+        return false;
       } finally {
         setIsLoading(false);
       }
     },
-    [serviceLogin, logAudit]
+    [serviceLogin, logAudit, navigate]
   );
 
   const logout = useCallback(async (): Promise<void> => {
@@ -162,4 +168,35 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({
         userId: userId ?? 'unknown',
         error: errorMessage,
       });
-      toast.error(`
+      toast.error(`Logout failed: ${errorMessage}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [serviceLogout, navigate, logAudit, user]);
+
+  const extendSession = useCallback(async (): Promise<void> => {
+    // Implementation of extendSession
+  }, []);
+
+  const contextValue: AppAuthContextType = {
+    isAuthenticated,
+    user,
+    login,
+    logout,
+    extendSession,
+  };
+
+  return (
+    <AuthContext.Provider value={contextValue}>
+      {children}
+      <SessionTimeoutModal
+        isOpen={isSessionTimeoutModalOpen}
+        onClose={() => setIsSessionTimeoutModalOpen(false)}
+        onExtend={extendSession}
+        remainingTime={promptTimeout / 1000}
+        warningThreshold={DEFAULT_SESSION_WARNING_MINUTES * 60}
+        onExtendSession={extendSession}
+      />
+    </AuthContext.Provider>
+  );
+};
