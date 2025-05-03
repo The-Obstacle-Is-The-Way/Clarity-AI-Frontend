@@ -155,6 +155,26 @@ export class MockWebGLRenderingContext {
 
   // Core WebGL methods with consistent return values
   getParameter(paramName: number): unknown {
+    // Handle specific parameters needed by Three.js or tests
+    if (paramName === 37445) { // MAX_TEXTURE_SIZE
+        return 16384;
+    }
+    if (paramName === 34930) { // MAX_CUBE_MAP_TEXTURE_SIZE
+        return 16384;
+    }
+    if (paramName === 3379) { // MAX_RENDERBUFFER_SIZE
+        return 16384;
+    }
+    if (paramName === 34076) { // TEXTURE_BINDING_2D
+        return null; // Or return a mock texture if needed
+    }
+    if (paramName === 32873) { // TEXTURE_BINDING_CUBE_MAP
+        return null;
+    }
+    if (paramName === this.VERSION) { // Handle VERSION request
+      return 'WebGL 2.0'; // Return a valid version string
+    }
+    // Default return for unhandled parameters
     return {};
   }
 
