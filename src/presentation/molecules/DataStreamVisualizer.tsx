@@ -6,7 +6,7 @@
  */
 
 import React, { useRef, useMemo, useState, useCallback } from 'react'; // Removed unused useEffect
-import { useFrame, type ThreeEvent } from '@react-three/fiber';
+import { type ThreeEvent } from '@react-three/fiber';
 // @ts-ignore: TS2305 - Module '"@react-three/drei"' has no exported member 'Line'/'Html'/'Billboard'/'Text'. (Likely type/config issue)
 import { Line, Html, Billboard, Text } from '@react-three/drei'; // Re-added Text, suppressed errors
 import type { Group } from 'three';

@@ -331,7 +331,7 @@ export class EnhancedMockApiClient implements IApiClient {
     const vec = (x: number, y: number, z: number): Vector3D => ({ x, y, z });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const mockMachine: ScannerMachine = {
+    const mockMachine: ScannerMachine = {
       id: 'scanner-001',
       type: 'Siemens Prisma',
       calibrationDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString(),

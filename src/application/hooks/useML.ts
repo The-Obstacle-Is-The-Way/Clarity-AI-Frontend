@@ -3,8 +3,6 @@ import { useState, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MLApiClient } from '@infrastructure/api/MLApiClient';
 import { ApiClient } from '@/infrastructure/api/ApiClient';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { BrainModelMetadata } from '@domain/models/brain/BrainModel'; // Import BrainModelMetadata
 
 /**
  * useML - React hook for accessing ML capabilities

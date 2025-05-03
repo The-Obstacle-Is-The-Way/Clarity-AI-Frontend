@@ -152,7 +152,7 @@ export class EnhancedApiProxyService {
   static mapRequestData(
     path: string,
     data: any  ,
-    context?: TransformationContext
+    _context?: TransformationContext
   ): any {
     // Don't attempt to transform null/undefined data
     if (!data) return data;
@@ -231,7 +231,7 @@ export class EnhancedApiProxyService {
   static mapResponseData(
     path: string,
     data: any  ,
-    context?: TransformationContext
+    _context?: TransformationContext
   ): any {
     // Don't attempt to transform null/undefined data
     if (!data) return data;
@@ -366,7 +366,7 @@ export class EnhancedApiProxyService {
    */
   static standardizeResponse<T>(
     data: any  ,
-    context?: TransformationContext
+    _context?: TransformationContext
   ): ApiResponse<T> {
     try {
       // This check will trigger error for problematicData in the test

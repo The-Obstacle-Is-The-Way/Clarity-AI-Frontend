@@ -11,7 +11,6 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Sphere, Html } from '@react-three/drei'; // Removed unused useTexture
 import * as THREE from 'three'; // Added back THREE namespace import
 import { Vector3, Color, MathUtils } from 'three';
-import type { Group, Mesh, MeshBasicMaterial } from 'three'; // Added MeshBasicMaterial
 
 /**
  * Props with neural-safe typing
@@ -46,7 +45,7 @@ const NeuralPulse: React.FC<{
   maxOpacity = 0.8,
 }) => {
   const sphereRef = useRef<THREE.Mesh>(null);
-  const materialRef = useRef<MeshBasicMaterial>(null);
+  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
   const baseColorObj = useRef(new Color(baseColor));
   const pulseColorObj = useRef(new Color(pulseColor));
   const colorRef = useRef(new Color(baseColor));

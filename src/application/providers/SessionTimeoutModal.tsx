@@ -14,8 +14,7 @@ import { auditLogClient, AuditEventType } from '../../infrastructure/clients/aud
 interface SessionTimeoutModalProps {
   timeoutInMinutes: number;
   warningThresholdInMinutes: number;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  warningThreshold: number;
+  _warningThreshold: number;
   onLogout: () => void;
   onExtendSession?: () => void;
 }
@@ -27,7 +26,7 @@ interface SessionTimeoutModalProps {
 export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
   timeoutInMinutes,
   warningThresholdInMinutes,
-  warningThreshold,
+  _warningThreshold,
   onLogout,
   onExtendSession,
 }) => {

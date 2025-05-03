@@ -42,6 +42,7 @@ const getColorForValue = (value: number, min: number, max: number, colormap: str
 // Brain region sphere component
 interface BrainRegionProps {
   id: string;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   name: string;
   position: [number, number, number];
   size: number;
@@ -54,6 +55,7 @@ interface BrainRegionProps {
 
 const BrainRegion: React.FC<BrainRegionProps> = ({
   id,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   name,
   position,
   size,
@@ -199,11 +201,12 @@ interface BrainModelVisualizationProps {
   onRegionSelect?: (regionId: string | null) => void;
   onRegionHover?: (regionId: string | null) => void;
   isLoading?: boolean;
-  error?: string | null;
+  error?: Error | null;
   showControls?: boolean;
 }
 
 export const BrainModelVisualization: React.FC<BrainModelVisualizationProps> = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   modelId,
   regionData,
   viewMode = 'anatomical',
@@ -317,7 +320,9 @@ export const BrainModelVisualization: React.FC<BrainModelVisualizationProps> = (
       >
         <div data-testid="brain-model-error" className="text-white text-center p-4">
           <h3>Error loading brain model</h3>
-          <p className="text-red-500">{errorMsg}</p>
+          <p className="text-red-500">
+            {typeof errorMsg === 'string' ? errorMsg : errorMsg.message}
+          </p>
         </div>
       </div>
     );

@@ -41,7 +41,7 @@ export const NeuralCorrelationBadge: React.FC<NeuralCorrelationBadgeProps> = ({
 }) => {
   // These state variables are currently unused but kept for future interactive features
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isHovered, _setIsHovered] = useState(false);
+  const [_isHovered, _setIsHovered] = useState(false);
 
   // Calculate badge color based on correlation strength
   const badgeColor = useMemo(() => {
