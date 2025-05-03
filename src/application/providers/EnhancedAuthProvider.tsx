@@ -301,41 +301,82 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
   );
 
   /**
-   * Logout handler with enhanced auditing
+   * Check permission with enhanced role-based access
    */
-  const logout = useCallback(async (): Promise<void> => {
-    setIsLoading(true);
+  const hasPermission = useCallback(
+    (permission: Permission): boolean => {
+      if (!user) return false;
 
-    try {
-      // Use auth client to logout
-      await authClient.logout();
+      // Check if user has the specific permission
+      if (user.permissions.includes(permission)) {
+        // Log access attempt for sensitive operations
+        if (
+          permission.includes('MODIFY') ||
+          permission.includes('DELETE') ||
+          permission.includes('PHI')
+        ) {
+          auditLogClient.log(AuditEventType.PERMISSION_CHANGE, {
+            action: `permission_check: ${permission}`,
+            details: `Permission ${permission} granted for user ${user.id}`,
+            result: 'success',
+          });
+        }
+        return true;
+      }
 
-      // Reset auth state
-      setUser(null);
-      setIsAuthenticated(false);
-      setRequiresMFA(false);
-      setSessionExpiresAt(0);
-      setError(null);
-
-      // Log the logout event
-      auditLogClient.log(AuditEventType.USER_LOGOUT, {
-        action: 'user_logout',
-        details: 'User logged out successfully',
-        result: 'success',
+      // Log denied permissions for audit
+      auditLogClient.log(AuditEventType.PERMISSION_CHANGE, {
+        action: `permission_check: ${permission}`,
+        details: `Permission ${permission} denied for user ${user.id}`,
+        result: 'failure',
       });
 
-      // Navigate to login page
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout error:', err);
-      trackSuspiciousActivity(
-        'logout_error',
-        `Error during logout: ${err instanceof Error ? err.message : 'Unknown error'}`
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [navigate, trackSuspiciousActivity]);
+      return false;
+    },
+    [user]
+  );
+
+  /**
+   * Initialize auth state on mount
+   */
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
+  /**
+   * Session monitoring
+   * Checks session status periodically and sets warning when close to expiration
+   */
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const checkSession = () => {
+      const remainingTime = checkSessionExpiration();
+
+      if (remainingTime <= 0) {
+        // Session expired, log out
+        auditLogClient.log(AuditEventType.USER_TIMEOUT, {
+          action: 'session_expired',
+          details: 'User session expired',
+          result: 'success',
+        });
+        logout();
+      } else if (remainingTime <= SESSION_WARNING_TIME) {
+        // Show warning when less than warning threshold remaining
+        setShowSessionWarning(true);
+      }
+    };
+
+    // Initial check
+    checkSession();
+
+    // Set up periodic checks
+    const interval = setInterval(checkSession, SESSION_CHECK_INTERVAL);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isAuthenticated, checkSessionExpiration, logout]);
 
   /**
    * Check session expiration time
@@ -380,82 +421,35 @@ export const EnhancedAuthProvider: React.FC<EnhancedAuthProviderProps> = ({ chil
   }, [isAuthenticated, trackSuspiciousActivity]);
 
   /**
-   * Check permission with enhanced role-based access
+   * Logout handler with audit logging
    */
-  const hasPermission = useCallback(
-    (permission: Permission): boolean => {
-      if (!user) return false;
+  const logout = useCallback(async () => {
+    const userId = user?.id;
+    try {
+      await authClient.logout();
+      setUser(null);
+      setIsAuthenticated(false);
+      setSessionExpiresAt(0);
 
-      // Check if user has the specific permission
-      if (user.permissions.includes(permission)) {
-        // Log access attempt for sensitive operations
-        if (
-          permission.includes('MODIFY') ||
-          permission.includes('DELETE') ||
-          permission.includes('PHI')
-        ) {
-          auditLogClient.log(AuditEventType.PERMISSION_CHECK, {
-            action: 'permission_check',
-            details: `Permission check for ${permission}`,
-            result: 'granted',
-          });
-        }
-        return true;
-      }
-
-      // Log denied permissions for audit
-      auditLogClient.log(AuditEventType.PERMISSION_CHECK, {
-        action: 'permission_check',
-        details: `Permission check for ${permission}`,
-        result: 'denied',
+      // Log successful logout
+      auditLogClient.log(AuditEventType.USER_LOGOUT, {
+        action: 'user_logout',
+        userId: userId,
+        details: 'User logged out successfully',
+        result: 'success',
       });
-
-      return false;
-    },
-    [user]
-  );
-
-  /**
-   * Initialize auth state on mount
-   */
-  useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
-
-  /**
-   * Session monitoring
-   * Checks session status periodically and sets warning when close to expiration
-   */
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    const checkSession = () => {
-      const remainingTime = checkSessionExpiration();
-
-      if (remainingTime <= 0) {
-        // Session expired, log out
-        auditLogClient.log(AuditEventType.USER_TIMEOUT, {
-          action: 'session_expired',
-          details: 'User session expired',
-          result: 'session_terminated',
-        });
-        logout();
-      } else if (remainingTime <= SESSION_WARNING_TIME) {
-        // Show warning when less than warning threshold remaining
-        setShowSessionWarning(true);
-      }
-    };
-
-    // Initial check
-    checkSession();
-
-    // Set up periodic checks
-    const interval = setInterval(checkSession, SESSION_CHECK_INTERVAL);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [isAuthenticated, checkSessionExpiration, logout]);
+    } catch (err) {
+      // Log logout error
+      auditLogClient.log(AuditEventType.USER_LOGOUT, {
+        action: 'user_logout',
+        userId: userId,
+        details: `Logout failed: ${err instanceof Error ? err.message : 'Unknown error'}`,
+        result: 'failure',
+      });
+      console.error('Logout failed:', err);
+      setError('Failed to logout.');
+    }
+  }, [user]);
 
   /**
    * Context value

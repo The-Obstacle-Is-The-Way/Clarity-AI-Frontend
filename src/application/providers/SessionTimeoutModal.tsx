@@ -14,6 +14,9 @@ import { auditLogClient, AuditEventType } from '../../infrastructure/clients/aud
 interface SessionTimeoutModalProps {
   timeoutInMinutes: number;
   warningThresholdInMinutes: number;
+  warningThreshold: number;
+  onLogout: () => void;
+  onExtendSession?: () => void;
 }
 
 /**
@@ -23,6 +26,9 @@ interface SessionTimeoutModalProps {
 export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
   timeoutInMinutes,
   warningThresholdInMinutes,
+  warningThreshold,
+  onLogout,
+  onExtendSession
 }) => {
   const [visible, setVisible] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(timeoutInMinutes * 60 * 1000);
@@ -76,7 +82,11 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
       timestamp: new Date(),
       result: 'success',
     });
-  }, [renewSession]);
+
+    if (onExtendSession) {
+      onExtendSession();
+    }
+  }, [renewSession, onExtendSession]);
 
   // Logout handler
   const handleLogout = useCallback(() => {
@@ -89,7 +99,11 @@ export const SessionTimeoutModal: React.FC<SessionTimeoutModalProps> = ({
     });
 
     logout();
-  }, [logout]);
+
+    if (onLogout) {
+      onLogout();
+    }
+  }, [logout, onLogout]);
 
   // Set up timer to check session status
   useEffect(() => {
