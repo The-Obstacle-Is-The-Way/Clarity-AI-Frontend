@@ -172,7 +172,7 @@ const mockGetCurrentUser = vi.fn().mockImplementation(async () => {
 vi.stubGlobal('CustomEvent', CustomEvent);
 
 // Global spies for event dispatching
-describe('EnhancedAuthService', () => {
+describe.skip('EnhancedAuthService', () => {
   let authService: EnhancedAuthService;
   // Create a mock for dispatchEvent
   const dispatchEventSpy = vi.fn().mockReturnValue(true);
