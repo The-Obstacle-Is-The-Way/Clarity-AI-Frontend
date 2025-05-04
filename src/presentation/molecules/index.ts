@@ -1,12 +1,14 @@
 /**
  * Molecules index file
  *
- * This file exports all molecule-level components, simplifying imports across the application
- * and following clean architecture principles for organization.
+ * This file exports all molecule-level components from their organized subdirectories,
+ * simplifying imports across the application and following clean architecture principles.
  */
 
-// UI Components
-export { default as Header } from './Header';
-export { Chart } from './Chart';
-
-// Add additional molecule exports here as the application grows
+// Export components from their respective categories
+export * from './visualization';
+export * from './timeline';
+export * from './dialog';
+export * from './clinical';
+export * from './navigation';
+export * from './selection';
