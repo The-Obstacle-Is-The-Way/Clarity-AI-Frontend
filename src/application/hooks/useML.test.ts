@@ -43,8 +43,24 @@ describe('useML', () => {
   
   beforeEach(() => {
     vi.resetAllMocks();
-    // Get access to the mocked instance methods
-    mockMLApiClient = new (vi.mocked(require('@/infrastructure/api/MLApiClient').MLApiClient))();
+    // Get access to the mocked instance methods directly from the mock rather than using require
+    mockMLApiClient = vi.mocked(vi.fn()).mockImplementation(() => ({
+      processText: vi.fn(),
+      detectDepression: vi.fn(),
+      assessRisk: vi.fn(),
+      analyzeSentiment: vi.fn(),
+      analyzeWellnessDimensions: vi.fn(),
+      generateDigitalTwin: vi.fn(),
+      createDigitalTwinSession: vi.fn(),
+      getDigitalTwinSession: vi.fn(),
+      sendMessageToSession: vi.fn(),
+      endDigitalTwinSession: vi.fn(),
+      getSessionInsights: vi.fn(),
+      detectPHI: vi.fn(),
+      redactPHI: vi.fn(),
+      checkMLHealth: vi.fn(),
+      checkPHIHealth: vi.fn(),
+    }))();
   });
 
   it('should initialize with correct default state', () => {
