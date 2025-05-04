@@ -7,96 +7,57 @@ import { renderHook } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { act } from 'react-dom/test-utils';
 import { useML } from './useML';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import React from 'react';
 
-// Mock ApiClient with correct casing
-vi.mock('@/infrastructure/api/ApiClient', () => ({
-  ApiClient: vi.fn().mockImplementation(() => ({}))
-}));
-
-// Mock TanStack Query's useQuery hook
-vi.mock('@tanstack/react-query', () => {
-  const actual = require('@tanstack/react-query');
-  return {
-    ...actual,
-    useQuery: vi.fn().mockReturnValue({
-      data: null,
-      isLoading: false,
-      error: null,
-    }),
-  };
-});
-
-// Mock the MLApiClient with correct module path
-vi.mock('@/infrastructure/api/MLApiClient', () => {
-  const mockMethods = {
-    processText: vi.fn(),
-    detectDepression: vi.fn(),
-    assessRisk: vi.fn(),
-    analyzeSentiment: vi.fn(),
-    analyzeWellnessDimensions: vi.fn(),
-    generateDigitalTwin: vi.fn(),
-    createDigitalTwinSession: vi.fn(),
-    getDigitalTwinSession: vi.fn(),
-    sendMessageToSession: vi.fn(),
-    endDigitalTwinSession: vi.fn(),
-    getSessionInsights: vi.fn(),
-    detectPHI: vi.fn(),
-    redactPHI: vi.fn(),
-    checkMLHealth: vi.fn(),
-    checkPHIHealth: vi.fn(),
-  };
-  
-  return {
-    MLApiClient: vi.fn().mockImplementation(() => mockMethods)
-  };
-});
-
-// Create a wrapper with QueryClientProvider
-const wrapper = ({ children }) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-  
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  );
+// Create a mock for MLApiClient
+const mockMLApiClient = {
+  processText: vi.fn(),
+  detectDepression: vi.fn(),
+  assessRisk: vi.fn(),
+  analyzeSentiment: vi.fn(),
+  analyzeWellnessDimensions: vi.fn(),
+  generateDigitalTwin: vi.fn(),
+  createDigitalTwinSession: vi.fn(),
+  getDigitalTwinSession: vi.fn(),
+  sendMessageToSession: vi.fn(),
+  endDigitalTwinSession: vi.fn(),
+  getSessionInsights: vi.fn(),
+  detectPHI: vi.fn(),
+  redactPHI: vi.fn(),
+  checkMLHealth: vi.fn(),
+  checkPHIHealth: vi.fn(),
 };
 
+// Mock the MLApiClient module
+vi.mock('@/infrastructure/api/MLApiClient', () => ({
+  MLApiClient: vi.fn(() => mockMLApiClient),
+}));
+
+// Mock ApiClient
+vi.mock('@/infrastructure/api/ApiClient', () => ({
+  ApiClient: vi.fn(() => ({}))
+}));
+
+// Mock react-query hooks to avoid needing a provider
+vi.mock('@tanstack/react-query', () => ({
+  useQuery: vi.fn().mockReturnValue({
+    data: null,
+    isLoading: false,
+    error: null,
+  }),
+  useMutation: vi.fn().mockReturnValue({
+    mutate: vi.fn(),
+    isLoading: false,
+    error: null,
+  }),
+}));
+
 describe('useML', () => {
-  let mockMLApiClient;
-  
   beforeEach(() => {
-    vi.resetAllMocks();
-    // Create a mock MLApiClient instance
-    mockMLApiClient = vi.mocked(vi.fn()).mockImplementation(() => ({
-      processText: vi.fn(),
-      detectDepression: vi.fn(),
-      assessRisk: vi.fn(),
-      analyzeSentiment: vi.fn(),
-      analyzeWellnessDimensions: vi.fn(),
-      generateDigitalTwin: vi.fn(),
-      createDigitalTwinSession: vi.fn(),
-      getDigitalTwinSession: vi.fn(),
-      sendMessageToSession: vi.fn(),
-      endDigitalTwinSession: vi.fn(),
-      getSessionInsights: vi.fn(),
-      detectPHI: vi.fn(),
-      redactPHI: vi.fn(),
-      checkMLHealth: vi.fn(),
-      checkPHIHealth: vi.fn(),
-    }))();
+    vi.clearAllMocks();
   });
 
   it('should initialize with correct default state', () => {
-    const { result } = renderHook(() => useML(), { wrapper });
+    const { result } = renderHook(() => useML());
 
     expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();
@@ -107,7 +68,7 @@ describe('useML', () => {
     const testError = new Error('Test error');
     mockMLApiClient.detectDepression.mockRejectedValueOnce(testError);
 
-    const { result } = renderHook(() => useML(), { wrapper });
+    const { result } = renderHook(() => useML());
 
     // First cause an error
     await act(async () => {
@@ -136,7 +97,7 @@ describe('useML', () => {
     mockMLApiClient.detectDepression.mockResolvedValue({ score: 0.2 });
 
     // Render hook
-    const { result } = renderHook(() => useML(), { wrapper });
+    const { result } = renderHook(() => useML());
 
     // Call methods
     await act(async () => {
@@ -155,7 +116,7 @@ describe('useML', () => {
     mockMLApiClient.assessRisk.mockRejectedValue(mockError);
 
     // Render hook
-    const { result } = renderHook(() => useML(), { wrapper });
+    const { result } = renderHook(() => useML());
 
     // Call method that will fail
     await act(async () => {
@@ -186,7 +147,7 @@ describe('useML', () => {
     mockMLApiClient.detectPHI.mockRejectedValue('String error');
 
     // Render hook
-    const { result } = renderHook(() => useML(), { wrapper });
+    const { result } = renderHook(() => useML());
 
     // Call method that will fail
     await act(async () => {
@@ -210,7 +171,7 @@ describe('useML', () => {
     });
 
     // Render hook
-    const { result } = renderHook(() => useML(), { wrapper });
+    const { result } = renderHook(() => useML());
 
     // Call method
     await act(async () => {
@@ -236,7 +197,7 @@ describe('useML', () => {
     });
 
     // Render hook
-    const { result } = renderHook(() => useML(), { wrapper });
+    const { result } = renderHook(() => useML());
 
     // Call method
     await act(async () => {
