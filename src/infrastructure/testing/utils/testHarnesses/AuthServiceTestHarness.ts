@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, vi } from 'vitest';
-import type { User } from '@domain/auth/authTypes';
-import type { AuthTokens } from '@domain/auth/authTypes';
-import { AuthService } from '@infrastructure/auth/AuthService';
+import type { User } from '../../../../domain/types/auth/auth';
+import type { AuthTokens } from '../../../../domain/types/auth/auth';
+import { EnhancedAuthService as AuthService } from '../../auth/AuthService.enhanced';
 
 /**
  * A comprehensive test harness for AuthService testing.
