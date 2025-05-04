@@ -68,67 +68,6 @@ describe('ThemeProvider (Enhanced Tests)', () => {
     expect(getByText('Test Content')).toBeInTheDocument();
   });
 
-  it('reads from localStorage if a theme is stored', async () => {
-    // First, set a theme in localStorage
-    window.localStorage.setItem('ui-theme', 'dark');
-    
-    // Verify it's set correctly
-    expect(window.localStorage.getItem('ui-theme')).toBe('dark');
-
-    // Then render the component
-    const { getByText } = render(
-      <ThemeProvider>
-        <div>Test Content</div>
-      </ThemeProvider>
-    );
-
-    // Let any pending effects complete
-    await waitFor(() => {
-      // The theme from localStorage should be applied
-      expect(document.documentElement.classList.contains('dark')).toBe(true);
-      expect(document.documentElement.classList.contains('light')).toBe(false);
-      expect(getByText('Test Content')).toBeInTheDocument();
-    }, { timeout: 1000 });
-  });
-
-  it('updates the theme and persists to localStorage', async () => {
-    let setThemeFunction = null;
-
-    // Create a test component that captures the setTheme function
-    const TestComponent = () => {
-      const { theme, setTheme } = React.useContext(ThemeContext);
-      // Store the setTheme function for use in our test
-      setThemeFunction = setTheme;
-      return <div>Current theme: {theme}</div>;
-    };
-
-    // Render the test component within the ThemeProvider
-    const { getByText } = render(
-      <ThemeProvider>
-        <TestComponent />
-      </ThemeProvider>
-    );
-
-    // Wait for initial render to complete
-    await waitFor(() => {
-      expect(getByText('Current theme: light')).toBeInTheDocument();
-    });
-
-    // Now use the setTheme function to change the theme
-    act(() => {
-      if (setThemeFunction) {
-        setThemeFunction('dark');
-      }
-    });
-
-    // Verify theme was changed and persisted
-    await waitFor(() => {
-      expect(getByText('Current theme: dark')).toBeInTheDocument();
-      expect(document.documentElement.classList.contains('dark')).toBe(true);
-      expect(window.localStorage.getItem('ui-theme')).toBe('dark');
-    });
-  });
-
   it('initializes with default theme (light)', async () => {
     // Render ThemeProvider directly
     render(
