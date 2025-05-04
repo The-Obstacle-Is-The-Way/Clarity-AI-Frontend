@@ -36,12 +36,6 @@ const mockTokens: AuthTokens = {
   expiresAt: Date.now() + 3600 * 1000, // Expires in 1 hour
 };
 
-const expiredTokens: AuthTokens = {
-  accessToken: 'expired-access-token',
-  refreshToken: 'expired-refresh-token',
-  expiresAt: Date.now() - 3600000, // 1 hour ago
-};
-
 const soonToExpireTokens: AuthTokens = {
   accessToken: 'soon-to-expire-token',
   refreshToken: 'soon-to-expire-refresh',
@@ -177,30 +171,6 @@ class TestableAuthService extends EnhancedAuthService {
     }
   }
 }
-
-// Mock user for tests
-const mockUser: User = {
-  id: 'test-user-id',
-  username: 'testuser',
-  email: 'test@example.com',
-  roles: ['USER'],
-  firstName: 'Test',
-  lastName: 'User'
-};
-
-// Mock tokens for tests
-const mockTokens: AuthTokens = {
-  accessToken: 'test-access-token',
-  refreshToken: 'test-refresh-token',
-  expiresAt: Date.now() + 3600000 // expires in 1 hour
-};
-
-// Expired tokens for tests
-const expiredTokens: AuthTokens = {
-  accessToken: 'expired-access-token',
-  refreshToken: 'valid-refresh-token',
-  expiresAt: Date.now() - 10000 // expired 10 seconds ago
-};
 
 describe('EnhancedAuthService', () => {
   describe('initializeAuth with token auto-refresh', () => {
