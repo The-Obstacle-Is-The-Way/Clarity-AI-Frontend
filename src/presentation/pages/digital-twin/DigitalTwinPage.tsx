@@ -19,7 +19,7 @@ import { Settings, Brain } from 'lucide-react';
 // Page components
 import BrainModelContainer from '@presentation/templates/BrainModelContainer';
 import PatientHeader from '@presentation/molecules/clinical/PatientHeader'; // Assuming this exists
-import ClinicalTimelinePanel from '@presentation/organisms/ClinicalTimelinePanel';
+import { ClinicalTimelinePanel } from '@presentation/organisms/clinical';
 // import NeuralRegionSelector from "@presentation/organisms/NeuralRegionSelector"; // Module missing
 // import DataIntegrationPanel from "@presentation/organisms/DataIntegrationPanel"; // Module missing
 // import DigitalTwinSettings from "@presentation/organisms/DigitalTwinSettings"; // Module missing

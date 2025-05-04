@@ -5,9 +5,9 @@ import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-pr
 import { Button } from '@/presentation/atoms';
 import ClinicalMetricsGroup from '@presentation/molecules/clinical/ClinicalMetricsCard';
 
-import BrainVisualization from '@presentation/organisms/BrainVisualization';
-import RiskAssessmentPanel from '@presentation/organisms/RiskAssessmentPanel';
-import TreatmentResponsePredictor from '@presentation/organisms/TreatmentResponsePredictor';
+import { BrainVisualization } from '@presentation/organisms/brain';
+import { RiskAssessmentPanel } from '@presentation/organisms/clinical';
+import { TreatmentResponsePredictor } from '@presentation/organisms/analytics';
 
 interface DigitalTwinDashboardProps {
   patientId: string;

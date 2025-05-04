@@ -1,6 +1,6 @@
 import React, { useState, Suspense } from 'react';
 import { Card } from '@/presentation/atoms';
-import { QuantumNeuralVisualization } from '@presentation/organisms/QuantumNeuralVisualization';
+import { QuantumNeuralVisualization } from '@presentation/organisms/brain';
 import { RenderMode } from '@domain/types/brain/visualization';
 import type { BrainModel } from '@domain/types/brain/models';
 import type { VisualizationSettings } from '@domain/types/brain/visualization';

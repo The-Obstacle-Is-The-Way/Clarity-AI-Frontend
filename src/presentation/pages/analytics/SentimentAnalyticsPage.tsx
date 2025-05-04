@@ -1,7 +1,7 @@
 // src/presentation/pages/SentimentAnalyticsPage.tsx
 import React from 'react';
-import SentimentInputForm from '@presentation/organisms/SentimentInputForm';
-import SentimentResultsDisplay from '@presentation/organisms/SentimentResultsDisplay';
+import { SentimentInputForm } from '@presentation/organisms/analytics';
+import { SentimentResultsDisplay } from '@presentation/organisms/analytics';
 import { useSentimentAnalysis } from '@/application/hooks/useSentimentAnalysis';
 import type { SentimentInput } from '@domain/analytics/sentimentTypes';
 import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms/feedback/alert';

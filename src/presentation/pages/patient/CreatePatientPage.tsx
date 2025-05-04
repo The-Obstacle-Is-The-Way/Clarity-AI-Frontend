@@ -1,7 +1,7 @@
 // src/presentation/pages/CreatePatientPage.tsx
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import PatientForm from '@/presentation/organisms/PatientForm';
+import { PatientForm } from '@presentation/organisms/patient';
 import { useCreatePatient } from '@/application/hooks/useCreatePatient';
 import type { CreatePatientInput } from '@domain/patients/patientSchemas';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/presentation/atoms';

@@ -3,19 +3,19 @@ import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 
 // Non-lazy loaded page (Login is often needed immediately)
-import LoginPage from '@presentation/pages/LoginPage';
+import { LoginPage } from '@presentation/pages/auth';
 
 // Lazy load pages accessed after login or complex pages
-const DashboardPage = lazy(() => import('@presentation/pages/DashboardPage'));
-const PatientsList = lazy(() => import('@presentation/pages/PatientsList'));
-const PatientDetailPage = lazy(() => import('@presentation/pages/PatientDetailPage'));
-const CreatePatientPage = lazy(() => import('@presentation/pages/CreatePatientPage'));
-const ProfilePage = lazy(() => import('@presentation/pages/ProfilePage'));
-const XGBoostAnalyticsPage = lazy(() => import('@presentation/pages/XGBoostAnalyticsPage'));
-const SentimentAnalyticsPage = lazy(() => import('@presentation/pages/SentimentAnalyticsPage'));
+const DashboardPage = lazy(() => import('@presentation/pages/dashboard/DashboardPage'));
+const PatientsList = lazy(() => import('@presentation/pages/patient/PatientsList'));
+const PatientDetailPage = lazy(() => import('@presentation/pages/patient/PatientDetailPage'));
+const CreatePatientPage = lazy(() => import('@presentation/pages/patient/CreatePatientPage'));
+const ProfilePage = lazy(() => import('@presentation/pages/general/ProfilePage'));
+const XGBoostAnalyticsPage = lazy(() => import('@presentation/pages/analytics/XGBoostAnalyticsPage'));
+const SentimentAnalyticsPage = lazy(() => import('@presentation/pages/analytics/SentimentAnalyticsPage'));
 
 // Example Demo Page (can be lazy or not depending on use case)
-const NeuralSingularityDemo = lazy(() => import('@presentation/pages/NeuralSingularityDemo'));
+const NeuralSingularityDemo = lazy(() => import('@presentation/pages/digital-twin/NeuralSingularityDemo'));
 
 // Basic Suspense Fallback Component
 const PageLoader: React.FC = () => (

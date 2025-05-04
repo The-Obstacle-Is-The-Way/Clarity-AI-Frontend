@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState } from 'react';
-import XGBoostInputForm from '@presentation/organisms/XGBoostInputForm';
-import XGBoostResultsDisplay from '@presentation/organisms/XGBoostResultsDisplay';
+import { XGBoostInputForm } from '@presentation/organisms/analytics';
+import { XGBoostResultsDisplay } from '@presentation/organisms/analytics';
 import type { XGBoostInput, XGBoostPrediction } from '@domain/analytics/xgboostTypes';
 
 /**

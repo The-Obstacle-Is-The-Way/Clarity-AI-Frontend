@@ -48,7 +48,7 @@ import { useVisualSettings } from '@application/hooks/useVisualSettings';
 import { useSearchParams } from '@application/hooks/useSearchParams';
 
 // Presentation components
-import BrainModelViewer from '@presentation/organisms/BrainModelViewer';
+import { BrainModelViewer } from '@presentation/organisms/brain';
 import RegionSelectionPanel from '@presentation/molecules/selection/RegionSelectionPanel';
 import VisualizationControls from '@presentation/molecules/visualization/VisualizationControls';
 import ClinicalDataOverlay from '@presentation/molecules/clinical/ClinicalDataOverlay';

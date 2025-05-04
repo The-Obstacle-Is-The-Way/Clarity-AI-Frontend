@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LoginForm from '@presentation/organisms/LoginForm';
+import { LoginForm } from '@presentation/organisms/auth';
 import { useAuth } from '@application/context/AuthContext';
 
 /**

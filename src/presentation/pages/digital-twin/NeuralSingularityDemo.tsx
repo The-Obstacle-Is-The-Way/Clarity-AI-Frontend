@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import QuantumNeuralVisualization from '@presentation/organisms/QuantumNeuralVisualization';
+import { QuantumNeuralVisualization } from '@presentation/organisms/brain';
 import type { BrainModel } from '@domain/types/brain/models';
 import { RenderMode } from '@domain/types/brain/visualization';
 import type { VisualizationSettings } from '@domain/types/brain/visualization';
