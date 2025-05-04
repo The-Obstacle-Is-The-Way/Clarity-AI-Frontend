@@ -124,14 +124,12 @@ describe('MainLayout', () => {
     expect(screen.getByText('Settings')).toBeInTheDocument();
   });
 
-  it.skip('responds to user interaction with quantum precision', async () => {
-    // Skipping this test as the theme toggle button is not currently implemented
-    // in the MainLayout component based on the latest code reading.
-    // TODO: Re-enable or update this test if theme toggle functionality is added.
+  it('responds to user interaction with quantum precision', async () => {
     const user = userEvent.setup();
     render(<MainLayout {...mockProps} />, { initialRoute: '/dashboard' }); // Use unified render, pass options
 
-    const themeToggleButton = screen.getByTestId('theme-toggle-button');
+    // Find the theme toggle button by aria-label instead of data-testid
+    const themeToggleButton = screen.getByRole('button', { name: /toggle theme/i });
     expect(themeToggleButton).toBeInTheDocument();
 
     await user.click(themeToggleButton);
