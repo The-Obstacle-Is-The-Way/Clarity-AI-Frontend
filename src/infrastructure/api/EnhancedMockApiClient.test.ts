@@ -141,13 +141,15 @@ describe('EnhancedMockApiClient', () => {
   });
 
   it('login returns valid user credentials and logs activity', async () => {
-    const email = 'test@example.com';
+    const email = 'mock@example.com'; // Use the email that matches mockUser.email
     vi.mocked(axios.post).mockResolvedValue({ status: 200 });
 
     const result = await mockApiClient.login(email, 'password');
 
     expect(result).toBeDefined();
-    expect(result.token).toBeDefined(); // Check structure based on mock impl
+    expect(result.success).toBe(true);
+    expect(result.token).toBeDefined(); // Token object should be defined
+    expect(result.token.token).toBeDefined(); // Check structure based on mock impl
     expect(result.user.id).toBeDefined();
 
     expect(axios.post).toHaveBeenCalledTimes(1);
