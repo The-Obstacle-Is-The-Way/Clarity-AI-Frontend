@@ -9,7 +9,7 @@ import { OrbitControls, Environment } from '@react-three/drei';
 import { Color } from 'three';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { NeuralControlPanel } from './NeuralControlPanel';
-import { VisualizationErrorBoundary } from './VisualizationErrorBoundary';
+import { VisualizationErrorBoundary } from '@presentation/organisms/error';
 import { RenderMode } from '@domain/types/brain/visualization';
 import type { BrainModel, BrainRegion, NeuralConnection } from '@domain/types/brain/models';
 import ConnectionLine from '@/presentation/atoms/data-visualization/ConnectionLine';

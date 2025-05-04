@@ -9,9 +9,9 @@
 // We don't need React import for route definitions
 // import React from 'react';
 import { Route } from 'react-router-dom';
-import BrainVisualization from '@presentation/organisms/BrainVisualization';
-import NeuralControlPanel from '@presentation/organisms/NeuralControlPanel';
-import BrainModelContainer from '@presentation/organisms/BrainModelContainer';
+import { BrainVisualization } from '@presentation/organisms/brain';
+import { NeuralControlPanel } from '@presentation/organisms/brain';
+import { BrainModelContainer } from '@presentation/organisms/brain';
 import type { BrainModel } from '@domain/types/brain/models';
 
 // Sample test data
