@@ -96,24 +96,16 @@ describe('ThemeProvider (Enhanced Tests)', () => {
     expect(document.documentElement.classList.contains('light')).toBe(false);
   });
 
-  // This test is skipped due to environment-specific issues with localStorage and theme application timing
-  it.skip('reads from localStorage if a theme is stored', async () => {
-    // This test is intentionally skipped because:
-    // 1. The interaction between localStorage, react effects, and DOM updates is timing-sensitive
-    // 2. The test environment may not consistently apply theme changes in the expected order
-    // 3. The test is consistently failing despite multiple approaches to fix it
-    // 4. The functionality is covered by e2e and manual testing
-    //
-    // TO FIX THIS TEST IN THE FUTURE:
-    // - Consider creating a special test-friendly version of ThemeProvider
-    // - Add explicit callbacks when theme changes are applied to the DOM
-    // - Mock React's useEffect to have more control over execution timing
-    // - Use fake timers and explicit ticks to control timing
+  // This test was previously skipped due to environment-specific issues with localStorage and theme application timing
+  it('reads from localStorage if a theme is stored', async () => {
+    // Clear any previous theme settings
+    document.documentElement.classList.remove('light', 'dark');
+    localStorage.clear();
     
+    // Setup localStorage with dark theme before rendering
     localStorage.setItem('ui-theme', 'dark');
     
-    document.documentElement.classList.remove('light', 'dark');
-    
+    // Use act to ensure all updates are processed
     await act(async () => {
       render(
         <ThemeProvider defaultTheme="light" storageKey="ui-theme">
@@ -122,10 +114,11 @@ describe('ThemeProvider (Enhanced Tests)', () => {
       );
     });
 
+    // Use a longer timeout and more specific class check
     await waitFor(() => {
       expect(document.documentElement.classList.contains('dark')).toBe(true);
       expect(document.documentElement.classList.contains('light')).toBe(false);
-    }, { timeout: 2000 });
+    }, { timeout: 3000 });
   });
 
   it('applies system theme (dark) correctly', async () => {

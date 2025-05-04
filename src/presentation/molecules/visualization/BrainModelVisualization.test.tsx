@@ -174,14 +174,21 @@ vi.mock('@react-three/drei', async (importOriginal) => {
 });
 
 /**
- * NOTE: This test suite is skipped.
- * Testing complex WebGL/React Three Fiber components with unit/integration tests
- * in JSDOM is brittle and provides limited value due to the extensive mocking required
- * and the inability to accurately simulate GPU rendering and 3D interactions.
- *
- * Recommended testing strategies for this component:
- * 1. Component Tests (Storybook/Ladle): Visually test variations in isolation.
- * 2. E2E Tests (Cypress/Playwright): Test user interactions and visual output in a real browser.
+ * This suite is intentionally skipped due to the challenges of testing Three.js components:
+ * 
+ * 1. WebGL Context: Three.js requires a WebGL context that's not available in jsdom
+ * 2. GPU Rendering: The component relies on GPU-accelerated rendering unavailable in test environments
+ * 3. Complex Interaction: User interactions with 3D elements are difficult to simulate
+ * 4. Visual Verification: Output validation requires screenshot comparison
+ * 
+ * RECOMMENDED TESTING APPROACH:
+ * 
+ * - Unit test pure logic functions separately
+ * - Use Storybook/Ladle for visual testing
+ * - Implement E2E tests with Cypress/Playwright for critical paths
+ * - Add runtime monitoring and error tracking
+ * 
+ * See docs/SKIPPED_TESTS.md for more details on the testing strategy for 3D components.
  */
 describe.skip('BrainModelVisualization Component', () => {
   beforeEach(() => {

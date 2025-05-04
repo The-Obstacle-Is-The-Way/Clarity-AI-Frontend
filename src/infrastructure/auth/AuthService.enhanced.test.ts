@@ -178,33 +178,51 @@ class TestableAuthService extends EnhancedAuthService {
 // updated to work with the current implementation.
 describe('EnhancedAuthService', () => {
   describe('initializeAuth with token auto-refresh', () => {
-    // SKIPPED: Complex mocking requires revising the mock implementation
+    // This test is skipped due to persistent localStorage mocking issues
+    // FIXME: Needs a more comprehensive mock approach that:
+    // 1. Properly mocks the AuthApiClient without type errors
+    // 2. Handles localStorage access without causing type conflicts
+    // 3. Uses a special test wrapper for the AuthService class
     it.skip('should attempt to refresh token when it has expired', async () => {
       // Mock expired tokens in localStorage
+      const expiredTokensJson = JSON.stringify(expiredTokens);
+      localStorage.setItem('auth_tokens', expiredTokensJson);
+      
       const expectedNewTokens = {
         ...mockTokens,
         accessToken: 'refreshed-token',
       };
-      vi.spyOn(window.localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(expiredTokens));
-      const mockRefreshTokenClient = vi
-        .spyOn(AuthApiClient.prototype, 'refreshToken')
-        .mockResolvedValueOnce(expectedNewTokens);
-      const mockGetCurrentUserClient = vi
-        .spyOn(AuthApiClient.prototype, 'getCurrentUser')
-        .mockResolvedValueOnce(mockUser);
-
-      // Create and initialize service
+      
+      // Create a mocked AuthApiClient instance for our test
+      const mockApiClient = {
+        login: vi.fn().mockResolvedValue(mockTokens),
+        logout: vi.fn().mockResolvedValue(true),
+        refreshToken: vi.fn().mockResolvedValue(expectedNewTokens),
+        getCurrentUser: vi.fn().mockResolvedValue(mockUser),
+      };
+      
+      // Create TestableAuthService with mocked dependencies
       const authService = new TestableAuthService('https://api.test.com');
+      
+      // Replace the internal apiClient with our mock
+      // @ts-expect-error accessing private property for testing
+      authService.apiClient = mockApiClient;
+      
+      // Act: Initialize auth which should trigger token refresh for expired token
       await authService.initializeAuth();
-
-      // Verify expired token was refreshed
-      expect(mockRefreshTokenClient).toHaveBeenCalledWith(expiredTokens.refreshToken);
-      expect(window.localStorage.setItem).toHaveBeenCalledWith(
-        'auth_tokens',
-        JSON.stringify(expectedNewTokens)
-      );
+      
+      // Assert: Verify expired token was refreshed using our mock
+      expect(mockApiClient.refreshToken).toHaveBeenCalledWith(expiredTokens.refreshToken);
+      
+      // Verify token was stored in localStorage by checking the stored value directly
+      const storedTokens = localStorage.getItem('auth_tokens');
+      expect(storedTokens).not.toBeNull();
+      if (storedTokens) {
+        expect(JSON.parse(storedTokens)).toEqual(expectedNewTokens);
+      }
+      
       // Verify user was loaded with fresh token
-      expect(mockGetCurrentUserClient).toHaveBeenCalled();
+      expect(mockApiClient.getCurrentUser).toHaveBeenCalled();
     });
 
     // SKIPPED: Complex mocking requires revising the mock implementation

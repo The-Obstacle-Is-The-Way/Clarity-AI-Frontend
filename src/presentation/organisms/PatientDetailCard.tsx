@@ -21,7 +21,7 @@ const PatientDetailCard: React.FC<PatientDetailCardProps> = ({ patient }) => {
   const DetailItem: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
     <div className="flex flex-col space-y-1">
       <span className="text-sm font-medium text-muted-foreground">{label}</span>
-      <div className="text-base">{value || 'N/A'}</div>
+      <span className="text-base">{value || 'N/A'}</span>
     </div>
   );
 
