@@ -8,12 +8,12 @@ import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 // import userEvent from '@testing-library/user-event'; // Removed unused import
 import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.unified'; // Corrected path
-import { setupWebGLMocks, cleanupWebGLMocks } from '@test/webgl/setup-test';
+import { setupWebGLMocks, cleanupWebGLMocks } from '@infrastructure/testing/webgl/setup-test';
 import { TimelineEvent } from './TimelineEvent';
-import type { ClinicalEvent } from '@/domain/types/clinical/events';
+import type { ClinicalEvent } from '@domain/types/clinical/events';
 
 // Mock dependencies - Combine and correct mocks for @/presentation/atoms
-vi.mock('@/presentation/atoms', async (importOriginal) => {
+vi.mock('@presentation/atoms', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, any>; // Keep any for now to focus on import
   return {
     ...actual, // Include actual implementations unless overridden

@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'; // Removed
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Restored render, removed unused fireEvent
 // Removed unused userEvent import
-import { setupWebGLMocks, cleanupWebGLMocks } from '@test/webgl'; // Fixed relative path
+import { setupWebGLMocks, cleanupWebGLMocks } from '@infrastructure/testing/webgl'; // Updated import path
 import { PatientHeader } from './PatientHeader';
 // Removed unused renderWithProviders import
 import type { Patient } from '@domain/types/clinical/patient'; // Use path alias

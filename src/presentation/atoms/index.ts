@@ -24,6 +24,7 @@ export * from './feedback/skeleton';
 export * from './feedback/Tooltip';
 
 // Form Atoms
+export * from './form/Button';
 export * from './form/form';
 export * from './form/input';
 export * from './form/label';
@@ -43,4 +44,4 @@ export * from './data-visualization/RegionMesh';
 export * from './data-visualization/RegionSelectionIndicator';
 
 // Root/Core Atoms (if any kept at root)
-export * from './Button';
+// export * from './Button'; // Removed as Button has been moved to form/

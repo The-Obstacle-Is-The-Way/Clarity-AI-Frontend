@@ -1,8 +1,8 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified';
-import { Button, buttonVariants } from './button';
+import { renderWithProviders } from '../../../infrastructure/testing/utils/test-utils.unified';
+import { Button, buttonVariants } from './Button';
 import { vi } from 'vitest';
 
 // Mock Radix UI Slot component
