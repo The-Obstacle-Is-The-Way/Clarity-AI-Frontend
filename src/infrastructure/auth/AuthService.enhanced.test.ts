@@ -214,9 +214,13 @@ describe('EnhancedAuthService', () => {
       expect(harness.mockApiClient.getCurrentUser).toHaveBeenCalled();
     });
     
-    // This test was previously skipped due to complex mocking
     it.skip('should handle token refresh failure during initialization', async () => {
       // Mock expired tokens in localStorage
+      const expiredTokens = {
+        accessToken: 'expired-access-token',
+        refreshToken: 'valid-refresh-token',
+        expiresAt: Date.now() - 10000 // expired 10 seconds ago
+      };
       const expiredTokensJson = JSON.stringify(expiredTokens);
       localStorage.setItem('auth_tokens', expiredTokensJson);
       
