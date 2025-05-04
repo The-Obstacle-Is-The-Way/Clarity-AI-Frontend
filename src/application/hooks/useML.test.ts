@@ -7,11 +7,26 @@ import { renderHook } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { act } from 'react-dom/test-utils';
 import { useML } from './useML';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 
 // Mock ApiClient with correct casing
 vi.mock('@/infrastructure/api/ApiClient', () => ({
   ApiClient: vi.fn().mockImplementation(() => ({}))
 }));
+
+// Mock TanStack Query's useQuery hook
+vi.mock('@tanstack/react-query', () => {
+  const actual = require('@tanstack/react-query');
+  return {
+    ...actual,
+    useQuery: vi.fn().mockReturnValue({
+      data: null,
+      isLoading: false,
+      error: null,
+    }),
+  };
+});
 
 // Mock the MLApiClient with correct module path
 vi.mock('@/infrastructure/api/MLApiClient', () => {
@@ -38,12 +53,29 @@ vi.mock('@/infrastructure/api/MLApiClient', () => {
   };
 });
 
+// Create a wrapper with QueryClientProvider
+const wrapper = ({ children }) => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
+};
+
 describe('useML', () => {
   let mockMLApiClient;
   
   beforeEach(() => {
     vi.resetAllMocks();
-    // Get access to the mocked instance methods directly from the mock rather than using require
+    // Create a mock MLApiClient instance
     mockMLApiClient = vi.mocked(vi.fn()).mockImplementation(() => ({
       processText: vi.fn(),
       detectDepression: vi.fn(),
@@ -64,7 +96,7 @@ describe('useML', () => {
   });
 
   it('should initialize with correct default state', () => {
-    const { result } = renderHook(() => useML());
+    const { result } = renderHook(() => useML(), { wrapper });
 
     expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();
@@ -75,7 +107,7 @@ describe('useML', () => {
     const testError = new Error('Test error');
     mockMLApiClient.detectDepression.mockRejectedValueOnce(testError);
 
-    const { result } = renderHook(() => useML());
+    const { result } = renderHook(() => useML(), { wrapper });
 
     // First cause an error
     await act(async () => {
@@ -104,7 +136,7 @@ describe('useML', () => {
     mockMLApiClient.detectDepression.mockResolvedValue({ score: 0.2 });
 
     // Render hook
-    const { result } = renderHook(() => useML());
+    const { result } = renderHook(() => useML(), { wrapper });
 
     // Call methods
     await act(async () => {
@@ -123,7 +155,7 @@ describe('useML', () => {
     mockMLApiClient.assessRisk.mockRejectedValue(mockError);
 
     // Render hook
-    const { result } = renderHook(() => useML());
+    const { result } = renderHook(() => useML(), { wrapper });
 
     // Call method that will fail
     await act(async () => {
@@ -154,7 +186,7 @@ describe('useML', () => {
     mockMLApiClient.detectPHI.mockRejectedValue('String error');
 
     // Render hook
-    const { result } = renderHook(() => useML());
+    const { result } = renderHook(() => useML(), { wrapper });
 
     // Call method that will fail
     await act(async () => {
@@ -178,7 +210,7 @@ describe('useML', () => {
     });
 
     // Render hook
-    const { result } = renderHook(() => useML());
+    const { result } = renderHook(() => useML(), { wrapper });
 
     // Call method
     await act(async () => {
@@ -204,7 +236,7 @@ describe('useML', () => {
     });
 
     // Render hook
-    const { result } = renderHook(() => useML());
+    const { result } = renderHook(() => useML(), { wrapper });
 
     // Call method
     await act(async () => {
