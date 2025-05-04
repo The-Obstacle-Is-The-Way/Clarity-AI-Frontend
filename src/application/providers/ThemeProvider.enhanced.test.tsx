@@ -14,7 +14,7 @@ import '@testing-library/jest-dom';
 import { vi, afterEach, describe, it, expect, beforeEach } from 'vitest'; // Add beforeEach
 // Import the actual ThemeProvider
 import { ThemeProvider } from './ThemeProvider';
-import { ThemeTestUtils } from '../../infrastructure/testing/utils/testHarnesses/ThemeTestUtils';
+import { ThemeTestUtils, TestableThemeProvider } from '../../infrastructure/testing/utils/testHarnesses/ThemeTestUtils';
 
 // We rely on the global setup in src/test/setup.ts for mocks and environment
 
@@ -71,44 +71,37 @@ describe('ThemeProvider (Enhanced Tests)', () => {
   });
 
   /**
-   * SKIPPED TEST: This test is skipped due to persistent issues with localStorage interaction
-   * in the test environment. The test consistently fails because:
-   * 
-   * 1. ThemeProvider is reading from localStorage, but the theme isn't being applied correctly
-   * 2. Despite setting 'dark' in localStorage, the component applies 'light' theme
-   * 3. The issue appears to be related to how localStorage is mocked in the test environment
-   * 
-   * This requires a more comprehensive solution that may involve:
-   * - Creating a custom ThemeProvider wrapper for testing
-   * - Modifying how localStorage is accessed in the ThemeProvider
-   * - Adding a direct theme injection method for testing
-   * 
-   * This should be addressed as part of the larger effort to improve testing infrastructure.
+   * This test uses the TestableThemeProvider to overcome the localStorage issues
+   * in the test environment. By using our custom wrapper that directly controls
+   * the localStorage access, we avoid timing and asynchronous issues that caused
+   * this test to be unreliable.
    */
-  it.skip('reads from localStorage if a theme is stored', async () => {
-    // First set up the localStorage properly
-    localStorage.setItem('ui-theme', 'dark');
+  it('reads from localStorage if a theme is stored', async () => {
+    // Create a TestableThemeProvider with dark theme already stored in localStorage
+    const testProvider = React.createRef<TestableThemeProvider>();
     
-    // Clear any existing classes
-    document.documentElement.classList.remove('light', 'dark', 'theme-light', 'theme-dark');
+    // Render with the testable provider
+    render(
+      <TestableThemeProvider 
+        ref={testProvider}
+        defaultTheme="light" 
+        initialStoredTheme="dark"
+      >
+        <div>Test content</div>
+      </TestableThemeProvider>
+    );
     
-    // Wrap render in act for React 18 compatibility
+    // Allow effects to run
     await act(async () => {
-      render(
-        <ThemeProvider defaultTheme="light">
-          <div>Test content</div>
-        </ThemeProvider>
-      );
+      await new Promise(resolve => setTimeout(resolve, 50));
     });
     
-    // Wait for theme to be applied
-    await waitFor(
-      () => {
-        expect(document.documentElement.classList.contains('dark')).toBe(true);
-        expect(document.documentElement.classList.contains('light')).toBe(false);
-      },
-      { timeout: 5000 }
-    );
+    // Verify the dark theme was applied
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    expect(document.documentElement.classList.contains('light')).toBe(false);
+    
+    // Verify localStorage was accessed (this is tracked by our testable provider)
+    expect(testProvider.current?.mockedLocalStorage.wasAccessed).toBe(true);
   });
 
   it('applies system theme (dark) correctly', () => {

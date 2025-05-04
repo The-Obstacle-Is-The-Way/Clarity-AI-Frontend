@@ -1,7 +1,90 @@
 import { act, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
+import React from 'react';
+import { ThemeProvider, type ThemeMode } from '../../../../application/providers/ThemeProvider';
 
 type Theme = 'light' | 'dark' | 'system';
+
+/**
+ * Testable version of ThemeProvider that overrides localStorage access
+ * and provides better control for testing purposes.
+ */
+export class TestableThemeProvider extends React.Component<{
+  defaultTheme?: ThemeMode;
+  initialStoredTheme?: ThemeMode | null;
+  children: React.ReactNode;
+}> {
+  // Track localStorage operations for testing
+  mockedLocalStorage: {
+    theme: ThemeMode | null;
+    wasAccessed: boolean;
+    wasUpdated: boolean;
+  };
+  
+  // Store original localStorage methods for restoration
+  originalGetItem: typeof localStorage.getItem;
+  originalSetItem: typeof localStorage.setItem;
+  
+  constructor(props: {
+    defaultTheme?: ThemeMode;
+    initialStoredTheme?: ThemeMode | null;
+    children: React.ReactNode;
+  }) {
+    super(props);
+    this.mockedLocalStorage = {
+      theme: props.initialStoredTheme || null,
+      wasAccessed: false,
+      wasUpdated: false,
+    };
+    
+    // Store original methods for cleanup
+    this.originalGetItem = localStorage.getItem;
+    this.originalSetItem = localStorage.setItem;
+    
+    // Set up mocked localStorage methods
+    this.setupLocalStorageMock();
+  }
+  
+  setupLocalStorageMock() {
+    // Override localStorage methods
+    localStorage.getItem = (key: string): string | null => {
+      if (key === 'ui-theme') {
+        this.mockedLocalStorage.wasAccessed = true;
+        return this.mockedLocalStorage.theme;
+      }
+      return this.originalGetItem.call(localStorage, key);
+    };
+    
+    localStorage.setItem = (key: string, value: string): void => {
+      if (key === 'ui-theme') {
+        this.mockedLocalStorage.theme = value as ThemeMode;
+        this.mockedLocalStorage.wasUpdated = true;
+        return;
+      }
+      this.originalSetItem.call(localStorage, key, value);
+    };
+  }
+  
+  // Create a wrapper around the original ThemeProvider that intercepts 
+  // localStorage calls
+  render(): React.ReactNode {
+    const { defaultTheme = 'system', children } = this.props;
+    
+    // Use the original ThemeProvider with our controlled environment
+    return React.createElement(
+      ThemeProvider,
+      { defaultTheme },
+      children
+    );
+  }
+  
+  // After test is done, restore the original localStorage methods
+  componentWillUnmount() {
+    // Restore original localStorage methods
+    localStorage.getItem = this.originalGetItem;
+    localStorage.setItem = this.originalSetItem;
+  }
+}
 
 /**
  * Utility functions for testing theme-related components.
@@ -35,7 +118,7 @@ export const ThemeTestUtils = {
        * Store a theme in mocked localStorage.
        */
       storeTheme(theme: Theme, storageKey = 'ui-theme') {
-        window.localStorage.getItem.mockImplementation((key: string) => {
+        (window.localStorage.getItem as any).mockImplementation((key: string) => {
           if (key === storageKey) {
             return theme;
           }
