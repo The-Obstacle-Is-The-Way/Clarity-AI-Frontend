@@ -49,10 +49,10 @@ import { useSearchParams } from '@application/hooks/useSearchParams';
 
 // Presentation components
 import BrainModelViewer from '@presentation/organisms/BrainModelViewer';
-import RegionSelectionPanel from '@presentation/molecules/RegionSelectionPanel';
-import VisualizationControls from '@presentation/molecules/VisualizationControls';
-import ClinicalDataOverlay from '@presentation/molecules/ClinicalDataOverlay';
-import BrainRegionDetails from '@presentation/molecules/BrainRegionDetails';
+import RegionSelectionPanel from '@presentation/molecules/selection/RegionSelectionPanel';
+import VisualizationControls from '@presentation/molecules/visualization/VisualizationControls';
+import ClinicalDataOverlay from '@presentation/molecules/clinical/ClinicalDataOverlay';
+import BrainRegionDetails from '@presentation/molecules/selection/BrainRegionDetails';
 // Removed unused LoadingIndicator import
 
 // Common components

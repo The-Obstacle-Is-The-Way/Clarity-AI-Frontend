@@ -24,8 +24,8 @@ import { KernelSize } from 'postprocessing'; // Restored import
 import AdaptiveLOD from '@presentation/common/AdaptiveLOD';
 
 // Import molecular components
-import BrainRegionGroup from '@presentation/molecules/BrainRegionGroup';
-import NeuralConnections from '@presentation/molecules/NeuralConnections';
+import BrainRegionGroup from '@presentation/molecules/visualization/BrainRegionGroup';
+import NeuralConnections from '@presentation/molecules/visualization/NeuralConnections';
 
 // Import domain types
 import type { BrainModel, BrainRegion } from '@domain/types/brain/models'; // Restored BrainRegion

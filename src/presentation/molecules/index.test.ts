@@ -1,46 +1,42 @@
 /**
  * NOVAMIND Neural Test Suite
- * index testing with quantum precision
+ * Molecules index export testing
  */
 
-import { describe, it, expect } from 'vitest'; // Removed unused vi
+import { describe, it, expect } from 'vitest';
+import * as MoleculeExports from './index';
 
-// Removed invalid import: import { index } from './index';
-
-describe('index', () => {
-  it('processes data with mathematical precision', () => {
-    // Arrange test data
-    // Removed unused variable: const testData = {};
-
-    // Act
-    // Replaced function call with object access
-    // Original: const result = index(testData);
-    // In this test we're validating the properties of the exported object
-    // Test logic removed due to invalid import
-    const result = {}; // Placeholder to avoid empty block
-
-    // Assert
-    // Replaced generic assertion with more specific validation
-    expect(result).not.toBeNull();
-    // Add more specific assertions for this particular test case
+describe('Molecules index exports', () => {
+  it('exports visualization components', () => {
+    expect(MoleculeExports.BrainModelVisualization).toBeDefined();
+    expect(MoleculeExports.Chart).toBeDefined();
+    expect(MoleculeExports.VisualizationControls).toBeDefined();
   });
 
-  it('handles edge cases with clinical precision', () => {
-    // Test edge cases
-    // Removed unused variable: const edgeCaseData = {};
-
-    // Act
-    // Replaced function call with object access
-    // Original: const result = index(edgeCaseData);
-    // In this test we're validating the properties of the exported object
-    // Test logic removed due to invalid import
-    const result = {}; // Placeholder to avoid empty block
-
-    // Assert
-    // Replaced generic assertion with more specific validation
-    expect(result).not.toBeNull();
-    // Add more specific assertions for this particular test case
+  it('exports timeline components', () => {
+    expect(MoleculeExports.TimelineEvent).toBeDefined();
+    expect(MoleculeExports.TherapeuticTimelineVisualizer).toBeDefined();
   });
 
-  // Add more utility-specific tests
+  it('exports dialog components', () => {
+    expect(MoleculeExports.ConfirmDialog).toBeDefined();
+    expect(MoleculeExports.SessionWarningModal).toBeDefined();
+  });
+
+  it('exports clinical components', () => {
+    expect(MoleculeExports.PatientHeader).toBeDefined();
+    expect(MoleculeExports.ClinicalDataOverlay).toBeDefined();
+    expect(MoleculeExports.ClinicalMetricsCard).toBeDefined();
+  });
+
+  it('exports navigation components', () => {
+    expect(MoleculeExports.Header).toBeDefined();
+    expect(MoleculeExports.LoadingFallback).toBeDefined();
+  });
+
+  it('exports selection components', () => {
+    expect(MoleculeExports.BrainRegionSelector).toBeDefined();
+    expect(MoleculeExports.RegionSelectionPanel).toBeDefined();
+    expect(MoleculeExports.BrainRegionDetails).toBeDefined();
+  });
 });

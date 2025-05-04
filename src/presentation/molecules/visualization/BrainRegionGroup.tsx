@@ -13,7 +13,7 @@ import type { BrainRegion } from '@domain/types/brain/models';
 // import type { ThemeSettings } from '@domain/types/brain/visualization'; // Removed
 import type { VisualizationSettings } from '@domain/types/brain/visualization'; // Added
 import { RenderMode } from '@domain/types/brain/visualization';
-import { SafeArray } from '../../domain/types/shared/common'; // Use relative path
+import { SafeArray } from '@domain/types/shared/common'; // Fixed path
 // @ts-ignore: TS2305 - Module '"@react-three/drei"' has no exported member 'Html'. (Likely type/config issue)
 import { Html } from '@react-three/drei'; // Added missing import
 
@@ -83,7 +83,7 @@ const BrainRegionGroup: React.FC<BrainRegionGroupProps> = ({
 
   // Calculate which regions to render based on settings
   const filteredRegions = useMemo(() => {
-    return safeRegions.filter((region) => {
+    return safeRegions.filter((region: BrainRegion) => {
       // Filter inactive regions if needed
       if (!showInactiveRegions && !region.isActive && region.activityLevel < activityThreshold) {
         return false;
@@ -191,7 +191,7 @@ const BrainRegionGroup: React.FC<BrainRegionGroupProps> = ({
   if (highPerformanceMode) {
     return (
       <group position={position} rotation={rotation as any}>
-        {filteredRegions.map((region) => {
+        {filteredRegions.map((region: BrainRegion) => {
           // Simple spheres with minimal overhead
           const [x, y, z] = Array.isArray(region.position)
             ? region.position
@@ -275,7 +275,7 @@ const BrainRegionGroup: React.FC<BrainRegionGroupProps> = ({
   // Individual rendering when instancing isn't suitable
   return (
     <group position={position} rotation={rotation as any}>
-      {filteredRegions.map((region) => {
+      {filteredRegions.map((region: BrainRegion) => {
         const [x, y, z] = Array.isArray(region.position)
           ? region.position
           : [region.position.x, region.position.y, region.position.z];
@@ -302,7 +302,7 @@ const BrainRegionGroup: React.FC<BrainRegionGroupProps> = ({
 
       {/* Optional labels */}
       {showLabels &&
-        filteredRegions.map((region) => {
+        filteredRegions.map((region: BrainRegion) => {
           const [x, y, z] = Array.isArray(region.position)
             ? region.position
             : [region.position.x, region.position.y, region.position.z];

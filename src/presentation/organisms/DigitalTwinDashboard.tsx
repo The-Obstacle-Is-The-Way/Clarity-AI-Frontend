@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
 import { Button } from '@/presentation/atoms';
-import ClinicalMetricsGroup from '@presentation/molecules/ClinicalMetricsCard';
+import ClinicalMetricsGroup from '@presentation/molecules/clinical/ClinicalMetricsCard';
 
 import BrainVisualization from '@presentation/organisms/BrainVisualization';
 import RiskAssessmentPanel from '@presentation/organisms/RiskAssessmentPanel';

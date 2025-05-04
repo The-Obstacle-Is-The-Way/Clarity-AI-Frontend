@@ -6,7 +6,7 @@ import { useUpdatePatient } from '@application/hooks/useUpdatePatient';
 import { useDeletePatient } from '@application/hooks/useDeletePatient';
 import PatientDetailCard from '@presentation/organisms/PatientDetailCard';
 import PatientForm from '@presentation/organisms/PatientForm';
-import { ConfirmDialog } from '@presentation/molecules/ConfirmDialog';
+import { ConfirmDialog } from '@presentation/molecules/dialog/ConfirmDialog';
 import ClinicalRecordList from '@presentation/organisms/ClinicalRecordList';
 import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
 import { Skeleton } from '@/presentation/atoms';

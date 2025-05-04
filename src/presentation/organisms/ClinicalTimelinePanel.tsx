@@ -55,7 +55,7 @@ import type {
 // } from "@domain/types/temporal/dynamics";
 
 // Timeline subcomponents
-import { TimelineEvent } from '@presentation/molecules/TimelineEvent';
+import { TimelineEvent } from '@presentation/molecules/timeline/TimelineEvent';
 
 /**
  * Props with neural-safe typing
