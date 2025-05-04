@@ -15,6 +15,49 @@ import { EnhancedAuthService } from './AuthService.enhanced';
 // import { UserProfile } from '../../domain/user/UserProfile';
 // import { AuthTokens as AuthTokensDomain } from '../../domain/auth/AuthTokens';
 
+// Sample data - needs to be defined before mock since vi.mock is hoisted
+const mockUser: AuthUser = {
+  id: 'user-123',
+  email: 'test@example.com',
+  username: 'testuser',
+  role: 'clinician',
+  permissions: ['read:patient', 'write:session'],
+};
+
+const mockTokens: AuthTokens = {
+  accessToken: 'mock-access-token',
+  refreshToken: 'mock-refresh-token',
+  expiresAt: Date.now() + 3600 * 1000, // Expires in 1 hour
+};
+
+const expiredTokens: AuthTokens = {
+  accessToken: 'expired-access-token',
+  refreshToken: 'expired-refresh-token',
+  expiresAt: Date.now() - 3600000, // 1 hour ago
+};
+
+const soonToExpireTokens: AuthTokens = {
+  accessToken: 'soon-to-expire-token',
+  refreshToken: 'soon-to-expire-refresh',
+  expiresAt: Date.now() + 60000, // 1 minute from now
+};
+
+// Mock the API client module entirely BEFORE imports in the describe block
+vi.mock('./index', () => {
+  return {
+    AuthTokens: {},
+    AuthUser: {},
+    AuthState: {},
+    // Mock the auth client
+    AuthApiClient: vi.fn().mockImplementation(() => ({
+      login: vi.fn().mockImplementation(() => Promise.resolve(mockTokens)),
+      logout: vi.fn().mockImplementation(() => Promise.resolve(true)),
+      refreshToken: vi.fn().mockImplementation(() => Promise.resolve({ ...mockTokens, accessToken: 'new-token' })),
+      getCurrentUser: vi.fn().mockImplementation(() => Promise.resolve(mockUser)),
+    })),
+  };
+});
+
 // Create a helper function for initial auth state
 function createInitialAuthState(): AuthState {
   return {
@@ -42,24 +85,16 @@ class ApiError extends Error {
   }
 }
 
-// Mock the API client module entirely BEFORE imports in the describe block
-vi.mock('./index', async () => {
-  // Create a mock for AuthApiClient
-  const mockAuthApiClient = vi.fn().mockImplementation(() => ({
-    login: vi.fn(),
-    logout: vi.fn(),
-    refreshToken: vi.fn(),
-    getCurrentUser: vi.fn(),
-  }));
+// Mock CustomEvent for session expiration
+(global as any).CustomEvent = class CustomEvent extends Event {
+   
+  constructor(name: string, options: any = {}) {
+    super(name, options);
+    Object.assign(this, options);
+  }
+};
 
-  return {
-    AuthTokens: {},
-    AuthUser: {},
-    AuthState: {},
-    // Mock the auth client
-    AuthApiClient: mockAuthApiClient,
-  };
-});
+vi.stubGlobal('CustomEvent', CustomEvent);
 
 // Rely on the global window.localStorage mock defined in src/test/setup.ts
 // Use window.localStorage.* spies for storage interactions
@@ -130,68 +165,8 @@ class TestableAuthService extends EnhancedAuthService {
   }
 }
 
-// Sample data
-const mockUser: AuthUser = {
-  id: 'user-123',
-  email: 'test@example.com',
-  username: 'testuser',
-  role: 'clinician',
-  permissions: ['read:patient', 'write:session'],
-};
-
-const mockTokens: AuthTokens = {
-  accessToken: 'mock-access-token',
-  refreshToken: 'mock-refresh-token',
-  expiresAt: Date.now() + 3600 * 1000, // Expires in 1 hour
-};
-
-const expiredTokens: AuthTokens = {
-  accessToken: 'expired-access-token',
-  refreshToken: 'expired-refresh-token',
-  expiresAt: Date.now() - 3600000, // 1 hour ago
-};
-
-const soonToExpireTokens: AuthTokens = {
-  accessToken: 'soon-to-expire-token',
-  refreshToken: 'soon-to-expire-refresh',
-  expiresAt: Date.now() + 60000, // 1 minute from now
-};
-
-// Mock CustomEvent for session expiration
-(global as any).CustomEvent = class CustomEvent extends Event {
-   
-  constructor(name: string, options: any = {}) {
-    super(name, options);
-    Object.assign(this, options);
-  }
-};
-
-// Mocks for the AuthApiClient methods
-// Default implementations with resolved promises instead of rejected
-const mockLogin = vi.fn().mockImplementation(async () => {
-  console.log('[MOCK login] Called with default implementation');
-  return Promise.resolve(mockTokens);
-});
-
-const mockLogout = vi.fn().mockImplementation(async () => {
-  console.log('[MOCK logout] Called with default implementation');
-  return Promise.resolve(true);
-});
-
-const mockRefreshToken = vi.fn().mockImplementation(async (refreshToken: string) => {
-  console.log('[MOCK refreshToken] Called with:', refreshToken);
-  return Promise.resolve({ ...mockTokens, accessToken: 'new-token' });
-});
-
-const mockGetCurrentUser = vi.fn().mockImplementation(async () => {
-  console.log('[MOCK getCurrentUser] Called with default implementation');
-  return Promise.resolve(mockUser);
-});
-
-vi.stubGlobal('CustomEvent', CustomEvent);
-
 // Global spies for event dispatching
-describe.skip('EnhancedAuthService', () => {
+describe('EnhancedAuthService', () => {
   let authService: EnhancedAuthService;
   // Create a mock for dispatchEvent
   const dispatchEventSpy = vi.fn().mockReturnValue(true);

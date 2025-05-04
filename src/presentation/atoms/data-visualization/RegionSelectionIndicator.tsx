@@ -167,7 +167,7 @@ export const RegionSelectionIndicator: React.FC<RegionSelectionIndicatorProps> =
       position={position}
       scale={derivedScale.clone().multiplyScalar(1.05)} // Slightly larger than the region
     >
-      <sphereBufferGeometry args={[1, 32, 32]} />
+      <sphereGeometry args={[1, 32, 32]} />
       <shaderMaterial ref={materialRef} args={[shaderParameters]} attach="material" />
     </animated.mesh>
   );

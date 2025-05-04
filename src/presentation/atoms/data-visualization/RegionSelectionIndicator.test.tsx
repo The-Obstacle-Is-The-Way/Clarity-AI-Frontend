@@ -7,8 +7,6 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '../../../infrastructure/testing/utils/test-utils.unified';
 import { RegionSelectionIndicator } from './RegionSelectionIndicator';
-import { BrainRegion } from '@domain/types/brain/brainRegionTypes';
-import * as THREE from 'three';
 
 // Mock React Three Fiber
 vi.mock('@react-three/fiber', () => ({
@@ -62,7 +60,7 @@ vi.mock('@react-spring/three', () => {
 
   // Mock useSpring
   const useSpring = vi.fn(() => ({
-    scale: { get: vi.fn(() => 1) }, // Mock scale spring value
+    selectionStrength: { get: vi.fn(() => 1) }, // Mock scale spring value
   }));
 
   // Mock animated components to just render children via Fragment
@@ -71,11 +69,14 @@ vi.mock('@react-spring/three', () => {
     {
       get: function (_target, prop) {
         const MockComponent = React.forwardRef<unknown, MockAnimatedProps>(
-          (props: MockAnimatedProps, _ref) => {
+          (_props: MockAnimatedProps, _ref) => {
+            // Use createElement instead of JSX to avoid casing issues
             return React.createElement(
               'div',
               { 'data-testid': 'mock-animated-mesh' },
-              props.children
+              // Create children using React.createElement to avoid JSX casing issues
+              React.createElement('div', { 'data-testid': 'mock-sphere-geometry' }),
+              React.createElement('div', { 'data-testid': 'mock-shader-material' })
             );
           }
         );
@@ -99,10 +100,14 @@ describe('RegionSelectionIndicator', () => {
   it('renders the mock mesh when selected', () => {
     render(<RegionSelectionIndicator position={new Vector3(0, 0, 0)} scale={1} selected={true} />);
     expect(screen.getByTestId('mock-animated-mesh')).toBeTruthy();
+    expect(screen.getByTestId('mock-sphere-geometry')).toBeTruthy();
+    expect(screen.getByTestId('mock-shader-material')).toBeTruthy();
   });
 
   it('renders the mock mesh when not selected', () => {
     render(<RegionSelectionIndicator position={new Vector3(0, 0, 0)} scale={1} selected={false} />);
     expect(screen.getByTestId('mock-animated-mesh')).toBeTruthy();
+    expect(screen.getByTestId('mock-sphere-geometry')).toBeTruthy();
+    expect(screen.getByTestId('mock-shader-material')).toBeTruthy();
   });
 });

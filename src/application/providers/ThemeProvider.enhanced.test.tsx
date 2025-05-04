@@ -18,36 +18,115 @@ import { ThemeProvider } from '../../presentation/providers/ThemeProvider';
 // We rely on the global setup in src/test/setup.ts for mocks and environment
 
 describe('ThemeProvider (Enhanced Tests)', () => {
-  // Set up matchMedia mock for all tests in the suite
+  // Setup before each test
   beforeEach(() => {
-    // Mock matchMedia implementation
+    // Ensure a clean mock localStorage
+    window.localStorage.clear();
+    // Setup matchMedia mock for consistent results
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: vi.fn().mockImplementation((query) => ({
-        matches: false, // Default to non-matching
+      value: vi.fn().mockImplementation(query => ({
+        matches: false,
         media: query,
         onchange: null,
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
+        addListener: vi.fn(), // Deprecated
+        removeListener: vi.fn(), // Deprecated
         addEventListener: vi.fn(),
         removeEventListener: vi.fn(),
         dispatchEvent: vi.fn(),
       })),
     });
-    
-    // Clear localStorage
-    localStorage.clear();
-  });
 
-  afterEach(() => {
-    // Restore mocks handled globally by setup.ts afterEach
-    vi.restoreAllMocks();
-    // Clear localStorage specifically for theme tests
-    localStorage.removeItem('ui-theme');
     // Reset document class
     if (document && document.documentElement) {
-      document.documentElement.removeAttribute('class');
+      document.documentElement.classList.remove('light', 'dark');
     }
+  });
+  
+  afterEach(() => {
+    // Clean up after each test
+    window.localStorage.clear();
+    
+    // Reset document class
+    if (document && document.documentElement) {
+      document.documentElement.classList.remove('light', 'dark');
+    }
+  });
+
+  it('defaults to light theme', async () => {
+    // Render with light theme
+    const { getByText } = render(
+      <ThemeProvider>
+        <div>Test Content</div>
+      </ThemeProvider>
+    );
+    
+    // Since our mock matchMedia returns 'matches: false' for any query,
+    // including '(prefers-color-scheme: dark)', it should default to light
+    expect(document.documentElement.classList.contains('light')).toBe(true);
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+    expect(getByText('Test Content')).toBeInTheDocument();
+  });
+
+  it('reads from localStorage if a theme is stored', async () => {
+    // First, set a theme in localStorage
+    window.localStorage.setItem('ui-theme', 'dark');
+    
+    // Verify it's set correctly
+    expect(window.localStorage.getItem('ui-theme')).toBe('dark');
+
+    // Then render the component
+    const { getByText } = render(
+      <ThemeProvider>
+        <div>Test Content</div>
+      </ThemeProvider>
+    );
+
+    // Let any pending effects complete
+    await waitFor(() => {
+      // The theme from localStorage should be applied
+      expect(document.documentElement.classList.contains('dark')).toBe(true);
+      expect(document.documentElement.classList.contains('light')).toBe(false);
+      expect(getByText('Test Content')).toBeInTheDocument();
+    }, { timeout: 1000 });
+  });
+
+  it('updates the theme and persists to localStorage', async () => {
+    let setThemeFunction = null;
+
+    // Create a test component that captures the setTheme function
+    const TestComponent = () => {
+      const { theme, setTheme } = React.useContext(ThemeContext);
+      // Store the setTheme function for use in our test
+      setThemeFunction = setTheme;
+      return <div>Current theme: {theme}</div>;
+    };
+
+    // Render the test component within the ThemeProvider
+    const { getByText } = render(
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    );
+
+    // Wait for initial render to complete
+    await waitFor(() => {
+      expect(getByText('Current theme: light')).toBeInTheDocument();
+    });
+
+    // Now use the setTheme function to change the theme
+    act(() => {
+      if (setThemeFunction) {
+        setThemeFunction('dark');
+      }
+    });
+
+    // Verify theme was changed and persisted
+    await waitFor(() => {
+      expect(getByText('Current theme: dark')).toBeInTheDocument();
+      expect(document.documentElement.classList.contains('dark')).toBe(true);
+      expect(window.localStorage.getItem('ui-theme')).toBe('dark');
+    });
   });
 
   it('initializes with default theme (light)', async () => {
