@@ -7,6 +7,7 @@
  * and achieving 80% test coverage.
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MLApiClientEnhanced, MLErrorType } from './MLApiClientEnhanced';
 import { Mocked } from 'vitest'; // Import Mocked type
 import { ApiClient } from './ApiClient'; // Fix casing
