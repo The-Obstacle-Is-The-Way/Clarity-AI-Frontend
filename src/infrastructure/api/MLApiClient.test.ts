@@ -6,10 +6,10 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MLApiClient } from './MLApiClient';
-import { ApiClient } from './apiClient';
+import { ApiClient } from './ApiClient';
 
 // Mock the ApiClient
-vi.mock('./apiClient', () => {
+vi.mock('./ApiClient', () => {
   return {
     ApiClient: vi.fn().mockImplementation(() => ({
       post: vi.fn().mockResolvedValue({}),

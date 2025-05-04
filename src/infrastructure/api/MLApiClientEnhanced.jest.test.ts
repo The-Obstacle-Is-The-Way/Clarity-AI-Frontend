@@ -9,12 +9,12 @@
 
 import { MLApiClientEnhanced, MLErrorType } from './MLApiClientEnhanced';
 import { Mocked } from 'vitest'; // Import Mocked type
-import { ApiClient } from './apiClient';
+import { ApiClient } from './ApiClient'; // Fix casing
 import { MLApiClient } from './MLApiClient';
 
 // Use Jest-style mocking (Vitest compatible)
 vi.mock('./MLApiClient');
-vi.mock('./apiClient');
+vi.mock('./ApiClient'); // Fix casing
 
 // Mock setTimeout and clearTimeout for faster tests
 vi.useFakeTimers();
@@ -33,6 +33,10 @@ describe('MLApiClientEnhanced - Production Error Handling Tests', () => {
       baseUrl: 'https://api.test.com',
       headers: {},
       fetch: vi.fn(),
+      get: vi.fn(),
+      post: vi.fn(),
+      put: vi.fn(),
+      delete: vi.fn()
     } as unknown as Mocked<ApiClient>;
 
     // Set up the MLApiClient mock
@@ -57,11 +61,8 @@ describe('MLApiClientEnhanced - Production Error Handling Tests', () => {
     // Mock MLApiClient constructor
     (MLApiClient as any).mockImplementation(() => mlApiClientMock); // Use 'any' for simplicity here
 
-    // Create the enhanced client
-    mlApiClientEnhanced = new MLApiClientEnhanced(apiClientMock);
-
-    // Replace the client with our mock
-    (mlApiClientEnhanced as any).client = mlApiClientMock;
+    // Create the enhanced client with both required parameters
+    mlApiClientEnhanced = new MLApiClientEnhanced(mlApiClientMock, apiClientMock);
 
     // Configure timeout settings for faster tests
     (mlApiClientEnhanced as any).retryConfig.baseDelayMs = 10;

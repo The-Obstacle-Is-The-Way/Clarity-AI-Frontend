@@ -8,48 +8,56 @@ import '@testing-library/jest-dom';
 import { act } from 'react-dom/test-utils';
 import { useML } from './useML';
 
-// Mock the MLApiClient
-vi.mock('../../infrastructure/api/MLApiClient', () => {
+// Mock ApiClient with correct casing
+vi.mock('@/infrastructure/api/ApiClient', () => ({
+  ApiClient: vi.fn().mockImplementation(() => ({}))
+}));
+
+// Mock the MLApiClient with correct module path
+vi.mock('@/infrastructure/api/MLApiClient', () => {
+  const mockMethods = {
+    processText: vi.fn(),
+    detectDepression: vi.fn(),
+    assessRisk: vi.fn(),
+    analyzeSentiment: vi.fn(),
+    analyzeWellnessDimensions: vi.fn(),
+    generateDigitalTwin: vi.fn(),
+    createDigitalTwinSession: vi.fn(),
+    getDigitalTwinSession: vi.fn(),
+    sendMessageToSession: vi.fn(),
+    endDigitalTwinSession: vi.fn(),
+    getSessionInsights: vi.fn(),
+    detectPHI: vi.fn(),
+    redactPHI: vi.fn(),
+    checkMLHealth: vi.fn(),
+    checkPHIHealth: vi.fn(),
+  };
+  
   return {
-    mlApiClient: {
-      processText: vi.fn(),
-      detectDepression: vi.fn(),
-      assessRisk: vi.fn(),
-      analyzeSentiment: vi.fn(),
-      analyzeWellnessDimensions: vi.fn(),
-      generateDigitalTwin: vi.fn(),
-      createDigitalTwinSession: vi.fn(),
-      getDigitalTwinSession: vi.fn(),
-      sendMessageToSession: vi.fn(),
-      endDigitalTwinSession: vi.fn(),
-      getSessionInsights: vi.fn(),
-      detectPHI: vi.fn(),
-      redactPHI: vi.fn(),
-      checkMLHealth: vi.fn(),
-      checkPHIHealth: vi.fn(),
-    },
+    MLApiClient: vi.fn().mockImplementation(() => mockMethods)
   };
 });
 
-// Import the mocked client
-import { mlApiClient } from '../../infrastructure/api/MLApiClient';
-
 describe('useML', () => {
+  let mockMLApiClient;
+  
   beforeEach(() => {
     vi.resetAllMocks();
+    // Get access to the mocked instance methods
+    mockMLApiClient = new (vi.mocked(require('@/infrastructure/api/MLApiClient').MLApiClient))();
   });
 
   it('should initialize with correct default state', () => {
     const { result } = renderHook(() => useML());
 
-    expect(result.current.loading).toBe(false);
+    expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();
   });
 
   it('should reset error state', async () => {
     // Mock an API error
     const testError = new Error('Test error');
-    (mlApiClient.detectDepression as any).mockRejectedValueOnce(testError);
+    mockMLApiClient.detectDepression.mockRejectedValueOnce(testError);
 
     const { result } = renderHook(() => useML());
 
@@ -76,8 +84,8 @@ describe('useML', () => {
 
   it('should call API methods with correct parameters', async () => {
     // Setup mock responses
-    (mlApiClient.analyzeSentiment as any).mockResolvedValue({ sentiment: 'positive' });
-    (mlApiClient.detectDepression as any).mockResolvedValue({ score: 0.2 });
+    mockMLApiClient.analyzeSentiment.mockResolvedValue({ sentiment: 'positive' });
+    mockMLApiClient.detectDepression.mockResolvedValue({ score: 0.2 });
 
     // Render hook
     const { result } = renderHook(() => useML());
@@ -89,14 +97,14 @@ describe('useML', () => {
     });
 
     // Verify correct parameters were passed
-    expect(mlApiClient.analyzeSentiment).toHaveBeenCalledWith('Happy text', { detailed: true });
-    expect(mlApiClient.detectDepression).toHaveBeenCalledWith('Sample text', undefined);
+    expect(mockMLApiClient.analyzeSentiment).toHaveBeenCalledWith('Happy text', { detailed: true });
+    expect(mockMLApiClient.detectDepression).toHaveBeenCalledWith('Sample text', undefined);
   });
 
   it('should handle API errors correctly', async () => {
     // Setup mock error
     const mockError = new Error('API failure');
-    (mlApiClient.assessRisk as any).mockRejectedValue(mockError);
+    mockMLApiClient.assessRisk.mockRejectedValue(mockError);
 
     // Render hook
     const { result } = renderHook(() => useML());
@@ -112,14 +120,13 @@ describe('useML', () => {
 
     // Verify error state
     expect(result.current.error).toEqual(mockError);
-    expect(result.current.loading).toBe(false);
+    expect(result.current.isLoading).toBe(false);
 
     // Verify the API was called
-    expect(mlApiClient.assessRisk).toHaveBeenCalled();
+    expect(mockMLApiClient.assessRisk).toHaveBeenCalled();
 
     // Get the mock function call args
-    const mockFn = mlApiClient.assessRisk as ReturnType<typeof vi.fn>;
-    const args = mockFn.mock.calls[0];
+    const args = mockMLApiClient.assessRisk.mock.calls[0];
 
     // Check individual arguments
     expect(args[0]).toBe('Text content');
@@ -128,7 +135,7 @@ describe('useML', () => {
 
   it('should handle non-Error objects thrown by API', async () => {
     // Setup mock to throw a string instead of an Error
-    (mlApiClient.detectPHI as any).mockRejectedValue('String error');
+    mockMLApiClient.detectPHI.mockRejectedValue('String error');
 
     // Render hook
     const { result } = renderHook(() => useML());
@@ -149,7 +156,7 @@ describe('useML', () => {
 
   it('should call Digital Twin methods correctly', async () => {
     // Setup mock responses
-    (mlApiClient.createDigitalTwinSession as any).mockResolvedValue({
+    mockMLApiClient.createDigitalTwinSession.mockResolvedValue({
       session_id: 'session-123',
       status: 'active',
     });
@@ -165,7 +172,7 @@ describe('useML', () => {
     });
 
     // Verify correct parameters
-    expect(mlApiClient.createDigitalTwinSession).toHaveBeenCalledWith(
+    expect(mockMLApiClient.createDigitalTwinSession).toHaveBeenCalledWith(
       'therapist-123',
       'patient-456',
       'therapy',
@@ -175,7 +182,7 @@ describe('useML', () => {
 
   it('should call PHI protection methods correctly', async () => {
     // Setup mock response
-    (mlApiClient.redactPHI as any).mockResolvedValue({
+    mockMLApiClient.redactPHI.mockResolvedValue({
       redacted: 'Patient [REDACTED] has arrived',
       count: 1,
     });
@@ -189,7 +196,7 @@ describe('useML', () => {
     });
 
     // Verify correct parameters
-    expect(mlApiClient.redactPHI).toHaveBeenCalledWith(
+    expect(mockMLApiClient.redactPHI).toHaveBeenCalledWith(
       'Patient John Doe has arrived',
       '[REDACTED]',
       'strict'
