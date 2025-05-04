@@ -10,7 +10,7 @@ import '@testing-library/jest-dom'; // render is imported from unified utils, re
 // Removed unused React import (new JSX transform)
 // Removed unused userEvent import
 import { Chart } from './Chart';
-import { render } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { render } from '@infrastructure/testing/utils/test-utils.unified'; // Standardized path
 // import { useAuth } from '@/application/context/AuthContext'; // Removed unused import
 // import { Alert } from '@/presentation/atoms'; // Removed unused import
 

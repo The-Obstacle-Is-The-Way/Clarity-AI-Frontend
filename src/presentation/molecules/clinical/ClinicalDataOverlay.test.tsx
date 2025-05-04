@@ -3,14 +3,14 @@
  * ClinicalDataOverlay testing with quantum precision
  */
 import { describe, it, expect } from 'vitest'; // Removed unused vi
-
+import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Removed unused render
 // Removed unused React import (new JSX transform)
 // Removed unused userEvent import
 import ClinicalDataOverlay from './ClinicalDataOverlay'; // Reverted to default import
-import { type ClinicalDataPoint } from '@/domain/types/clinical/clinicalDataTypes'; // Adjusted import
-import { render } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { type ClinicalDataPoint } from '@domain/types/clinical/clinicalDataTypes'; // Adjusted import
+import { render } from '@infrastructure/testing/utils/test-utils.unified'; // Updated import path
 import type { BrainModel } from '@domain/types/brain/models'; // Import BrainModel
 
 // Mock data with clinical precision

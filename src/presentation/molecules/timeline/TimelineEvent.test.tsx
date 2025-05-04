@@ -7,8 +7,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 // import userEvent from '@testing-library/user-event'; // Removed unused import
-import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Corrected path
-import { setupWebGLMocks, cleanupWebGLMocks } from '../../test/webgl/setup-test';
+import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.unified'; // Corrected path
+import { setupWebGLMocks, cleanupWebGLMocks } from '@test/webgl/setup-test';
 import { TimelineEvent } from './TimelineEvent';
 import type { ClinicalEvent } from '@/domain/types/clinical/events';
 

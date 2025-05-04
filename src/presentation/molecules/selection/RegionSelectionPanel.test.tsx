@@ -9,7 +9,7 @@ import '@testing-library/jest-dom';
 // import userEvent from '@testing-library/user-event'; // Removed unused import
 import RegionSelectionPanel from './RegionSelectionPanel';
 // import type { BrainRegion } from '@/domain/types/brain/models'; // Removed unused import
-import { render } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { render } from '@infrastructure/testing/utils/test-utils.unified'; // Standardized path
 
 // Mock data with clinical precision
 // Mock data with clinical precision - Requires specific props for RegionSelectionPanel

@@ -9,7 +9,7 @@ import { screen } from '@testing-library/react';
 import { fireEvent } from '@testing-library/react';
 import BrainVisualizationControls from './BrainVisualizationControls'; // Reverted to default import
 import { type BrainRegion } from '@/domain/types/brain/brainRegionTypes';
-import { render, screen } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { render, screen } from '@infrastructure/testing/utils/test-utils.unified'; // Standardized path
 // Remove WebGL mock imports
 
 // Remove unnecessary R3F/Three mocks for this component test

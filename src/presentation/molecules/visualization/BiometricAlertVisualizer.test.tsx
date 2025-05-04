@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest'; // Remove beforeEach, afterEach
-import { render, screen } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { render, screen } from '@infrastructure/testing/utils/test-utils.unified'; // Standardized path
 import type { ClinicalAlert } from './BiometricAlertVisualizer';
 import { BiometricAlertVisualizer } from './BiometricAlertVisualizer'; // Import type too
 import type { BrainRegion } from '@domain/types/brain/models'; // Added import for BrainRegion type
