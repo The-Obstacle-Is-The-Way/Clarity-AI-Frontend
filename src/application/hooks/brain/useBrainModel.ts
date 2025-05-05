@@ -9,13 +9,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 // Domain types
 import type { BrainModel } from '@domain/types/brain/models';
 import type { RenderMode } from '@domain/types/brain/visualization';
-import { type Result, success, failure, SafeArray } from '../../domain/types/shared/common'; // Corrected relative path
+import { type Result, success, failure, SafeArray } from '@domain/types/shared/common';
 
 // Domain utilities
-import { brainTypeVerifier } from '../../domain/utils/brain/type-verification'; // Correct relative path to brain utils
+import { brainTypeVerifier } from '@domain/utils/brain/type-verification';
 
 // Application services
-import { brainModelService } from '../services/brain/brain-model.service'; // Correct relative path
+import { brainModelService } from '@application/services/brain/brain-model.service';
 
 /**
  * Hook return type with discriminated union for type safety
