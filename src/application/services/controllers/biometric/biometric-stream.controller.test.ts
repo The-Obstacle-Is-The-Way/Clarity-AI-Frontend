@@ -8,7 +8,6 @@ import { renderHook } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { useBiometricStreamController } from "./biometric-stream.controller";
-import { Result } from "@domain/types/shared/common";
 import * as BiometricController from './biometric-stream.controller';
 
 // Minimal mocks for dependencies
