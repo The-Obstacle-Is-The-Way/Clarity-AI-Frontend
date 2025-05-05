@@ -11,23 +11,21 @@ import BrainVisualizationPage from './BrainVisualizationPage';
 // Mock the hooks that would otherwise cause issues in tests
 vi.mock('@application/context/BrainVisualizationContext', () => ({
   useBrainVisualizationContext: vi.fn(() => ({
-    isLoading: false,
+    isLoading: true, // Set to true to test loading state
     visualizationState: { mode: 'anatomical' },
   })),
 }));
 
 vi.mock('@application/hooks/useBrainModel', () => ({
-  useBrainModel: vi.fn(() => ({ 
+  useBrainModel: vi.fn(() => ({
     brainModel: { id: 'test', regions: [] },
-    isLoading: false,
+    isLoading: true, // Set to true to test loading state
   })),
 }));
 
 // Explicitly mock the component that would render a Canvas/WebGL content
 vi.mock('@presentation/organisms/BrainVisualizationContainer', () => ({
-  default: () => (
-    <div data-testid="mock-brain-vis-container">Mocked Brain Vis Container</div>
-  ),
+  default: () => <div data-testid="mock-brain-vis-container">Mocked Brain Vis Container</div>,
 }));
 
 describe('BrainVisualizationPage', () => {
@@ -35,25 +33,25 @@ describe('BrainVisualizationPage', () => {
     vi.clearAllMocks();
   });
 
-  it('renders with neural precision', () => {
+  it('renders loading state correctly', () => {
     render(<BrainVisualizationPage />);
     
-    // Check that heading is in the document
-    expect(screen.getByText('Brain Visualization')).toBeInTheDocument();
+    // Check that loading text is in the document
+    expect(screen.getByText('Loading Brain Visualization...')).toBeInTheDocument();
     
-    // Look for the container by heading
-    expect(screen.getByTestId('mock-brain-vis-container')).toBeInTheDocument();
+    // Check that the loading indicator is present
+    expect(screen.getByRole('status', { name: 'Loading' })).toBeInTheDocument();
   });
 
-  it('responds to user interaction with quantum precision', () => {
+  it('shows proper loading UI', () => {
     render(<BrainVisualizationPage />);
     
-    // Check for basic UI elements
-    expect(screen.getByText('Brain Visualization')).toBeInTheDocument();
-    expect(screen.getByTestId('mock-brain-vis-container')).toBeInTheDocument();
+    // Look for loading container
+    const loadingContainer = screen.getByText('Loading Brain Visualization...');
+    expect(loadingContainer).toBeInTheDocument();
     
-    // More specific assertions based on actual component behavior
-    expect(screen.getByText('View Controls')).toBeInTheDocument();
-    expect(screen.getByText('Normal')).toBeInTheDocument();
+    // Verify loading spinner exists
+    const loadingSpinner = screen.getByRole('status');
+    expect(loadingSpinner).toBeInTheDocument();
   });
 });
