@@ -17,6 +17,23 @@ import { ThemeProvider, useTheme } from '@application/providers/ThemeProvider';
 // Context providers
 import { AuthProvider } from '@application/context/AuthContext';
 
+// Mock authService for testing
+vi.mock('@infrastructure/api/authService', () => ({
+  authService: {
+    login: vi.fn().mockResolvedValue({ success: true }),
+    logout: vi.fn().mockResolvedValue({ success: true }),
+    getCurrentUser: vi.fn().mockResolvedValue({
+      id: 'test-user-id',
+      name: 'Test User',
+      email: 'test@example.com',
+      role: 'clinician',
+      permissions: ['VIEW_PATIENTS', 'EDIT_PATIENTS'],
+    }),
+    isAuthenticated: vi.fn().mockReturnValue(true),
+    renewSession: vi.fn().mockResolvedValue({ success: true }),
+  },
+}));
+
 // Create a fresh QueryClient for each test
 function createTestQueryClient() {
   return new QueryClient({

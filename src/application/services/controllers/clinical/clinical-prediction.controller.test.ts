@@ -5,10 +5,8 @@
 
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useClinicalPredictionController } from './clinical-prediction.controller';
-import * as ClinicalPredictionController from './clinical-prediction.controller';
 
-// Mock the clinical service dependencies
+// Mock the clinical service dependencies - must be before importing the controller
 vi.mock('@application/services/clinical/clinical.service', () => ({
   clinicalService: {
     fetchTreatmentOutcomePredictions: vi.fn().mockResolvedValue({
@@ -36,8 +34,12 @@ vi.mock('@application/services/clinical/clinical.service', () => ({
         timestamps: ['2025-01-01', '2025-01-15', '2025-01-30'],
       },
     }),
-  },
+  }
 }));
+
+// Import the controller after mocking dependencies
+import { useClinicalPredictionController } from './clinical-prediction.controller';
+import * as ClinicalPredictionController from './clinical-prediction.controller';
 
 describe('ClinicalPredictionController', () => {
   beforeEach(() => {
