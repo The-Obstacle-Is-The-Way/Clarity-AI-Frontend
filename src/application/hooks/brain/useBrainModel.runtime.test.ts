@@ -7,9 +7,63 @@ import { validateBrainModelData } from './useBrainModel.runtime';
 
 describe('useBrainModel Runtime Validation', () => {
   describe('validateBrainModelData', () => {
-    it.skip('should return Ok for a valid BrainModel object', () => {
-      // Skipping this test due to type import issues
-      // Implementation will be restored when domain types are properly configured
+    it('should return Ok for a valid BrainModel object', () => {
+      // Create a valid BrainModel object based on the interface requirements
+      const validBrainModel = {
+        id: 'model-valid-1',
+        name: 'Valid Brain Model',
+        regions: [
+          {
+            id: 'region-1',
+            name: 'Frontal Lobe',
+            position: { x: 10, y: 20, z: 30 },
+            color: '#FF5733',
+            connections: ['region-2'],
+            activityLevel: 0.8,
+            isActive: true,
+            hemisphereLocation: 'left',
+            volumeMl: 120,
+            riskFactor: 0.1,
+          },
+          {
+            id: 'region-2',
+            name: 'Temporal Lobe',
+            position: { x: 30, y: 10, z: 20 },
+            color: '#33FF57',
+            connections: ['region-1'],
+            activityLevel: 0.6,
+            isActive: true,
+            hemisphereLocation: 'right',
+            volumeMl: 100,
+            riskFactor: 0.2,
+          },
+        ],
+        connections: [
+          {
+            id: 'conn-1',
+            sourceId: 'region-1',
+            targetId: 'region-2',
+            strength: 0.75,
+            type: 'excitatory',
+            isActive: true,
+            color: '#AAAAAA',
+          },
+        ],
+      };
+
+      const result = validateBrainModelData(validBrainModel);
+      
+      // Verify that the validation returns an Ok result
+      expect(result.ok).toBe(true);
+      expect(result.err).toBe(false);
+      
+      // Verify the model was returned correctly
+      if (result.ok) {
+        expect(result.val).toEqual(validBrainModel);
+        expect(result.val.id).toBe('model-valid-1');
+        expect(result.val.regions.length).toBe(2);
+        expect(result.val.connections.length).toBe(1);
+      }
     });
 
     it('should return Err for non-object input', () => {
