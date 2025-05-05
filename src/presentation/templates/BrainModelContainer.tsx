@@ -5,10 +5,10 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, useGLTF } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient'; // Corrected import name
-import type { NeuralNode } from '@presentation/organisms/BrainModel'; // Corrected path alias
+import type { NeuralNode } from '@presentation/organisms/brain/BrainModel'; // Updated path
 
 // Lazy-loaded brain model for code splitting
-const BrainModel = React.lazy(() => import('@presentation/organisms/BrainModel')); // Corrected path alias
+const BrainModel = React.lazy(() => import('@presentation/organisms/brain/BrainModel')); // Updated path
 
 interface BrainModelContainerProps {
   /**
@@ -427,7 +427,7 @@ const BrainModelContainer: React.FC<BrainModelContainerProps> = ({
                   <div>
                     <span className="text-gray-500 dark:text-gray-400">Position: </span>
                     <span className="font-mono text-xs text-gray-900 dark:text-white">
-                      [{node.position.map((p) => p.toFixed(2)).join(', ')}]
+                      [{node.position.map((p: number) => p.toFixed(2)).join(', ')}]
                     </span>
                   </div>
 
@@ -464,7 +464,7 @@ const BrainModelContainer: React.FC<BrainModelContainerProps> = ({
                     <div>
                       <span className="text-gray-500 dark:text-gray-400">Markers: </span>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {node.clinicalData.markers.map((marker) => (
+                        {node.clinicalData.markers.map((marker: any) => (
                           <span
                             key={marker}
                             className="px-1.5 py-0.5 rounded-sm text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100"

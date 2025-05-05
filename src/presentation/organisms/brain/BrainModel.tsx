@@ -10,7 +10,7 @@ import * as THREE from 'three'; // Add THREE namespace import
 import {
   createNeuralGlowUniforms,
   updateNeuralGlow,
-} from '../../infrastructure/graphics/shaders/neuralGlow';
+} from '@/infrastructure/graphics/shaders/neuralGlow';
 
 /**
  * Neural node data structure with 3D location and clinical metadata
@@ -179,11 +179,10 @@ const BrainModel: React.FC<BrainModelProps> = ({
       }
     `;
 
-    // Create default uniforms using the options object
+    // Create default uniforms with options
     const uniforms = createNeuralGlowUniforms({
-      baseColor: new Color(0.4, 0.6, 1.0), // Default blue color as THREE.Color
       intensity: 0.8, // Default intensity
-      // pulseRate: 0.8 // Default pulseRate if needed
+      // pulseFactor: 0.8 // If we want to adjust pulse rate
     });
 
     // Ensure the returned object matches the expected index signature

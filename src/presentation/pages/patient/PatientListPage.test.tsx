@@ -10,7 +10,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 // Mock dependencies
 vi.mock('@application/hooks/usePatients');
-vi.mock('@presentation/organisms/PatientTable', () => ({
+vi.mock('@presentation/organisms/patient/PatientTable', () => ({
   // Simple mock that just displays number of patients
   default: ({ patients }: { patients: unknown[] }): React.ReactElement => (
     <div data-testid="patient-table">Patients: {patients.length}</div>

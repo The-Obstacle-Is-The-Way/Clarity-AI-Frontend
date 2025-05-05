@@ -6,17 +6,17 @@ import ErrorBoundary from '@presentation/ErrorBoundary';
 import { ToastContainer } from 'react-toastify';
 
 // Pages
-import Dashboard from '@presentation/pages/Dashboard';
-import BrainVisualizationPage from '@presentation/pages/BrainVisualizationPage';
-import LoginPage from '@presentation/pages/LoginPage';
-import NotFound from '@presentation/pages/NotFound';
-import ProfilePage from '@presentation/pages/ProfilePage';
-import PatientListPage from '@presentation/pages/PatientListPage';
-import PatientDetailPage from '@presentation/pages/PatientDetailPage';
-import CreatePatientPage from '@presentation/pages/CreatePatientPage';
+import { Dashboard } from '@presentation/pages/dashboard';
+import { BrainVisualizationPage } from '@presentation/pages/brain';
+import { LoginPage } from '@presentation/pages/auth';
+import { NotFound } from '@presentation/pages/general';
+import { ProfilePage } from '@presentation/pages/general';
+import { PatientListPage } from '@presentation/pages/patient';
+import { PatientDetailPage } from '@presentation/pages/patient';
+import { CreatePatientPage } from '@presentation/pages/patient';
 
 // Components
-import NeuralControlPanel from '@presentation/organisms/NeuralControlPanel';
+import { NeuralControlPanel } from '@presentation/organisms/brain';
 
 // Providers
 import { ThemeProvider } from '@application/providers/ThemeProvider';

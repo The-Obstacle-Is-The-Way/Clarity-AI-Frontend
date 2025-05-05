@@ -6,7 +6,8 @@ import ProtectedRoute from './ProtectedRoute';
 import { LoginPage } from '@presentation/pages/auth';
 
 // Lazy load pages accessed after login or complex pages
-const DashboardPage = lazy(() => import('@presentation/pages/dashboard/DashboardPage'));
+import { DashboardPage } from '@presentation/pages/dashboard';
+// We import directly above instead of using lazy loading for now to fix TS issues
 const PatientsList = lazy(() => import('@presentation/pages/patient/PatientsList'));
 const PatientDetailPage = lazy(() => import('@presentation/pages/patient/PatientDetailPage'));
 const CreatePatientPage = lazy(() => import('@presentation/pages/patient/CreatePatientPage'));

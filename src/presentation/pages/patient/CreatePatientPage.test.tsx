@@ -9,7 +9,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 // Mock dependencies
 vi.mock('@application/hooks/useCreatePatient');
-vi.mock('@presentation/organisms/PatientForm', () => ({
+vi.mock('@presentation/organisms/patient/PatientForm', () => ({
   // Mock form that captures onSubmit prop and respects isLoading
   default: ({ onSubmit, isLoading }: { onSubmit: (data: any) => void; isLoading?: boolean }) => (
     <form
