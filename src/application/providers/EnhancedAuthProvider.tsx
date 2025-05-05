@@ -12,12 +12,12 @@ import {
   AppAuthContext as AuthContext,
   type AppAuthContextType,
 } from '@/application/context/AuthContext.tsx';
-import { useSecureAuth } from '@application/hooks/useSecureAuth';
+import { useSecureAuth } from '@application/hooks/auth/useSecureAuth';
 // Removed unused Permission and UserRole imports for now
 import { type User } from '@domain/types/auth/auth';
 import { AuditEventType } from '@domain/types/audit/AuditEventType';
 // import { SessionTimeoutModal } from './SessionTimeoutModal'; // Comment out unused import
-import { useAuditLog } from '@application/hooks/useAuditLog';
+import { useAuditLog } from '@application/hooks/utils/useAuditLog';
 
 interface EnhancedAuthProviderProps {
   children: React.ReactNode;

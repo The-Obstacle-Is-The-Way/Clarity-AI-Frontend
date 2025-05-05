@@ -4,14 +4,18 @@
  * with neuropsychiatric precision and HIPAA compliance
  */
 
-import { useCallback } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState, useCallback, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Domain types
+import type { ClinicalData, ClinicalContext } from '@domain/types/clinical/context';
+import type { Patient } from '@domain/types/clinical/patient';
+import type { Diagnosis } from '@domain/types/clinical/diagnosis';
+import type { Treatment } from '@domain/types/clinical/treatment';
 import type { RiskAssessment } from '@domain/types/clinical/risk'; // Already type-only
 import type { TreatmentResponsePrediction } from '@domain/types/clinical/treatment'; // Already type-only
 // Use relative path as alias seems problematic in tests for this file
-import { type Result, success, failure } from '../../domain/types/shared/common'; // Removed unused SafeArray
+import { type Result, success, failure } from '@domain/types/shared/common'; // Removed unused SafeArray
 
 // Domain models
 import type {

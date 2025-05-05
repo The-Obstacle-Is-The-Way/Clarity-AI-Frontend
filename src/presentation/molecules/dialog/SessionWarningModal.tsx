@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'; // Removed unused React
 // Removed unused useNavigate import
-import { useAuth } from '@application/hooks/useAuth';
+import { useAuth } from '@application/hooks/auth/useAuth';
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient'; // Corrected import name
 
 interface SessionWarningModalProps {
