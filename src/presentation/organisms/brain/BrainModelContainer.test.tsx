@@ -107,7 +107,7 @@ vi.mock('three', () => {
 });
 
 // Mock for BrainModelViewer
-vi.mock('@presentation/organisms/BrainModelViewer', () => {
+vi.mock('@presentation/organisms/brain/BrainModelViewer', () => {
   const MockBrainModelViewer = function (props) {
     return React.createElement(
       'div',

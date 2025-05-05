@@ -42,8 +42,12 @@ export const neuralGlowFragment = `
   }
 `;
 
-export const createNeuralGlowUniforms = (options: { intensity?: number; pulseFactor?: number } = {}) => {
-  const color = new THREE.Color(0x00aaff);
+export const createNeuralGlowUniforms = (options: { 
+  color?: THREE.Color;
+  intensity?: number; 
+  pulseFactor?: number 
+} = {}) => {
+  const color = options.color ?? new THREE.Color(0x00aaff);
   const intensity = options.intensity ?? 1.0;
   const pulseFactor = options.pulseFactor ?? 0.5;
   return {
