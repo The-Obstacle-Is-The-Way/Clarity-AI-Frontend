@@ -93,9 +93,7 @@ const PatientListPage: React.FC = () => {
       {/* Data Display */}
       {typedData && (
         <>
-          <div data-testid="patient-table">
-            <PatientTable patients={patientItems} isLoading={isFetching} />
-          </div>
+          <PatientTable patients={patientItems} isLoading={isFetching} />
 
           {/* Pagination Controls */}
           <div className="flex items-center justify-between mt-4">
