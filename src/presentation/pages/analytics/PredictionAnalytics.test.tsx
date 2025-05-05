@@ -3,8 +3,8 @@
  * Replaced with minimal test to prevent hanging from useFrame animation loop
  */
 
-// Removed unused React import
-import { setupWebGLMocks, cleanupWebGLMocks } from '../../test/webgl'; // Remove non-existent imports
+import React from 'react';
+import { setupWebGLMocks, cleanupWebGLMocks } from '../../test/webgl/setup-test'; // Update import path
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import PredictionAnalytics from './PredictionAnalytics'; // Use default import

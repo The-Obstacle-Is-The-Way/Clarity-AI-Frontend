@@ -63,11 +63,11 @@ describe('BiometricMonitorPanel (Minimal)', () => {
 
   afterEach(() => {
     const memoryReport = cleanupWebGLMocks();
-    if (memoryReport && memoryReport.leakedObjectCount > 0) {
+    if (memoryReport && memoryReport.leakedObjectCount && memoryReport.leakedObjectCount > 0) {
       console.warn(
         `Memory leak detected in "BiometricMonitorPanel (Minimal)": ${memoryReport.leakedObjectCount} objects not properly disposed`
       );
-      console.warn('Leaked objects by type:', memoryReport.leakedObjectTypes);
+      console.warn('Leaked objects by type:', memoryReport.details);
     }
   });
 

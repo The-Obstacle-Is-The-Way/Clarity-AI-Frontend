@@ -3,8 +3,8 @@
  * Replaced with minimal test to prevent hanging from useFrame animation loop
  */
 
-// Removed unused React import
-import { setupWebGLMocks, cleanupWebGLMocks } from '../../test/webgl'; // Removed unused ThreeMocks, memoryMonitor
+import React from 'react';
+import { setupWebGLMocks, cleanupWebGLMocks } from '../../test/webgl/setup-test'; // Update import path
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClinicalTimelinePanel } from './ClinicalTimelinePanel';
@@ -63,11 +63,11 @@ describe('ClinicalTimelinePanel (Minimal)', () => {
 
   afterEach(() => {
     const memoryReport = cleanupWebGLMocks();
-    if (memoryReport && memoryReport.leakedObjectCount > 0) {
+    if (memoryReport && memoryReport.leakedObjectCount && memoryReport.leakedObjectCount > 0) {
       console.warn(
         `Memory leak detected in "ClinicalTimelinePanel (Minimal)": ${memoryReport.leakedObjectCount} objects not properly disposed`
       );
-      console.warn('Leaked objects by type:', memoryReport.leakedObjectTypes);
+      console.warn('Leaked objects by type:', memoryReport.details);
     }
   });
 
