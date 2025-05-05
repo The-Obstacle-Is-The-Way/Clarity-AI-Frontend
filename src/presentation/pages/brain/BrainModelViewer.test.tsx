@@ -132,7 +132,7 @@ describe('BrainModelViewer', () => {
 
   it('contains visualization container', () => {
     render(<BrainModelViewer />);
-    // Instead of looking for specific text, check for test IDs
-    expect(screen.getByTestId('mock-error-boundary')).toBeInTheDocument();
+    // Check for title text that should be in the rendered component
+    expect(screen.getByText('Interactive Brain Model')).toBeInTheDocument();
   });
 });

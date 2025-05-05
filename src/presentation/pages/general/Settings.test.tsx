@@ -5,12 +5,12 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-// Removed unused React import
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 // These mocks must come BEFORE importing the component
-vi.mock('../../application/contexts/SettingsContext', () => ({
+vi.mock('@application/contexts/SettingsContext', () => ({
   useSettings: () => ({
     settings: {
       theme: 'light',
@@ -44,12 +44,12 @@ const mockSettingsImplementation = vi.fn(() => (
 ));
 
 // This mocks the Settings component implementation directly
-vi.mock('../pages/Settings', () => ({
+vi.mock('./Settings', () => ({
   default: () => mockSettingsImplementation(),
 }));
 
 // Now import the mocked component
-import Settings from '../pages/Settings';
+import Settings from './Settings';
 
 describe('Settings', () => {
   beforeEach(() => {
