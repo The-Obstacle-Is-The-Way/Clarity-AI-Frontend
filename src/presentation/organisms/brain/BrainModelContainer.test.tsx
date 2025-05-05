@@ -28,6 +28,20 @@ vi.mock('@react-three/fiber', () => ({
   }),
 }));
 
+// Mock @react-three/postprocessing
+vi.mock('@react-three/postprocessing', () => {
+  const MockEffectComposer = ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="mock-effect-composer">{children}</div>
+  );
+  
+  return {
+    EffectComposer: MockEffectComposer,
+    Bloom: () => <div data-testid="mock-bloom-effect" />,
+    SMAA: () => <div data-testid="mock-smaa-effect" />,
+    DepthOfField: () => <div data-testid="mock-dof-effect" />,
+  };
+});
+
 // Mock Three.js
 vi.mock('three', () => {
   class MockVector3 {
