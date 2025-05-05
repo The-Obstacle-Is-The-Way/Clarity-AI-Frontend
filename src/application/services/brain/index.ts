@@ -1,5 +1,7 @@
 /**
- * Brain services exports
+ * Brain Service Exports
+ * 
+ * This module exports brain-related services.
  */
 
-// This file will export brain services once they're implemented
+export * from './brain-model.service';

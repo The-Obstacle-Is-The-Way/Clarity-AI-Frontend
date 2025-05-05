@@ -4,13 +4,14 @@
  * This module exports services that implement domain interfaces.
  */
 
-// We'll export specific services from each subdirectory as they're needed
-// For now, we're just ensuring the export path exists
-// Removed potentially problematic re-exports; specific exports are used below.
-// export * from './clinical'; // Likely empty index.ts
-// export * from './brain'; // Likely empty index.ts
-export * from './temporal'; // Assuming this one is okay or will be fixed later
-// export * from './shared'; // Likely empty index.ts
+// Export controllers
+export * from './controllers';
+
+// Export specific services from subdirectories
+export * from './biometric'; // Biometric services
+export * from './brain'; // Brain services
+export * from './clinical'; // Clinical services
+export * from './temporal'; // Temporal services
 
 /**
  * NOVAMIND Application Services
@@ -19,10 +20,10 @@ export * from './temporal'; // Assuming this one is okay or will be fixed later
  * with domain-specific organization
  */
 
-// Brain domain services
+// Brain domain services - re-export with legacy names for backward compatibility
 export { brainModelService } from './brain/brain-model.service';
 
-// Clinical domain services
+// Clinical domain services - re-export with legacy names for backward compatibility
 export { clinicalService } from './clinical/clinical.service';
 export { RiskAssessmentService } from './clinical/risk-assessment.service';
 
@@ -33,11 +34,11 @@ export type {
   SymptomNeuralMapping,
   DiagnosisNeuralMapping,
   TreatmentNeuralMapping,
-} from '@domain/models/brain/mapping/brain-mapping'; // Corrected path
-export type { RiskAssessment } from '@domain/types/clinical/risk'; // Removed non-existent RiskFactor, RiskScore
+} from '@domain/models/brain/mapping/brain-mapping';
+export type { RiskAssessment } from '@domain/types/clinical/risk';
 export type {
   TreatmentResponsePrediction,
   TreatmentEfficacy,
 } from '@domain/types/clinical/treatment';
 export type { Symptom, Diagnosis, Treatment } from '@domain/types/clinical/patient';
-export type { RiskLevel } from '@domain/types/clinical/risk'; // Corrected path
+export type { RiskLevel } from '@domain/types/clinical/risk';

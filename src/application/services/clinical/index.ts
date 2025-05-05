@@ -1,5 +1,8 @@
 /**
- * Clinical services exports
+ * Clinical Service Exports
+ * 
+ * This module exports clinical-related services.
  */
 
-// This file will export clinical services once they're implemented
+export * from './clinical.service';
+export * from './risk-assessment.service';

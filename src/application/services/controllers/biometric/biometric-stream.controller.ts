@@ -19,7 +19,7 @@ import type {
 import { Result, type Result as ResultType, success, failure } from '@domain/types/shared/common'; // Already correct
 
 // Services
-import { biometricService } from '@application/services/biometricService'; // Revert to alias
+import { biometricService } from '@application/services/biometric/biometric.service';
 // Removed unused import: clinicalService (Confirmed)
 
 /**
