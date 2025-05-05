@@ -4,12 +4,25 @@
  */
 
 import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// Mock the clinical service dependencies - must be before importing the controller
+// Mock the clinical service - this is hoisted to the top of the file
 vi.mock('@application/services/clinical/clinical.service', () => ({
   clinicalService: {
-    fetchTreatmentOutcomePredictions: vi.fn().mockResolvedValue({
+    fetchTreatmentPredictions: vi.fn(),
+    predictSymptomTrajectory: vi.fn()
+  }
+}));
+
+// Import after mocks
+import { useClinicalPredictionController } from './clinical-prediction.controller';
+import * as ClinicalPredictionController from './clinical-prediction.controller';
+import { clinicalService } from '@application/services/clinical/clinical.service';
+
+describe('ClinicalPredictionController', () => {
+  beforeEach(() => {
+    // Setup our mock returns for this test run
+    clinicalService.fetchTreatmentPredictions.mockReturnValue({
       success: true,
       value: [
         {
@@ -25,24 +38,19 @@ vi.mock('@application/services/clinical/clinical.service', () => ({
           predictedResponseTime: 21,
         },
       ],
-    }),
-    predictSymptomTrajectory: vi.fn().mockResolvedValue({
+    });
+
+    clinicalService.predictSymptomTrajectory.mockReturnValue({
       success: true,
       value: {
         baseline: [0.8, 0.75, 0.7],
         predicted: [0.65, 0.55, 0.45],
         timestamps: ['2025-01-01', '2025-01-15', '2025-01-30'],
       },
-    }),
-  }
-}));
+    });
+  });
 
-// Import the controller after mocking dependencies
-import { useClinicalPredictionController } from './clinical-prediction.controller';
-import * as ClinicalPredictionController from './clinical-prediction.controller';
-
-describe('ClinicalPredictionController', () => {
-  beforeEach(() => {
+  afterEach(() => {
     vi.clearAllMocks();
   });
 
@@ -66,6 +74,11 @@ describe('ClinicalPredictionController', () => {
       predictionResult = await result.current.predictTreatmentOutcomes(['treatment-1', 'treatment-2']);
     });
     
+    // Verify the mock was called
+    expect(clinicalService.fetchTreatmentPredictions).toHaveBeenCalledTimes(1);
+    expect(clinicalService.fetchTreatmentPredictions).toHaveBeenCalledWith('patient-123');
+    
+    // Check the results
     expect(predictionResult).toBeDefined();
     expect(predictionResult.success).toBe(true);
     expect(predictionResult.value).toBeInstanceOf(Map);

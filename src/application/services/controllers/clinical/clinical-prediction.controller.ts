@@ -92,15 +92,18 @@ export function useClinicalPredictionController(patientId: string) {
           aggregationMethod: state.aggregationMethod,
         };
 
+        console.log('Calling predictSymptomTrajectory with parameters:', predictionParams);
+        
         // Make the service call - Use the exact method name from the mock
-        // const result = await clinicalService.predictSymptomTrajectory(predictionParams);
-        // TODO: Implement actual service call when the corresponding method exists in clinical.service.ts
-        console.warn(
-          'predictSymptomTrajectories: Service method predictSymptomTrajectory not found in clinical.service.ts. Returning placeholder failure.'
-        );
-        const result: ResultType<any, Error> = failure(
-          new Error('Service method predictSymptomTrajectory not implemented or found.')
-        );
+        const result = await clinicalService.predictSymptomTrajectory(predictionParams);
+        
+        console.log('Result from predictSymptomTrajectory:', result);
+
+        // Check if result is defined
+        if (!result) {
+          console.error('predictSymptomTrajectory returned undefined result');
+          return failure(new Error('Failed to get symptom trajectories: undefined result'));
+        }
 
         if (result.success) {
           const trajectory = result.value;
@@ -172,10 +175,20 @@ export function useClinicalPredictionController(patientId: string) {
           aggregationMethod: state.aggregationMethod,
         };
 
+        console.log('Calling fetchTreatmentPredictions with patientId:', patientId);
+        
         // Make the service call - Corrected based on linter feedback and parameter signature
         // Changed from fetchTreatmentOutcomePredictions -> fetchTreatmentResponsePrediction -> fetchTreatmentPredictions
         // Now passing only patientId based on linter error
         const result = await clinicalService.fetchTreatmentPredictions(patientId);
+        
+        console.log('Result from fetchTreatmentPredictions:', result);
+
+        // Check if result is defined before accessing properties
+        if (!result) {
+          console.error('fetchTreatmentPredictions returned undefined result');
+          return failure(new Error('Failed to get treatment predictions: undefined result'));
+        }
 
         if (result.success) {
           const outcomes = result.value;

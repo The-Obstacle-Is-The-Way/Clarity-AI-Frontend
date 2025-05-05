@@ -1,5 +1,5 @@
 /**
- * NOVAMIND Neural Test Suite - Rebuilt
+ * NOVAMIND Neural Test Suite – Rebuilt
  * NeuroSyncOrchestrator testing with focused, incremental tests.
  */
 
@@ -8,7 +8,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useNeuroSyncOrchestrator } from './neuro-sync.orchestrator';
 import * as NeuroSyncOrchestrator from './neuro-sync.orchestrator';
 
-// Mock the required services
+// ──────────────────────────────────────────
+// Service mocks
+// ──────────────────────────────────────────
 vi.mock('@/application/services/brain/brain-model.service', () => ({
   brainModelService: {
     fetchBrainModel: vi.fn().mockResolvedValue({
@@ -86,7 +88,7 @@ vi.mock('@/application/services/temporal/temporal.service', () => ({
       success: true,
       value: {
         id: 'temporal-patient-123',
-        timestamps: [Date.now() - 86400000, Date.now()],
+        timestamps: [Date.now() - 86_400_000, Date.now()],
         values: {
           'prefrontal-cortex': [0.5, 0.6],
           amygdala: [0.3, 0.4],
@@ -96,7 +98,6 @@ vi.mock('@/application/services/temporal/temporal.service', () => ({
   },
 }));
 
-// Create a mock for the biometric service
 vi.mock('@/application/services/biometric/biometric.service', () => ({
   biometricService: {
     getStreamMetadata: vi.fn().mockResolvedValue({
@@ -118,11 +119,14 @@ vi.mock('@/application/services/biometric/biometric.service', () => ({
   },
 }));
 
-// Import after mocks to ensure mocks are applied
+// Imports for call-count assertions
 import { brainModelService } from '@/application/services/brain/brain-model.service';
 import { clinicalService } from '@/application/services/clinical/clinical.service';
 import { temporalService } from '@/application/services/temporal/temporal.service';
 
+// ──────────────────────────────────────────
+// Tests
+// ──────────────────────────────────────────
 describe('NeuroSyncOrchestrator', () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -139,77 +143,81 @@ describe('NeuroSyncOrchestrator', () => {
 
   it('initializes with default state', () => {
     const { result } = renderHook(() => useNeuroSyncOrchestrator('patient-123'));
+
     expect(result.current).toBeDefined();
     expect(result.current.state).toBeDefined();
     expect(result.current.state.brainModel).toBeNull();
-    expect(result.current.actions).toBeDefined();
     expect(result.current.actions.selectRegion).toBeInstanceOf(Function);
     expect(result.current.actions.setRenderMode).toBeInstanceOf(Function);
   });
 
-  it('fetches initial data on initialization', async () => {
+  // Focus on this test first
+  it.only('fetches initial data on initialization', async () => {
     const { result } = renderHook(() => useNeuroSyncOrchestrator('patient-123'));
 
-    // Expect initial loading state
+    // initial state should be loading
     expect(result.current.state.loadingState).toBe('loading');
 
-    // Advance timers to allow useEffect and async operations to run
     await act(async () => {
       vi.runAllTimers();
-      // Wait for promises triggered by timers/effects to resolve
-      await Promise.resolve();
-    });
-    
-    // Use waitFor to handle potential multiple state updates
-    await waitFor(() => {
-        expect(result.current.state.brainModel).not.toBeNull();
-        // Check other fetched data if applicable based on hook implementation
-        expect(result.current.state.symptomMappings.length).toBeGreaterThan(0);
-        expect(result.current.state.diagnosisMappings.length).toBeGreaterThan(0);
-        expect(result.current.state.treatmentPredictions.length).toBeGreaterThan(0);
-        expect(result.current.state.temporalDynamics).not.toBeNull();
-        expect(result.current.state.loadingState).toBe('loaded');
+      await Promise.resolve(); // flush micro-tasks
     });
 
-    // Verify mocks were called (adjust based on actual hook logic)
-    expect(brainModelService.fetchBrainModel).toHaveBeenCalled();
-    expect(clinicalService.fetchSymptomMappings).toHaveBeenCalled();
-    expect(clinicalService.fetchDiagnosisMappings).toHaveBeenCalled();
-    expect(clinicalService.fetchTreatmentPredictions).toHaveBeenCalled();
-    expect(temporalService.getTemporalDynamics).toHaveBeenCalled();
+    // Corrected waitFor formatting
+    await waitFor(() =>
+      expect(result.current.state.loadingState).toBe('loaded')
+    );
+
+    expect(result.current.state.brainModel).not.toBeNull();
+    expect(result.current.state.symptomMappings.length).toBeGreaterThan(0);
+    expect(result.current.state.diagnosisMappings.length).toBeGreaterThan(0);
+    expect(result.current.state.treatmentPredictions.length).toBeGreaterThan(0);
+    expect(result.current.state.temporalDynamics).not.toBeNull();
+
+    // verify service calls
+    expect(brainModelService.fetchBrainModel).toHaveBeenCalledTimes(1);
+    expect(clinicalService.fetchSymptomMappings).toHaveBeenCalledTimes(1);
+    expect(clinicalService.fetchDiagnosisMappings).toHaveBeenCalledTimes(1);
+    expect(clinicalService.fetchTreatmentPredictions).toHaveBeenCalledTimes(1);
+    expect(temporalService.getTemporalDynamics).toHaveBeenCalledTimes(1);
   });
 
   it('selects region correctly', async () => {
     const { result } = renderHook(() => useNeuroSyncOrchestrator('patient-123'));
-    
-    // Wait for initialization to complete
+
     await act(async () => {
       vi.runAllTimers();
       await Promise.resolve();
     });
-    await waitFor(() => expect(result.current.state.loadingState).toBe('loaded'));
+    // Corrected waitFor formatting
+    await waitFor(() =>
+      expect(result.current.state.loadingState).toBe('loaded')
+    );
 
-    // Select a region
     act(() => {
       result.current.actions.selectRegion('prefrontal-cortex');
     });
+
+    // Corrected expect formatting
     expect(result.current.state.selectedRegions).toContain('prefrontal-cortex');
   });
 
   it('sets render mode correctly', async () => {
     const { result } = renderHook(() => useNeuroSyncOrchestrator('patient-123'));
 
-     // Wait for initialization to complete (optional, but safer)
-     await act(async () => {
+    await act(async () => {
       vi.runAllTimers();
       await Promise.resolve();
     });
-    await waitFor(() => expect(result.current.state.loadingState).toBe('loaded'));
+    // Corrected waitFor formatting
+    await waitFor(() =>
+      expect(result.current.state.loadingState).toBe('loaded')
+    );
 
-    // Set a different render mode
     act(() => {
       result.current.actions.setRenderMode('heatmap');
     });
+
     expect(result.current.state.renderMode).toBe('heatmap');
   });
-}); 
+});
