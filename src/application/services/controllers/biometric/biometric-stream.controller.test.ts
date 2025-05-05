@@ -4,7 +4,7 @@
  * BiometricStreamController testing with focused, incremental tests.
  */
 
-import { renderHook } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { useBiometricStreamController } from "./biometric-stream.controller";
@@ -15,11 +15,22 @@ vi.mock('@application/services/biometric/biometric.service', () => ({
   biometricService: {
     getStreamMetadata: vi.fn().mockResolvedValue({
       success: true,
-      value: [],
+      value: [
+        {
+          id: 'stream1',
+          patientId: 'patient123',
+          type: 'heartRate',
+          source: 'wearable',
+          name: 'Heart Rate',
+          unit: 'bpm',
+          isActive: true,
+          lastDataPointTimestamp: new Date(),
+        }
+      ],
     }),
     calculateStreamCorrelations: vi.fn().mockResolvedValue({
       success: true,
-      value: new Map(),
+      value: new Map([['stream1-stream2', 0.75]]),
     }),
   },
 }));
@@ -40,29 +51,61 @@ describe("useBiometricStreamController", () => {
     expect(result.current.latestAlerts.length).toBe(0);
   });
 
-  it.skip("connects to streams with quantum precision", async () => {
+  it("connects to streams with quantum precision", async () => {
     const { result } = renderHook(() => useBiometricStreamController("patient123"));
-    const connectResult = await result.current.connectStreams(["stream1"]);
+    
+    let connectResult;
+    await act(async () => {
+      connectResult = await result.current.connectStreams(["stream1"]);
+    });
+    
     expect(connectResult).toBeDefined();
+    expect(connectResult.success).toBe(true);
+    expect(result.current.isConnected).toBe(true);
+    expect(result.current.activeStreams.size).toBe(1);
   });
 
-  it.skip("handles disconnection properly", async () => {
+  it("handles disconnection properly", async () => {
     const { result } = renderHook(() => useBiometricStreamController("patient123"));
-    await result.current.connectStreams(["stream1"]);
-    const disconnectResult = result.current.disconnectStreams();
+    
+    await act(async () => {
+      await result.current.connectStreams(["stream1"]);
+    });
+    
+    expect(result.current.isConnected).toBe(true);
+    
+    let disconnectResult;
+    act(() => {
+      disconnectResult = result.current.disconnectStreams();
+    });
+    
     expect(disconnectResult).toBeDefined();
+    expect(disconnectResult.success).toBe(true);
+    expect(result.current.isConnected).toBe(false);
+    expect(result.current.activeStreams.size).toBe(0);
   });
 
-  it.skip("calculates correlations with mathematical precision", async () => {
+  it("calculates correlations with mathematical precision", async () => {
     const { result } = renderHook(() => useBiometricStreamController("patient123"));
-    await result.current.connectStreams(["stream1", "stream2"]);
-    const correlationsResult = await result.current.calculateCorrelations();
+    
+    await act(async () => {
+      await result.current.connectStreams(["stream1", "stream2"]);
+    });
+    
+    let correlationsResult;
+    await act(async () => {
+      correlationsResult = await result.current.calculateCorrelations();
+    });
+    
     expect(correlationsResult).toBeDefined();
+    expect(correlationsResult.success).toBe(true);
+    expect(correlationsResult.value).toBeInstanceOf(Map);
+    expect(correlationsResult.value.size).toBeGreaterThan(0);
   });
 });
 
-// Skip tests for now until path issues are resolved
-describe.skip('BiometricStreamController', () => {
+// This test can be enabled now
+describe('BiometricStreamController', () => {
   it('exists as a module', () => {
     expect(BiometricController).toBeDefined();
   });
