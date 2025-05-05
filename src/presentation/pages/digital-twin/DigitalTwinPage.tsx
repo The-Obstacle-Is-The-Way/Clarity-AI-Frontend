@@ -17,7 +17,7 @@ import { Settings, Brain } from 'lucide-react';
 // import { VisualizationCoordinatorProvider } from "@application/coordinators/NeuralVisualizationCoordinator";
 
 // Page components
-import BrainModelContainer from '@presentation/templates/BrainModelContainer';
+import BrainModelContainer from '@presentation/organisms/brain/BrainModelContainer';
 import PatientHeader from '@presentation/molecules/clinical/PatientHeader'; // Assuming this exists
 import { ClinicalTimelinePanel } from '@presentation/organisms/clinical';
 // import NeuralRegionSelector from "@presentation/organisms/NeuralRegionSelector"; // Module missing

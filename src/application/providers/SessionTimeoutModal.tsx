@@ -8,7 +8,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardFooter } from '@/presentation/atoms/display/Card';
 import { Button } from '@presentation/atoms';
 import { Progress } from '@/presentation/atoms/feedback/progress';
-import { useSecureAuth } from '../hooks/useSecureAuth';
+import { useSecureAuth } from '@application/hooks/auth/useSecureAuth';
 import { auditLogClient, AuditEventType } from '../../infrastructure/clients/auditLogClient';
 
 interface SessionTimeoutModalProps {

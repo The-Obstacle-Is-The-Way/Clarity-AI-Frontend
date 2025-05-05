@@ -1,6 +1,6 @@
 // src/presentation/pages/PatientListPage.tsx
 import React, { useState } from 'react';
-import { usePatients } from '@application/hooks/usePatients';
+import { usePatients } from '@application/hooks/clinical/usePatients';
 import { PatientTable } from '@presentation/organisms/patient';
 import { Button } from '@/presentation/atoms';
 import { Input } from '@/presentation/atoms';

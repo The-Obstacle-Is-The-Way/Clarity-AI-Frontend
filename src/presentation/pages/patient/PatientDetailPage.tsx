@@ -1,9 +1,9 @@
 // src/presentation/pages/PatientDetailPage.tsx
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { usePatientDetail } from '@application/hooks/usePatientDetail';
-import { useUpdatePatient } from '@application/hooks/useUpdatePatient';
-import { useDeletePatient } from '@application/hooks/useDeletePatient';
+import { usePatientDetail } from '@application/hooks/clinical/usePatientDetail';
+import { useUpdatePatient } from '@application/hooks/clinical/useUpdatePatient';
+import { useDeletePatient } from '@application/hooks/clinical/useDeletePatient';
 import { PatientDetailCard } from '@presentation/organisms/patient';
 import { PatientForm } from '@presentation/organisms/patient';
 import { ConfirmDialog } from '@presentation/molecules/dialog/ConfirmDialog';

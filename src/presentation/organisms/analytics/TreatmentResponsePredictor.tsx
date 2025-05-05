@@ -7,7 +7,7 @@ import { Button } from '@/presentation/atoms';
 // import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms'; // Removed - Not used
 // import { Card, CardContent } from '@/presentation/atoms/display/Card'; // Corrected path
 
-import { useTreatmentPrediction } from '@hooks/useTreatmentPrediction';
+import { useTreatmentPrediction } from '@hooks/clinical/useTreatmentPrediction';
 import type { DigitalTwinProfile } from '@domain/models/clinical/digital-twin-profile';
 // Removed duplicate/incorrect Card import
 
@@ -55,10 +55,10 @@ const TreatmentResponsePredictor: React.FC<TreatmentResponsePredictorProps> = ({
   } = useTreatmentPrediction({
     patientId,
     initialTreatmentType: 'ssri',
-    onPredictionSuccess: (data) => {
+    onPredictionSuccess: (data: any) => {
       console.log('Prediction successful:', data);
     },
-    onPredictionError: (error) => {
+    onPredictionError: (error: Error) => {
       console.error('Prediction error:', error);
     },
   });

@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PatientForm } from '@presentation/organisms/patient';
-import { useCreatePatient } from '@/application/hooks/useCreatePatient';
+import { useCreatePatient } from '@/application/hooks/clinical/useCreatePatient';
 import type { CreatePatientInput } from '@domain/patients/patientSchemas';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/presentation/atoms';
 import { Button } from '@/presentation/atoms';

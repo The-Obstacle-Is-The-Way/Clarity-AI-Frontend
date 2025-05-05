@@ -1,7 +1,7 @@
 import React from 'react'; // Removed unused useState
 
 // Import components from index files for better organization following clean architecture
-import { useTheme } from '@/application/hooks/useTheme'; // Corrected alias
+import { useTheme } from '@/application/hooks/ui/useTheme'; // Corrected alias
 import type { ThemeMode } from '@domain/types/theme'; // Changed from type-only import
 // Remove unused imports
 // import { DocumentTitle, Card, Button } from '@presentation/atoms';

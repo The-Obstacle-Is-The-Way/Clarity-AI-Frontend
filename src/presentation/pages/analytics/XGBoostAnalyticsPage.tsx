@@ -2,7 +2,7 @@
 import React from 'react';
 import { XGBoostInputForm } from '@presentation/organisms/analytics';
 import { XGBoostResultsDisplay } from '@presentation/organisms/analytics';
-import { useXGBoostPrediction } from '@/application/hooks/useXGBoostPrediction';
+import { useXGBoostPrediction } from '@/application/hooks/clinical/useXGBoostPrediction';
 import type { XGBoostInput } from '@domain/analytics/xgboostTypes';
 import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms/feedback/alert';
 import { Terminal } from 'lucide-react';

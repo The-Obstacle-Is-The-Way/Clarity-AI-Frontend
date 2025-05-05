@@ -37,11 +37,11 @@ import {
 } from '@domain/models/brain/mapping/brain-mapping'; // Correct path
 
 // Application hooks
-import { useBrainModel } from '@application/hooks/useBrainModel';
-import { usePatientData } from '@application/hooks/usePatientData';
-import { useClinicalContext } from '@application/hooks/useClinicalContext';
-import { useVisualSettings } from '@application/hooks/useVisualSettings';
-import { useSearchParams } from '@application/hooks/useSearchParams';
+import { useBrainModel } from '@application/hooks/brain/useBrainModel';
+import { usePatientData } from '@application/hooks/clinical/usePatientData';
+import { useClinicalContext } from '@application/hooks/clinical/useClinicalContext';
+import { useVisualSettings } from '@application/hooks/ui/useVisualSettings';
+import { useSearchParams } from '@application/hooks/utils/useSearchParams';
 
 // Presentation components
 import { BrainModelViewer } from '@presentation/organisms/brain';

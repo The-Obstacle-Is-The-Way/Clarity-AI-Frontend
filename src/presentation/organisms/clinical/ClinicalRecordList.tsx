@@ -1,6 +1,6 @@
 // src/presentation/organisms/ClinicalRecordList.tsx
 import React, { useState } from 'react';
-import { useClinicalRecords } from '@application/hooks/useClinicalRecords';
+import { useClinicalRecords } from '@application/hooks/clinical/useClinicalRecords';
 import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms';
 import { Skeleton } from '@/presentation/atoms';
 import { Button } from '@/presentation/atoms';

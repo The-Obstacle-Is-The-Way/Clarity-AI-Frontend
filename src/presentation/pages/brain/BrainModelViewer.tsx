@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/presentation/atoms'; // Corrected import
-import { useBrainVisualization } from '@hooks/useBrainVisualization';
+import { useBrainVisualization } from '@hooks/brain/useBrainVisualization';
 import type { BrainRegion } from '@domain/types/brain/models'; // Corrected import path
 import type { RenderMode } from '@domain/types/brain/visualization'; // Keep this correct import
 // Remove potentially conflicting import if it exists elsewhere
@@ -55,7 +55,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
 
   // Handle region selection
   const handleRegionSelect = (regionId: string) => {
-    const region = brainModel?.regions.find((r) => r.id === regionId);
+    const region = brainModel?.regions.find((r: { id: string }) => r.id === regionId);
     if (region) {
       setSelectedRegion(region || null); // Ensure null is passed if region is undefined
       highlightRegion(regionId);
@@ -169,7 +169,7 @@ const BrainModelViewer: React.FC<BrainModelViewerProps> = ({
                 <div className="absolute bottom-4 left-4 right-4 flex flex-wrap justify-center">
                   <div className="rounded-lg bg-black/30 px-4 py-2 text-xs text-white backdrop-blur-sm">
                     {highlights.map((regionId) => {
-                      const region = brainModel.regions.find((r) => r.id === regionId); // Removed explicit type
+                      const region = brainModel.regions.find((r: { id: string }) => r.id === regionId);
                       return region ? (
                         <span
                           key={region.id}

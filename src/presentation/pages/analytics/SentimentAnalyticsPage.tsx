@@ -2,7 +2,7 @@
 import React from 'react';
 import { SentimentInputForm } from '@presentation/organisms/analytics';
 import { SentimentResultsDisplay } from '@presentation/organisms/analytics';
-import { useSentimentAnalysis } from '@/application/hooks/useSentimentAnalysis';
+import { useSentimentAnalysis } from '@/application/hooks/clinical/useSentimentAnalysis';
 import type { SentimentInput } from '@domain/analytics/sentimentTypes';
 import { Alert, AlertDescription, AlertTitle } from '@/presentation/atoms/feedback/alert';
 import { Terminal } from 'lucide-react';
