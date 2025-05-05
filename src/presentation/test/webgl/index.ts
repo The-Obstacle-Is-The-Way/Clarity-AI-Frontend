@@ -3,105 +3,106 @@
  *
  * Provides mocks for WebGL required in tests
  */
+import { vi } from 'vitest';
 
 // Mock canvas and webgl context for tests
 class MockCanvas {
   getContext() {
     return {
-      createShader: jest.fn(),
-      createProgram: jest.fn(),
-      attachShader: jest.fn(),
-      linkProgram: jest.fn(),
-      useProgram: jest.fn(),
-      shaderSource: jest.fn(),
-      compileShader: jest.fn(),
-      getShaderParameter: jest.fn().mockReturnValue(true),
-      getProgramParameter: jest.fn().mockReturnValue(true),
-      getShaderInfoLog: jest.fn(),
-      getProgramInfoLog: jest.fn(),
-      createBuffer: jest.fn(),
-      bindBuffer: jest.fn(),
-      bufferData: jest.fn(),
-      enableVertexAttribArray: jest.fn(),
-      getAttribLocation: jest.fn(),
-      vertexAttribPointer: jest.fn(),
-      getUniformLocation: jest.fn(),
-      uniform1f: jest.fn(),
-      uniform2f: jest.fn(),
-      uniform3f: jest.fn(),
-      uniform4f: jest.fn(),
-      uniformMatrix4fv: jest.fn(),
-      drawArrays: jest.fn(),
-      drawElements: jest.fn(),
-      viewport: jest.fn(),
-      clearColor: jest.fn(),
-      clear: jest.fn(),
+      createShader: vi.fn(),
+      createProgram: vi.fn(),
+      attachShader: vi.fn(),
+      linkProgram: vi.fn(),
+      useProgram: vi.fn(),
+      shaderSource: vi.fn(),
+      compileShader: vi.fn(),
+      getShaderParameter: vi.fn().mockReturnValue(true),
+      getProgramParameter: vi.fn().mockReturnValue(true),
+      getShaderInfoLog: vi.fn(),
+      getProgramInfoLog: vi.fn(),
+      createBuffer: vi.fn(),
+      bindBuffer: vi.fn(),
+      bufferData: vi.fn(),
+      enableVertexAttribArray: vi.fn(),
+      getAttribLocation: vi.fn(),
+      vertexAttribPointer: vi.fn(),
+      getUniformLocation: vi.fn(),
+      uniform1f: vi.fn(),
+      uniform2f: vi.fn(),
+      uniform3f: vi.fn(),
+      uniform4f: vi.fn(),
+      uniformMatrix4fv: vi.fn(),
+      drawArrays: vi.fn(),
+      drawElements: vi.fn(),
+      viewport: vi.fn(),
+      clearColor: vi.fn(),
+      clear: vi.fn(),
     };
   }
 }
 
 // Mock Three.js
-jest.mock('three', () => {
+vi.mock('three', () => {
   return {
-    WebGLRenderer: jest.fn().mockImplementation(() => ({
-      setSize: jest.fn(),
-      render: jest.fn(),
+    WebGLRenderer: vi.fn().mockImplementation(() => ({
+      setSize: vi.fn(),
+      render: vi.fn(),
       shadowMap: {},
       outputEncoding: 0,
-      setPixelRatio: jest.fn(),
+      setPixelRatio: vi.fn(),
       domElement: document.createElement('canvas'),
-      dispose: jest.fn(),
+      dispose: vi.fn(),
     })),
-    Scene: jest.fn().mockImplementation(() => ({
-      add: jest.fn(),
+    Scene: vi.fn().mockImplementation(() => ({
+      add: vi.fn(),
       background: null,
       children: [],
     })),
-    PerspectiveCamera: jest.fn().mockImplementation(() => ({
-      position: { set: jest.fn() },
-      lookAt: jest.fn(),
-      updateProjectionMatrix: jest.fn(),
+    PerspectiveCamera: vi.fn().mockImplementation(() => ({
+      position: { set: vi.fn() },
+      lookAt: vi.fn(),
+      updateProjectionMatrix: vi.fn(),
     })),
-    BoxGeometry: jest.fn(),
-    SphereGeometry: jest.fn(),
-    MeshBasicMaterial: jest.fn(),
-    Mesh: jest.fn().mockImplementation(() => ({
-      position: { set: jest.fn() },
-      rotation: { set: jest.fn() },
-      scale: { set: jest.fn() },
+    BoxGeometry: vi.fn(),
+    SphereGeometry: vi.fn(),
+    MeshBasicMaterial: vi.fn(),
+    Mesh: vi.fn().mockImplementation(() => ({
+      position: { set: vi.fn() },
+      rotation: { set: vi.fn() },
+      scale: { set: vi.fn() },
     })),
-    Color: jest.fn(),
-    Vector3: jest.fn().mockImplementation(() => ({
-      set: jest.fn(),
-      copy: jest.fn(),
-      add: jest.fn(),
-      sub: jest.fn(),
-      multiplyScalar: jest.fn(),
-      normalize: jest.fn(),
-      clone: jest.fn(),
+    Color: vi.fn(),
+    Vector3: vi.fn().mockImplementation(() => ({
+      set: vi.fn(),
+      copy: vi.fn(),
+      add: vi.fn(),
+      sub: vi.fn(),
+      multiplyScalar: vi.fn(),
+      normalize: vi.fn(),
+      clone: vi.fn(),
     })),
-    Group: jest.fn().mockImplementation(() => ({
-      add: jest.fn(),
+    Group: vi.fn().mockImplementation(() => ({
+      add: vi.fn(),
       children: [],
-      position: { set: jest.fn() },
-      rotation: { set: jest.fn() },
-      scale: { set: jest.fn() },
+      position: { set: vi.fn() },
+      rotation: { set: vi.fn() },
+      scale: { set: vi.fn() },
     })),
-    Box3: jest.fn().mockImplementation(() => ({
-      setFromObject: jest.fn(),
-      getSize: jest.fn().mockReturnValue({ x: 1, y: 1, z: 1 }),
-      getCenter: jest.fn().mockReturnValue({ x: 0, y: 0, z: 0 }),
+    Box3: vi.fn().mockImplementation(() => ({
+      setFromObject: vi.fn(),
+      getSize: vi.fn().mockReturnValue({ x: 1, y: 1, z: 1 }),
+      getCenter: vi.fn().mockReturnValue({ x: 0, y: 0, z: 0 }),
     })),
     Object3D: {
-      DefaultUp: { set: jest.fn() },
+      DefaultUp: { set: vi.fn() },
     },
-    Clock: jest.fn().mockImplementation(() => ({
-      getDelta: jest.fn().mockReturnValue(0.01),
+    Clock: vi.fn().mockImplementation(() => ({
+      getDelta: vi.fn().mockReturnValue(0.01),
       elapsedTime: 0,
     })),
-    Raycaster: jest.fn().mockImplementation(() => ({
-      setFromCamera: jest.fn(),
-      intersectObjects: jest.fn().mockReturnValue([]),
+    Raycaster: vi.fn().mockImplementation(() => ({
+      setFromCamera: vi.fn(),
+      intersectObjects: vi.fn().mockReturnValue([]),
     })),
   };
 });

@@ -2,72 +2,58 @@
  * CLARITY-AI Neural Test Suite
  * BrainVisualizationPage testing with quantum precision
  */
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import BrainVisualizationPage from './BrainVisualizationPage';
 
-// Removed unused React import
-import {
-  renderWithProviders as render,
-  screen,
-  waitFor,
-} from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
-// Removed unused userEvent import
-import BrainVisualizationPage from '@presentation/pages/BrainVisualizationPage'; // Corrected import path
-import { renderWithProviders } from '../../test/test-utils.unified';
-import { useBrainVisualizationContext } from '@application/context/BrainVisualizationContext';
-import { useBrainModel } from '@application/hooks/useBrainModel';
-
-// Mock the child component that uses R3F heavily
-vi.mock('@organisms/BrainVisualizationContainer', () => ({
-  // Use default export because the component is likely exported as default
-  default: vi.fn(() => (
-    <div data-testid="mock-brain-vis-container">Mocked Brain Vis Container</div>
-  )),
+// Mock the hooks that would otherwise cause issues in tests
+vi.mock('@application/context/BrainVisualizationContext', () => ({
+  useBrainVisualizationContext: vi.fn(() => ({
+    isLoading: false,
+    visualizationState: { mode: 'anatomical' },
+  })),
 }));
-// Mocks are handled globally via aliases in vitest.config.ts
-// Import necessary types/objects if needed directly in tests
-// import { Vector3 } from 'three';
-// Mock data with clinical precision
-// Mock data with clinical precision - Requires specific props for BrainVisualizationPage
-// Assuming no specific props are required for this page component based on typical structure
-const mockProps = {};
+
+vi.mock('@application/hooks/useBrainModel', () => ({
+  useBrainModel: vi.fn(() => ({ 
+    brainModel: { id: 'test', regions: [] },
+    isLoading: false,
+  })),
+}));
+
+// Explicitly mock the component that would render a Canvas/WebGL content
+vi.mock('@presentation/organisms/BrainVisualizationContainer', () => ({
+  default: () => (
+    <div data-testid="mock-brain-vis-container">Mocked Brain Vis Container</div>
+  ),
+}));
 
 describe('BrainVisualizationPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('renders with neural precision', async () => {
-    // Make test async
-    render(<BrainVisualizationPage {...mockProps} />); // Use unified render
-
-    // Wait for loading to finish and the main content (including mock container) to appear
-    await waitFor(
-      () => {
-        expect(screen.getByTestId('mock-brain-vis-container')).toBeInTheDocument();
-      },
-      { timeout: 2000 }
-    ); // Increase timeout
-    // Optionally check for other elements that appear after loading
+  it('renders with neural precision', () => {
+    render(<BrainVisualizationPage />);
+    
+    // Check that heading is in the document
     expect(screen.getByText('Brain Visualization')).toBeInTheDocument();
+    
+    // Look for the container by heading
+    expect(screen.getByTestId('mock-brain-vis-container')).toBeInTheDocument();
   });
 
-  it('responds to user interaction with quantum precision', async () => {
-    // const user = userEvent.setup(); // Removed unused variable
-    render(<BrainVisualizationPage {...mockProps} />); // Use unified render
-
-    // Simulate user interactions
-    // await user.click(screen.getByText(/example text/i));
-
-    // Wait for loading to finish before interacting or asserting
-    await waitFor(
-      () => {
-        expect(screen.getByTestId('mock-brain-vis-container')).toBeInTheDocument();
-      },
-      { timeout: 2000 }
-    ); // Increase timeout
-    // Add assertions for behavior after interaction (if any)
-    // Example: Check if clicking a region updates state (would require more setup)
+  it('responds to user interaction with quantum precision', () => {
+    render(<BrainVisualizationPage />);
+    
+    // Check for basic UI elements
+    expect(screen.getByText('Brain Visualization')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-brain-vis-container')).toBeInTheDocument();
+    
+    // More specific assertions based on actual component behavior
+    expect(screen.getByText('View Controls')).toBeInTheDocument();
+    expect(screen.getByText('Normal')).toBeInTheDocument();
   });
-
-  // Add more component-specific tests
 });
