@@ -12,7 +12,7 @@ import '@testing-library/jest-dom'; // Import cleanup, Removed unused render
 import * as ReactRouterDom from 'react-router-dom'; // Import all for mocking
 import { type PatientProfile } from '@domain/types/clinical/patient';
 import { ProfilePage } from './ProfilePage';
-import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.unified'; // Standardized path
 
 // Mock dependencies before importing the component
 vi.mock('react-router-dom', async (importOriginal) => {
@@ -26,7 +26,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 });
 
 // Import the component after mocks
-import PatientProfile from '@presentation/pages/PatientProfile'; // Correct alias
+import PatientProfile from '@presentation/pages/patient/PatientProfile'; // Correct alias
 
 // Mock audit log service
 vi.mock('@infrastructure/services/AuditLogService', () => ({

@@ -10,7 +10,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Removed unused render, fireEvent
 import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from '../../infrastructure/testing/utils/test-utils.unified'; // Standardized path
+import { renderWithProviders } from '@infrastructure/testing/utils/test-utils.unified'; // Standardized path
 import * as ReactQuery from '@tanstack/react-query'; // Re-added for direct mock usage
 import * as ReactRouterDom from 'react-router-dom'; // Import for mocking
 import { usePatientList } from '@/application/hooks/usePatientList';

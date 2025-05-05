@@ -10,20 +10,20 @@ import { createNeuralGlowUniforms } from '@infrastructure/graphics/shaders/neura
 describe('createNeuralGlowUniforms', () => {
   it('processes data with mathematical precision', () => {
     // Arrange test data - proper parameters for the function
-    const baseColor = new Color(0x4287f5);
+    const color = new Color(0x4287f5);
     const intensity = 1.2;
     const pulseFactor = 0.8;
 
     // Act
     const result = createNeuralGlowUniforms({
-      color: baseColor,
+      color,
       intensity,
       pulseFactor,
     });
 
     // Assert
     expect(result).toBeDefined();
-    expect(result.color.value).toEqual(baseColor);
+    expect(result.color.value).toEqual(color);
     expect(result.intensity.value).toEqual(intensity);
     expect(result.pulseFactor.value).toBe(pulseFactor);
     expect(result.time.value).toEqual(0);
@@ -31,20 +31,20 @@ describe('createNeuralGlowUniforms', () => {
 
   it('handles edge cases with clinical precision', () => {
     // Test edge cases - zero intensity
-    const baseColor = new Color(0x000000);
+    const color = new Color(0x000000);
     const intensity = 0;
     const pulseFactor = 0.01;
 
     // Act
     const result = createNeuralGlowUniforms({
-      color: baseColor,
+      color,
       intensity,
       pulseFactor,
     });
 
     // Assert
     expect(result).toBeDefined();
-    expect(result.color.value).toEqual(baseColor);
+    expect(result.color.value).toEqual(color);
     expect(result.intensity.value).toEqual(0);
     expect(result.pulseFactor.value).toBe(0.01);
   });

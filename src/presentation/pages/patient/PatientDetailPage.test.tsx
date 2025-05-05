@@ -3,24 +3,35 @@ import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import PatientDetailPage from './PatientDetailPage';
-import { usePatientDetail } from '../../application/hooks/usePatientDetail';
-import { useUpdatePatient } from '../../application/hooks/useUpdatePatient';
+import { usePatientDetail } from '@application/hooks/usePatientDetail';
+import { useUpdatePatient } from '@application/hooks/useUpdatePatient';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import type { Patient } from '../../domain/patients/patientTypes';
+import type { Patient } from '@domain/patients/patientTypes';
 
 // Mock dependencies
 vi.mock('@application/hooks/usePatientDetail');
 vi.mock('@application/hooks/useUpdatePatient');
-vi.mock('@presentation/organisms/PatientDetailCard', () => ({
+vi.mock('@application/hooks/useDeletePatient', () => ({
+  useDeletePatient: () => ({
+    mutate: vi.fn(),
+    isPending: false,
+    error: null,
+    isError: false,
+  }),
+}));
+
+// Mock the PatientDetailCard component
+vi.mock('@presentation/organisms/patient/PatientDetailCard', () => ({
   default: ({ patient }: { patient: Patient }) => (
     <div data-testid="patient-detail-card">
       Patient: {patient.first_name} {patient.last_name}
     </div>
   ),
 }));
-vi.mock('@presentation/organisms/PatientForm', () => ({
-  // Mock form that captures onSubmit and defaultValues
+
+// Mock the PatientForm component
+vi.mock('@presentation/organisms/patient/PatientForm', () => ({
   default: ({
     onSubmit,
     isLoading,
@@ -44,6 +55,11 @@ vi.mock('@presentation/organisms/PatientForm', () => ({
       </button>
     </form>
   ),
+}));
+
+// Mock the clinical records component
+vi.mock('@presentation/organisms/clinical/ClinicalRecordList', () => ({
+  default: () => <div data-testid="clinical-records">Clinical Records</div>,
 }));
 
 // Helper to wrap component in necessary providers and routes
