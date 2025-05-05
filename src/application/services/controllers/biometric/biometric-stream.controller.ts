@@ -16,7 +16,7 @@ import type {
   AlertPriority, // Already type-only
   BiometricThreshold, // Already type-only
 } from '@domain/types/biometric/streams';
-import { Result, type Result as ResultType, success, failure } from '@domain/types/shared/common'; // Already correct
+import { Result, type Result as ResultType, success, failure } from '@domain/types/shared/common';
 
 // Services
 import { biometricService } from '@application/services/biometric/biometric.service';
