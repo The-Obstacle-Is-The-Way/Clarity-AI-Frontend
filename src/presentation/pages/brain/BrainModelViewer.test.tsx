@@ -7,7 +7,13 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import BrainModelViewer from './BrainModelViewer';
-import { RenderMode } from '@domain/types/brain/visualization';
+
+// Define enum here since the import is problematic
+enum RenderMode {
+  ANATOMICAL = 'anatomical',
+  FUNCTIONAL = 'functional',
+  CONNECTIVITY = 'connectivity',
+}
 
 // Mock hooks used by the component
 vi.mock('@application/hooks/useTheme', () => ({
