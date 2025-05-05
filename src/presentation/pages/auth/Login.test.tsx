@@ -55,7 +55,7 @@ vi.mock('@infrastructure/clients/auditLogClient', () => ({
 vi.useFakeTimers();
 
 // Now import the component after all mocks are set up
-import Login from '@presentation/pages/Login';
+import Login from '../auth/Login';
 
 describe('Login', () => {
   beforeEach(() => {
