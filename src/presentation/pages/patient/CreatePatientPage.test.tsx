@@ -3,12 +3,12 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import CreatePatientPage from './CreatePatientPage';
-import { useCreatePatient } from '@application/hooks/useCreatePatient';
+import { useCreatePatient } from '@application/hooks/clinical/useCreatePatient';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 // Mock dependencies
-vi.mock('@application/hooks/useCreatePatient');
+vi.mock('@application/hooks/clinical/useCreatePatient');
 vi.mock('@presentation/organisms/patient/PatientForm', () => ({
   // Mock form that captures onSubmit prop and respects isLoading
   default: ({ onSubmit, isLoading }: { onSubmit: (data: any) => void; isLoading?: boolean }) => (

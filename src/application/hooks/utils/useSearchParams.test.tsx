@@ -9,7 +9,7 @@ import { describe, it, expect, vi, type Mock } from 'vitest'; // Already correct
 import { renderHook } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Removed unused render, screen, fireEvent
 import { MemoryRouter, useSearchParams as useReactRouterSearchParams } from 'react-router-dom'; // Keep single import
-import { useSearchParams } from '@hooks/useSearchParams'; // Import the custom hook
+import { useSearchParams } from '@application/hooks/utils/useSearchParams'; // Import the custom hook
 
 // Mock react-router-dom hooks
 vi.mock('react-router-dom', async (importOriginal) => {

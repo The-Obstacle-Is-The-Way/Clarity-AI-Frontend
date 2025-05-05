@@ -7,12 +7,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Create a complete mock of the hook module to prevent direct hook execution
-vi.mock('@hooks/usePatientData', () => ({
+vi.mock('@application/hooks/clinical/usePatientData', () => ({
   usePatientData: vi.fn(),
 }));
 
 // Import the hook after mocking to get the mocked version
-import { usePatientData } from '@hooks/usePatientData';
+import { usePatientData } from '@application/hooks/clinical/usePatientData';
 
 describe('usePatientData', () => {
   beforeEach(() => {

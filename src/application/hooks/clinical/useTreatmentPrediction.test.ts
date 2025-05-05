@@ -38,7 +38,7 @@ vi.mock('@api/XGBoostService', () => ({
 }));
 
 // The hook mock needs to be defined using a function that doesn't reference variables
-vi.mock('@hooks/useTreatmentPrediction', () => ({
+vi.mock('@application/hooks/clinical/useTreatmentPrediction', () => ({
   useTreatmentPrediction: vi.fn(() => ({
     treatmentConfig: { treatmentType: 'ssri', details: {} },
     predictionResult: { response_probability: 0.78, confidence: 0.85 },
@@ -50,7 +50,7 @@ vi.mock('@hooks/useTreatmentPrediction', () => ({
 }));
 
 // Import after mocks
-import { useTreatmentPrediction } from '@hooks/useTreatmentPrediction';
+import { useTreatmentPrediction } from '@application/hooks/clinical/useTreatmentPrediction';
 
 describe('useTreatmentPrediction', () => {
   beforeEach(() => {

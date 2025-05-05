@@ -5,11 +5,12 @@ import * as React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useBrainModel } from '@hooks/useBrainModel';
-import { createMockBrainRegions } from '../../test/three-test-utils';
+import { useBrainModel } from './useBrainModel';
+import { createMockBrainRegions } from '../../../test/three-test-utils';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { BrainModel } from '@domain/types/brain/models'; // Already type-only
 import { brainModelService } from '@application/services/brain/brain-model.service'; // Import the actual service
+import { RenderMode } from '@domain/types/brain/visualization';
 
 // Create a quantum-precise mock API client
 // Removed unused mock: mockGetBrainModel

@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { validatePartialBrainViewState } from '@hooks/useBrainVisualization.runtime';
+import { validatePartialBrainViewState } from '@application/hooks/brain/useBrainVisualization.runtime';
 // Import domain types/enums used in validation
 import { RenderMode, isValidRenderMode } from '@domain/types/brain/visualization';
 

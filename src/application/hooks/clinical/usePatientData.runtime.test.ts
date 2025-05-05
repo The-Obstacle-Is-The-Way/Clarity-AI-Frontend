@@ -4,7 +4,7 @@
 
 import { describe, it, expect } from 'vitest';
 // Import the specific validation function and relevant types
-import { validatePatientData } from '@hooks/usePatientData.runtime';
+import { validatePatientData } from '@application/hooks/clinical/usePatientData.runtime';
 import type {
   Patient,
   // Removed unused types: PatientDemographics, ClinicalData, TreatmentData, NeuralData, DataPermissions

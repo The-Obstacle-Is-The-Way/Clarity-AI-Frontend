@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-// import { usePatientDetail } from '@application/hooks/usePatientDetail'; // Unused import
+// import { usePatientDetail } from '@application/hooks/clinical/usePatientDetail'; // Unused import
 import LoadingIndicator from '@/presentation/atoms/feedback/LoadingIndicator'; // Explicit default
 import { BrainVisualizationContainer } from '@presentation/organisms/brain';
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient';

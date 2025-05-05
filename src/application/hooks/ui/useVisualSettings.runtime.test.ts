@@ -8,7 +8,7 @@ import { describe, it, expect } from 'vitest';
 import {
   validatePartialVisualizationSettings,
   validateFullThemeSettings,
-} from '@hooks/useVisualSettings.runtime';
+} from '@application/hooks/ui/useVisualSettings.runtime';
 import {
   type VisualizationSettings,
   type ThemeSettings,

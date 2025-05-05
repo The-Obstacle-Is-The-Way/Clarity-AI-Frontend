@@ -16,7 +16,7 @@ vi.mock('@application/context/BrainVisualizationContext', () => ({
   })),
 }));
 
-vi.mock('@application/hooks/useBrainModel', () => ({
+vi.mock('@application/hooks/brain/useBrainModel', () => ({
   useBrainModel: vi.fn(() => ({
     brainModel: { id: 'test', regions: [] },
     isLoading: true, // Set to true to test loading state

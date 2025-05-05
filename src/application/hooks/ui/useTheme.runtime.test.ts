@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { validateThemeSettings, validateThemeOption } from '@hooks/useTheme.runtime';
+import { validateThemeSettings, validateThemeOption } from '@application/hooks/ui/useTheme.runtime';
 // Import actual domain types and the theme definitions
 import {
   type ThemeSettings,

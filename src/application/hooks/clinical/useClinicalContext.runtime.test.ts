@@ -10,7 +10,7 @@ import {
   validateSymptomMappingArray,
   validateDiagnosisMappingArray,
   validateTreatmentMappingArray,
-} from '@hooks/useClinicalContext.runtime';
+} from '@application/hooks/clinical/useClinicalContext.runtime';
 import { type RiskAssessment, RiskLevel } from '@domain/types/clinical/risk'; // Fixed import path
 import type { TreatmentResponsePrediction } from '@domain/types/clinical/treatment';
 import type {

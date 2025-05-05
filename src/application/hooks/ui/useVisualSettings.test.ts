@@ -7,12 +7,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Create a complete mock of the hook module to prevent direct hook execution
-vi.mock('@hooks/useVisualSettings', () => ({
+vi.mock('@application/hooks/ui/useVisualSettings', () => ({
   useVisualSettings: vi.fn(),
 }));
 
 // Import the hook after mocking to get the mocked version
-import { useVisualSettings } from '@hooks/useVisualSettings';
+import { useVisualSettings } from '@application/hooks/ui/useVisualSettings';
 
 describe('useVisualSettings', () => {
   beforeEach(() => {

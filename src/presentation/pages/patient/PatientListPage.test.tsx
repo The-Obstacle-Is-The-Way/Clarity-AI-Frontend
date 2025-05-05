@@ -4,12 +4,12 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import PatientListPage from './PatientListPage';
-import { usePatients } from '@application/hooks/usePatients';
+import { usePatients } from '@application/hooks/clinical/usePatients';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 
 // Mock dependencies
-vi.mock('@application/hooks/usePatients');
+vi.mock('@application/hooks/clinical/usePatients');
 vi.mock('@presentation/organisms/patient/PatientTable', () => ({
   // Simple mock that just displays number of patients
   default: ({ patients }: { patients: unknown[] }): React.ReactElement => (

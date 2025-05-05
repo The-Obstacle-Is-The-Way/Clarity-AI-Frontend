@@ -3,16 +3,16 @@ import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import PatientDetailPage from './PatientDetailPage';
-import { usePatientDetail } from '@application/hooks/usePatientDetail';
-import { useUpdatePatient } from '@application/hooks/useUpdatePatient';
+import { usePatientDetail } from '@application/hooks/clinical/usePatientDetail';
+import { useUpdatePatient } from '@application/hooks/clinical/useUpdatePatient';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import type { Patient } from '@domain/patients/patientTypes';
 
 // Mock dependencies
-vi.mock('@application/hooks/usePatientDetail');
-vi.mock('@application/hooks/useUpdatePatient');
-vi.mock('@application/hooks/useDeletePatient', () => ({
+vi.mock('@application/hooks/clinical/usePatientDetail');
+vi.mock('@application/hooks/clinical/useUpdatePatient');
+vi.mock('@application/hooks/clinical/useDeletePatient', () => ({
   useDeletePatient: () => ({
     mutate: vi.fn(),
     isPending: false,

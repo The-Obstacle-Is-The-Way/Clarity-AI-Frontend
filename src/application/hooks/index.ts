@@ -27,10 +27,10 @@ export { useML } from './clinical/useML';
 export { useSentimentAnalysis } from './clinical/useSentimentAnalysis';
 export { useXGBoostPrediction } from './clinical/useXGBoostPrediction';
 
-// UI related hooks
-export { useBlockingTransition } from './ui/useBlockingTransition';
+// UI hooks
 export { useTheme } from './ui/useTheme';
 export { useVisualSettings } from './ui/useVisualSettings';
+export { useBlockingTransition } from './ui/useBlockingTransition';
 
 // Utility hooks
 export { useSearchParams } from './utils/useSearchParams';

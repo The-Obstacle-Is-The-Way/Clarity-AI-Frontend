@@ -10,8 +10,8 @@ import '@testing-library/jest-dom';
 import {
   useBlockingTransition,
   useFilteredListTransition,
-  useBatchedUpdates,
-} from '@application/hooks/useBlockingTransition';
+  useBatchedUpdates
+} from './useBlockingTransition';
 
 describe('useBlockingTransition', () => {
   it('should initialize with the provided initial state and isPending as false', () => {

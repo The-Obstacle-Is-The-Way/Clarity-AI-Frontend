@@ -4,7 +4,7 @@
 import React from 'react';
 import { screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useTheme } from '@application/hooks/useTheme'; // Correct import path for the hook
+import { useTheme } from '@application/hooks/ui/useTheme'; // Correct import path for the hook
 import type { Mock } from 'vitest';
 import { vi, describe, it, expect, beforeEach } from 'vitest'; // Import vi, Mock, etc.
 import { clsx } from 'clsx';
@@ -40,7 +40,7 @@ const Card: React.FC<CardProps> = ({ title, description, variant = 'primary', cl
 
 // Mock useTheme to control it
 const mockSetTheme = vi.fn();
-vi.mock('@hooks/useTheme', () => ({
+vi.mock('@application/hooks/ui/useTheme', () => ({
   // Use correct alias
   useTheme: vi.fn(), // Mock the hook directly
 }));

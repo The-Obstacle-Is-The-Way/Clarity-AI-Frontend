@@ -7,6 +7,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import BrainModelViewer from './BrainModelViewer';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Define enum here since the import is problematic
 enum RenderMode {
@@ -16,14 +17,14 @@ enum RenderMode {
 }
 
 // Mock hooks used by the component
-vi.mock('@application/hooks/useTheme', () => ({
+vi.mock('@application/hooks/ui/useTheme', () => ({
   useTheme: () => ({
     theme: 'dark', // Provide a default theme
     isDarkMode: true,
   }),
 }));
 
-vi.mock('@application/hooks/useBrainVisualization', () => ({
+vi.mock('@application/hooks/brain/useBrainVisualization', () => ({
   useBrainVisualization: vi.fn(() => ({
     brainModel: {
       // Provide minimal mock data
@@ -125,14 +126,32 @@ vi.mock('@presentation/atoms/LoadingIndicator', () => ({
 }));
 
 describe('BrainModelViewer', () => {
+  // Create a new QueryClient for each test
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
   it('renders the component', () => {
-    render(<BrainModelViewer />);
-    expect(screen).toBeDefined();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <BrainModelViewer patientId="patient-123" />
+      </QueryClientProvider>
+    );
+    expect(screen.getByText(/Interactive Brain Model/i)).toBeInTheDocument();
   });
 
   it('contains visualization container', () => {
-    render(<BrainModelViewer />);
-    // Check for title text that should be in the rendered component
-    expect(screen.getByText('Interactive Brain Model')).toBeInTheDocument();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <BrainModelViewer patientId="patient-123" />
+      </QueryClientProvider>
+    );
+    // Check for the placeholder text that's actually in the component
+    const placeholderText = screen.getByText(/Three\.js component would render here/i);
+    expect(placeholderText).toBeInTheDocument();
   });
 });

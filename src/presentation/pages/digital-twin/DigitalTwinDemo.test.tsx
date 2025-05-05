@@ -26,7 +26,7 @@ const mockRenderMode = {
 const RenderMode = mockRenderMode;
 
 // Mock the useBrainVisualization hook
-vi.mock('@hooks/useBrainVisualization', () => ({
+vi.mock('@application/hooks/brain/useBrainVisualization', () => ({
   useBrainVisualization: vi.fn(() => ({
     brainModel: {
       // Provide minimal mock data

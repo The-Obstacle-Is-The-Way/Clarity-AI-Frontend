@@ -17,7 +17,7 @@ import { renderWithProviders } from '../../infrastructure/testing/utils/test-uti
 vi.mock('@presentation/atoms/Button', () => ({
   Button: (props: React.ComponentProps<'button'>) => <button {...props} />,
 }));
-vi.mock('@application/hooks/useTreatmentPrediction', () => ({
+vi.mock('@application/hooks/clinical/useTreatmentPrediction', () => ({
   useTreatmentPrediction: vi.fn(() => ({
     treatmentConfig: { treatmentType: 'ssri' },
     predictionResult: null,
