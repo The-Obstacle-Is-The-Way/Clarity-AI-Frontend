@@ -29,7 +29,7 @@ vi.mock('@presentation/organisms/patient/PatientForm', () => ({
     >
       {/* Ensure button is disabled based on isLoading prop */}
       <button type="submit" disabled={isLoading ?? false}>
-        Submit Mock Form
+        Create Patient
       </button>
     </form>
   ),
@@ -87,7 +87,7 @@ describe('CreatePatientPage', () => {
 
   it('should call the createPatient mutation on form submission', async () => {
     renderWithProviders();
-    const submitButton = screen.getByRole('button', { name: /Submit Mock Form/i });
+    const submitButton = screen.getByRole('button', { name: /Create Patient/i });
 
     fireEvent.click(submitButton);
 
@@ -121,7 +121,7 @@ describe('CreatePatientPage', () => {
     });
 
     renderWithProviders();
-    const submitButton = screen.getByRole('button', { name: /Submit Mock Form/i });
+    const submitButton = screen.getByRole('button', { name: /Create Patient/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -137,7 +137,7 @@ describe('CreatePatientPage', () => {
       isError: false,
     });
     renderWithProviders();
-    expect(screen.getByRole('button', { name: /Submit Mock Form/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Create Patient/i })).toBeDisabled();
   });
 
   it('should display error message if mutation fails', () => {
