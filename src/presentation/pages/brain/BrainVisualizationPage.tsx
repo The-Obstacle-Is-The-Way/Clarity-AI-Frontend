@@ -5,7 +5,7 @@ import LoadingIndicator from '@/presentation/atoms/feedback/LoadingIndicator'; /
 import { BrainVisualizationContainer } from '@presentation/organisms/brain';
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient';
 import type { BrainRegion } from '@domain/types/brain/models'; // Import correct type
-import { ThemeWrapper } from '@presentation/templates/App';
+import { ThemeWrapper } from '@presentation/providers';
 
 /**
  * BrainVisualizationPage

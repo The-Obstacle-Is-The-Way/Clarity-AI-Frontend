@@ -2,17 +2,14 @@
  * CLARITY-AI Neural Test Suite
  * ErrorBoundary testing with quantum precision
  */
-import { describe, it, expect } from 'vitest'; // Removed unused vi import
+import { describe, it, expect } from 'vitest';
 
 import { screen } from '@testing-library/react';
-import '@testing-library/jest-dom'; // render is imported from unified utils, Removed unused fireEvent
+import '@testing-library/jest-dom';
 import React from 'react';
-// Removed unused userEvent import
-import ErrorBoundary from './ErrorBoundary'; // Reverted to default import
-import { AuditLogClient } from '@/infrastructure/services/AuditLogClient';
+import ErrorBoundary from './ErrorBoundary';
 import { render } from '../../infrastructure/testing/utils/test-utils.unified';
 
-// Mock data with clinical precision
 // Mock data with clinical precision - ErrorBoundary requires children
 const mockProps = {
   children: React.createElement('div', null, 'Test Child'),
@@ -20,15 +17,14 @@ const mockProps = {
 
 describe('ErrorBoundary', () => {
   it('renders with neural precision', () => {
-    render(<ErrorBoundary {...mockProps} />); // Use the unified render
+    render(<ErrorBoundary {...mockProps} />);
 
     // Add assertions for rendered content
     expect(screen).toBeDefined();
   });
 
   it('responds to user interaction with quantum precision', async () => {
-    // const user = userEvent.setup(); // Removed unused variable
-    render(<ErrorBoundary {...mockProps} />); // Use the unified render
+    render(<ErrorBoundary {...mockProps} />);
 
     // Simulate user interactions
     // await user.click(screen.getByText(/example text/i));
@@ -37,4 +33,4 @@ describe('ErrorBoundary', () => {
   });
 
   // Add more component-specific tests
-});
+}); 

@@ -1,6 +1,5 @@
 /* eslint-disable */
-import type { ErrorInfo, ReactNode } from 'react';
-import { Component } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient';
 
 interface ErrorBoundaryProps {
@@ -13,6 +12,11 @@ interface ErrorBoundaryProps {
    * Optional custom fallback component
    */
   fallback?: ReactNode;
+
+  /**
+   * Optional error handler
+   */
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
 interface ErrorBoundaryState {
@@ -25,6 +29,16 @@ interface ErrorBoundaryState {
    * Error message to display
    */
   errorMessage: string;
+
+  /**
+   * Error object
+   */
+  error?: Error | null;
+
+  /**
+   * ErrorInfo object
+   */
+  errorInfo?: ErrorInfo | null;
 }
 
 /**
@@ -40,6 +54,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     this.state = {
       hasError: false,
       errorMessage: '',
+      error: null,
+      errorInfo: null
     };
   }
 
@@ -53,6 +69,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     return {
       hasError: true,
       errorMessage: sanitizedMessage,
+      error
     };
   }
 
@@ -81,6 +98,17 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
       console.error('Error caught by ErrorBoundary:', error);
       console.error('Component stack:', errorInfo.componentStack);
     }
+
+    // Update state with error details
+    this.setState({
+      error,
+      errorInfo
+    });
+    
+    // Call onError callback if provided
+    if (this.props.onError) {
+      this.props.onError(error, errorInfo);
+    }
   }
 
   /**
@@ -90,6 +118,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     this.setState({
       hasError: false,
       errorMessage: '',
+      error: null,
+      errorInfo: null
     });
   };
 
@@ -120,7 +150,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   override render(): ReactNode {
-    const { hasError, errorMessage } = this.state;
+    const { hasError, errorMessage, error, errorInfo } = this.state;
     const { children, fallback } = this.props;
 
     if (hasError) {
