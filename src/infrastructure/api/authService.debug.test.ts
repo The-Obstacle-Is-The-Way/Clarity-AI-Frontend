@@ -1,70 +1,74 @@
 /**
  * Standalone test for authService to verify mocking works correctly
  */
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+// import type { SpyInstance } from 'vitest'; // Incorrect type
+import type { LoginCredentials } from '@/domain/types/auth/auth'; // Import necessary type
 import '../../../src/test/debug-setup'; // Import extended setup
+// import { authService } from '@/infrastructure/api/authService'; // Import the REAL service - Using alias
+import { authService } from '../../../src/infrastructure/api/authService'; // Import the REAL service - Using relative path for diagnostics
 
-// Mock authService for testing - ensure this is called before importing the module
-vi.mock('@/infrastructure/api/authService', () => ({
-  authService: {
-    login: vi.fn().mockImplementation((_email, _password) => {
-      // console.log(`[MOCK] authService.login called with: ${email}, ${password}`);
-      return Promise.resolve({ success: true, token: 'fake-token' });
-    }),
-    getCurrentUser: vi.fn().mockReturnValue({
-      id: 'test-user',
-      name: 'Test User',
-      email: 'test@example.com'
-    }),
-    isAuthenticated: vi.fn().mockReturnValue(true),
-  },
-}));
+// No top-level vi.mock needed
 
-// Import after mocking
-import { authService } from '@/infrastructure/api/authService';
+describe('authService Mock Verification with spyOn', () => {
+  // Rely on inference or use MockedFunction if necessary
+  let loginSpy: ReturnType<typeof vi.spyOn>;
+  let getCurrentUserSpy: ReturnType<typeof vi.spyOn>;
 
-describe('authService Mock Verification', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-    console.log('[TEST] Mocks cleared');
+    // Spy on and mock implementations BEFORE each test
+    loginSpy = vi.spyOn(authService, 'login').mockImplementation(async (credentials: LoginCredentials) => { // Match original signature
+      console.log('[SPY MOCK] login called with:', credentials);
+      return Promise.resolve({ success: true, token: 'fake-token-spy' });
+    });
+    getCurrentUserSpy = vi.spyOn(authService, 'getCurrentUser').mockImplementation(async () => {
+      console.log('[SPY MOCK] getCurrentUser called');
+      return Promise.resolve({
+        id: 'test-user-spy',
+        name: 'Test User Spy',
+        email: 'spy@example.com',
+      });
+    });
+    // Note: We are not mocking/spying on isAuthenticated here
+    console.log('[TEST] Spies created');
   });
 
   afterEach(() => {
-    console.log('[TEST] Test completed');
+    // Restore original implementations AFTER each test
+    loginSpy.mockRestore();
+    getCurrentUserSpy.mockRestore();
+    console.log('[TEST] Spies restored');
   });
 
-  it('should allow mocking of login method', async () => {
-    console.log('[TEST] Starting login test');
-    
-    // Call the mocked login method
-    const result = await authService.login('test@example.com', 'password123');
-    
-    // Verify mock was called correctly
-    expect(authService.login).toHaveBeenCalledTimes(1);
-    expect(authService.login).toHaveBeenCalledWith('test@example.com', 'password123');
-    
+  it('should allow spying on login method', async () => {
+    console.log('[TEST] Starting login test (spyOn)');
+    const testCredentials = { email: 'test@example.com', password: 'password123' };
+    const result = await authService.login(testCredentials); // Pass credentials object
+    console.log('[TEST] Login call completed, result:', result);
+
+    // Verify spy was called correctly
+    expect(loginSpy).toHaveBeenCalledTimes(1);
+    expect(loginSpy).toHaveBeenCalledWith(testCredentials); // Check with credentials object
+
     // Verify mock returns expected data
-    expect(result).toEqual({ success: true, token: 'fake-token' });
-    
-    console.log('[TEST] Login method mock verified successfully');
+    expect(result).toEqual({ success: true, token: 'fake-token-spy' });
+    console.log('[TEST] Login assertions passed (spyOn)');
   });
 
-  it('should allow mocking of getCurrentUser method', () => {
-    console.log('[TEST] Starting getCurrentUser test');
-    
-    // Call the mocked getCurrentUser method
-    const user = authService.getCurrentUser();
-    
-    // Verify mock was called correctly
-    expect(authService.getCurrentUser).toHaveBeenCalledTimes(1);
-    
+  it('should allow spying on getCurrentUser method', async () => {
+    console.log('[TEST] Starting getCurrentUser test (spyOn)');
+    const user = await authService.getCurrentUser();
+    console.log('[TEST] getCurrentUser call completed, user:', user);
+
+    // Verify spy was called correctly
+    expect(getCurrentUserSpy).toHaveBeenCalledTimes(1);
+
     // Verify mock returns expected data
     expect(user).toEqual({
-      id: 'test-user',
-      name: 'Test User',
-      email: 'test@example.com'
+      id: 'test-user-spy',
+      name: 'Test User Spy',
+      email: 'spy@example.com',
     });
-    
-    console.log('[TEST] getCurrentUser method mock verified successfully');
+    console.log('[TEST] getCurrentUser assertions passed (spyOn)');
   });
 }); 

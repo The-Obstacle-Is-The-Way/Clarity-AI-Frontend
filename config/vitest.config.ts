@@ -5,23 +5,23 @@
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
-import path from 'path';
 import tsconfigPaths from 'vite-tsconfig-paths';
+// import path from 'path'; // No longer needed for projectRoot
 
 // Project root definition for consistent path resolution
-const projectRoot = path.resolve(__dirname, '..'); // Define project root dynamically
+// const projectRoot = path.resolve(__dirname, '..'); // Removed unused variable
 
 export default defineConfig({
-  plugins: [
-
-    react(), // React plugin for JSX support
-    tsconfigPaths(), // Use paths from tsconfig.json
-  ],
+  plugins: [react(), tsconfigPaths({ projects: ['./config/typescript/tsconfig.test.json'] })],
   test: {
     // Explicitly define aliases for the test environment
     alias: {
       // Use new URL for robust path resolution relative to config file
       '@': new URL('../src', import.meta.url).pathname,
+      '@/infrastructure/api/authService': new URL(
+        '../src/infrastructure/api/authService.ts',
+        import.meta.url
+      ).pathname, // Hyper-specific alias for debugging
       '@domain': new URL('../src/domain', import.meta.url).pathname,
       '@application': new URL('../src/application', import.meta.url).pathname,
       '@infrastructure': new URL('../src/infrastructure', import.meta.url).pathname,
@@ -45,26 +45,14 @@ export default defineConfig({
       '@test': new URL('../test', import.meta.url).pathname,
       '@public': new URL('../public', import.meta.url).pathname,
     },
-    // Restore default threading behavior (remove threads: false, fileParallelism: false)
-    // Core settings
-    globals: true, // Enable global test APIs
-    environment: 'jsdom', // Use JSDOM for browser environment
-    
-    // Mock behavior configuration
-    mockReset: true, // Reset mocks between tests
-    restoreMocks: true, // Restore original implementations after tests
-    clearMocks: true, // Clear mock call history between tests
-    
-    // Timeout configuration
-    testTimeout: 20000, // Increase default timeout per test
-    hookTimeout: 20000, // Increase default timeout for hooks
-    
-    // Setup files in correct order - jest-dom setup must come before our main setup
-    setupFiles: [
-      './src/test/jest-dom-setup.ts', // Jest-dom matchers only
-    ],
-    
-    // Coverage configuration
+    globals: true,
+    environment: 'jsdom',
+    mockReset: true,
+    restoreMocks: true,
+    clearMocks: true,
+    testTimeout: 20000,
+    hookTimeout: 20000,
+    setupFiles: ['./src/test/jest-dom-setup.ts', './src/test/setup.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -79,22 +67,15 @@ export default defineConfig({
         'src/**/types.ts',
         'src/vite-env.d.ts',
       ],
-      all: true, // Report coverage on all files, not just tested ones
+      all: true,
     },
-    
-    // File patterns
-    include: [
-      'src/**/*.test.{ts,tsx}',
-      'src/**/*.spec.{ts,tsx}',
-      'test/**/*.test.{ts,tsx}',
-    ],
-    
+    include: ['src/**/*.test.{ts,tsx}', 'src/**/*.spec.{ts,tsx}', 'test/**/*.test.{ts,tsx}'],
     exclude: [
       'node_modules/**/*',
       'dist/**/*',
       'coverage/**/*',
       'config/**/*',
-      'test-puppeteer/**/*', // Puppeteer tests need separate runner
+      'test-puppeteer/**/*',
     ],
   },
 });

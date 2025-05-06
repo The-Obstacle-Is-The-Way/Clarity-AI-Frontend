@@ -3,17 +3,18 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'; // Removed act
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event'; // Import userEvent
+import '@testing-library/jest-dom'; // Ensure jest-dom matchers are available
 import PatientForm from './PatientForm';
 import { BrowserRouter } from 'react-router-dom'; // If any internal links are used
 
 // Mock ResizeObserver specifically for this test file
 // This might be necessary if the global setup isn't sufficient for Radix Select
-const mockResizeObserver = vi.fn(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
-vi.stubGlobal('ResizeObserver', mockResizeObserver);
+// const mockResizeObserver = vi.fn(() => ({
+//   observe: vi.fn(),
+//   unobserve: vi.fn(),
+//   disconnect: vi.fn(),
+// }));
+// vi.stubGlobal('ResizeObserver', mockResizeObserver); // Removed: Relies on global mock from setup.ts
 
 // Mock child atoms if they cause issues or have complex internal state
 // Usually not needed for basic form tests unless they prevent interaction

@@ -10,14 +10,14 @@ import { vi } from 'vitest';
 
 // Mock global objects that might be missing in JSDOM
 if (typeof window !== 'undefined') {
-  Object.defineProperty(window, 'ResizeObserver', {
-    writable: true,
-    value: vi.fn().mockImplementation(() => ({
+  vi.stubGlobal(
+    'ResizeObserver',
+    vi.fn(() => ({
       observe: vi.fn(),
       unobserve: vi.fn(),
       disconnect: vi.fn(),
-    })),
-  });
+    }))
+  );
 
   // Mock matchMedia which is not implemented in JSDOM
   Object.defineProperty(window, 'matchMedia', {
@@ -35,32 +35,26 @@ if (typeof window !== 'undefined') {
   });
 
   // Configure localStorage mock for theme tests
-  if (!window.localStorage) {
-    Object.defineProperty(window, 'localStorage', {
-      value: {
-        store: {} as Record<string, string>,
-        getItem: vi.fn(function (this: { store: Record<string, string> }, key: string) {
-          return this.store[key] || null;
-        }),
-        setItem: vi.fn(
-          function (
-            this: { store: Record<string, string> },
-            key: string,
-            value: string
-          ) {
-            this.store[key] = value.toString();
-          }
-        ),
-        removeItem: vi.fn(function (this: { store: Record<string, string> }, key: string) {
-          delete this.store[key];
-        }),
-        clear: vi.fn(function (this: { store: Record<string, string> }) {
-          this.store = {};
-        }),
-      },
-      configurable: true,
-    });
-  }
+  const store: Record<string, string> = {};
+
+  Object.defineProperty(window, 'localStorage', {
+    value: {
+      getItem: vi.fn((key: string) => store[key] || null),
+      setItem: vi.fn((key: string, value: string) => {
+        store[key] = value.toString();
+      }),
+      removeItem: vi.fn((key: string) => {
+        delete store[key];
+      }),
+      clear: vi.fn(() => {
+        for (const key in store) {
+          delete store[key];
+        }
+      }),
+    },
+    writable: true,
+    configurable: true,
+  });
 }
 
 // Set up document for theme tests
