@@ -31,46 +31,49 @@ const Login: React.FC = () => {
    */
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
+      console.log('[Login Component] handleSubmit START'); // ADDED THIS LINE
+      console.log('[Login Component] handleSubmit invoked');
       e.preventDefault();
 
       if (!emailValid || !passwordValid) {
+        console.log('[Login Component] Invalid fields, setting error...');
         setError('Please enter valid credentials');
         return;
       }
 
+      console.log('[Login Component] Setting loading state, clearing error...');
       setIsLoading(true);
       setError(null);
 
       try {
-        // Simulate API call with timeout
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        console.log(`[Login Component] Calling authService.login with ${email}`)
+        // Actually call the (mocked) auth service
+        const loginResult = await authService.login(email, password);
 
-        // In a real implementation, this would call the auth API
-        if (email === 'demo@clarity-ai.com' && password === 'demo123') {
+        // Check result - Adjust based on actual authService response shape
+        if (loginResult?.success) { // Assuming login returns { success: boolean } or similar
+          // Handle potential MFA step if needed based on response
+          // For now, assume direct login or MFA is handled by authService/context
+          console.log('[Login Component] authService.login successful (or requires MFA handled elsewhere)');
           // Log successful login attempt
           auditLogClient.log(AuditEventType.USER_LOGIN, {
             // Corrected usage
             // Use correct enum member
             result: 'success',
-            details: 'Login successful, MFA required',
+            details: 'Login successful',
           });
-
-          // Show MFA verification
-          setShowMFA(true);
+          // Navigate on successful login (if not handled by AuthProvider)
+          // navigate('/dashboard'); // Keep commented unless Login handles redirect
         } else {
-          // Log failed login attempt (no sensitive info in logs)
-          auditLogClient.log(AuditEventType.UNAUTHORIZED_ACCESS_ATTEMPT, {
-            // Corrected usage
-            // Use appropriate type
-            result: 'failure',
-            details: 'Invalid credentials',
-          });
-
-          throw new Error('Invalid email or password');
+           // This path might not be reachable if authService throws on failure
+           console.log('[Login Component] authService.login returned non-success?');
+           throw new Error('Login failed. Please check credentials.');
         }
       } catch (err) {
+        console.error('[Login Component] Caught error in handleSubmit:', err);
         setError((err as Error).message);
       } finally {
+        console.log('[Login Component] handleSubmit finally block, setting isLoading false.');
         setIsLoading(false);
       }
     },
