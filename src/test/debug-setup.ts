@@ -157,4 +157,86 @@ console.log('[DEBUG-SETUP] Debug test setup complete');
 
 // Remove global authService mock to allow individual tests to mock it
 vi.doUnmock('@/infrastructure/api/authService');
-console.log('[DEBUG-SETUP] Global authService mock cleared'); 
+console.log('[DEBUG-SETUP] Global authService mock cleared');
+
+/**
+ * NOVAMIND Debug Test Setup
+ *
+ * This file provides utilities for debugging tests. It should be imported
+ * directly by tests that need enhanced debugging capabilities.
+ */
+
+// Debug logging utility that won't interfere with test output
+export const debugLog = (...args: unknown[]) => {
+  console.log('[DEBUG]', ...args);
+};
+
+// Mock enhancement utility for detailed tracing of mock calls
+export const createTracedMock = <T extends (...args: any[]) => any>(
+  name: string,
+  implementation?: T
+) => {
+  const tracedFn = vi.fn((...args: Parameters<T>) => {
+    console.log(`[TRACE] ${name} called with:`, ...args);
+    if (implementation) {
+      const result = implementation(...args);
+      console.log(`[TRACE] ${name} returned:`, result);
+      return result;
+    }
+  }) as vi.MockInstance<Parameters<T>, ReturnType<T>>;
+  
+  return tracedFn;
+};
+
+// Utility to inspect component render counts for detecting unnecessary re-renders
+export const createRenderTracker = () => {
+  const counts: Record<string, number> = {};
+  
+  return {
+    trackRender: (componentName: string) => {
+      counts[componentName] = (counts[componentName] || 0) + 1;
+      console.log(`[RENDER] ${componentName} rendered ${counts[componentName]} times`);
+    },
+    getRenderCount: (componentName: string) => counts[componentName] || 0,
+    resetCounts: () => {
+      Object.keys(counts).forEach(key => {
+        delete counts[key];
+      });
+    },
+    logAllCounts: () => {
+      console.log('[RENDER COUNTS]', counts);
+    }
+  };
+};
+
+// Wait utility that doesn't use timers (helps with testing async code)
+export const waitForTick = () => new Promise(resolve => {
+  setTimeout(resolve, 0);
+});
+
+// Enhanced mock for localStorage with debugging
+export const createDebugLocalStorage = () => {
+  const store: Record<string, string> = {};
+  
+  return {
+    getItem: vi.fn((key: string) => {
+      console.log(`[STORAGE] Getting item: ${key}`);
+      return store[key] || null;
+    }),
+    setItem: vi.fn((key: string, value: string) => {
+      console.log(`[STORAGE] Setting ${key} to:`, value);
+      store[key] = value.toString();
+    }),
+    removeItem: vi.fn((key: string) => {
+      console.log(`[STORAGE] Removing item: ${key}`);
+      delete store[key];
+    }),
+    clear: vi.fn(() => {
+      console.log('[STORAGE] Clearing all storage');
+      Object.keys(store).forEach(key => {
+        delete store[key];
+      });
+    }),
+    getStore: () => ({ ...store }),
+  };
+}; 

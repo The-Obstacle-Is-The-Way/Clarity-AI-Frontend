@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import { flushSync } from 'react-dom'; // Import flushSync
+import { flushSync } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '@/infrastructure/api/authService'; // Added this import
+import { authService } from '@/infrastructure/api/authService';
 
 // import SecureInput from "@atoms/SecureInput"; // Assume this is a styled input, replace with standard input for now
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient'; // Corrected import name
@@ -11,17 +11,12 @@ import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLog
  * Provides secure authentication with HIPAA-compliant logging
  */
 const Login: React.FC = () => {
-  // In test mode, use a dummy navigate function.
-  const navigateFromHook = useNavigate();
-  const navigate = process.env.NODE_ENV === 'test' ? () => {} : navigateFromHook;
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Form state
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailValid, setEmailValid] = useState(false);
-  const [passwordValid, setPasswordValid] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // MFA state
   const [showMFA, setShowMFA] = useState(false);
@@ -31,61 +26,58 @@ const Login: React.FC = () => {
   /**
    * Handle form submission
    */
-  const handleSubmit = useCallback(
+  const handleFormSubmit = useCallback(
     async (e: React.FormEvent) => {
-      console.log('[Login Component] handleSubmit START'); // ADDED THIS LINE
-      console.log('[Login Component] handleSubmit invoked');
       e.preventDefault();
-
-      // TEMP LOG: Check validation state just before the check
+      console.log('[Login Component] handleSubmit START');
+      console.log('[Login Component] handleSubmit invoked');
+      
+      // Reset any previous error messages
+      setErrorMessage(null);
+      
+      // Basic form validation
+      const emailValid = email.includes('@');
+      const passwordValid = password.length >= 6;
+      
       console.log(`[Login Component] Checking validation: emailValid=${emailValid}, passwordValid=${passwordValid}`);
-
+      
       if (!emailValid || !passwordValid) {
-        console.log('[Login Component] Invalid fields, setting error...');
-        setError('Please enter valid credentials');
+        setErrorMessage('Please enter valid credentials');
         return;
       }
 
-      console.log('[Login Component] Setting loading state, clearing error...');
-      // Force synchronous state update for testing
-      flushSync(() => {
-        setIsLoading(true);
-      });
-      setError(null);
-
       try {
-        console.log(`[Login Component] Calling authService.login with ${email}`)
-        // Actually call the (mocked) auth service
+        // Show loading state immediately using flushSync to ensure state update happens synchronously
+        console.log('[Login Component] Setting loading state, clearing error...');
+        flushSync(() => {
+          setIsLoading(true);
+        });
+        
+        console.log(`[Login Component] Calling authService.login with ${email}`);
+        // Actually call the auth service
         const loginResult = await authService.login({ email, password });
 
         // Check result - Adjust based on actual authService response shape
-        if (loginResult?.success) { // Assuming login returns { success: boolean } or similar
-          // Handle potential MFA step if needed based on response
-          // For now, assume direct login or MFA is handled by authService/context
+        if (loginResult?.success) {
           console.log('[Login Component] authService.login successful (or requires MFA handled elsewhere)');
-          // Log successful login attempt
-          auditLogClient.log(AuditEventType.USER_LOGIN, {
-            // Corrected usage
-            // Use correct enum member
-            result: 'success',
-            details: 'Login successful',
-          });
-          // Navigate on successful login (if not handled by AuthProvider)
-          // navigate('/dashboard'); // Keep commented unless Login handles redirect
+          navigate('/dashboard');
         } else {
-           // This path might not be reachable if authService throws on failure
-           console.log('[Login Component] authService.login returned non-success?');
-           throw new Error('Login failed. Please check credentials.');
+          // Handle unsuccessful login but valid response
+          throw new Error('Authentication failed');
         }
-      } catch (err) {
-        console.error('[Login Component] Caught error in handleSubmit:', err);
-        setError((err as Error).message);
+      } catch (error) {
+        console.error('[Login Component] Caught error in handleSubmit:', error);
+        setErrorMessage(
+          error instanceof Error 
+            ? error.message 
+            : 'An unexpected error occurred. Please try again.'
+        );
       } finally {
         console.log('[Login Component] handleSubmit finally block, setting isLoading false.');
         setIsLoading(false);
       }
     },
-    [email, password, emailValid, passwordValid]
+    [email, password, navigate]
   );
 
   /**
@@ -96,12 +88,12 @@ const Login: React.FC = () => {
       e.preventDefault();
 
       if (!mfaValid) {
-        setError('Please enter a valid verification code');
+        setErrorMessage('Please enter a valid verification code');
         return;
       }
 
       setIsLoading(true);
-      setError(null);
+      setErrorMessage(null);
 
       try {
         // Simulate API call with timeout
@@ -131,7 +123,7 @@ const Login: React.FC = () => {
           throw new Error('Invalid verification code');
         }
       } catch (err) {
-        setError((err as Error).message);
+        setErrorMessage((err as Error).message);
       } finally {
         setIsLoading(false);
       }
@@ -155,12 +147,37 @@ const Login: React.FC = () => {
         {!showMFA ? (
           <form
             className="mt-8 space-y-6"
-            onSubmit={handleSubmit}
-            aria-label="Login form"
+            onSubmit={handleFormSubmit}
             data-testid="login-form"
+            aria-label="Login form"
           >
+            {errorMessage && (
+              <div className="rounded-md bg-red-50 p-4 dark:bg-red-900/30">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-5 w-5 text-red-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+                      {errorMessage}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <div className="space-y-4 rounded-md shadow-sm">
-              {/* Replace SecureInput with standard input */}
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -174,16 +191,11 @@ const Login: React.FC = () => {
                 autoComplete="email"
                 required
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  // Basic email validation for demonstration
-                  setEmailValid(/[^@]+@[^@]+\.[^@]+/.test(e.target.value));
-                }}
-                placeholder="provider@example.com"
+                onChange={(e) => setEmail(e.target.value)}
                 className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                placeholder="provider@example.com"
               />
 
-              {/* Replace SecureInput with standard input */}
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -197,22 +209,19 @@ const Login: React.FC = () => {
                 autoComplete="current-password"
                 required
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  // Basic password validation for demonstration
-                  setPasswordValid(e.target.value.length >= 6);
-                }}
+                onChange={(e) => setPassword(e.target.value)}
                 className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
 
-            {/* Remember me and Forgot password */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <label
@@ -226,7 +235,6 @@ const Login: React.FC = () => {
               <div className="text-sm">
                 <button
                   type="button"
-                  onClick={() => navigate('/forgot-password')}
                   className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 underline"
                 >
                   Forgot your password?
@@ -234,25 +242,13 @@ const Login: React.FC = () => {
               </div>
             </div>
 
-            {/* Error message */}
-            {error && (
-              <div className="rounded border border-red-300 bg-red-50 p-3 text-sm text-red-900 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
-                {error}
-              </div>
-            )}
-
-            {/* Submit button */}
             <div>
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`group relative flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white ${
-                  isLoading
-                    ? 'cursor-not-allowed bg-blue-400'
-                    : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
-                }`}
+                className="group relative flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-75 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Signing in...' : 'Sign in'}
+                {isLoading ? 'Signing In...' : 'Sign in'}
               </button>
             </div>
           </form>
@@ -267,7 +263,6 @@ const Login: React.FC = () => {
             </div>
 
             <div className="rounded-md shadow-sm">
-              {/* Replace SecureInput with standard input */}
               <label htmlFor="mfa-code" className="sr-only">
                 Verification Code
               </label>
@@ -290,23 +285,11 @@ const Login: React.FC = () => {
               />
             </div>
 
-            {/* Error message */}
-            {error && (
-              <div className="rounded border border-red-300 bg-red-50 p-3 text-sm text-red-900 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
-                {error}
-              </div>
-            )}
-
-            {/* Submit button */}
             <div>
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`group relative flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white ${
-                  isLoading
-                    ? 'cursor-not-allowed bg-blue-400'
-                    : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
-                }`}
+                className="group relative flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-75 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Verifying...' : 'Verify Code'}
               </button>
@@ -339,7 +322,7 @@ const Login: React.FC = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth="2"
                   d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                 />
               </svg>
@@ -356,7 +339,7 @@ const Login: React.FC = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth="2"
                   d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                 />
               </svg>
