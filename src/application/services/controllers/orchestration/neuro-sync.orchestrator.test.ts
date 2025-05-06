@@ -69,7 +69,6 @@ describe('NeuroSyncOrchestrator', () => {
     function useSimplifiedHook() {
       return { loadingState: 'loading' };
     }
-    
     const { result } = renderHook(() => useSimplifiedHook());
     expect(result.current.loadingState).toBe('loading');
   });
@@ -78,7 +77,7 @@ describe('NeuroSyncOrchestrator', () => {
   it('NOTE: Full hook rendering tests are skipped to prevent memory issues', () => {
     console.warn(
       'Full hook tests with actual rendering are skipped because the hook ' +
-      'has apparent memory leaks or infinite loops that need to be fixed in the implementation.'
+        'has apparent memory leaks or infinite loops that need to be fixed in the implementation.'
     );
     expect(true).toBe(true);
   });
