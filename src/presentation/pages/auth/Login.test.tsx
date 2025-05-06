@@ -8,13 +8,19 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import Login from './Login';
+import type { User } from '@/domain/types/auth/auth'; // Import User type
+import { UserRole, Permission } from '@/domain/types/auth/auth'; // Import enums
 
 // --- Mocking Dependencies ---
+
+// Import the service to be mocked for typed access later
+import { authService as actualAuthService } from '@/infrastructure/api/authService';
 
 // 1. Mock authService
 vi.mock('@/infrastructure/api/authService', () => ({
   authService: {
-    login: vi.fn(() => Promise.resolve({ success: true })),
+    login: vi.fn(),
+    getCurrentUser: vi.fn(), // Add getCurrentUser as it might be called by AuthProvider
   },
 }));
 
@@ -37,10 +43,16 @@ vi.mock('@/infrastructure/clients/auditLogClient', () => ({
   },
 }));
 
-// Get a reference to the mocked authService
-// This replaces importing the actual authService which has type errors
-const authService = { 
-  login: vi.fn().mockResolvedValue({ success: true }) 
+// Get a typed reference to the mocked authService for use in tests
+const mockedAuthService = actualAuthService as vi.Mocked<typeof actualAuthService>;
+
+// Define a default mock user for this test file
+const testLoginUser: User = {
+  id: 'test-login-user-456',
+  email: 'testlogin@example.com',
+  name: 'Test Login User',
+  role: UserRole.CLINICIAN,
+  permissions: [Permission.VIEW_PATIENTS],
 };
 
 describe('Login Component', () => {
@@ -49,7 +61,10 @@ describe('Login Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     user = userEvent.setup();
-    authService.login.mockResolvedValue({ success: true });
+    // Set default mock implementations for each test
+    // The global mock from setup.ts will handle getCurrentUser by default returning a general mockUser.
+    // Here, we specifically mock the login response.
+    mockedAuthService.login.mockResolvedValue({ success: true, user: testLoginUser }); 
     mockNavigate.mockReset();
   });
 
@@ -74,9 +89,8 @@ describe('Login Component', () => {
     expect(passwordInput).toHaveValue('password123');
   });
 
-  // Skip the validation tests for now since the component
-  // doesn't properly display error messages for validation
-  it.skip('shows error if fields are invalid on submit', async () => {
+  // Un-skip this test
+  it('shows error if fields are invalid on submit', async () => {
     render(<Login />);
     const emailInput = screen.getByLabelText(/email address/i);
     const passwordInput = screen.getByLabelText(/password/i);
@@ -88,10 +102,27 @@ describe('Login Component', () => {
     await user.click(submitButton);
 
     // The component should prevent form submission with invalid email
-    expect(authService.login).not.toHaveBeenCalled();
+    // and display an error message for the email field.
+    expect(mockedAuthService.login).not.toHaveBeenCalled();
+    // Assuming react-hook-form is used and error messages are tied to inputs
+    // This assertion depends on how LoginForm displays errors.
+    // We might need to adjust this selector if using a general error display area.
+    await waitFor(() => {
+      // Example: Check for an error message associated with the email input
+      // This requires the LoginForm to render specific error messages near fields.
+      // If LoginForm uses a generic error display, this will need adjustment.
+      const emailFieldContainer = emailInput.closest('div'); // Or a more specific parent
+      if (emailFieldContainer) {
+         expect(screen.getByText(/invalid email address/i, { selector: 'p' })).toBeInTheDocument();
+      } else {
+        // Fallback if a closer container isn't easily found or if errors are global
+        expect(screen.getByText(/invalid email address/i)).toBeInTheDocument();
+      }
+    });
   });
 
-  it.skip('shows error if password is too short', async () => {
+  // Un-skip this test
+  it('shows error if password is too short', async () => {
     render(<Login />);
     const emailInput = screen.getByLabelText(/email address/i);
     const passwordInput = screen.getByLabelText(/password/i);
@@ -103,11 +134,14 @@ describe('Login Component', () => {
     await user.click(submitButton);
 
     // The component should prevent form submission with short password
-    expect(authService.login).not.toHaveBeenCalled();
+    expect(mockedAuthService.login).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(screen.getByText('Password must be at least 6 characters')).toBeInTheDocument();
+    });
   });
 
-  // Skip this test since we can't properly mock the authentication
-  it.skip('calls authService.login with correct data and redirects on success', async () => {
+  // Un-skip this test
+  it('calls authService.login with correct data and redirects on success', async () => {
     render(<Login />);
     const emailInput = screen.getByLabelText(/email address/i);
     const passwordInput = screen.getByLabelText(/password/i);
@@ -121,7 +155,7 @@ describe('Login Component', () => {
     // We don't check loading state as it's not reliably showing in tests
 
     await waitFor(() => {
-      expect(authService.login).toHaveBeenCalledWith({
+      expect(mockedAuthService.login).toHaveBeenCalledWith({
         email: 'valid@example.com',
         password: 'password123',
       });
@@ -132,10 +166,10 @@ describe('Login Component', () => {
     });
   });
 
-  // Skip this test since the error message isn't showing in the component
-  it.skip('displays error message from authService on login failure', async () => {
+  // Un-skip this test
+  it('displays error message from authService on login failure', async () => {
     const errorMessage = 'Invalid credentials';
-    authService.login.mockRejectedValueOnce(new Error(errorMessage));
+    mockedAuthService.login.mockRejectedValueOnce(new Error(errorMessage));
 
     render(<Login />);
     const emailInput = screen.getByLabelText(/email address/i);

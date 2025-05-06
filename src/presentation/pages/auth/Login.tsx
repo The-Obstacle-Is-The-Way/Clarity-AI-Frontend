@@ -1,10 +1,22 @@
 import React, { useState, useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form'; // SubmitHandler will be type-only
+import type { SubmitHandler } from 'react-hook-form'; // Type-only import
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { authService } from '@/infrastructure/api/authService';
+import type { AuthResult } from '@/domain/types/auth/auth'; // Corrected import path for AuthResult
+import { auditLogClient, AuditEventType } from '@/infrastructure/clients/auditLogClient';
 
-// import SecureInput from "@atoms/SecureInput"; // Assume this is a styled input, replace with standard input for now
-import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient'; // Corrected import name
+// Define Zod schema for login form
+const loginSchema = z.object({
+  email: z.string().email({ message: 'Invalid email address' }),
+  password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+  rememberMe: z.boolean().optional(),
+});
+
+type LoginFormInputs = z.infer<typeof loginSchema>;
 
 /**
  * Login page component
@@ -12,13 +24,22 @@ import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLog
  */
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInputs>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onSubmit', // Validate on submit
+  });
 
-  // MFA state
+  // const [email, setEmail] = useState(''); // Replaced by RHF
+  // const [password, setPassword] = useState(''); // Replaced by RHF
+  // const [rememberMe, setRememberMe] = useState(false); // Handled by RHF
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiErrorMessage, setApiErrorMessage] = useState<string | null>(null); // For API errors
+
+  // MFA state (remains the same for now)
   const [showMFA, setShowMFA] = useState(false);
   const [mfaCode, setMfaCode] = useState('');
   const [mfaValid, setMfaValid] = useState(false);
@@ -26,104 +47,75 @@ const Login: React.FC = () => {
   /**
    * Handle form submission
    */
-  const handleFormSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      console.log('[Login Component] handleSubmit START');
-      console.log('[Login Component] handleSubmit invoked');
-      
-      // Reset any previous error messages
-      setErrorMessage(null);
-      
-      // Basic form validation
-      const emailValid = email.includes('@');
-      const passwordValid = password.length >= 6;
-      
-      console.log(`[Login Component] Checking validation: emailValid=${emailValid}, passwordValid=${passwordValid}`);
-      
-      if (!emailValid || !passwordValid) {
-        setErrorMessage('Please enter valid credentials');
-        return;
-      }
+  const onSubmit: SubmitHandler<LoginFormInputs> = useCallback(
+    async (data) => {
+      // console.log('[Login Component] handleSubmit START with RHF data:', data);
+      setApiErrorMessage(null); // Reset API error message
 
       try {
-        // Show loading state immediately using flushSync to ensure state update happens synchronously
-        console.log('[Login Component] Setting loading state, clearing error...');
         flushSync(() => {
           setIsLoading(true);
         });
         
-        console.log(`[Login Component] Calling authService.login with ${email}`);
-        // Actually call the auth service
-        const loginResult = await authService.login({ email, password });
+        // Ensure authService.login is typed to return Promise<AuthResult>
+        const loginResult: AuthResult = await authService.login({ email: data.email, password: data.password });
 
-        // Check result - Adjust based on actual authService response shape
-        if (loginResult?.success) {
-          console.log('[Login Component] authService.login successful (or requires MFA handled elsewhere)');
+        if (loginResult.success) { // No need for optional chaining if type is guaranteed
           navigate('/dashboard');
         } else {
-          // Handle unsuccessful login but valid response
-          throw new Error('Authentication failed');
+          let errMsg = 'Authentication failed'; // Default error message
+          if (loginResult.error) { // loginResult.error is defined as string in AuthResult
+            errMsg = loginResult.error;
+          }
+          setApiErrorMessage(errMsg);
         }
       } catch (error) {
-        console.error('[Login Component] Caught error in handleSubmit:', error);
-        setErrorMessage(
+        // This catch block handles network errors or unexpected issues in authService.login itself
+        setApiErrorMessage(
           error instanceof Error 
             ? error.message 
-            : 'An unexpected error occurred. Please try again.'
+            : 'An unexpected network or system error occurred. Please try again.'
         );
       } finally {
-        console.log('[Login Component] handleSubmit finally block, setting isLoading false.');
         setIsLoading(false);
       }
     },
-    [email, password, navigate]
+    [navigate]
   );
 
   /**
-   * Handle MFA verification
+   * Handle MFA verification (remains the same for now)
    */
   const handleVerifyMFA = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
 
       if (!mfaValid) {
-        setErrorMessage('Please enter a valid verification code');
+        setApiErrorMessage('Please enter a valid verification code');
         return;
       }
 
       setIsLoading(true);
-      setErrorMessage(null);
+      setApiErrorMessage(null);
 
       try {
-        // Simulate API call with timeout
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // In a real implementation, this would verify the MFA code
         if (mfaCode === '123456') {
-          // Log successful MFA verification
           auditLogClient.log(AuditEventType.USER_SESSION_VERIFY, {
-            // Corrected usage
-            // Use appropriate type
             result: 'success',
             details: 'MFA verification successful',
           });
-
-          // Redirect to dashboard
           navigate('/');
         } else {
-          // Log failed MFA attempt
           auditLogClient.log(AuditEventType.USER_SESSION_VERIFY, {
-            // Corrected usage
-            // Use appropriate type
             result: 'failure',
             details: 'Invalid MFA code',
           });
-
           throw new Error('Invalid verification code');
         }
       } catch (err) {
-        setErrorMessage((err as Error).message);
+        setApiErrorMessage((err as Error).message);
       } finally {
         setIsLoading(false);
       }
@@ -143,15 +135,15 @@ const Login: React.FC = () => {
           </h2>
         </div>
 
-        {/* Login form */}
         {!showMFA ? (
           <form
             className="mt-8 space-y-6"
-            onSubmit={handleFormSubmit}
+            onSubmit={handleSubmit(onSubmit)} // Use RHF handleSubmit
             data-testid="login-form"
             aria-label="Login form"
+            noValidate // Disable browser validation, rely on Zod
           >
-            {errorMessage && (
+            {apiErrorMessage && ( // Display API error messages
               <div className="rounded-md bg-red-50 p-4 dark:bg-red-900/30">
                 <div className="flex">
                   <div className="flex-shrink-0">
@@ -170,58 +162,64 @@ const Login: React.FC = () => {
                   </div>
                   <div className="ml-3">
                     <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
-                      {errorMessage}
+                      {apiErrorMessage}
                     </h3>
                   </div>
                 </div>
               </div>
             )}
             
-            <div className="space-y-4 rounded-md shadow-sm">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                placeholder="provider@example.com"
-              />
+            <div className="space-y-1 rounded-md shadow-sm"> {/* Reduced space-y for tighter field error display */}
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  {...register('email')} // Register with RHF
+                  className={`appearance-none block w-full px-3 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500`}
+                  placeholder="provider@example.com"
+                />
+                {errors.email && (
+                  <p className="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
 
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-              />
+              <div className="pt-2"> {/* Added padding top for spacing */}
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  autoComplete="current-password"
+                  {...register('password')} // Register with RHF
+                  className={`appearance-none block w-full px-3 py-2 border ${errors.password ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500`}
+                />
+                {errors.password && (
+                  <p className="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
                   id="remember-me"
-                  name="remember-me"
                   type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
+                  {...register('rememberMe')} // Register with RHF
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <label
@@ -253,8 +251,33 @@ const Login: React.FC = () => {
             </div>
           </form>
         ) : (
-          /* MFA form */
+          /* MFA form (unchanged for now) */
           <form className="mt-8 space-y-6" onSubmit={handleVerifyMFA}>
+            {apiErrorMessage && ( // Also display API error message in MFA form
+              <div className="rounded-md bg-red-50 p-4 dark:bg-red-900/30 mb-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-5 w-5 text-red-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+                      {apiErrorMessage}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            )}
             <div>
               <h3 className="text-center text-lg font-medium">Two-factor Authentication</h3>
               <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
@@ -269,13 +292,13 @@ const Login: React.FC = () => {
               <input
                 id="mfa-code"
                 name="mfa-code"
-                type="text" // Use text for easier input, consider inputMode="numeric"
+                type="text"
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 required
                 value={mfaCode}
                 onChange={(e) => {
-                  const code = e.target.value.replace(/[^0-9]/g, '').slice(0, 6); // Allow only 6 digits
+                  const code = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
                   setMfaCode(code);
                   setMfaValid(code.length === 6);
                 }}
@@ -288,14 +311,13 @@ const Login: React.FC = () => {
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || !mfaValid} // Also disable if mfaCode is not valid length
                 className="group relative flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-75 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Verifying...' : 'Verify Code'}
               </button>
             </div>
 
-            {/* Back button */}
             <div className="text-center">
               <button
                 type="button"
@@ -308,7 +330,7 @@ const Login: React.FC = () => {
           </form>
         )}
 
-        {/* Security badges */}
+        {/* Security badges (unchanged) */}
         <div className="mt-6">
           <div className="flex justify-center space-x-4">
             <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
