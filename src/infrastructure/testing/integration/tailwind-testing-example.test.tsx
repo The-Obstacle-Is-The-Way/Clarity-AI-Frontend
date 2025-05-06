@@ -2,6 +2,7 @@ import React from 'react';
 import { screen, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Import act and waitFor
 import { renderWithProviders } from './test-utils.unified'; // Use unified setup
+import { describe, it, expect, beforeEach } from 'vitest'; // Added beforeEach
 
 /**
  * Example component that uses Tailwind classes with dark mode variants
@@ -24,6 +25,15 @@ const TailwindTestComponent: React.FC = () => {
 };
 
 describe('Tailwind CSS Testing with Unified Setup', () => {
+  beforeEach(() => {
+    // Ensure a clean state before each test
+    localStorage.clear(); // Clear any persisted theme
+    document.documentElement.className = ''; // Remove all classes
+    document.documentElement.classList.add('light'); // Start with light theme on html
+    // Note: The ThemeProvider within renderWithProviders will still apply its own default or stored theme.
+    // This beforeEach primarily ensures that no old 'dark' class or localStorage item interferes unexpectedly.
+  });
+
   // Update describe block name
   // No beforeEach needed for cssMock
 

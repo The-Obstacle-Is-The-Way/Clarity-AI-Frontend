@@ -2,7 +2,7 @@
  * Tailwind CSS Testing Example (Using Unified Test Setup)
  */
 import React from 'react';
-import { describe, it, expect } from 'vitest'; // Removed unused beforeEach, afterEach
+import { describe, it, expect, beforeEach } from 'vitest'; // Added beforeEach
 import { screen, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'; // Import act and waitFor
 import { renderWithProviders } from './test-utils.unified'; // Use correct import
@@ -21,6 +21,13 @@ const TailwindComponent: React.FC<{ title: string }> = ({ title }) => {
 };
 
 describe('Tailwind CSS Testing with Unified Setup', () => {
+  beforeEach(() => {
+    // Ensure a clean state before each test
+    localStorage.clear(); // Clear any persisted theme
+    document.documentElement.className = ''; // Remove all classes
+    document.documentElement.classList.add('light'); // Start with light theme on html
+  });
+
   // No beforeEach/afterEach needed for tailwindHelper
 
   it('renders correctly in light mode', () => {
