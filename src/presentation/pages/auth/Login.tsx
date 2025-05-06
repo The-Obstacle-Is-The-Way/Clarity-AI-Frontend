@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { flushSync } from 'react-dom'; // Import flushSync
 import { useNavigate } from 'react-router-dom';
 import { authService } from '@/infrastructure/api/authService'; // Added this import
 
@@ -36,6 +37,9 @@ const Login: React.FC = () => {
       console.log('[Login Component] handleSubmit invoked');
       e.preventDefault();
 
+      // TEMP LOG: Check validation state just before the check
+      console.log(`[Login Component] Checking validation: emailValid=${emailValid}, passwordValid=${passwordValid}`);
+
       if (!emailValid || !passwordValid) {
         console.log('[Login Component] Invalid fields, setting error...');
         setError('Please enter valid credentials');
@@ -43,13 +47,16 @@ const Login: React.FC = () => {
       }
 
       console.log('[Login Component] Setting loading state, clearing error...');
-      setIsLoading(true);
+      // Force synchronous state update for testing
+      flushSync(() => {
+        setIsLoading(true);
+      });
       setError(null);
 
       try {
         console.log(`[Login Component] Calling authService.login with ${email}`)
         // Actually call the (mocked) auth service
-        const loginResult = await authService.login(email, password);
+        const loginResult = await authService.login({ email, password });
 
         // Check result - Adjust based on actual authService response shape
         if (loginResult?.success) { // Assuming login returns { success: boolean } or similar

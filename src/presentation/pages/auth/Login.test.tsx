@@ -134,7 +134,7 @@ describe('Login Component', () => {
     // 2. Wait for the mock to have been called (using vi.waitFor)
     await vi.waitFor(() => {
       expect(loginMock).toHaveBeenCalledTimes(1);
-      expect(loginMock).toHaveBeenCalledWith(testEmail, testPassword);
+      expect(loginMock).toHaveBeenCalledWith({ email: testEmail, password: testPassword });
     });
 
     // Add assertions here if component should show loading state or success message
