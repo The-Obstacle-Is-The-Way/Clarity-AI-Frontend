@@ -250,6 +250,12 @@ export function useNeuroSyncOrchestrator(
 
   // Fetch clinical data
   const fetchClinicalData = useCallback(async () => {
+    console.log('[NeuroSyncOrchestrator TEST_DEBUG] Inside fetchClinicalData. clinicalService object:', clinicalService);
+    if (clinicalService) {
+      console.log('[NeuroSyncOrchestrator TEST_DEBUG] clinicalService.fetchSymptomMappings:', typeof clinicalService.fetchSymptomMappings);
+      console.log('[NeuroSyncOrchestrator TEST_DEBUG] clinicalService.fetchDiagnosisMappings:', typeof clinicalService.fetchDiagnosisMappings);
+      console.log('[NeuroSyncOrchestrator TEST_DEBUG] clinicalService.fetchTreatmentPredictions:', typeof clinicalService.fetchTreatmentPredictions);
+    }
     try {
       // Fetch symptom mappings
       const symptomResult = await clinicalService.fetchSymptomMappings();
@@ -281,6 +287,7 @@ export function useNeuroSyncOrchestrator(
         });
       }
     } catch (error) {
+      console.log('[NeuroSyncOrchestrator TEST_DEBUG] fetchClinicalData caught error:', error);
       dispatch({
         type: 'SET_ERROR',
         payload: error instanceof Error ? error.message : 'Unknown error loading clinical data',
@@ -315,28 +322,10 @@ export function useNeuroSyncOrchestrator(
   // Fetch temporal dynamics
   const fetchTemporalDynamics = useCallback(async () => {
     try {
-      // For testing environment
-      if (process.env.NODE_ENV === 'test') {
-        // Simulate successful response
-        dispatch({
-          type: 'SET_TEMPORAL_DYNAMICS',
-          payload: {
-            id: `temporal-${patientId}-${state.timeScale}`,
-            timestamps: [Date.now() - 86400000, Date.now()],
-            values: {
-              'prefrontal-cortex': [0.5, 0.6],
-              amygdala: [0.3, 0.4],
-            },
-          },
-        });
-        return;
-      }
-
       // Normal execution
       const result = await temporalService.getTemporalDynamics(patientId, state.timeScale);
 
       if (result && result.success && result.value) {
-        // Check result exists, has success property, and has a value
         dispatch({ type: 'SET_TEMPORAL_DYNAMICS', payload: result.value });
       }
     } catch (error) {

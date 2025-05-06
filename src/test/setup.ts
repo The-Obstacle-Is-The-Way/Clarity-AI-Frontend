@@ -1,14 +1,37 @@
 /**
  * NOVAMIND Global Test Setup
- * 
+ *
  * This file is automatically imported by test files that require
  * global environment configuration.
  */
 
-// Fix "ResizeObserver is not defined" error in tests
 import { vi } from 'vitest';
+import { authService } from '@/infrastructure/api/authService'; // Import the actual service
+import type { User } from '@/domain/types/auth/auth'; // Import User type
+import { UserRole, Permission } from '@/domain/types/auth/auth'; // Import enums
 
-// Mock global objects that might be missing in JSDOM
+// Define a default mock user for tests
+const mockUser: User = {
+  id: 'test-user-123',
+  email: 'test@example.com',
+  name: 'Test User',
+  role: UserRole.CLINICIAN,
+  permissions: [Permission.VIEW_PATIENTS, Permission.VIEW_ANALYTICS],
+  lastLogin: new Date(),
+};
+
+// Mock the authService globally
+vi.mock('@/infrastructure/api/authService', () => ({
+  authService: {
+    getCurrentUser: vi.fn(() => Promise.resolve(mockUser)),
+    login: vi.fn(() => Promise.resolve({ success: true, user: mockUser })),
+    logout: vi.fn(() => Promise.resolve({ success: true })),
+    // Add other methods if they are called and need basic mocks
+    // e.g., renewSession: vi.fn(() => Promise.resolve()),
+  },
+}));
+
+// Fix "ResizeObserver is not defined" error in tests
 if (typeof window !== 'undefined') {
   vi.stubGlobal(
     'ResizeObserver',
