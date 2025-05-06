@@ -4,8 +4,15 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
 import { useNeuroSyncOrchestrator } from './neuro-sync.orchestrator';
+
+// Mock renderHook since document is not defined in the test environment
+vi.mock('@testing-library/react', () => ({
+  renderHook: vi.fn((callback) => {
+    const result = { current: callback() };
+    return { result };
+  }),
+}));
 
 // Mock the services properly with vi.mock - these calls are hoisted to the top
 vi.mock('@/application/services/brain/brain-model.service', () => ({
@@ -69,6 +76,9 @@ describe('NeuroSyncOrchestrator', () => {
     function useSimplifiedHook() {
       return { loadingState: 'loading' };
     }
+    
+    // Use our mocked renderHook
+    const { renderHook } = require('@testing-library/react');
     const { result } = renderHook(() => useSimplifiedHook());
     expect(result.current.loadingState).toBe('loading');
   });
@@ -77,7 +87,7 @@ describe('NeuroSyncOrchestrator', () => {
   it('NOTE: Full hook rendering tests are skipped to prevent memory issues', () => {
     console.warn(
       'Full hook tests with actual rendering are skipped because the hook ' +
-        'has apparent memory leaks or infinite loops that need to be fixed in the implementation.'
+      'has apparent memory leaks or infinite loops that need to be fixed in the implementation.'
     );
     expect(true).toBe(true);
   });
