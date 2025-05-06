@@ -62,9 +62,10 @@ describe('Tailwind CSS Testing with Unified Setup', () => {
   it('can toggle dark mode during test execution', async () => {
     // Re-enabled
     // Explicitly set light mode in localStorage before the test
-    localStorage.setItem('theme', 'light');
-    document.documentElement.classList.remove('dark', 'system');
-    document.documentElement.classList.add('light');
+    // localStorage.setItem('theme', 'light'); // ThemeProvider uses 'ui-theme'
+    // document.documentElement.classList.remove('dark', 'system');
+    // document.documentElement.classList.add('light');
+    // renderWithProviders defaults to light theme
     const { isDarkMode, enableDarkMode, disableDarkMode } = renderWithProviders(
       <TailwindComponent title="Toggle Dark Mode Test" />
     );

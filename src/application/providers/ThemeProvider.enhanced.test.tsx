@@ -91,13 +91,10 @@ describe('ThemeProvider (Enhanced Tests)', () => {
       </TestableThemeProvider>
     );
     
-    // Allow effects to run
-    await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 50));
-    });
-    
     // Verify the dark theme was applied
-    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    await waitFor(() => {
+      expect(document.documentElement.classList.contains('dark')).toBe(true);
+    });
     expect(document.documentElement.classList.contains('light')).toBe(false);
     
     // Verify localStorage was accessed (this is tracked by our testable provider)

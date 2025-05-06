@@ -29,43 +29,49 @@ function TestComponent() {
 // Enhanced matchMedia mock for tests
 function setupMatchMedia(prefersDark = false) {
   // Define a MediaQueryList mock with a _listeners array to track listeners
+  type MediaQueryListener =
+    | ((this: MediaQueryList, ev: MediaQueryListEvent) => any)
+    | { handleEvent: (ev: MediaQueryListEvent) => void }
+    | null;
+
   const mediaQueryList = {
     matches: prefersDark,
     media: '(prefers-color-scheme: dark)',
-    onchange: null,
-    addListener: vi.fn((listener) => {
-      // Store listeners in an array to support multiple listeners
+    onchange: null as MediaQueryListener | null, // Added type for onchange
+    addListener: vi.fn((listener: MediaQueryListener) => {
       mediaQueryList._listeners = mediaQueryList._listeners || [];
-      mediaQueryList._listeners.push(listener);
+      if (listener) mediaQueryList._listeners.push(listener);
     }),
-    removeListener: vi.fn((listener) => {
-      // Remove the listener from the array
+    removeListener: vi.fn((listener: MediaQueryListener) => {
       mediaQueryList._listeners = (mediaQueryList._listeners || []).filter((l) => l !== listener);
     }),
-    addEventListener: vi.fn((event, listener) => {
+    addEventListener: vi.fn((event: string, listener: MediaQueryListener) => {
       if (event === 'change') {
         mediaQueryList._listeners = mediaQueryList._listeners || [];
-        mediaQueryList._listeners.push(listener);
+        if (listener) mediaQueryList._listeners.push(listener);
       }
     }),
-    removeEventListener: vi.fn((event, listener) => {
+    removeEventListener: vi.fn((event: string, listener: MediaQueryListener) => {
       if (event === 'change') {
         mediaQueryList._listeners = (mediaQueryList._listeners || []).filter((l) => l !== listener);
       }
     }),
     // Method to simulate a media query change
-    _triggerChange: (prefersDarkValue) => {
+    _triggerChange: (prefersDarkValue: boolean) => {
       mediaQueryList.matches = prefersDarkValue;
-      // Notify all registered listeners
       (mediaQueryList._listeners || []).forEach((listener) => {
         if (typeof listener === 'function') {
-          listener({ matches: prefersDarkValue });
+          listener.call(mediaQueryList, {
+            matches: prefersDarkValue,
+          } as unknown as MediaQueryListEvent);
         } else if (listener && typeof listener.handleEvent === 'function') {
-          listener.handleEvent({ matches: prefersDarkValue });
+          listener.handleEvent({
+            matches: prefersDarkValue,
+          } as unknown as MediaQueryListEvent);
         }
       });
     },
-    _listeners: [],
+    _listeners: [] as MediaQueryListener[],
   };
 
   // Replace window.matchMedia with our enhanced mock
@@ -83,9 +89,9 @@ describe('ThemeProvider', () => {
     mediaQueryList = setupMatchMedia(false); // Default to light mode
 
     // Also ensure localStorage is properly mocked
-    globalThis.mockLocalStorage.getItem.mockReset();
-    globalThis.mockLocalStorage.setItem.mockReset();
-    globalThis.mockLocalStorage.removeItem.mockReset();
+    (window.localStorage.getItem as any).mockReset();
+    (window.localStorage.setItem as any).mockReset();
+    (window.localStorage.removeItem as any).mockReset();
   });
 
   afterEach(() => {
@@ -96,7 +102,7 @@ describe('ThemeProvider', () => {
   it('uses system theme by default (prefers light)', async () => {
     // Setup matchMedia to prefer light
     mediaQueryList.matches = false;
-    globalThis.mockLocalStorage.getItem.mockReturnValue(null);
+    (window.localStorage.getItem as any).mockReturnValue(null);
 
     render(
       <ThemeProvider>
@@ -118,7 +124,7 @@ describe('ThemeProvider', () => {
   it('uses system theme by default (prefers dark)', async () => {
     // Setup matchMedia to prefer dark
     mediaQueryList.matches = true;
-    globalThis.mockLocalStorage.getItem.mockReturnValue(null);
+    (window.localStorage.getItem as any).mockReturnValue(null);
 
     render(
       <ThemeProvider>
@@ -139,7 +145,7 @@ describe('ThemeProvider', () => {
 
   it('loads saved theme from localStorage', async () => {
     // Set up localStorage to return 'dark'
-    globalThis.mockLocalStorage.getItem.mockImplementation((key) => {
+    (window.localStorage.getItem as any).mockImplementation((key: string) => {
       if (key === 'ui-theme') return 'dark';
       return null;
     });
@@ -164,7 +170,7 @@ describe('ThemeProvider', () => {
   it('allows changing theme', async () => {
     // Start with system theme (light)
     mediaQueryList.matches = false;
-    globalThis.mockLocalStorage.getItem.mockReturnValue(null);
+    (window.localStorage.getItem as any).mockReturnValue(null);
 
     const user = userEvent.setup();
 
@@ -192,7 +198,7 @@ describe('ThemeProvider', () => {
       expect(document.documentElement.classList.contains('light')).toBe(false);
     });
 
-    expect(globalThis.mockLocalStorage.setItem).toHaveBeenCalledWith('ui-theme', 'dark');
+    expect(window.localStorage.setItem).toHaveBeenCalledWith('ui-theme', 'dark');
 
     // Change to light theme
     await user.click(screen.getByText('Light'));
@@ -206,7 +212,7 @@ describe('ThemeProvider', () => {
       expect(document.documentElement.classList.contains('dark')).toBe(false);
     });
 
-    expect(globalThis.mockLocalStorage.setItem).toHaveBeenCalledWith('ui-theme', 'light');
+    expect(window.localStorage.setItem).toHaveBeenCalledWith('ui-theme', 'light');
 
     // Change back to system theme
     await user.click(screen.getByText('System'));
@@ -220,13 +226,13 @@ describe('ThemeProvider', () => {
       expect(document.documentElement.classList.contains('dark')).toBe(false);
     });
 
-    expect(globalThis.mockLocalStorage.setItem).toHaveBeenCalledWith('ui-theme', 'system');
+    expect(window.localStorage.setItem).toHaveBeenCalledWith('ui-theme', 'system');
   });
 
   it('follows system theme when set to system', async () => {
     // Start with system theme (dark)
     mediaQueryList.matches = true;
-    globalThis.mockLocalStorage.getItem.mockReturnValue(null);
+    (window.localStorage.getItem as any).mockReturnValue(null);
 
     render(
       <ThemeProvider>

@@ -39,18 +39,24 @@ if (typeof window !== 'undefined') {
     Object.defineProperty(window, 'localStorage', {
       value: {
         store: {} as Record<string, string>,
-        getItem(key: string) {
+        getItem: vi.fn(function (this: { store: Record<string, string> }, key: string) {
           return this.store[key] || null;
-        },
-        setItem(key: string, value: string) {
-          this.store[key] = value.toString();
-        },
-        removeItem(key: string) {
+        }),
+        setItem: vi.fn(
+          function (
+            this: { store: Record<string, string> },
+            key: string,
+            value: string
+          ) {
+            this.store[key] = value.toString();
+          }
+        ),
+        removeItem: vi.fn(function (this: { store: Record<string, string> }, key: string) {
           delete this.store[key];
-        },
-        clear() {
+        }),
+        clear: vi.fn(function (this: { store: Record<string, string> }) {
           this.store = {};
-        },
+        }),
       },
       configurable: true,
     });

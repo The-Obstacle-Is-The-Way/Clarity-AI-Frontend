@@ -7,8 +7,8 @@ import '../../../src/test/debug-setup'; // Import extended setup
 // Mock authService for testing - ensure this is called before importing the module
 vi.mock('@/infrastructure/api/authService', () => ({
   authService: {
-    login: vi.fn().mockImplementation((email, password) => {
-      console.log(`[MOCK] authService.login called with: ${email}, ${password}`);
+    login: vi.fn().mockImplementation((_email, _password) => {
+      // console.log(`[MOCK] authService.login called with: ${email}, ${password}`);
       return Promise.resolve({ success: true, token: 'fake-token' });
     }),
     getCurrentUser: vi.fn().mockReturnValue({
@@ -17,7 +17,7 @@ vi.mock('@/infrastructure/api/authService', () => ({
       email: 'test@example.com'
     }),
     isAuthenticated: vi.fn().mockReturnValue(true),
-  }
+  },
 }));
 
 // Import after mocking

@@ -1,13 +1,30 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "baseUrl": "../..",
+    "paths": {
+      "@domain/*": ["src/domain/*"],
+      "@application/*": ["src/application/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@presentation/*": ["src/presentation/*"],
+      "@test/*": ["src/test/*"],
+      "@utils/*": ["src/utils/*"],
+      "@/*": ["src/*"]
+    },
     "types": ["vitest/globals", "@testing-library/jest-dom"],
     "isolatedModules": true,
     "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
     "verbatimModuleSyntax": false,
     "noEmit": true,
     "composite": false
   },
-  "include": ["src", "vitest.config.ts"],
+  "include": [
+    "../../src/**/*.ts",
+    "../../src/**/*.tsx",
+    "../../vitest.config.ts",
+    "../../config/vitest.setup.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

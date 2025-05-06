@@ -101,9 +101,11 @@ beforeEach(() => {
   vi.useFakeTimers(); // Use fake timers for consistent Date.now()
   
   // Setup localStorage mocks
-  (window.localStorage.getItem as any) = vi.fn().mockReturnValue(null);
-  (window.localStorage.setItem as any) = vi.fn();
-  (window.localStorage.removeItem as any) = vi.fn();
+  // vi.fn().mockReturnValue(null) creates a new mock function each time.
+  // We should spy on the actual localStorage methods if we intend to change their behavior per test.
+  vi.spyOn(window.localStorage, 'getItem').mockReturnValue(null); // Default mock
+  vi.spyOn(window.localStorage, 'setItem');
+  vi.spyOn(window.localStorage, 'removeItem');
   
   vi.spyOn(window, 'dispatchEvent');
 });
