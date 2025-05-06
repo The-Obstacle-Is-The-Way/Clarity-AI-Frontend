@@ -4,113 +4,97 @@ This document summarizes key points regarding the use of Vitest with the JSDOM e
 
 ## 1. JSDOM Environment Configuration
 
-*   **`vitest.config.ts` / `vite.config.ts`:** Ensure the test environment is explicitly set:
+*   **`vitest.config.ts` (Primary: `config/vitest.config.ts`):** Ensure the test environment is explicitly set:
     ```typescript
-    // vitest.config.ts or vite.config.ts
-    /// <reference types="vitest" /> // Add this if using vite.config.ts
-    import { defineConfig } from 'vite'; // or 'vitest/config'
+    // config/vitest.config.ts
+    import { defineConfig } from 'vitest/config';
 
     export default defineConfig({
-      // ... other vite config
       test: {
         environment: 'jsdom', // Crucial setting
         globals: true, // Recommended for ease of use (describe, it, expect, vi)
-        setupFiles: ['./vitest-setup.ts'], // If using jest-dom matchers
+        setupFiles: ['./src/test/jest-dom-setup.ts'], // For jest-dom matchers
         // ... other test config
       },
-    })
+    });
     ```
-*   **`tsconfig.json`:** Adding JSDOM types can improve TypeScript integration and prevent type errors related to browser globals:
+*   **`jsdom` Dependency:**
+    *   Initial hypothesis: Relying solely on Vitest's bundled JSDOM and removing `jsdom` from `package.json` would resolve conflicts.
+    *   **Current Finding (06/May/2025):** Running tests that use DOM manipulation (e.g., with `@testing-library/react` and `userEvent`) **still triggers Vitest to prompt for `jsdom` installation if it's not in `package.json`**. This indicates that `jsdom` is treated as a required peer or direct dependency by some part of the testing stack (Vitest, RTL, or user-event).
+    *   **Resolution:** `jsdom` should be present in `devDependencies`. The focus is on ensuring *Vitest's configured JSDOM environment* is the one used and that there are no conflicting global JSDOM setups (like from the now-removed `jsdom-global` package).
+*   **`tsconfig.json` (Root):** Adding JSDOM types can improve TypeScript integration. Ensure `"types"` includes `"vitest/jsdom"` or similar if issues arise, and `"lib"` includes `"DOM"` and `"DOM.Iterable"`.
     ```json
-    // tsconfig.json
+    // tsconfig.json (example relevant parts)
     {
       "compilerOptions": {
-        // Make sure "dom" is included in "lib"
         "lib": ["ESNext", "DOM", "DOM.Iterable"],
-        // Add vitest globals and jest-dom types if used
-        "types": ["node", "vitest/globals", "@testing-library/jest-dom"]
-        // ... other compiler options
+        "types": ["node", "vitest/globals", "@testing-library/jest-dom", "vitest/jsdom"] // Add "vitest/jsdom"
       }
     }
     ```
-*   **Setup File (`vitest-setup.ts`):** If using `@testing-library/jest-dom` for custom matchers (like `toBeInTheDocument`), import it here:
+*   **Setup File (`src/test/jest-dom-setup.ts`):** This file should *only* import Jest DOM matchers. Global mocks were removed from other setup files.
     ```typescript
-    // vitest-setup.ts
+    // src/test/jest-dom-setup.ts
     import '@testing-library/jest-dom/vitest';
     ```
+*   **Configuration Consolidation:** Multiple Vitest config files (`vitest.config.clean.ts`, `vitest.config.unified.ts`) were deleted. `config/vitest.config.ts` is the sole Vitest configuration file, invoked by `package.json` scripts.
 
 ## 2. Path Alias Resolution
 
-*   **Problem:** While `vite-tsconfig-paths` plugin works for Vite's runtime, Vitest might require explicit alias configuration within its own settings for reliable resolution during tests, especially within mocks or setup files.
-*   **Recommended Configuration (`vitest.config.ts` / `vite.config.ts`):** Define aliases under the `test.alias` property using `new URL()` relative to the config file location for robustness:
+*   **Recommended Configuration (`config/vitest.config.ts`):** Define aliases under `test.alias` using `new URL()` relative to the config file.
     ```typescript
-    // vitest.config.ts or vite.config.ts
-    import { defineConfig } from 'vite'; // or 'vitest/config'
-    import { URL, fileURLToPath } from 'node:url'; // Use node:url
+    // config/vitest.config.ts
+    import { defineConfig } from 'vitest/config';
+    import { URL } from 'node:url'; // No need for fileURLToPath with new URL and .pathname
 
     export default defineConfig({
-      // resolve: { alias: { ... } } // For Vite runtime
       test: {
         alias: {
-          // Use URL relative to config file location
-          '@': fileURLToPath(new URL('./src', import.meta.url)),
-          // Define aliases for domain, application, infrastructure, presentation
-          '@domain': fileURLToPath(new URL('./src/domain', import.meta.url)),
-          '@application': fileURLToPath(new URL('./src/application', import.meta.url)),
-          '@infrastructure': fileURLToPath(new URL('./src/infrastructure', import.meta.url)),
-          '@presentation': fileURLToPath(new URL('./src/presentation', import.meta.url)),
-          // ... other aliases as needed
+          '@': new URL('../src', import.meta.url).pathname,
+          '@domain': new URL('../src/domain', import.meta.url).pathname,
+          // ... other aliases
         },
-        // ... other test config
       },
-    })
+    });
     ```
 
 ## 3. Mocking (`vi.mock` / `vi.doMock`)
 
-*   **Hoisting:** `vi.mock()` calls are hoisted (moved to the top) *before* static imports. The factory function cannot directly access variables defined later in the file unless using `vi.hoisted()`.
-*   **Path Aliases in Mocks:** Using path aliases *inside* `vi.mock` can be unreliable. Prefer precise **relative paths** from the test file to the module being mocked.
-*   **Mocking Dependencies of Dependencies:** Mocking a module (e.g., `authService`) used by another module (e.g., `AuthContext`) requires the mock to be in place *before* the intermediate module (`AuthContext`) imports the original. Moving the `vi.mock` call *into the test file* (`Header.test.tsx` initially, or `Login.test.tsx`) that uses the component needing the eventually mocked dependency is often necessary, rather than relying solely on global mocks (`setup.ts`).
-*   **ESM Default Exports:** When mocking a module with a default export, provide a `default` key in the factory: `vi.mock('./mod', () => ({ default: vi.fn(), namedExport: vi.fn() }))`.
-*   **Automocking (`__mocks__`):** Vitest can use files in adjacent `__mocks__` directories if no factory is provided to `vi.mock`. This is *not* enabled by default like Jest; `vi.mock('modulePath')` must still be called.
-*   **`vi.doMock()`:** Non-hoisted alternative, only affects subsequent *dynamic* imports (`await import(...)`).
+*   **Hoisting:** `vi.mock()` calls are hoisted.
+*   **Path Aliases in Mocks:** Prefer precise **relative paths** or ensure aliases are robustly configured and resolved by Vitest.
+*   **Mocking Scope:** For dependencies of components (e.g., `authService` used by `Login.tsx`), mocks typically need to be in the test file itself.
+*   **`Login.smoke.test.tsx` Issue (06/May/2025):** Despite a `vi.mock('@/infrastructure/api/authService', ...)` in the smoke test, the `Login` component's `handleSubmit` throws `ReferenceError: authService is not defined`. This indicates the mock is not correctly applying to the component's execution context.
 
 ## 4. Asynchronous Operations & Testing Library
 
-*   **`act` Warnings:** Often caused by React state updates occurring *after* a test interaction (like fetch in `useEffect` or event handlers) but *outside* Testing Library's `act()` wrapper, meaning React updates the DOM after the test potentially finished checking it.
-*   **`userEvent` vs `fireEvent`:** `userEvent` (v14+) aims to simulate real user interactions more closely and generally handles `act` wrapping internally for realistic async behavior. Older `fireEvent` is more synchronous.
-*   **Waiting for Updates:**
-    *   Use `async`/`await` in test functions.
-    *   Use `screen.findBy*` queries, which return promises that resolve when the element is found (they use `waitFor` internally).
-    *   Use `waitFor(() => expect(...))` to wait for specific assertions to pass after an interaction.
-    *   **Project Issue:** In `Login.test.tsx`, despite using `userEvent`, `async/await`, and `waitFor`/`vi.waitFor`, state updates (`setIsLoading`, `setError`) triggered by `handleSubmit` after `userEvent.click(submitButton)` are **not reliably reflected in the JSDOM DOM** before `waitFor` times out. This suggests a deeper issue with the test environment's handling of state updates post-event.
-*   **Vitest Native `vi.waitFor`:** Vitest offers its own `vi.waitFor`. Switching from RTL's `waitFor` to `vi.waitFor` in `Login.test.tsx` **did not** resolve the underlying state update visibility issue, further indicating an environmental problem rather than just a library timing conflict.
+*   **`act` Warnings:** Generally indicate React state updates outside Testing Library's `act()` or `userEvent`'s implicit `act` wrapping.
+*   **`userEvent`:** Preferred for simulating real user interactions.
+*   **Waiting for Updates:** Use `async/await`, `screen.findBy*`, or `vi.waitFor(() => expect(...))`.
+*   **Previous Core Problem (Potentially Mitigated):** The issue where React state updates (`setIsLoading`, `setError`) in `Login.tsx` were not reflected in JSDOM after `userEvent.click` might have been linked to conflicting JSDOM instances. The absence of the "Worker exited unexpectedly" error in the latest smoke test is a positive sign.
 
-## 5. Debugging Journey & Current Blockers (This Project)
+## 5. Debugging Journey & Current State (This Project)
 
-*   **Initial State:** Widespread `act` warnings, hangs, and `Worker exited unexpectedly` errors. Initial hypothesis: async operations in `AuthProvider`.
-*   **Resolved - `Header.test.tsx`:** Successfully fixed by recognizing the component was presentational and rewriting tests to match, removing unnecessary auth mocking complexity. Tests now pass.
-*   **Resolved - `neuro-sync.orchestrator.test.ts`:** A specific hang/memory issue here was traced to faulty timer/async logic within that test and fixed by simplifying the test logic.
-*   **Current Blocker - `Login.test.tsx`:** This remains the primary source of instability and likely the cause of the worker error.
-    *   **Core Problem:** React state updates (`setIsLoading`, `setError`) set within the `handleSubmit` function (after validation or async `authService.login` calls) are **not reflected in the JSDOM DOM** in time for `vi.waitFor` assertions to pass.
-        *   `expect(submitButton).toBeDisabled()` fails because the button doesn't appear disabled after `setIsLoading(true)`.
-        *   `expect(await screen.findByText(...))` times out because the error message element doesn't appear after `setError()`.
-    *   **Attempted Fixes:**
-        *   Standard async patterns (`async`/`await`, `userEvent`).
-        *   Correct `vi.mock` for `authService` within the test file.
-        *   Refactoring `Login.tsx` to use actual `authService.login` call.
-        *   Using RTL `waitFor`.
-        *   Using Vitest `vi.waitFor`.
-        *   Increasing `waitFor` timeouts.
-        *   Adding extensive `console.log` tracing.
-        *   Checking intermediate loading states (`toBeDisabled`).
-        *   Temporarily removing component's internal validation logic.
-    *   **Conclusion:** The issue seems environmental, related to how Vitest/JSDOM handles React state updates triggered by `userEvent` interactions. Standard debugging within the component/test logic has been exhausted.
-*   **Symptom - `Worker exited unexpectedly`:** This error persists and is highly likely linked to the instability and timeouts occurring within `Login.test.tsx`. Resolving the `Login` tests is the most probable way to eliminate the worker error.
+*   **Initial State:** Widespread `act` warnings, hangs, and `Worker exited unexpectedly` errors.
+*   **Resolved - JSDOM Conflicts & Worker Crashes (Hypothesis):**
+    *   Removed explicit `jsdom-global` package.
+    *   Consolidated Vitest configurations to `config/vitest.config.ts`.
+    *   Cleaned `setupFiles` to only `src/test/jest-dom-setup.ts` (for matchers).
+    *   Ensured `jsdom` is a direct dev dependency (as required by the testing stack).
+    *   **Result (06/May/2025):** The `Login.smoke.test.tsx` run **did not** produce the "Worker exited unexpectedly" error. This suggests the JSDOM instance conflict is likely resolved or significantly improved.
+*   **Resolved - `Header.test.tsx`:** Tests pass after refactoring to match its presentational nature.
+*   **New Blocker - `Login.smoke.test.tsx` & `Login.test.tsx`:**
+    *   **Core Problem (06/May/2025):** When `Login.tsx`'s `handleSubmit` is triggered, it attempts to call `authService.login(...)` but throws a `ReferenceError: authService is not defined`. This occurs *within the component's code*, even though `Login.smoke.test.tsx` (and `Login.test.tsx`) define a `vi.mock('@/infrastructure/api/authService', ...)` for it.
+    *   **Consequence:** Because of this runtime error in the component, the expected state updates (loading state, error messages) do not occur, causing the test assertions (`expect(button).toBeDisabled()`, `screen.findByText('...')`) to fail.
+    *   This `ReferenceError` is now the primary obstacle for these tests.
 
 ## 6. Next Steps for Investigation
 
-1.  **Targeted Research:** Search for known issues/bugs/configurations related to `vitest` + `jsdom` + `userEvent` + React `useState` updates not rendering synchronously after events.
-2.  **Configuration Review:** Deeply examine `vite.config.ts` / `vitest.config.ts` for any non-standard JSDOM options, threading, or environment settings.
-3.  **Test Isolation:** Create a minimal reproduction case (e.g., a new test file) rendering *only* the `Login` component and attempting the failing interaction/assertion sequence to rule out interference from other tests or setup.
-4.  **Consider Alternatives (If Necessary):** Explore if simpler event triggering (like `fireEvent`) behaves differently, or if specific Vitest/JSDOM configurations (e.g., related to event loop timing) can be adjusted.
+1.  **Resolve `authService` `ReferenceError` in `Login.tsx` when run under test:**
+    *   Verify the exact import path and structure in `Login.tsx` vs. the mock in `*.test.tsx`.
+    *   Investigate potential Vitest module mocking hoisting/scoping issues that might cause the mock not to apply correctly to the component's internal scope.
+    *   Consider if the `authService.ts` file itself has any characteristics (e.g., re-exports, complex initialization) that might interfere with Vitest's mocking.
+    *   Check `tsconfig.json` for `"types": ["vitest/jsdom"]` to ensure TypeScript JSDOM globals are recognized, though this is less likely the cause of a runtime `ReferenceError` for a module.
+2.  **Confirm `Login.smoke.test.tsx` Passes:** Once the `authService` reference error is fixed, the smoke test (checking for button disabling) should pass, confirming the DOM updates correctly.
+3.  **Restore and Fix Full `Login.test.tsx`:** Re-enable all assertions in the full `Login.test.tsx` and ensure they pass, leveraging the now-stable JSDOM environment.
+4.  **Address Other Failing Tests:** Systematically address any other tests that were failing due to the previous JSDOM instability.
+

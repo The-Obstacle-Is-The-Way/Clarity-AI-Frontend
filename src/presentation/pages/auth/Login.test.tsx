@@ -107,7 +107,7 @@ describe('Login Component', () => {
     await user.type(emailInput, 'valid@test.com'); // Email is valid here
     await user.type(passwordInput, 'short'); // Password invalid (< 6 chars)
     await user.click(submitButton);
-     await waitFor(async () => {
+    await vi.waitFor(async () => {
       expect(await screen.findByText(/please enter valid credentials/i)).toBeInTheDocument();
     }, { timeout: 3000 });
     expect(loginMock).not.toHaveBeenCalled();

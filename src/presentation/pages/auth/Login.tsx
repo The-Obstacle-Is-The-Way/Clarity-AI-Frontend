@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { authService } from '@/infrastructure/api/authService'; // Added this import
 
 // import SecureInput from "@atoms/SecureInput"; // Assume this is a styled input, replace with standard input for now
 import { auditLogClient, AuditEventType } from '@infrastructure/clients/auditLogClient'; // Corrected import name

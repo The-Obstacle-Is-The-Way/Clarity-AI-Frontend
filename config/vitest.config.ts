@@ -2,13 +2,7 @@
 /*
  * Monkey-patch tinypool at config load time to prevent stack overflow on worker termination.
  */
-import * as tinypool from 'tinypool';
-if ((tinypool as any).ProcessWorker?.prototype) {
-  (tinypool as any).ProcessWorker.prototype.terminate = () => Promise.resolve();
-}
-if ((tinypool as any).ThreadPool?.prototype?._removeWorker) {
-  (tinypool as any).ThreadPool.prototype._removeWorker = () => {};
-}
+
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 import path from 'path';
@@ -19,68 +13,10 @@ const projectRoot = path.resolve(__dirname, '..'); // Define project root dynami
 
 export default defineConfig({
   plugins: [
-    // Stub out tinypool at the Vite resolver level to override shutdown before transforms
-    {
-      name: 'stub-tinypool',
-      enforce: 'pre',
-      resolveId(source) {
-        if (source === 'tinypool')
-          return path.resolve(__dirname, 'tinypool-stub.ts');
-        return null;
-      },
-    },
+
     react(), // React plugin for JSX support
     tsconfigPaths(), // Use paths from tsconfig.json
   ],
-  resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'], // Resolve extensions properly
-    alias: {
-      // Core path aliases
-      '@': path.resolve(projectRoot, 'src'),
-      '@domain': path.resolve(projectRoot, 'src/domain'),
-      '@application': path.resolve(projectRoot, 'src/application'),
-      '@infrastructure': path.resolve(projectRoot, 'src/infrastructure'),
-      '@presentation': path.resolve(projectRoot, 'src/presentation'),
-      '@shared': path.resolve(projectRoot, 'src/shared'),
-      
-      // Component path aliases
-      '@atoms': path.resolve(projectRoot, 'src/presentation/atoms'),
-      '@molecules': path.resolve(projectRoot, 'src/presentation/molecules'),
-      '@organisms': path.resolve(projectRoot, 'src/presentation/organisms'),
-      '@templates': path.resolve(projectRoot, 'src/presentation/templates'),
-      '@pages': path.resolve(projectRoot, 'src/presentation/pages'),
-      
-      // Feature path aliases
-      '@hooks': path.resolve(projectRoot, 'src/application/hooks'),
-      '@contexts': path.resolve(projectRoot, 'src/application/contexts'),
-      '@providers': path.resolve(projectRoot, 'src/application/providers'),
-      '@stores': path.resolve(projectRoot, 'src/application/stores'),
-      '@services': path.resolve(projectRoot, 'src/application/services'),
-      '@api': path.resolve(projectRoot, 'src/infrastructure/api'),
-      '@clients': path.resolve(projectRoot, 'src/infrastructure/clients'),
-      '@utils': path.resolve(projectRoot, 'src/shared/utils'),
-      '@constants': path.resolve(projectRoot, 'src/shared/constants'),
-      
-      // Other path aliases
-      '@config': path.resolve(projectRoot, 'config'),
-      '@test': path.resolve(projectRoot, 'test'),
-      '@public': path.resolve(projectRoot, 'public'),
-      
-      // Module resolutions that need special handling
-      './node_modules/react-dnd/dist/index.js': path.resolve(
-        projectRoot,
-        'node_modules/react-dnd/dist/cjs/index.js'
-      ),
-      './node_modules/react-dnd-html5-backend/dist/index.js': path.resolve(
-        projectRoot,
-        'node_modules/react-dnd-html5-backend/dist/cjs/index.js'
-      ),
-      './web-workers/connectivity.worker.js?worker': path.resolve(
-        projectRoot,
-        'src/infrastructure/workers/connectivity.worker.ts?worker'
-      ),
-    },
-  },
   test: {
     // Explicitly define aliases for the test environment
     alias: {
@@ -109,9 +45,7 @@ export default defineConfig({
       '@test': new URL('../test', import.meta.url).pathname,
       '@public': new URL('../public', import.meta.url).pathname,
     },
-    // Disable worker threads and parallel file execution to avoid tinypool stack issues
-    threads: false,
-    fileParallelism: false,
+    // Restore default threading behavior (remove threads: false, fileParallelism: false)
     // Core settings
     globals: true, // Enable global test APIs
     environment: 'jsdom', // Use JSDOM for browser environment
@@ -127,8 +61,7 @@ export default defineConfig({
     
     // Setup files in correct order - jest-dom setup must come before our main setup
     setupFiles: [
-      './src/test/jest-dom-setup.ts', // Add jest-dom setup first
-      './src/test/setup.ts', // Use the canonical setup file
+      './src/test/jest-dom-setup.ts', // Jest-dom matchers only
     ],
     
     // Coverage configuration
