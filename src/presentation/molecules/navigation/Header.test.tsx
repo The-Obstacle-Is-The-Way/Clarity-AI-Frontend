@@ -2,41 +2,59 @@
  * CLARITY-AI Neural Test Suite
  * Header testing with quantum precision
  */
-import React from 'react'; // Add React import
-import { describe, it, expect, vi } from 'vitest'; // Removed unused vi
+import React from 'react';
+import { describe, it, expect, vi } from 'vitest';
+import { screen, waitFor, fireEvent } from '@testing-library/react'; // Import waitFor and fireEvent
+import '@testing-library/jest-dom';
+import Header from './Header';
+import { render } from '../../../infrastructure/testing/utils/test-utils.unified'; // Correct relative path
+// import { useAuth } from '../../../application/context/AuthContext'; // No longer needed here, rely on global mock
 
-import { screen } from '@testing-library/react';
-import '@testing-library/jest-dom'; // render is imported from unified utils, removed unused fireEvent
-// Removed unused React import (new JSX transform)
-// Removed unused userEvent import
-import Header from './Header'; // Assuming default export
-import { render } from '@infrastructure/testing/utils/test-utils.unified'; // Standardized path
-import { useAuth } from '@application/context/AuthContext';
+// Remove local mock - Rely on global mock in src/test/setup.ts
+/*
+vi.mock('../../../application/context/AuthContext', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../application/context/AuthContext')>();
+  return {
+    ...actual,
+    useAuth: vi.fn(() => ({ // Mock useAuth locally if needed, otherwise rely on global authService mock
+      isAuthenticated: true,
+      user: { name: 'Test User', email: 'test@example.com', id: '1' },
+      logout: vi.fn(),
+    })),
+  };
+});
+*/
 
-// Mock data with clinical precision
-// Mock data with clinical precision - Requires specific props for Header
 const mockProps = {
-  title: 'Test Dashboard', // Example prop
-  // Add other required props based on Header component definition
+  title: 'Test Dashboard',
 };
 
 describe('Header', () => {
-  it('renders with neural precision', () => {
-    render(<Header {...mockProps} />); // Use the unified render
+  it('renders with neural precision', async () => {
+    render(<Header {...mockProps} />);
 
-    // Add assertions for rendered content
-    expect(screen).toBeDefined();
+    // Wait for elements to appear, expecting data from global mock
+    await waitFor(() => {
+      expect(screen.getByText('Test Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Test User')).toBeInTheDocument(); // Expecting name from global mock user
+      expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument();
+    });
   });
 
   it('responds to user interaction with quantum precision', async () => {
-    // Removed unused variable: const user = userEvent.setup();
-    render(<Header {...mockProps} />); // Use the unified render
+    // Need to get the mocked service function, not the hook return value
+    // Import vi explicitly if needed, or ensure globals: true is set in vitest config
+    // Assuming globals: true, otherwise import { Mock } from 'vitest';
+    const { authService } = await vi.importActual<typeof import('../../../infrastructure/api/authService')>('../../../infrastructure/api/authService');
+    const logoutMock = authService.logout as import('vitest').Mock; // Use imported Mock type
 
-    // Simulate user interactions
-    // await user.click(screen.getByText(/example text/i));
+    render(<Header {...mockProps} />);
 
-    // Add assertions for behavior after interaction
+    // Wait for the logout button and click it
+    const logoutButton = await screen.findByRole('button', { name: /logout/i });
+    fireEvent.click(logoutButton);
+
+    // Assert the mocked service function was called
+    expect(logoutMock).toHaveBeenCalled();
   });
-
-  // Add more component-specific tests
 });

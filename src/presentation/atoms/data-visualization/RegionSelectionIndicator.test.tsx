@@ -5,7 +5,8 @@
 
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '../../../infrastructure/testing/utils/test-utils.unified';
+import { render, screen, waitFor } from '../../../infrastructure/testing/utils/test-utils.unified';
+import '@testing-library/jest-dom';
 import { RegionSelectionIndicator } from './RegionSelectionIndicator';
 
 // Mock React Three Fiber
@@ -97,17 +98,25 @@ vi.mock('@react-spring/three', () => {
 import { Vector3 } from 'three';
 
 describe('RegionSelectionIndicator', () => {
-  it('renders the mock mesh when selected', () => {
+  it('renders the mock mesh when selected', async () => {
     render(<RegionSelectionIndicator position={new Vector3(0, 0, 0)} scale={1} selected={true} />);
-    expect(screen.getByTestId('mock-animated-mesh')).toBeTruthy();
-    expect(screen.getByTestId('mock-sphere-geometry')).toBeTruthy();
-    expect(screen.getByTestId('mock-shader-material')).toBeTruthy();
+    
+    // Wait for the async mock/component resolution
+    await waitFor(() => {
+      expect(screen.getByTestId('mock-animated-mesh')).toBeInTheDocument();
+      expect(screen.getByTestId('mock-sphere-geometry')).toBeInTheDocument();
+      expect(screen.getByTestId('mock-shader-material')).toBeInTheDocument();
+    });
   });
 
-  it('renders the mock mesh when not selected', () => {
+  it('renders the mock mesh when not selected', async () => {
     render(<RegionSelectionIndicator position={new Vector3(0, 0, 0)} scale={1} selected={false} />);
-    expect(screen.getByTestId('mock-animated-mesh')).toBeTruthy();
-    expect(screen.getByTestId('mock-sphere-geometry')).toBeTruthy();
-    expect(screen.getByTestId('mock-shader-material')).toBeTruthy();
+    
+    // Wait for the async mock/component resolution
+    await waitFor(() => {
+      expect(screen.getByTestId('mock-animated-mesh')).toBeInTheDocument();
+      expect(screen.getByTestId('mock-sphere-geometry')).toBeInTheDocument();
+      expect(screen.getByTestId('mock-shader-material')).toBeInTheDocument();
+    });
   });
 });

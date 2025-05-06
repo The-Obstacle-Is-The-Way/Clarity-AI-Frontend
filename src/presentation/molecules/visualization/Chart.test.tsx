@@ -3,45 +3,44 @@
  * Chart testing with quantum precision
  */
 import React from 'react';
-import { describe, it, expect } from 'vitest'; // Removed unused vi
-
-import { screen } from '@testing-library/react';
-import '@testing-library/jest-dom'; // render is imported from unified utils, removed unused fireEvent
-// Removed unused React import (new JSX transform)
-// Removed unused userEvent import
+import { describe, it, expect } from 'vitest';
+import { waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { Chart } from './Chart';
-import { render } from '@infrastructure/testing/utils/test-utils.unified'; // Standardized path
-// import { useAuth } from '@/application/context/AuthContext'; // Removed unused import
-// import { Alert } from '@/presentation/atoms'; // Removed unused import
+import { render } from '../../../infrastructure/testing/utils/test-utils.unified';
 
 // Mock data with clinical precision
-// Mock data with clinical precision - Requires specific props for Chart
 const mockProps = {
   data: {
     labels: ['Jan', 'Feb'],
     datasets: [{ label: 'Dataset 1', data: [1, 2] }],
-  }, // Added label to dataset
+  },
   options: {},
-  type: 'line' as const, // Example type
+  type: 'line' as const,
 };
 
 describe('Chart', () => {
-  it('renders with neural precision', () => {
-    render(<Chart {...mockProps} />); // Use the unified render
+  it('renders with neural precision', async () => {
+    const { container } = render(<Chart {...mockProps} />);
 
-    // Add assertions for rendered content
-    expect(screen).toBeDefined();
+    // Note: Testing Chart.js internals is complex. This ensures the component mounts.
+    await waitFor(() => {
+      // Look for the SVG element rendered by our custom Chart component
+      const svgElement = container.querySelector('svg');
+      expect(svgElement).toBeInTheDocument();
+    });
   });
 
+  // Interaction tests for Chart.js are generally complex and might require specific mocks
+  // or focus on props changes rather than direct canvas interaction.
+  // Keeping this minimal for now.
   it('responds to user interaction with quantum precision', async () => {
-    // Removed unused variable: const user = userEvent.setup();
-    render(<Chart {...mockProps} />); // Use the unified render
+    const { container } = render(<Chart {...mockProps} />);
 
-    // Simulate user interactions
-    // await user.click(screen.getByText(/example text/i));
-
-    // Add assertions for behavior after interaction
+    // Example: Asserting the component exists after render by checking for the SVG
+    await waitFor(() => {
+      const svgElement = container.querySelector('svg');
+      expect(svgElement).toBeInTheDocument();
+    });
   });
-
-  // Add more component-specific tests
 });

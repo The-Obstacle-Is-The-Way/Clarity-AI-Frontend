@@ -4,11 +4,11 @@
  */
 
 import { renderHook } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useNeuroSyncOrchestrator } from './neuro-sync.orchestrator';
 
 // Create minimal mocks
-vi.mock('@/application/services/brain/brain-model.service', () => ({
+vi.mock('../../infrastructure/api/brain-model.service', () => ({
   brainModelService: {
     fetchBrainModel: vi.fn().mockResolvedValue({
       success: true,
@@ -17,7 +17,7 @@ vi.mock('@/application/services/brain/brain-model.service', () => ({
   },
 }));
 
-vi.mock('@/application/services/clinical/clinical.service', () => ({
+vi.mock('../../infrastructure/api/clinical.service', () => ({
   clinicalService: {
     fetchSymptomMappings: vi.fn().mockResolvedValue({
       success: true,
@@ -34,7 +34,7 @@ vi.mock('@/application/services/clinical/clinical.service', () => ({
   },
 }));
 
-vi.mock('@/application/services/temporal/temporal.service', () => ({
+vi.mock('../../infrastructure/api/temporal.service', () => ({
   temporalService: {
     getTemporalDynamics: vi.fn().mockResolvedValue({
       success: true,
@@ -48,13 +48,27 @@ describe('NeuroSyncOrchestrator', () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+  });
+
   it('exists as a module', () => {
     expect(useNeuroSyncOrchestrator).toBeDefined();
   });
 
-  // Skipping actual tests to avoid memory issues
-  it.skip('initializes and fetches data correctly', async () => {
-    const { result } = renderHook(() => useNeuroSyncOrchestrator('patient-123'));
-    expect(result.current).toBeDefined();
+  it('initializes correctly and sets initial loading state', () => {
+    const { result, unmount } = renderHook(() =>
+      useNeuroSyncOrchestrator('patient-123', {
+        brainModelRefreshInterval: 60000,
+        biometricRefreshInterval: 30000,
+        temporalRefreshInterval: 60000,
+        performanceMonitorInterval: 10000,
+        dataCorrelationInterval: 120000,
+      })
+    );
+
+    expect(result.current.state.loadingState).toBe('loading');
+    expect(result.current.state).toBeDefined();
+    
+    unmount();
   });
 });

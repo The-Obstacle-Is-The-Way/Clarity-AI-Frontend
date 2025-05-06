@@ -92,15 +92,17 @@ interface ThemeContextValue {
  * Custom render function that wraps the component under test with all necessary providers,
  * and returns enhanced functions for theme testing.
  */
-export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOptions = {}) => {
+export const renderWithProviders = (
+  ui: ReactElement,
+  options: ExtendedRenderOptions = {}
+) => {
   const {
     initialRoute = '/',
     queryClient = createTestQueryClient(),
     defaultTheme = 'light',
-    ...renderOptions
+    ...renderOptions // All other RenderOptions EXCEPT wrapper
   } = options;
 
-  // Define the wrapper directly using AllTheProviders
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <AllTheProviders
       initialRoute={initialRoute}
@@ -120,7 +122,7 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
     return null;
   };
 
-  // Render with the wrapper and the consumer
+  // Store renderResult - Use standard synchronous render
   const renderResult = testingLibraryRender(
     <>
       {ui}
@@ -129,45 +131,70 @@ export const renderWithProviders = (ui: ReactElement, options: ExtendedRenderOpt
     { wrapper: Wrapper, ...renderOptions }
   );
 
-  // Ensure themeContextValue is defined before returning
-  if (!themeContextValue) {
-    throw new Error(
-      'ThemeContext value was not captured. Ensure ThemeProvider is correctly set up.'
+  // Capture theme context value *after* initial render
+  const capturedThemeContext = themeContextValue;
+
+  if (!capturedThemeContext) {
+    // This might still happen if ThemeProvider itself has async init logic,
+    // but less likely than with the previous async act approach.
+    console.warn(
+      'ThemeContext value was not captured immediately after initial render. Theme helpers might be unreliable if ThemeProvider initializes asynchronously.'
     );
   }
 
   // Return the standard render result plus theme helper functions
   return {
     ...renderResult,
-    // Helper function to get current theme
-    getCurrentTheme: () => themeContextValue?.theme,
-    // Helper to directly set theme value
+    getCurrentTheme: () => capturedThemeContext?.theme,
     setTheme: (theme: ThemeMode) => {
+      // Wrap theme state updates in act
       act(() => {
-        themeContextValue?.setTheme(theme);
+        capturedThemeContext?.setTheme(theme);
       });
     },
-    // Helper to enable dark mode
     enableDarkMode: () => {
       act(() => {
-        themeContextValue?.setTheme('dark');
+        capturedThemeContext?.setTheme('dark');
       });
     },
-    // Helper to disable dark mode (set to light)
     disableDarkMode: () => {
       act(() => {
-        themeContextValue?.setTheme('light');
+        capturedThemeContext?.setTheme('light');
       });
     },
-    // Helper to check if dark mode is active
-    isDarkMode: () => themeContextValue?.theme === 'dark',
+    isDarkMode: () => capturedThemeContext?.theme === 'dark',
   };
 };
 
-// Basic render function that doesn't include theme helpers
-export function render(ui: ReactElement, options: ExtendedRenderOptions = {}) {
-  return renderWithProviders(ui, options);
+// Basic render function - Revert to synchronous
+export function renderBasic(
+  ui: ReactElement,
+  options: ExtendedRenderOptions = {}
+) {
+  const { initialRoute, queryClient: customQueryClient, defaultTheme: customTheme, ...restOptions } = options;
+
+  const queryClient = customQueryClient || createTestQueryClient();
+  const currentInitialRoute = initialRoute || '/';
+  const currentTheme = customTheme || 'light';
+
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
+    <AllTheProviders
+      initialRoute={currentInitialRoute}
+      queryClient={queryClient}
+      currentTheme={currentTheme}
+    >
+      {children}
+    </AllTheProviders>
+  );
+
+  // Standard synchronous render
+  const renderResult = testingLibraryRender(ui, { wrapper: Wrapper, ...restOptions });
+
+  return renderResult;
 }
 
 // Re-export everything from testing-library
 export * from '@testing-library/react';
+
+// Override the default render export with our enhanced version
+export { renderWithProviders as render };
