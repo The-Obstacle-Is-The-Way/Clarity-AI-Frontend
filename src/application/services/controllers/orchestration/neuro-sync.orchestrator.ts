@@ -20,7 +20,7 @@ import type { TemporalDynamics } from '@/domain/types/temporal/dynamics'; // Rev
 
 // Services
 import { brainModelService } from '@/application/services/brain/brain-model.service'; // Corrected path and added extension
-import { clinicalService } from '@application/services/clinical/clinical.service'; // Corrected path
+import { clinicalService } from '@/application/services/clinical/clinical.service'; // Corrected path
 // Removed unused import: biometricService
 import { temporalService } from '@/application/services/temporal/temporal.service'; // Revert to specific file
 
@@ -216,42 +216,15 @@ export function useNeuroSyncOrchestrator(
   const fetchBrainModel = useCallback(async () => {
     try {
       dispatch({ type: 'SET_LOADING_STATE', payload: 'loading' });
-      
-      // For testing environment
+
       if (process.env.NODE_ENV === 'test') {
-        // Simulate successful response
-        dispatch({ 
-          type: 'SET_BRAIN_MODEL', 
-          payload: {
-            id: 'brain-model-123',
-            regions: [
-              {
-                id: 'prefrontal-cortex',
-                name: 'Prefrontal Cortex',
-                coordinates: { x: 0, y: 0, z: 0 },
-                volume: 120,
-              },
-              {
-                id: 'amygdala',
-                name: 'Amygdala',
-                coordinates: { x: 10, y: 5, z: -5 },
-                volume: 80,
-              },
-            ],
-            connections: [
-              {
-                id: 'connection-1',
-                sourceId: 'prefrontal-cortex',
-                targetId: 'amygdala',
-                strength: 0.7,
-              },
-            ],
-          }
-        });
+        // Extreme simplification for debugging:
+        // Only dispatch loading states, no brain model data
         dispatch({ type: 'SET_LOADING_STATE', payload: 'loaded' });
         return;
       }
 
+      // This part is only reached if NODE_ENV is NOT 'test'
       const result = await brainModelService.fetchBrainModel(patientId);
 
       if (result.success && result.value) {
@@ -345,16 +318,16 @@ export function useNeuroSyncOrchestrator(
       // For testing environment
       if (process.env.NODE_ENV === 'test') {
         // Simulate successful response
-        dispatch({ 
-          type: 'SET_TEMPORAL_DYNAMICS', 
+        dispatch({
+          type: 'SET_TEMPORAL_DYNAMICS',
           payload: {
             id: `temporal-${patientId}-${state.timeScale}`,
             timestamps: [Date.now() - 86400000, Date.now()],
             values: {
               'prefrontal-cortex': [0.5, 0.6],
               amygdala: [0.3, 0.4],
-            }
-          } 
+            },
+          },
         });
         return;
       }
@@ -364,7 +337,7 @@ export function useNeuroSyncOrchestrator(
 
       if (result && result.success && result.value) {
         // Check result exists, has success property, and has a value
-        dispatch({ type: 'SET_TEMPORAL_DYNAMICS', payload: result.value }); 
+        dispatch({ type: 'SET_TEMPORAL_DYNAMICS', payload: result.value });
       }
     } catch (error) {
       // Non-blocking error for temporal data

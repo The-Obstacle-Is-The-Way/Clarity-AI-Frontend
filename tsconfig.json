@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    // Standard modern TypeScript/React settings
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true, // Assuming Vite handles building, typical for React projects
+
+    // Strictness & Quality
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // Path Aliases
+    "baseUrl": ".",
+    "paths": {
+      "@domain/*": ["src/domain/*"],
+      "@application/*": ["src/application/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@presentation/*": ["src/presentation/*"],
+      "@test/*": ["src/test/*"],
+      "@utils/*": ["src/utils/*"],
+      "@/*": ["src/*"]
+    },
+
+    // Other options
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true // Common for React setups
+  },
+  "include": ["src", ".eslintrc.js", "vite.config.ts", "config/**/*.ts", "config/**/*.js", "config/**/*.json"], // Include src and config files
+  "exclude": ["node_modules", "dist", "public", "coverage"]
+}
