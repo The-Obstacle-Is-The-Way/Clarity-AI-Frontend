@@ -451,15 +451,7 @@ export function useNeuroSyncOrchestrator(
       clearInterval(performanceInterval);
       clearInterval(correlationInterval);
     };
-  }, [
-    fetchBrainModel,
-    fetchClinicalData,
-    fetchBiometricData,
-    fetchTemporalDynamics,
-    calculateNeuralActivation,
-    monitorPerformance,
-    timingConfig,
-  ]);
+  }, [patientId, timingConfig, dispatch]);
 
   // Action creators with type safety
   const actions = useMemo(
