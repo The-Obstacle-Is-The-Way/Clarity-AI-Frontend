@@ -3,7 +3,8 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 // import type { SpyInstance } from 'vitest'; // Incorrect type
-import type { LoginCredentials } from '@/domain/types/auth/auth'; // Import necessary type
+// import type { LoginCredentials } from '@/domain/types/auth/auth'; // Import necessary type - Alias issue
+import type { LoginCredentials } from '../../../src/domain/types/auth/auth'; // Relative path import
 import '../../../src/test/debug-setup'; // Import extended setup
 // import { authService } from '@/infrastructure/api/authService'; // Import the REAL service - Using alias
 import { authService } from '../../../src/infrastructure/api/authService'; // Import the REAL service - Using relative path for diagnostics
@@ -17,10 +18,13 @@ describe('authService Mock Verification with spyOn', () => {
 
   beforeEach(() => {
     // Spy on and mock implementations BEFORE each test
-    loginSpy = vi.spyOn(authService, 'login').mockImplementation(async (credentials: LoginCredentials) => { // Match original signature
-      console.log('[SPY MOCK] login called with:', credentials);
-      return Promise.resolve({ success: true, token: 'fake-token-spy' });
-    });
+    loginSpy = vi
+      .spyOn(authService, 'login')
+      .mockImplementation(async (credentials: LoginCredentials) => {
+        // Match original signature
+        console.log('[SPY MOCK] login called with:', credentials);
+        return Promise.resolve({ success: true, token: 'fake-token-spy' });
+      });
     getCurrentUserSpy = vi.spyOn(authService, 'getCurrentUser').mockImplementation(async () => {
       console.log('[SPY MOCK] getCurrentUser called');
       return Promise.resolve({

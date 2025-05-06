@@ -26,14 +26,14 @@ vi.mock('@/infrastructure/clients/auditLogClient', () => ({
 // --- Test ---
 
 it('disables button while submitting', async () => {
-  // Arrange: Spy on the login method and ensure it resolves successfully *after a tick*
-  const loginSpy = vi.spyOn(authService, 'login').mockImplementation(async (credentials) => {
-    console.log('[TEST] Login spy called with:', credentials);
-    await new Promise(resolve => setTimeout(resolve, 0)); // Yield to event loop
-    return { success: true };
+  const user = userEvent.setup({ delay: null }); // Use userEvent
+  const loginSpy = vi.spyOn(authService, 'login');
+  // Mock implementation with a longer delay
+  loginSpy.mockImplementation(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 200)); // Increased delay to 200ms
+    return { success: true, token: 'mock-token' };
   });
 
-  const user = userEvent.setup();
   render(<Login />);
   const emailInput = screen.getByLabelText(/email address/i);
   const passwordInput = screen.getByLabelText(/password/i);
