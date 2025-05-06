@@ -1,47 +1,37 @@
-/* eslint-disable */
 /**
  * CLARITY-AI Neural Test Suite
- * Login testing with quantum precision
+ * Login testing with quantum precision - Refactored for async interaction
  */
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 
-import { render, screen, within, cleanup } from '@testing-library/react';
-import '@testing-library/jest-dom'; // Import cleanup
-// Removed unused userEvent import
+// --- Mocking Dependencies ---
 
-// Mock dependencies before importing the component
+// 1. Mock authService *within this file* for direct access to mocks
+vi.mock('@/infrastructure/api/authService', () => ({
+  authService: {
+    login: vi.fn(), // Mock login function
+    // Add other methods if Login component uses them directly
+  },
+}));
+
+// 2. Mock react-router-dom
 vi.mock('react-router-dom', async (importOriginal) => {
-  // Make mock async
   const actual = (await importOriginal()) as any;
+  const navigateMock = vi.fn(); // Create a persistent mock navigate function
   return {
-    ...actual, // Spread actual implementation
-    useNavigate: () => vi.fn(),
-    MemoryRouter: ({ children }: { children: React.ReactNode }) => <div>{children}</div>, // Keep MemoryRouter mock
+    ...actual,
+    useNavigate: () => navigateMock, // Return the mock function
+    MemoryRouter: actual.MemoryRouter,
   };
 });
 
-vi.mock('@/components/atoms/SecureInput', () => ({
-  default: (
-    { id, /* name, */ type, value, onChange, label, /* required, */ placeholder }: any // eslint-disable-line @typescript-eslint/no-explicit-any // Removed unused name, required
-  ) => (
-    <div data-testid={`secure-input-${id}`}>
-      <label>{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value, e, true)}
-        placeholder={placeholder || ''}
-        data-testid={id}
-      />
-    </div>
-  ),
-}));
-
-// Use correct client path from remote
-vi.mock('@infrastructure/clients/auditLogClient', () => ({
+// 3. Mock auditLogClient
+vi.mock('@/infrastructure/clients/auditLogClient', () => ({
   auditLogClient: {
-    // Use client name
     log: vi.fn(),
   },
   AuditEventType: {
@@ -51,50 +41,100 @@ vi.mock('@infrastructure/clients/auditLogClient', () => ({
   },
 }));
 
-// Mock setTimeout to prevent waiting in tests (from remote)
-vi.useFakeTimers();
+// --- Imports (after mocks) ---
+// Import the mocked service *after* vi.mock
+import { authService } from '@/infrastructure/api/authService';
+// Import the component under test
+import Login from './Login';
 
-// Now import the component after all mocks are set up
-import Login from '../auth/Login';
+// --- Test Suite ---
 
-describe('Login', () => {
+describe('Login Component', () => {
+  let user: ReturnType<typeof userEvent.setup>;
+  // Access the specific mock instance for login
+  const loginMock = vi.mocked(authService.login);
+
   beforeEach(() => {
     vi.clearAllMocks();
-    cleanup(); // Add cleanup
+    user = userEvent.setup();
+    // Reset mock behavior if needed (e.g., if default is success)
+    loginMock.mockResolvedValue({ success: true }); // Default success unless overridden
   });
 
-  it('renders with neural precision', () => {
+  it('renders login form correctly', () => {
     render(<Login />);
-
-    // Basic assertions that verify rendering without specific elements
-    expect(screen).toBeDefined();
-    expect(screen.getByText('Clarity-AI Digital Twin')).toBeInTheDocument();
-    expect(screen.getByText('Secure Provider Login')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Clarity-AI Digital Twin/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Secure Provider Login/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
   });
 
-  it('responds to user interaction with quantum precision', async () => {
-    // const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime }); // Removed unused variable
+  it('allows user to type into email and password fields', async () => {
     render(<Login />);
+    const emailInput = screen.getByLabelText(/email address/i);
+    const passwordInput = screen.getByLabelText(/password/i);
 
-    // Instead of actually testing with real interaction, we'll just verify
-    // that the page includes expected elements to avoid hangs
-    expect(screen.getByLabelText('Email address')).toBeInTheDocument(); // Use getByLabelText
-    expect(screen.getByLabelText('Password')).toBeInTheDocument(); // Use getByLabelText
+    await user.type(emailInput, 'test@example.com');
+    await user.type(passwordInput, 'password123');
 
-    // Fast-forward timers if needed
-    vi.runAllTimers();
+    expect(emailInput).toHaveValue('test@example.com');
+    expect(passwordInput).toHaveValue('password123');
   });
 
-  // This test is simplified to avoid hanging
-  it('handles form submission', () => {
+  // TODO: Update expected error messages after checking Login.tsx
+  it('shows generic error for invalid fields on submit', async () => {
     render(<Login />);
+    const submitButton = screen.getByRole('button', { name: /sign in/i });
 
-    // Just check that the submit button exists
-    // Query within the form to find the specific submit button
-    const form = screen.getByTestId('login-form'); // Use getByTestId
-    const submitButton = within(form).getByRole('button', { name: /sign in/i });
-    expect(submitButton).toBeInTheDocument();
+    await user.click(submitButton);
 
-    // We don't actually click it to avoid async operations
+    // Expect the generic error message set in handleSubmit
+    expect(await screen.findByText(/please enter valid credentials/i)).toBeInTheDocument();
+    expect(loginMock).not.toHaveBeenCalled();
+  });
+
+  it('calls authService.login with correct credentials on valid submission', async () => {
+    render(<Login />);
+    const emailInput = screen.getByLabelText(/email address/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    const submitButton = screen.getByRole('button', { name: /sign in/i });
+    const testEmail = 'valid@example.com';
+    const testPassword = 'correctPassword';
+
+    await user.type(emailInput, testEmail);
+    await user.type(passwordInput, testPassword);
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(loginMock).toHaveBeenCalledTimes(1);
+      expect(loginMock).toHaveBeenCalledWith(testEmail, testPassword);
+    });
+
+    // Check navigation (assuming successful login redirects)
+    // We need to import useNavigate from the mocked 'react-router-dom'
+    const { useNavigate } = await import('react-router-dom');
+    const navigateMockFn = useNavigate(); // Get the actual mock function instance
+    await waitFor(() => {
+       expect(navigateMockFn).toHaveBeenCalledWith('/dashboard'); // Or the expected route
+    });
+  });
+
+  it('displays error message from authService on login failure', async () => {
+    // Configure the mock *before* rendering
+    loginMock.mockRejectedValueOnce(new Error('Invalid credentials'));
+
+    render(<Login />);
+    const emailInput = screen.getByLabelText(/email address/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    const submitButton = screen.getByRole('button', { name: /sign in/i });
+
+    await user.type(emailInput, 'wrong@example.com');
+    await user.type(passwordInput, 'wrongPassword');
+    await user.click(submitButton);
+
+    // Wait for the error message to appear (implementation might vary)
+    // This assumes the error is displayed directly. Adjust if it uses alerts, etc.
+    expect(await screen.findByText(/invalid credentials/i)).toBeInTheDocument();
   });
 });
