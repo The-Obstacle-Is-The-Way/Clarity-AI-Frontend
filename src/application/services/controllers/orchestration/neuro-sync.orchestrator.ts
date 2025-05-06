@@ -313,7 +313,7 @@ export function useNeuroSyncOrchestrator(
         payload: error instanceof Error ? error.message : 'Unknown error loading clinical data',
       });
     }
-  }, [patientId]);
+  }, [patientId, dispatch]);
 
   // Fetch biometric data
   const fetchBiometricData = useCallback(async () => {
@@ -401,7 +401,7 @@ export function useNeuroSyncOrchestrator(
     } catch (error) {
       console.error('Error calculating neural activation:', error);
     }
-  }, [state.brainModel, state.symptomMappings]);
+  }, [state.brainModel, state.symptomMappings, dispatch]);
 
   // Monitor performance
   const monitorPerformance = useCallback(() => {
@@ -414,7 +414,7 @@ export function useNeuroSyncOrchestrator(
       type: 'UPDATE_PERFORMANCE',
       payload: { frameRate, memoryUsage },
     });
-  }, []);
+  }, [dispatch]);
 
   // Set up data loading and refresh intervals
   useEffect(() => {
