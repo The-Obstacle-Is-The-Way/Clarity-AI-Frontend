@@ -82,6 +82,33 @@ export default defineConfig({
     },
   },
   test: {
+    // Explicitly define aliases for the test environment
+    alias: {
+      // Use new URL for robust path resolution relative to config file
+      '@': new URL('../src', import.meta.url).pathname,
+      '@domain': new URL('../src/domain', import.meta.url).pathname,
+      '@application': new URL('../src/application', import.meta.url).pathname,
+      '@infrastructure': new URL('../src/infrastructure', import.meta.url).pathname,
+      '@presentation': new URL('../src/presentation', import.meta.url).pathname,
+      '@shared': new URL('../src/shared', import.meta.url).pathname,
+      '@atoms': new URL('../src/presentation/atoms', import.meta.url).pathname,
+      '@molecules': new URL('../src/presentation/molecules', import.meta.url).pathname,
+      '@organisms': new URL('../src/presentation/organisms', import.meta.url).pathname,
+      '@templates': new URL('../src/presentation/templates', import.meta.url).pathname,
+      '@pages': new URL('../src/presentation/pages', import.meta.url).pathname,
+      '@hooks': new URL('../src/application/hooks', import.meta.url).pathname,
+      '@contexts': new URL('../src/application/contexts', import.meta.url).pathname,
+      '@providers': new URL('../src/application/providers', import.meta.url).pathname,
+      '@stores': new URL('../src/application/stores', import.meta.url).pathname,
+      '@services': new URL('../src/application/services', import.meta.url).pathname,
+      '@api': new URL('../src/infrastructure/api', import.meta.url).pathname,
+      '@clients': new URL('../src/infrastructure/clients', import.meta.url).pathname,
+      '@utils': new URL('../src/shared/utils', import.meta.url).pathname,
+      '@constants': new URL('../src/shared/constants', import.meta.url).pathname,
+      '@config': new URL('./', import.meta.url).pathname, // Point to current config dir
+      '@test': new URL('../test', import.meta.url).pathname,
+      '@public': new URL('../public', import.meta.url).pathname,
+    },
     // Disable worker threads and parallel file execution to avoid tinypool stack issues
     threads: false,
     fileParallelism: false,

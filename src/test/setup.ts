@@ -143,31 +143,9 @@ beforeEach(() => {
 //   // Mock implementation
 // }));
 
-// --- Global Mock for AuthService ---
-import type { User as DomainUser } from '../domain/types/auth/auth';
-import { UserRole, Permission } from '../domain/types/auth/auth';
-
-// Mock the authService module directly, exporting the mocked service object
-vi.mock('../infrastructure/api/authService', async (/* importOriginal */) => {
-  // Define mock user data consistent with DomainUser
-  const mockUserData: DomainUser = {
-    id: 'test-user-id',
-    email: 'test@example.com',
-    name: 'Test User',
-    role: UserRole.CLINICIAN,
-    permissions: [Permission.VIEW_PATIENTS],
-  };
-
-  // The object that represents the exports of the mocked module
-  const mockAuthService = {
-    getCurrentUser: vi.fn().mockResolvedValue(mockUserData),
-    login: vi.fn().mockResolvedValue(undefined),
-    logout: vi.fn().mockResolvedValue(undefined),
-    // Add other methods if they exist and need mocking
-  };
-
-  // Return the named export directly
-  return {
-    authService: mockAuthService,
-  };
-});
+// --- REMOVED Global Mock for AuthService --- 
+// import type { User as DomainUser } from '../domain/types/auth/auth';
+// import { UserRole, Permission } from '../domain/types/auth/auth';
+// vi.mock('../infrastructure/api/authService', async (/* importOriginal */) => {
+//   // ... (mock implementation removed) ...
+// });

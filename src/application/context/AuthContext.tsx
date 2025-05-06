@@ -46,20 +46,6 @@ const initialAuthState: AuthState = {
   error: null,
 };
 
-// Test-specific initial state
-const testInitialAuthState: AuthState = {
-  isAuthenticated: true,
-  user: {
-    id: 'test-user-id',
-    email: 'test@example.com',
-    name: 'Test User',
-    role: UserRole.CLINICIAN,
-    permissions: [Permission.VIEW_PATIENTS],
-  },
-  isLoading: false,
-  error: null,
-};
-
 // Auth reducer - Adapted for cookie-based flow
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
@@ -128,40 +114,34 @@ interface AuthProviderProps {
 
 // Auth Provider component - Uses authService now
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  // Use test initial state if in test environment
-  const effectiveInitialState =
-    process.env.NODE_ENV === 'test' ? testInitialAuthState : initialAuthState;
-  
-  const [state, dispatch] = useReducer(authReducer, effectiveInitialState);
+  console.log('[AuthProvider] Rendering...'); // Log render
+  const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
-  // Check authentication status ONLY if not in test environment or if initial state was not already loading
+  // Check authentication status (Original logic)
   const checkAuthStatus = useCallback(async () => {
-    // Avoid check if already authenticated by testInitialState
-    if (process.env.NODE_ENV === 'test') {
-      console.log('[AuthProvider Test Mode] Skipping initial auth check.');
-      return;
-    }
-    
-    // Original check logic for non-test environments
+    console.log('[AuthProvider] checkAuthStatus called.'); // Log call
     dispatch({ type: 'AUTH_CHECK_START' });
     try {
+      console.log('[AuthProvider] Calling authService.getCurrentUser...');
       const user = await authService.getCurrentUser();
+      console.log('[AuthProvider] authService.getCurrentUser returned:', user);
       if (user && user.id) {
+        console.log('[AuthProvider] Dispatching AUTH_CHECK_SUCCESS');
         dispatch({ type: 'AUTH_CHECK_SUCCESS', payload: user });
       } else {
+        console.log('[AuthProvider] Invalid user data received, throwing error.');
         throw new Error('Invalid user data received during auth check');
       }
     } catch (authCheckError) {
-      console.error('Auth check failed:', authCheckError);
+      console.error('[AuthProvider] Auth check failed (in catch block): ', authCheckError);
       dispatch({ type: 'AUTH_CHECK_FAILURE' });
     }
   }, []);
 
   useEffect(() => {
-    // Only run check if not already handled by test initial state
-    if (process.env.NODE_ENV !== 'test') {
-      checkAuthStatus();
-    }
+    console.log('[AuthProvider] useEffect running, calling checkAuthStatus.'); // Log effect
+    // Always run checkAuthStatus on mount (Original logic)
+    checkAuthStatus();
   }, [checkAuthStatus]);
 
   // Login function - pass email instead of username

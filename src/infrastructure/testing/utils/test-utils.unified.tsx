@@ -15,7 +15,7 @@ import type { ThemeMode } from '@application/providers/ThemeProvider';
 import { ThemeProvider, useTheme } from '@application/providers/ThemeProvider';
 
 // Context providers
-import { AuthProvider } from '@application/context/AuthContext';
+import { AuthProvider, AppAuthContext, type AppAuthContextType } from '@application/context/AuthContext';
 
 // Mock authService for testing
 vi.mock('@infrastructure/api/authService', () => ({
@@ -54,20 +54,28 @@ interface AllTheProvidersProps {
   initialRoute?: string;
   queryClient?: QueryClient;
   currentTheme?: ThemeMode;
+  authContextValue?: AppAuthContextType;
 }
 
 const AllTheProviders = ({
   children,
   initialRoute = '/',
   queryClient = createTestQueryClient(),
-  currentTheme = 'light', // Default to light for consistency
+  currentTheme = 'light',
+  authContextValue,
 }: AllTheProvidersProps) => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme={currentTheme}>
-        <AuthProvider>
-          <MemoryRouter initialEntries={[initialRoute]}>{children}</MemoryRouter>
-        </AuthProvider>
+        {authContextValue ? (
+          <AppAuthContext.Provider value={authContextValue}>
+            <MemoryRouter initialEntries={[initialRoute]}>{children}</MemoryRouter>
+          </AppAuthContext.Provider>
+        ) : (
+          <AuthProvider>
+            <MemoryRouter initialEntries={[initialRoute]}>{children}</MemoryRouter>
+          </AuthProvider>
+        )}
       </ThemeProvider>
     </QueryClientProvider>
   );
@@ -80,6 +88,7 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   initialRoute?: string;
   queryClient?: QueryClient;
   defaultTheme?: ThemeMode;
+  authContextValue?: AppAuthContextType;
 }
 
 // Type for theme context value that's captured during rendering
@@ -100,7 +109,8 @@ export const renderWithProviders = (
     initialRoute = '/',
     queryClient = createTestQueryClient(),
     defaultTheme = 'light',
-    ...renderOptions // All other RenderOptions EXCEPT wrapper
+    authContextValue,
+    ...renderOptions
   } = options;
 
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -108,6 +118,7 @@ export const renderWithProviders = (
       initialRoute={initialRoute}
       queryClient={queryClient}
       currentTheme={defaultTheme}
+      authContextValue={authContextValue}
     >
       {children}
     </AllTheProviders>
@@ -171,7 +182,13 @@ export function renderBasic(
   ui: ReactElement,
   options: ExtendedRenderOptions = {}
 ) {
-  const { initialRoute, queryClient: customQueryClient, defaultTheme: customTheme, ...restOptions } = options;
+  const {
+    initialRoute,
+    queryClient: customQueryClient,
+    defaultTheme: customTheme,
+    authContextValue,
+    ...restOptions
+  } = options;
 
   const queryClient = customQueryClient || createTestQueryClient();
   const currentInitialRoute = initialRoute || '/';
@@ -182,6 +199,7 @@ export function renderBasic(
       initialRoute={currentInitialRoute}
       queryClient={queryClient}
       currentTheme={currentTheme}
+      authContextValue={authContextValue}
     >
       {children}
     </AllTheProviders>
